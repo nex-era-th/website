@@ -1,0 +1,1462 @@
+/* 
+
+version = 2.0
+
+$PX/web/xcss/projex.css -- for project-x
+----------------------------------------------------------------- 
+for all basic styles
+last update = 22:19 Jan22/2025 +7
+by = @devster
+
+*/
+
+/* import */
+
+
+@import 'material-x.css';
+
+
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap');
+
+
+
+
+/* Open Sans */
+
+/*@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');*/
+
+/*@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75,300..800;1,75,300..800&display=swap');*/
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+
+
+
+/*@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');*/
+
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=La+Belle+Aurore&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap');
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Nothing+You+Could+Do&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Lekton:ital,wght@0,400;0,700;1,400&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&display=swap');
+
+
+
+/* Ubuntu */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:ital,wdth,wght@0,75,100..800;1,75,100..800&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans+Mono:ital,wght@0,400..700;1,400..700&display=swap');
+
+
+
+/* Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,75,100..1000&display=swap');
+
+
+
+/* Noto */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai,wght@75,100..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Gluten:wght@100..900&display=swap');
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Gruppo&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Homenaje&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1+Code:wght@100..700&display=swap');
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Genos:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Hairline&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
+
+/*
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+*/
+
+
+@import url('https://fonts.googleapis.com/css2?family=Thasadith:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap');
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Beth+Ellen&display=swap');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Kranky&display=swap');
+
+
+
+/* font classes */
+
+
+.kranky-regular {
+  font-family: "Kranky", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+.beth-ellen-regular {
+  font-family: "Beth Ellen", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+
+
+
+.amatic-sc-regular {
+  font-family: "Amatic SC", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.amatic-sc-bold {
+  font-family: "Amatic SC", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+
+
+
+
+
+
+
+
+.thasadith-regular {
+  font-family: "Thasadith", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.thasadith-bold {
+  font-family: "Thasadith", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.thasadith-regular-italic {
+  font-family: "Thasadith", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.thasadith-bold-italic {
+  font-family: "Thasadith", serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+
+
+
+.sharetech-mono {
+  font-family: "Share Tech Mono", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/*
+.sharetech {
+  font-family: "Share Tech Mono", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+*/
+
+.oxanium-light {
+  font-family: "Oxanium", serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+}
+
+
+
+.bungee-hairline {
+  font-family: "Bungee Hairline", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+
+.genos {
+  font-family: "Genos", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+.mplus {
+  font-family: "M PLUS 1 Code", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+
+
+.homenaje {
+  font-family: "Homenaje", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+
+.orbitron {
+  font-family: "Orbitron", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+.gruppo {
+  font-family: "Gruppo", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+
+.gluten {
+  font-family: "Gluten", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0;
+}
+
+.gluten-light {
+  font-family: "Gluten", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0;
+}
+
+.gluten-ultralight {
+  font-family: "Gluten", serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0;
+}
+
+.noto-thai {
+  font-family: "Noto Sans Thai", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+
+
+.noto {
+  font-family: "Noto Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+
+
+
+
+
+
+/* Roboto */
+.roboto {
+  font-family: "Roboto Flex", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 100,
+    "GRAD" 0,
+    "XOPQ" 96,
+    "XTRA" 468,
+    "YOPQ" 79,
+    "YTAS" 750,
+    "YTDE" -203,
+    "YTFI" 738,
+    "YTLC" 514,
+    "YTUC" 712;
+}
+
+.roboto-light {
+  font-family: "Roboto Flex", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 100,
+    "GRAD" 0,
+    "XOPQ" 96,
+    "XTRA" 468,
+    "YOPQ" 79,
+    "YTAS" 750,
+    "YTDE" -203,
+    "YTFI" 738,
+    "YTLC" 514,
+    "YTUC" 712;
+}
+
+.roboto-ultralight {
+  font-family: "Roboto Flex", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 100,
+    "GRAD" 0,
+    "XOPQ" 96,
+    "XTRA" 468,
+    "YOPQ" 79,
+    "YTAS" 750,
+    "YTDE" -203,
+    "YTFI" 738,
+    "YTLC" 514,
+    "YTUC" 712;
+}
+
+.roboto-thin {
+  font-family: "Roboto Flex", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 75,
+    "GRAD" 0,
+    "XOPQ" 96,
+    "XTRA" 468,
+    "YOPQ" 79,
+    "YTAS" 750,
+    "YTDE" -203,
+    "YTFI" 738,
+    "YTLC" 514,
+    "YTUC" 712;
+}
+
+
+
+
+.ubuntu, .x-sans {
+  font-family: "Ubuntu Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+.ubuntu-light, .x-light {
+  font-family: "Ubuntu Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+.ubuntu-thin, .x-thin {
+  font-family: "Ubuntu Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 75;
+}
+
+
+
+.ubuntu-mono, .x-mono {
+  font-family: "Ubuntu Sans Mono", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.dosis {
+  font-family: "Dosis", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.dosis-light {
+  font-family: "Dosis", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+
+
+
+
+
+
+.lekton {
+  font-family: "Lekton", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+.nothing {
+  font-family:  "Nothing You Could Do", serif;
+  font-weight:  400;
+  font-style:   normal;
+}
+
+
+.gloria {
+  font-family:  "Gloria Hallelujah", serif;
+  font-weight:  400;
+  font-style:   normal;
+}
+
+.x-script {
+  font-family:  "Nanum Brush Script", cursive;
+  font-weight:  400;
+  font-style:   normal;
+}
+
+
+/* Open Sans */ 
+.x-osans, .open-sans {
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+.open-sans-light {
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+
+
+
+
+
+
+.caveat {
+  font-family: "Caveat", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.fjalla {
+  font-family: "Fjalla One", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/*.x-roboto {
+  font-family: "Roboto Condensed", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}*/
+
+.labelle {
+  font-family: "La Belle Aurore", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+
+
+
+/*
+.x-mono { font-family: monospace; }
+.x-sans { font-family: sans-serif; } */
+.x-serif  { font-family: serif; }
+/*.x-thin { font-family: Ubuntu Condensed;}*/
+
+
+.x-fz8    { font-size: 8px  }
+.x-fz10   { font-size: 10px }
+.x-fz12   { font-size: 12px }
+.x-fz14   { font-size: 14px }
+.x-fz16   { font-size: 16px }
+.x-fz20   { font-size: 20px }
+.x-fz24   { font-size: 24px }
+.x-fz32   { font-size: 32px }
+.x-fz36   { font-size: 36px }
+.x-fz40   { font-size: 40px }
+
+.x-fz50   { font-size: 50% }
+.x-fz75   { font-size: 75% }
+.x-fz90   { font-size: 90% }
+.x-fz95   { font-size: 95% }
+.x-fz100  { font-size: 100% }
+.x-fz105  { font-size: 105% }
+.x-fz110  { font-size: 110% }
+.x-fz115  { font-size: 115% }
+.x-fz120  { font-size: 120% }
+.x-fz125  { font-size: 125% }
+.x-fz130  { font-size: 130% }
+.x-fz135  { font-size: 135% }
+.x-fz140  { font-size: 140% }
+.x-fz145  { font-size: 145% }
+.x-fz150  { font-size: 150% }
+.x-fz155  { font-size: 155% }
+.x-fz160  { font-size: 160% }
+.x-fz165  { font-size: 165% }
+.x-fz170  { font-size: 170% }
+.x-fz175  { font-size: 175% }
+.x-fz180  { font-size: 180% }
+.x-fz185  { font-size: 185% }
+.x-fz190  { font-size: 190% }
+.x-fz195  { font-size: 195% }
+.x-fz200  { font-size: 200% }
+.x-small  { font-size: 12px}
+
+
+/* font style */
+.x-fw-b, .x-bold { font-weight: bold; }
+.x-fi, .x-italic { font-style: italic }
+
+
+
+/* back control */
+.x-back-position { position: fixed; left: 0; bottom: 0 }
+.x-back-img  { width: 32px; height: 32px; cursor: pointer; }
+
+
+
+
+
+
+
+
+/* color */
+.x-white      { color: white }
+.x-white2, .x-white-milk  { color: ghostwhite}
+.x-lgray, .x-gray-light { color: lightgray }
+.x-gray       { color: gray }
+.x-gray2      { color: slategray}
+.x-gray3, .x-gray-dark  { color: dimgray}
+.x-black      { color: black }
+.x-red        { color: tomato }
+.x-red2, .x-red-dark  { color: darkred}
+.x-lyellow    { color: cornsilk}
+.x-yellow     { color: goldenrod }
+.x-yellow2, .x-yellow-dark  { color: chocolate}
+.x-orange     { color: orangered }
+.x-orange2    { color: darkorange}
+.x-brown      { color: sandybrown}
+.x-brown2, .x-brown-dark  { color: saddlebrown}
+.x-green      { color: palegreen}
+.x-green2, .x-green-dark  { color: DarkGreen}
+.x-green3, .x-olive { 
+                color: olive }
+.x-blue       { color: dodgerblue }
+.x-blue2, .x-blue-dark { color: slateblue}
+.x-blue3, .x-teal { color: teal}
+.x-blue4      { color: #6cc3f9 }
+
+.x-white-bg, .x-bg-white     { background-color: white;}
+.x-white2-bg, .x-bg-white2   { background-color: ghostwhite;}
+.x-lgray-bg, .x-bg-lgray     { background-color: lightgray;}
+.x-gray-bg, .x-bg-lgray      { background-color: gray;}
+.x-gray2-bg, .x-bg-gray2     { background-color: slategray;}
+.x-gray3-bg, .x-bg-gray3     { background-color: dimgray;}
+.x-black-bg, .x-bg-black     { background-color: black;}
+.x-red-bg, .x-bg-red         { background-color: tomato;}
+.x-red2-bg, .x-bg-red2       { background-color: darkred;}
+.x-lyellow-bg, .x-bg-lyellow { background-color: cornsilk;}
+.x-yellow-bg, .x-bg-yellow   { background-color: goldenrod; }
+.x-yellow2-bg, .x-bg-yellow2 { background-color: chocolate;}
+.x-orange-bg, .x-bg-orange   { background-color: orangered;}
+.x-orange2-bg, .x-bg-orange2 { background-color: darkorange;}
+.x-brown-bg, .x-bg-brown     { background-color: sandybrown;}
+.x-brown2-bg, .x-bg-brown2   { background-color: saddlebrown;}
+.x-green-bg, .x-bg-green     { background-color: palegreen;}
+.x-green2-bg, .x-bg-green2   { background-color: DarkGreen;}
+.x-green3-bg, .x-bg-green3, .x-olive-bg { 
+                               background-color: olive;}
+.x-blue-bg, .x-bg-blue       { background-color: dodgerblue; }
+.x-blue2-bg, .x-bg-blue2, .x-blue-dark-bg { background-color: slateblue;}
+.x-blue3-bg, .x-bg-blue3, .x-teal-bg, .x-bg-teal { background-color: teal;}
+
+
+/* line */
+.x-tall   { line-height: 190%;}
+
+
+
+
+.x-menu         { cursor: pointer; font-size: 110%; padding: 4px; }
+.x-menu:hover   { background-color: lightgrey; color: red }
+
+.x-act { 
+  color: goldenrod;
+  cursor: pointer; 
+  text-decoration: none; 
+  font-family: 'Courier New', Courier, monospace; 
+}
+
+
+.x-act:visited  { color: goldenrod }
+.x-act:hover    { text-decoration: underline; }
+
+
+
+
+/* margin */
+.x-m0     { margin: 0 }
+.x-m2     { margin: 2px}
+.x-m4     { margin: 4px}
+.x-m6     { margin: 6px}
+.x-m8     { margin: 8px}
+.x-m12    { margin: 12px;}
+.x-m, .x-m16 { margin: 16px }
+.x-m20    { margin: 20px}
+.x-m24    { margin: 24px}
+.x-m28    { margin: 28px}
+.x-m32    { margin: 32px}
+.x-m40    { margin: 40px}
+
+.x-mtb0   { margin-top: 0;    margin-bottom: 0;}
+.x-mtb4   { margin-top: 4px;  margin-bottom: 4px}
+.x-mtb6   { margin-top: 6px;  margin-bottom: 6px}
+.x-mtb8   { margin-top: 8px;  margin-bottom: 8px}
+.x-mtb10  { margin-top: 10px; margin-bottom: 10px}
+.x-mtb12  { margin-top: 12px; margin-bottom: 12px;}
+.x-mtb, .x-mtb16 { margin-top: 16px; margin-bottom: 16px; }
+.x-mtb20  { margin-top: 20px; margin-bottom: 20px}
+.x-mtb24  { margin-top: 24px; margin-bottom: 24px;}
+.x-mtb32  { margin-top: 32px; margin-bottom: 32px}
+.x-mtb40  { margin-top: 40px; margin-bottom: 40px; }
+
+.x-mlr0   { margin-left: 0; margin-right: 0}
+.x-mlr6   { margin-left: 6px; margin-right: 6px}
+.x-mlr8   { margin-left: 8px; margin-right: 8px}
+.x-mlr, .x-mlr16 { margin-left: 16px; margin-right: 16px}
+.x-mlr24  { margin-left: 24px; margin-right: 24px}
+.x-mlr32  { margin-left: 32px; margin-right: 32px}
+.x-mlr40  { margin-left: 40px; margin-right: 40px}
+
+.x-ml0    { margin-left: 0}
+.x-ml4    { margin-left: 4px}
+.x-ml6    { margin-left: 6px}
+.x-ml8    { margin-left: 8px }
+.x-ml10   { margin-left: 10px }
+.x-ml12   { margin-left: 12px;}
+.x-ml16, .x-ml { margin-left: 16px }
+.x-ml20   { margin-left: 20px; }
+.x-ml24   { margin-left: 24px; }
+.x-ml28   { margin-left: 28px; }
+.x-ml30   { margin-left: 30px; }
+.x-ml32   { margin-left: 32px; }
+.x-ml36   { margin-left: 36px; }
+.x-ml40   { margin-left: 40px; }
+.x-ml50   { margin-left: 50px; }
+.x-ml60   { margin-left: 60px }
+.x-ml70   { margin-left: 70px; }
+.x-ml80   { margin-left: 80px;}
+.x-ml90   { margin-left: 90px; }
+.x-ml100  { margin-left: 100px;}
+
+.x-mr0    { margin-right: 0}
+.x-mr3    { margin-right: 3px }
+.x-mr4    { margin-right: 4px }
+.x-mr6    { margin-right: 6px }
+.x-mr8    { margin-right: 8px;}
+.x-mr10   { margin-right: 10px}
+.x-mr12   { margin-right: 12px;}
+.x-mr, .x-mr16 { margin-right: 16px}
+.x-mr20 { margin-right: 20px }
+.x-mr24 { margin-right: 24px }
+.x-mr28 { margin-right: 28px }
+.x-mr30 { margin-right: 30px }
+.x-mr32 { margin-right: 32px }
+.x-mr36 { margin-right: 36px }
+.x-mr40 { margin-right: 40px }
+.x-mr60 { margin-right: 60px }
+.x-mr80 { margin-right: 80px }
+.x-mr100 { margin-right: 100px }
+
+.x-mt0  { margin-top: 0}
+.x-mt4  { margin-top: 4px}
+.x-mt6  { margin-top: 6px}
+.x-mt8  { margin-top: 8px}
+.x-mt10 { margin-top: 10px}
+.x-mt12 { margin-top: 12px}
+.x-mt16, .x-mt { margin-top: 16px }
+.x-mt20 { margin-top: 20px }
+.x-mt24 { margin-top: 24px }
+.x-mt28 { margin-top: 28px }
+.x-mt30 { margin-top: 30px }
+.x-mt32 { margin-top: 32px }
+.x-mt36 { margin-top: 36px }
+.x-mt40 { margin-top: 40px }
+.x-mt60 { margin-top: 60px }
+.x-mt80 { margin-top: 80px }
+
+.x-mb0  { margin-bottom: 0;}
+.x-mb4  { margin-bottom: 4px}
+.x-mb6  { margin-bottom: 6px}
+.x-mb8  { margin-bottom: 8px;}
+.x-mb10 { margin-bottom: 10px}
+.x-mb12 { margin-bottom: 12px;}
+.x-mb, .x-mb16 { margin-bottom: 16px }
+.x-mb20 { margin-bottom: 20px }
+.x-mb24 { margin-bottom: 24px }
+.x-mb28 { margin-bottom: 28px }
+.x-mb30 { margin-bottom: 30px }
+.x-mb32 { margin-bottom: 32px }
+.x-mb36 { margin-bottom: 36px }
+.x-mb40 { margin-bottom: 40px;}
+.x-mb60 { margin-bottom: 60px }
+.x-mb80 { margin-bottom: 80px }
+
+/* padding */
+.x-p0, .x-pad0  { padding: 0 }
+.x-p2           { padding: 2px}
+.x-p3           { padding: 3px}
+.x-p4           { padding: 4px }
+.x-p6           { padding: 6px}
+.x-p8, .x-pad8  { padding: 8px }
+.x-p, .x-pad16, .x-pad  { padding: 16px }
+
+.x-pt3          { padding-top: 3px}
+.x-pt4          {padding-top: 4px}
+.x-pt8          {padding-top: 8px}
+.x-pt, .x-pt16  {padding-top: 16px}
+
+.x-pb4          {padding-bottom: 4px;}
+.x-pb8          { padding-bottom: 8px}
+.x-pb, .x-pb16  {padding-bottom: 16px;}
+.x-pb24         {padding-bottom: 24px;}
+.x-pb32         {padding-bottom: 32px;}
+.x-pb40         {padding-bottom: 40px;}
+
+.x-pl4          {padding-left: 4px;}
+.x-pl8          {padding-left: 8px;}
+.x-pl, .x-pl16  {padding-left: 16px;}
+.x-pr4          {padding-right: 4px;}
+.x-pr8          {padding-right: 8px;}
+.x-pr, .x-pr16  {padding-right: 16px;}
+.x-ptb0         {padding-top: 0; padding-bottom: 0}
+.x-ptb2         {padding-top: 2px; padding-bottom: 2px;}
+.x-ptb4         {padding-top: 4px; padding-bottom: 4px;}
+.x-ptb6         { padding-top: 6px; padding-bottom: 6px;}
+.x-ptb8         { padding-top: 8px; padding-bottom: 8px;}
+.x-ptb, .x-ptb16  { padding-top: 16px; padding-bottom: 16px;}
+.x-plr0         { padding-left: 0; padding-right: 0}
+.x-plr2         {padding-left: 2px; padding-right: 2px;}
+.x-plr4         { padding-left: 4px; padding-right: 4px}
+.x-plr8         { padding-left: 8px; padding-right: 8px;}
+.x-plr, .x-plr16  { padding-left: 16px; padding-right: 16px;}
+
+
+/* opacity */
+.x-opa3   { opacity: 0.3 }
+.x-opa4   { opacity: 0.4 }
+.x-opa5, .x-opa { opacity: 0.5 }
+.x-opa6   { opacity: 0.6 }
+.x-opa8   { opacity: 0.8; }
+
+
+
+
+/* text */
+.x-dec-none, .x-nodec { text-decoration: none; }
+.x-underln, .x-underline  { text-decoration: underline;}
+.x-2underln, .x-2underline { text-decoration: underline; text-decoration-style: double;}
+.x-bold { font-weight: bold;}
+.x-center   { text-align: center;}
+.x-left     { text-align: left;}
+.x-right    { text-align: right;}
+.x-upper    { text-transform: uppercase;}
+.x-lower    { text-transform: lowercase;}
+.x-capitalize, .x-cap { text-transform: capitalize;}
+
+
+/* cursor, decorate */
+.x-pointer, .x-point { cursor: pointer }
+
+
+
+
+
+
+
+/* general, tag */
+*   { font-family: sans-serif }
+h1  { 
+  color:      tomato; 
+  font-family:  "Open Sans", sans-serif; 
+  font-weight:  400; 
+}
+
+
+
+/* display */
+.x-flex     { display: flex}
+.x-flex-center  { display: flex; align-items: center; justify-content: center;}
+/*.x-flex > * { flex-grow: 1; flex-shrink: 1}
+.x-flex2    { display: flex} */
+.x-flex-row { display: flex; flex-direction: row; align-items: center;}
+.x-flex-col { display: flex; flex-direction: column;}
+.x-wrap     { flex-wrap: wrap;}
+.x-grow     { flex-grow: 1;}
+.x-shrink   { flex-shrink: 1;}
+
+/* width */
+.x-mw250, .x-w-max250 { max-width: 250px }
+.x-w0       { width: 0}
+.x-w10      { width: 10%}
+.x-w15      { width: 15%}
+.x-w20      { width: 20%}
+.x-w25      { width: 25%}
+.x-w30      { width: 30%}
+.x-w35      { width: 35%}
+.x-w40      { width: 40%}
+.x-w45      { width: 45%}
+.x-w50, .x-halfw { width: 50%}
+.x-w55      { width: 55%}
+.x-w60      { width: 60%}
+.x-w65      { width: 65%}
+.x-w70      { width: 70%}
+.x-w75      { width: 75%}
+.x-w75      { width: 75%}
+.x-w80      { width: 80%}
+.x-w85      { width: 85%}
+.x-w90      { width: 90%}
+.x-w95      { width: 95%}
+.x-w100, .x-fullw { width: 100% }
+
+.x-h0       { height: 0}
+.x-h10      { height: 10%}
+.x-h15      { height: 15%;}
+.x-h20      { height: 20%;}
+.x-h25      { height: 25%}
+.x-h30      { height: 30%;}
+.x-h40      { height: 40%;}
+.x-h50      { height: 50%}
+.x-h60      { height: 60%;}
+.x-h75      { height: 75%}
+.x-h80      { height: 80%;}
+.x-h90      { height: 90%;}
+.x-h100, .x-fullh { height: 100%}
+
+.x-wh4      { width: 4px; height: 4px}
+.x-wh6      { width: 6px; height: 6px}
+.x-wh8      { width: 8px; height: 8px}
+.x-wh10     { width: 10px; height: 10px}
+.x-wh12     { width: 12px; height: 12px;}
+.x-wh14     { width: 14px; height: 14px}
+.x-wh16, .x-wh  { width: 16px; height: 16px;}
+.x-wh18     { width: 18px; height: 18px}
+.x-wh20     { width: 20px; height: 20px;}
+.x-wh24     { width: 24px; height: 24px;}
+.x-wh32     { width: 32px; height: 32px;}
+.x-wh40     { width: 40px; height: 40px;}
+.x-full-wh  { width: 100%; height: 100%}
+
+
+.x-w13  { width: calc(100%/3)}
+.x-w23 { width: calc(100%/3*2)}
+
+
+
+
+/* card, layout, container, content --------------------------------*/
+.x-card {
+  /* x-style card to display img, text, whatever */ 
+  width             : 100%; /* mobile first */
+  max-width         : /*475px*/; 
+  height            : 150px; 
+  overflow          : hidden; 
+  border            : ;
+  border-collapse   : collapse;
+  background-color  : white;
+  position          : relative;
+  box-shadow        : 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* copied from w3-card-4 */
+  border-radius     : 10px;
+}
+
+.x-card-sect {
+  /* section for the x-card , it will change column qty based on width of the screen */
+  display               : grid; 
+  grid-template-columns : 100%; /* start mobile first */
+  gap                   : 16px; 
+  /*column-gap            : 10px;*/
+  align-items           : center;
+  justify-content       : space-around;
+  /*padding               : 0 16px 0 16px;*/
+  /*box-sizing            : border-box;*/
+}
+
+@media (min-width: 700px) {
+  .x-card-sect {grid-template-columns: repeat(2, 1fr);}
+}
+
+@media (min-width: 1000px) {
+  .x-card-sect {grid-template-columns: repeat(3, 1fr);}
+}
+
+@media (min-width: 1400px) {
+  .x-card-sect {grid-template-columns: repeat(4, 1fr);}
+}
+
+@media (min-width: 1600px) {
+  .x-card-sect {grid-template-columns: repeat(5, 1fr);}
+}
+
+@media (min-width: 1850px) {
+  .x-card-sect {grid-template-columns: repeat(6, 1fr);}
+}
+
+
+.x-container, .x-content, .x-cont {
+  padding: 20px 16px;
+  /* 2025-1-13 */
+}
+
+.x-title-cont {
+  /*-good for <h1> 
+    -default margin for h1 = 21 0 so we cut the bottom to 0
+  */
+  padding: 16px 16px 0 16px;
+  margin: 0;
+}
+
+.x-grid {
+  /* 1 column grid box */
+  display: grid;
+  grid-template-columns: 100%;
+  align-items: center;
+}
+
+.x-grid2 {
+  /* 2 columns grid box */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+}
+
+.x-grid3 {
+  /* 3 columns grid box */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+}
+
+.x-grid4 {
+  /* 4 columns grid box */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+}
+
+
+
+
+
+/*---------------------------------------------------------*/
+.page-name { 
+  color:      tomato; 
+  /*font-family:  "Open Sans", sans-serif; 
+  font-weight:  400; */ 
+}
+
+
+.x-inline-block { display: inline-block}
+
+
+/* border */
+.x-b, .x-bor, .x-border { border: 1px solid lightgray}
+
+.x-bt      { border-top: 1px solid gray}
+.x-bt2     { border-top: 2px solid gray}
+.x-bt3     { border-top: 3px solid gray}
+.x-bt4     { border-top: 4px solid gray}
+
+.x-bb     { border-bottom: 1px solid gray}
+.x-bl     { border-left: 1px solid gray}
+.x-br     { border-right: 1px solid gray}
+
+
+
+/* line, space,  */
+.x-hr     { border: none; height: 1px; background-color: lightgray; 
+                margin: 0}
+.x-hr2    { border: none; height: 2px; background-color: gray; margin: 0}
+.x-hr3    { border: none; height: 3px; background-color: gray; margin: 0}
+.x-hr4    { border: none; height: 4px; background-color: gray; margin: 0}
+.x-space8   { display: block; height: 8px;}
+.x-space12  { display: block; height: 12px}
+.x-space16, .x-space { display: block; height: 16px;}
+.x-space20  { height: 20px; display: block}
+.x-space24  { display: block; height: 24px;}
+
+
+
+/* line space */
+.x-div-space4 { height: 4px}
+.x-div-space8 { height: 8px}
+.x-div-space  { height: 16px}
+.x-div-space24 { height: 24px}
+.x-div-space32 { height: 32px}
+.x-div-space36 { height: 36px}
+
+
+/* show, hide */
+.x-hide       { display: none }
+.x-show       { display: block;  }
+
+
+/* round */
+.x-round, .x-round-all { border-radius: 10px;}
+.x-round-s { border-radius: 5px;}   /* smaller round corner */
+.x-round-1 { border-radius: 10px 0 0 0;}
+.x-round-2 { border-radius: 0 10px 0 0;}
+.x-round-3 { border-radius: 0 0 10px 0;}
+.x-round-4 { border-radius: 0 0 0 10px;}
+.x-round-12 { border-radius: 10px 10px 0 0;}
+.x-round-23 { border-radius: 0 10px 10px 0;}
+.x-round-34 { border-radius: 0 0 10px 10px;}
+.x-round-14 { border-radius: 10px 0 0 10px;}
+
+
+/* trucate or clamp text and put ... at the tail if the text goes beyond boudary */
+.x-clamp1, .x-1line-only {           /* clamp 1 lines */
+  display             : -webkit-box;
+  -webkit-box-orient  : vertical;
+  -webkit-line-clamp  : 1;
+  overflow            : hidden;
+  text-overflow       : ellipsis
+}
+
+.x-clamp2, .x-2line-only {           /* clamp 2 lines */
+  display             : -webkit-box;
+  -webkit-box-orient  : vertical;
+  -webkit-line-clamp  : 2;
+  overflow            : hidden;
+  text-overflow       : ellipsis
+}
+
+.x-clamp3, .x-3line-only {           /* clamp 3 lines */
+  display             : -webkit-box;
+  -webkit-box-orient  : vertical;
+  -webkit-line-clamp  : 3;
+  overflow            : hidden;
+  text-overflow       : ellipsis
+}
+
+.x-clamp4, .x-4line-only {           /* clamp 3 lines */
+  display             : -webkit-box;
+  -webkit-box-orient  : vertical;
+  -webkit-line-clamp  : 4;
+  overflow            : hidden;
+  text-overflow       : ellipsis
+}
+
+
+
+/* zoom */
+.x-zoom110  { zoom: 110% }
+.x-zoom120  { zoom: 120% }
+.x-zoom130  { zoom: 130% }
+.x-zoom140  { zoom: 140% }
+.x-zoom150  { zoom: 150% }
+
+
+/* picture */
+.x-fullw-pic              { width: 100%}
+.x-cover-pic              { width: 100%; height: 100%; object-fit: cover;}
+.x-circle, .x-circle-pic  { border-radius: 50%;}
+
+
+
+
+
+
+/* animation ---------------------------------------------------
+  
+all these classess for animation already tested by @devster, 2025-01-05T10:35+0700
+
+GUIDE
+
+  <div id="xyz" class="x-slide-up-from-bottom" style="width: 100%; height: 40%" hidden> ... </div>
+  
+  set hidden=false to the <div> will slide the <div> up 
+  to slide it back down, set: xyz.classList.add('x-slide-back-to-bottom')
+  
+  for other classes work the same
+
+BY
+  @devster, 2025-01-05T10:39+0700
+
+*/
+
+@keyframes x-fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+.x-fade-in { animation: x-fadeIn 2s ease-out forwards; }
+
+
+@keyframes x-fadeOut {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+.x-fade-out { animation: x-fadeOut 2s ease-in forwards; }
+
+
+@keyframes x-slideUpFromBottomEdge {
+  from {transform: translateY(100%)}
+  to {transform: translateY(0)}
+}
+.x-slide-up-from-bottom-edge {
+  position: fixed; left: 0; bottom: 0; height: 100%; width: 100%; 
+  animation: x-slideUpFromBottomEdge 1s forwards;
+}
+
+
+@keyframes x-slideDownToBottomEdge {
+  from {transform: translate(0);}
+  to {transform: translateY(100%);}
+}
+.x-slide-down-to-bottom-edge {
+  position: fixed; left: 0; bottom: 0; height: 100%; width: 100%; 
+  animation: x-slideDownToBottomEdge 1s forwards;
+}
+
+
+@keyframes x-slideRightFromLeftEdge {
+  from {transform: translateX(-100%);}
+  to {transform: translateX(0);}
+}
+.x-slide-right-from-left-edge {
+  position: fixed; left: 0; bottom: 0; height: 100%; width: 100%;
+  animation: x-slideRightFromLeftEdge 1s forwards;
+}
+
+
+@keyframes x-slideLeftToLeftEdge {
+  from {transform: translateX(0);}
+  to {transform: translateX(-100%);}
+}
+.x-slide-left-to-left-edge {
+  position: fixed; left: 0; bottom: 0; height: 100%; width: 100%;
+  animation: x-slideLeftToLeftEdge 1s forwards;
+}
+
+
+@keyframes x-slideLeftFromRightEdge {
+  from {transform: translateX(100%);}
+  to {transform: translateX(0);}
+}
+.x-slide-left-from-right-edge {
+  position: fixed; right: 0; bottom: 0; height: 100%; width: 100%;
+  animation: x-slideLeftFromRightEdge 1s forwards;
+}
+
+
+@keyframes x-slideRightToRightEdge {
+  from {transform: translateX(0);}
+  to {transform: translateX(100%);}
+}
+.x-slide-right-to-right-edge {
+  position: fixed; right: 0; bottom: 0; height: 100%; width: 100%;
+  animation: x-slideRightToRightEdge 1s forwards;
+}
+
+
+@keyframes x-slideDownFromTopEdge {
+  from {transform: translateY(-100%);}
+  to {transform: translateY(0);}
+}
+.x-slide-down-from-top-edge {
+  position: fixed; left: 0; top: 0; width: 100%; height: 100%;
+  animation: x-slideDownFromTopEdge 1s forwards;
+}
+
+
+@keyframes x-slideUpToTopEdge {
+  from {transform: translateY(0);}
+  to {transform: translateY(-100%);}
+}
+.x-slide-up-to-top-edge {
+  position: fixed; left: 0; top: 0; width: 100%; height: 100%;
+  animation: x-slideUpToTopEdge 1s forwards;
+}
+
+
+@keyframes x-spin {
+  from { transform: rotate(0deg);}
+  to { transform: rotate(360deg);}
+}
+
+.x-spin {
+  animation: x-spin 1s linear infinite;
+}
+
+.x-spin-slow {
+  animation: x-spin 5s linear infinite;
+}
+
+.x-spin-very-slow {
+  animation: x-spin 20s linear infinite;
+}
+
+.x-spin-fast {
+  animation: x-spin 0.5s linear infinite;
+}
+
+.x-spin-very-fast {
+  animation: x-spin 0.1s linear infinite;
+}
+
+.x-pause {
+  animation-play-state: paused;
+}
+
+.x-run {
+  animation-play-state: running;
+}
+
+
+
+
+
+
+
+
+
+/*  positioning ---------------------------------------------
+    all classes tested=ok, @devster 2025-01-07T11:19+0700
+*/
+.x-center-screen {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.x-center-absolute {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.x-center-left-edge {
+  position: fixed; top: 50%; left: 0;
+  transform: translate(0,-50%);
+}
+
+.x-center-right-edge {
+  position: fixed; top: 50%; right: 0;
+  transform: translate(0,-50%);
+}
+
+.x-center-top-edge {
+  position: fixed; top: 0; left: 50%;
+  transform: translate(-50%,0);
+}
+
+.x-center-bottom-edge {
+  position: fixed; bottom: 0; left: 50%;
+  transform: translate(-50%,0);
+}
+
+
+
+
+
+/* shadow */
+.x-shadow {
+  box-shadow: 3px 3px 6px lightgray;
+}
+
+
+
+
+
+
+/* Thai format --------------------------------------------------*/
+
+/*  list in Thai number 
+    GUIDE <ol class="thai">
+*/
+ol.thai {
+  list-style-type: none;
+  counter-reset: item;
+  font-family: 'Noto Sans Thai', serif
+}
+
+ol.thai li { counter-increment: item}
+
+ol.thai li::before {
+  content: ''
+}
+
+ol.thai li:nth-child(1)::before { content: '๑. '}
+ol.thai li:nth-child(2)::before { content: '๒. '}
+ol.thai li:nth-child(3)::before { content: '๓. '}
+ol.thai li:nth-child(4)::before { content: '๔. '}
+ol.thai li:nth-child(5)::before { content: '๕. '}
+ol.thai li:nth-child(6)::before { content: '๖. '}
+ol.thai li:nth-child(7)::before { content: '๗. '}
+ol.thai li:nth-child(8)::before { content: '๘. '}
+ol.thai li:nth-child(9)::before { content: '๙. '}
+ol.thai li:nth-child(n+10)::before { 
+  content: counter(item, decimal-leading-zero)
+}
+
+/* tested=ok */
+
+
+
+
+/* hover, effect ------------------------------------------------*/
+.x-hover-red:hover    { background-color: var(--red-200);}
+.x-hover-green:hover  { background-color: var(--light-green-200);}
+.x-hover-blue:hover   { background-color: var(--light-blue-200);}
+.x-hover-yellow:hover { background-color: var(--amber-100);}
+.x-hover-brown:hover  { background-color: var(--brown-100);}
+.x-hover-grey:hover   { background-color: var(--blue-grey-50);}
+
+
+
+
+
+
+
+/* variables ----------------------------------------------------*/
+:root {
+  --one3: calc(100%/3);
+  --one5: calc(100%/5);
+  --one6: calc(100%/6);
+  --one7: calc(100%/7);
+  --one8: calc(100%/8);
+  --one9: calc(100%/9);
+}
+
+
+.x-wid3 { width: var(--one3)}
+.x-wid5 { width: var(--one5)} 
+
+
+
+
+
+/* UPDATE ------------------------------------------------------
+
+-added <ol> to support Thai number, so now we got like
+  ๑. ssssssssssss
+  ๒. sssssssssssssssssss
+  ๓. ssssssssss
+
+  if we put <ol class="thai">
+
+  tested=ok, @devster, 2025-01-11T09:15+0700
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/

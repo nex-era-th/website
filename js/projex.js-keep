@@ -1,0 +1,942 @@
+/* projex.js
+this is projex program in browser mode to handle things in this side
+
+2024-07-03
+all func in this package (means file) must defined by const and prefix with the 'x' like 
+
+  const xAbcDef = (v) => {...}
+
+will not use the px.abcDef pattern any more due to security concern. This way will protect the change of func in the browser to disfunction it.
+
+*/
+
+const projex = {} //reserve
+
+const px = {
+  about: {
+    programName : 'projex.js',
+    version     : '2.0',
+    brief       : 'this is for browser side',
+    lastUpdate  : '2025-01-14'
+  },
+  help: {},
+  devNote: {},
+  testNote: {}
+}
+
+
+
+
+px.test = () => {
+  alert('yo! this is projex.js a thing for browser side')
+}
+
+
+
+
+/*
+px.logIn = async () => {
+
+  if (!userName.value || !passwd.value) {
+    alert('please completely provide data, thank you')
+    return
+  } 
+
+  try {
+    let pass = await xfetch('/log-in',
+      {
+        method:   'post',
+        content:  'json',
+        outputAs: 'json', 
+        data: 
+          { 
+            userName: userName.value, 
+            passwd:   px.passHash 
+          }
+      }
+    )
+
+    if (pass) {
+      location.href = '/v1'
+    } else {
+      alert('we got rejected, please try again')
+    }
+
+  } catch(error) {
+    console.log(error)
+    alert('network error')
+  }
+} //tested=
+*/
+
+
+
+/* hash the password immediately after it's entered to protect privacy */
+const xHashPasswd = () => {
+  xb.hash( passwd.value ).then( sha256 => {
+    px.passHash = sha256
+    passwd.value = xb.random() //clear footprint
+  })
+} //tested=ok
+
+
+
+
+px.verifyXCert = async (xcert) => {
+/* verify the sessionCert which normally saved in sessStor and get true or false */
+  if (!xcert) xcert = sessionStorage.getItem('projex')
+  if (typeof xcert == 'string' && xcert.match(/^[0-9a-fA-F]{64}$/) ) {
+    //the xcert exist and is sha256 format
+    return await xfetch('/verify-xcert', {
+      method:   'get',
+      //content:  'json',
+      outputAs: 'json',
+      headers:  { projex: xcert }
+    })  
+  } else {
+    //not the sha256 format
+    return false
+  }
+
+  
+} //tested=ok
+
+
+
+
+
+px.logOut = async () => {
+  /* send sessionCert to /log-out in POST */
+
+  if (prompt("Please confirm again","OK")) {
+
+    let resp = await xfetch('/log-out', {
+      method:   'post',
+      content:  'json',
+      outputAs: 'json',
+      data:     { projex: sessionStorage.getItem('projex') }
+    })
+
+    if (resp.done == true) {
+      //clear sessionCert, goto /
+      sessionStorage.removeItem('projex')
+      location.href = '/'
+    } else {
+      //error
+      alert("not log-out, there's error")
+    }
+  } else {
+    //let user continue their works
+  }
+}
+
+
+
+
+px.getPage = async (url) => {
+  //go to the url with xcert in the headers
+  /* response we need 
+      { verifyPass:     ~ true | false,
+        nextPageFormat: ~ html | url,
+        nextPage:       ~ can be html or just '/url'
+      }
+  */
+  try {
+    document.documentElement.innerHTML = await xfetch( url,
+      {
+        method:   'get',
+        outputAs: 'text',
+        headers:  {projex: sessionStorage.getItem('projex')}
+      }
+    )
+  } catch (error) {
+    alert('connection problem, see detail in console.log')
+    console.log(error)
+  }
+}
+
+
+/* postForm(formId, url) -- will send form's data to URL */
+px.postData = async (xdata, url) => {
+  // just send data to a url and return the response
+  // make a little bit simpler than composing xfetch yourself
+
+  if (typeof xdata != 'object' || !Object.keys(xdata)[0] 
+    || !url) return false
+
+  try {
+    document.documentElement.innerHTML = await xfetch(url,{
+      method    :'post',
+      content   :'json',
+      outputAs  :'text',
+      data      : xdata
+    })
+
+  } catch(error) {
+    console.log(error)
+    alert('network error')
+  }
+
+  
+  /*
+  { time:'2024-06-8, 
+    note:'just handle basic which skipping validation and so on at least for now',
+    test: 'ok',
+    by:'M'
+  }
+
+
+  */
+}
+
+/*
+px.xverified = async () => {
+  let xcert = sessionStorage.getItem('projex')
+  if (!xcert || typeof xcert != 'string' || !xcert.match(/^[0-9a-fA-F]{64}$/) ) return false //bad xcert, just reject
+
+  try {
+    return await xfetch('/verify-xcert',{
+      method: 'post', content: 'json', outputAs: 'json',
+      data: { projex: xcert }
+    })
+  } catch(error) {
+    //fail
+    console.log(error)
+    return false 
+  }
+}
+*/
+
+
+/*-------------------------------------------------------------------
+  {
+    function  : 'xPostJson',
+    brief     : 'fetch/post data in json and get json back',
+    stage     : 'dev',
+    updated   : '2024-06-17'
+  }
+*/
+const xPostJson = async (url, data, XCERT='') => {
+  if (!url || !data || typeof data != 'object' || !Object.keys(data).length) return false
+
+  try {
+    return xfetch( url, {
+      headers   : { xcert: XCERT },
+      method    : 'post',
+      content   : 'json', 
+      outputAs  : 'json', 
+      data      : data
+    })
+    
+  } catch (error) {
+    return error
+  }
+}
+
+px.postJson = xPostJson
+
+px.help.postJson = {
+  info:'send data to server url in POST method then get json back',
+  use:"let v = await px.postJson('/xyz',{ .. }) "
+}
+
+
+
+
+
+
+
+
+
+// xIsSha256 -- check if it's SHA256 format
+const xIsSha256 = (inp) => {
+  if (inp && typeof inp == 'string' && inp.match(/^[0-9a-fA-F]{64}$/) ) {
+    return true
+  } else {
+    return false
+  }
+}
+
+px.goodSha = xIsSha256
+
+
+// xGet -- fetch via get to a url but put xcert in the headers too
+/*
+    use       : xGet('/xyz')
+    validity  : the xcert must be there in the sessionStor
+
+const xGet = async (url) => {
+  if (!url || typeof url != 'string') return false
+  const xcert = sessionStorage.getItem('xcert')
+  if (!xcert || !xIsSha256(xcert)) return false
+
+  try {
+    let getBack = await xfetch(url, {
+      method: 'get',
+      headers: { xcert: sessionStorage.getItem('xcert')}
+    })
+    // server response will be text/html
+    //our job just attach xcert in the headers and then GET
+    console.log( getBack)
+
+  } catch(error) {
+    console.log(error)
+  }
+}
+*/
+
+
+//get xcert 
+const xGetCert = () => {
+  return sessionStorage.getItem('xcert')
+}
+
+
+// xIsUser -- check if input is complied to standard _USER format
+const xIsGoodUsername = xIsUser = (_USER) => {
+  if (_USER && typeof _USER == 'string' && 
+    _USER.match(/^[a-z0-9-_]{3,}$/)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+// check if it complies to standard _PASSWD format
+const xIsGoodPassword = (_PASSWD) => {
+  if (!_PASSWD) return false
+  const passwd = _PASSWD.toString()
+  if (passwd.length < 10) return false //length from 10+
+  if (!passwd.match(/\d/) ) return false //at least a number
+  if (!passwd.match(/\W/) ) return false //at least a symbol
+  if (!passwd.match(/[A-Z]/) ) return false //at lest a capital
+  return true
+}
+
+
+const xGetEmbedData = () => {
+  const outp = []
+  const inp = xb.at({all:'[x-msg-card]'})
+  inp.forEach(m => {
+    const embed = JSON.parse( xb.at(m,{getAtt:'x-embed'}) )
+    outp.push({
+      _uuid       : xb.at(m,'_uuid'),
+      _time       : embed._time,
+      _collection : embed._collection
+    })
+  })
+  return outp
+}
+
+
+
+/*
+{
+  "program"     :"px.viewThis",
+  "about"       :"take input as object and show to the view",
+  "use"         :"px.viewThis({_uuid: ????, loveCount: 888, ...})",
+  "test"        :"ok",
+  "by"          :"m",
+  "updatedTime" :"2024-09-25 23:44 +7"
+}
+*/
+
+px.viewThis = (DATA, OPT={
+  mainViewElemId  : 'conten',
+  containerField  : '_uuid', 
+  xIdApplied      : true
+}) => {
+  // px.showThis({loveCount:100, ..})
+
+  //validation .. DATA must be non-empty object only
+  if (!DATA || typeof DATA != 'object' || !Object.keys(DATA).length || Array.isArray(DATA) || !DATA[OPT.containerField]) return false
+
+  //start
+
+  let makingXid = '#x'
+  if (!OPT.xIdApplied) makingXid = '' 
+
+  //get list of data elem
+  let fieldList = xb.at(
+    [
+      '#' + OPT.mainViewElemId,
+      makingXid + xb.puuid(DATA[ OPT.containerField]),
+      {all:'[x-data]'} 
+    ]
+  )
+
+  //if can't find element, error
+  if (!fieldList) return false
+
+  fieldList.forEach( el => {
+    let elData = xb.at(el, {getAtt:'x-data'}).split('/')
+    let elKey = elData[0]
+    
+    if (elKey in DATA) {
+      let attToSet        = 'text'
+
+      if (elData[1]       = 't') attToSet = 'text'
+      else if (elData[1]  = 'h') attToSet = 'html'
+      else if (elData[1]  = 'v') attToSet = 'value'
+
+      xb.at(el, { [attToSet]: DATA[elKey] } )
+    }
+  })
+  //if the fields provided not match the view's elements, just leave it. So not effec to the view.
+}
+
+px.help.viewThis = {
+  about:'takes input object and show all fields on the view',
+  use:"px.viewThis({_uuid: ????, loveCount:100, ...})"
+}
+
+px.testNote.viewThis = 'tested=ok, m, 2024-09-25 23:41 +7'
+
+
+
+
+// for msg module
+/*
+func  : msg.getCardData()
+brief : get all card data and put into array
+use   : let xyz = msg.getCardData() | msg.getCardData(['aaa','bbb'])
+test  : ok
+by    : M
+note  : now we can set neededField so we can take only some of fields. But if not give this, it will send back the whole data
+update: 2024-07-31
+
+*/
+/*
+const msg = {}
+msg.getCardData = (neededField) => {
+  let outPut = []
+  let allMsg = xb.at({all:'[name="msgCard"]'})
+
+  allMsg.forEach(m => {
+    let dataa   = JSON.parse(m.getAttribute('x-json'))
+    dataa._uuid = xb.convId(m.id)
+  
+    let allField = xb.at([m, {all:'[name]'} ])
+    for (ea of allField) {
+      let key   = ea.getAttribute('name')
+      let getAs = xb.at(ea,{getAtt:'x-fillas'})
+
+      if (!key.match(/^_/) ) {
+        if (neededField) {
+          //if there's neededField, take only fields that needed
+          if (neededField.includes(key)) dataa[key] = ea[getAs]
+        } else {
+          //if no neededField specified, take whole
+          dataa[key] = ea[getAs]
+        }
+      } 
+    }
+    outPut.push(dataa)
+  })
+  return outPut
+}
+
+*/
+
+
+//-------------------------------------------------------------------
+
+px.help.sync = {
+  about:'auto sync sess db and xdb and then auto update the view',
+  use:"px.sync()"
+}
+
+px.syncLoop = 10 * 1000 // 10 sec
+
+px.sync = (LOOP) => {
+  if (LOOP && LOOP != 'stop' && px.syncId) return false //already running
+  else if (!LOOP) LOOP = px.syncLoop
+  else if (LOOP == 'stop' && px.syncId) {
+    clearInterval(px.syncId)
+    return
+  } 
+  else if (LOOP == 'stop' && !px.syncId) return false //not run yet
+  else if (LOOP && LOOP != 'stop' && typeof LOOP != 'number') return false
+
+  //check the sess db
+  //if (!sess.get()) sess.set()
+
+  px.syncId = setInterval( async f => {
+    
+    let newer = await px.postJson('/sync', {
+      data  : sess.get(),
+      xcert : sessionStorage.xcert
+    })
+
+    if (newer.length) {
+      //now change the view
+      newer.forEach( doc => px.viewThis( doc))
+
+      //change to sess db
+      newer.forEach( doc => {
+        sess.set(doc,{_uuid: doc._uuid})
+      })
+    } else {
+      //get 0 from db, just leave it
+    }
+    
+
+  }, LOOP)
+}
+
+//px.sync()
+
+
+
+//---------------------------------------------------------------
+
+px.viewJson = {
+  get: ($ELEM, $FIELD_NAME) => {
+    // px.viewJson( $ELEM, 'userName xyz')
+
+    const dat = JSON.parse(xb.at($ELEM, {getAtt:'x-json'}) )
+    
+    if ($FIELD_NAME) {
+      if ($FIELD_NAME.includes(' ')) {
+
+        allField = $FIELD_NAME.split(' ')
+        let output = {}
+        
+        allField.forEach(field => {
+          output[field] = dat[field] // {xxx:1000, yyy:2000, ...}
+        })
+        
+        return output
+      
+      } else return {[$FIELD_NAME]: dat[$FIELD_NAME]}
+    
+    } else return dat //if not field name, give whole doc
+  },
+
+  set: ($ELEM, $OBJ) => {
+    // px.viewJson( $ELEM, {xyz: 1000, ...})
+
+    const dat = JSON.parse(xb.at($ELEM, {getAtt:'x-json'}) )
+    for (key in $OBJ) {
+      dat[key] = $OBJ[key]
+    }
+
+    xb.at($ELEM).setAttribute('x-json', JSON.stringify(dat))
+  }
+}
+
+
+px.help.viewJson = {
+  info  :'handle json data that bundled in the x-json attribute',
+  guide :'in some cases, we need to embed some data into an element of html so this func will get & set that embeded json data.',
+  use   :`to get data ==> let data = px.viewJson.get( $ELEM, $FIELD_NAME )
+  to set data ==> px.viewJson.set( $ELEM, {$FIELD: $VALUE, ...} )`,
+  exam  :`let xyz = px.viewJson.get( elem, 'name age')
+  output ==> {name:?, age:?}`,
+  exam1 :`px.viewJson.set( elem, {name:?, age:?} )
+  output ==> the name & age will be bundled in the x-json attribute`,
+  note  :'in the get, you can have multiple fields by separating with a space', 
+  test  : 'ok',
+  by    : '@nex-era',
+  created : '2024-10-15',
+  updated : 'Tue Oct 15 2024 19:50:51 GMT+0700',
+  version : '1.0',
+  limit   : 'not support the dot-notation of object like if we look for "buy.prodName" we will not get it properly so just take the whole "buy" subset instead.'
+}
+
+
+px.getAvgBright = (IMG_EL,TEXT_EL) => {
+
+  const img = IMG_EL
+  const text = TEXT_EL
+
+  // Create a canvas to get pixel data
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = img.width;
+  canvas.height = img.height;
+
+  // Draw the image on the canvas
+  ctx.drawImage(img, 0, 0);
+
+  // Get text area dimensions
+  const textRect = text.getBoundingClientRect();
+  const imgRect = img.getBoundingClientRect();
+  const x = Math.round(textRect.left - imgRect.left); // Relative to image
+  const y = Math.round(textRect.top - imgRect.top);
+  const width = Math.round(textRect.width);
+  const height = Math.round(textRect.height);
+
+  // Get all pixel data from the text area
+  const pixelData = ctx.getImageData(x, y, width, height).data;
+
+  // Calculate average brightness
+  let totalBrightness = 0;
+  let pixelCount = 0;
+
+  for (let i = 0; i < pixelData.length; i += 4) {
+    const r = pixelData[i];
+    const g = pixelData[i + 1];
+    const b = pixelData[i + 2];
+    const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+    totalBrightness += brightness;
+    pixelCount++;
+  }
+
+  const avgBrightness = totalBrightness / pixelCount;
+
+  // Adjust text color based on average brightness
+  //text.style.color = avgBrightness < 128 ? 'white' : 'black';
+  return avgBrightness
+}
+
+
+
+
+px.getAvgBrightOfPic = (image) => {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Set canvas size to match the image size
+  canvas.width = image.width;
+  canvas.height = image.height;
+
+  // Draw the image on the canvas
+  ctx.drawImage(image, 0, 0, image.width, image.height);
+
+  // Get pixel data for the entire image
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  let totalBrightness = 0;
+  const pixelCount = data.length / 4; // Each pixel is 4 values: R, G, B, A
+
+  // Loop through all pixels
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];     // Red
+    const g = data[i + 1]; // Green
+    const b = data[i + 2]; // Blue
+
+    // Calculate brightness
+    const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+    totalBrightness += brightness;
+  }
+
+  // Return the average brightness
+  return totalBrightness / pixelCount;
+}
+
+// Example Usage:
+const image = new Image();
+image.src = 'example.jpg'; // Replace with your image source
+image.onload = function () {
+  const avgBrightness = getAverageBrightness(image);
+  console.log('Average Brightness:', avgBrightness);
+};
+
+
+
+
+// SORT-ARRAY ----------------------------------------------------
+px.sortArray = function (arrayIn, fieldToSort, option) {
+  /*
+    option can have: {ascending: false, dateSort: true}
+    if don't put false to ascending, it's default true
+    if don't put true to dateSort, it's default false
+  */
+
+  if (!option) option = {ascending: true}
+
+  if (option.dateSort) {
+    if (typeof option.ascending == 'undefined') option.ascending = true
+    
+    return arrayIn.sort((a, b) => {
+      if (new Date(a[fieldToSort]) < new Date(b[fieldToSort]) ) return option.ascending? -1 : 1
+      if (new Date(a[fieldToSort]) > new Date(b[fieldToSort]) ) return option.ascending? 1 : -1
+      return 0
+    })
+
+  } else {
+    
+    return arrayIn.sort((a, b) => {
+      if (a[fieldToSort] < b[fieldToSort]) return option.ascending ? -1 : 1;
+      if (a[fieldToSort] > b[fieldToSort]) return option.ascending ? 1 : -1;
+      return 0; // Equal values
+    })
+  }
+
+
+  
+
+  /*
+      sorts array of objects by putting the object property
+      tested=ok, @devster, 2024-12-18 7:47+7
+      version=1.0
+      license=0
+  */
+  /*
+      {
+        time    : '2024-12-24', 
+        note    : 'changed option to object and taking ascending & dateSort; option defaults are ascending=true & dateSort=false; if you want descending just put {ascending: false} or if you sorting date just put {dateSort: true}',
+        tested  : 'ok',
+        by      : '@devster'
+      }
+  */
+}
+
+
+
+
+////////////////////////////////////////////////////////////////
+// followings are funcs for text editing, aiming for content
+// editable element
+////////////////////////////////////////////////////////////////
+
+
+// replace string by position
+px.replaceStr = (STR,FROM,TO,WITH) => {
+  /*
+      this func replaces string from positon-1 to position-2 
+      the position is based on js defi
+  */
+
+  return STR.slice(0,FROM) + WITH + STR.slice(TO)
+
+  /*
+      {
+        "test"  : "ok", 
+        "by"    : "@devster",
+        "time"  : "2024-12-31T11:02+07:00"
+      }
+  */
+}
+
+
+
+
+// select-all text in an element
+px.selectAll = (ELEM) => {
+  /*
+      select all text in the provided element
+      it returns the selection object so you can simply do something more
+      like: px.selectAll(ele_m).collapseToEnd()
+  */
+
+  let newRange = document.createRange()
+  newRange.selectNodeContents(ELEM)
+  let newSelection = getSelection()
+  newSelection.removeAllRanges()
+  newSelection.addRange(newRange)
+  return newSelection
+
+  /*
+    {
+      "test"  : "ok",
+      "by"    : "@devster",
+      "time"  : "2024-12-31T16:25+07:00"
+    }
+  */
+}
+
+
+// insert element at the cursor
+px.insertElem = (ELEM) => {
+
+  let selec = getSelection()
+  if (selec.rangeCount > 0) {
+    let range = selec.getRangeAt(0)
+    range.collapse(true)
+    range.insertNode(ELEM)
+
+    let newRange = document.createRange()
+    newRange.setStartAfter(ELEM)
+    newRange.collapse(true)
+    selec.removeAllRanges()
+    selec.addRange(newRange)
+  }
+
+  // tested=ok, @devster
+  // added: move cursor to end of new elem; tested=ok, @devster
+}
+
+
+// create element for the selected text
+px.surroundSelec = (ELEM) => {
+
+  // cover the selection with element and place cursor at the end
+
+  let selec = getSelection()
+  if (selec.rangeCount > 0 && !selec.isCollapsed) {
+    let range = selec.getRangeAt(0)
+    let selectedText = selec.toString()
+
+    if (selectedText.length > 0) {
+      range.surroundContents(ELEM)
+      
+      let newRange = document.createRange()
+      newRange.setStartAfter(ELEM)
+      newRange.collapse(true)
+      selec.removeAllRanges()
+      selec.addRange(newRange)
+    }
+  }
+
+  // tested=ok, @devster
+}
+
+
+/* put cursor at the end of elem
+px.putCursorAt = (POSI, ELEM) => {
+
+  // put cursor at end or start of the element
+
+  let newRange = document.createRange()
+  let newSelec = getSelection()
+  newRange.selectNodeContents(ELEM)
+  newRange.collapse(POSI == 'end'? false : true) //cursor posi
+  newSelec.removeAllRanges()
+  newSelec.addRange(newRange)
+  ELEM.focus()
+
+  // tested=ok, @devster
+}*/
+
+
+// put cursor at an index
+px.placeCursor = (INDEX, ELEM) => {
+
+  // put cursor at the index of string in an element
+
+  let thisText = ELEM.textContent
+  ELEM.focus()
+
+  if (INDEX == 'end' || INDEX > thisText.length) INDEX = thisText.length
+
+  let newRange = document.createRange()
+  newRange.setStart(ELEM.firstChild, INDEX)
+  newRange.collapse(true)
+
+  let selec = getSelection()
+  selec.removeAllRanges()
+  selec.addRange(newRange)
+
+  // tested=ok, @devster
+  // if INDEX is > length of text, put to end of text & we can put 'end' as index too
+}
+
+
+
+
+// insert text at cursor
+px.insertText = (TEX) => {
+
+  // insert text at cursor then place cursor at the end of inserted text
+
+  let selec = getSelection()
+  if (selec.rangeCount > 0) {
+    let thisRange = selec.getRangeAt(0)
+    thisRange.deleteContents()
+    thisRange.insertNode(
+      document.createTextNode(TEX)
+    )
+
+    //move cursor to end
+    thisRange.setStart(thisRange.endContainer, thisRange.endOffset)
+    thisRange.collapse(true)
+
+    //update selection
+    selec.removeAllRanges()
+    selec.addRange(thisRange)
+    selec.anchorNode.parentElement.focus()
+  }
+
+  // tested=ok, @devster
+}
+
+
+
+
+// Thai number ------------------------------------------------------
+px.getThaiNumFrom = (_engNum) => {
+
+  /*
+    - put arabic num into it and get Thai num back
+    - by @devster, 2025-01-11T10:55+0700
+    - tested=ok
+    - version = v1.0
+
+    NOTE
+    - if you want to get from 0-leading num, you have to make it string by put in like: 
+
+      let _output = px.getThaiNumFrom('0123456')
+
+      because if you put in as number like: px.getThaiNumFrom(0123456) the js will take out the first 0 and then we won't get the first 0 conversion
+  */
+
+  const convertFrom =  ['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙']
+  let _output = ''
+  
+  for (_num of _engNum.toString()) {
+    _output += convertFrom[_num]
+  }
+
+  return _output
+
+  // tested=ok, @devster
+}
+
+
+
+// conver ol to Thai num -------------------------------------------
+px.makeThaiNumListOn = (_olElem) => {
+
+  /*
+    -make the <ol> element listing in Thai numbers by just putting the element in
+    -the list number always follow by . and a space so we got like: 
+      ๑. sssssssss
+      ๒. ssssssssssssss
+      ๓. ssssss
+
+    -version: v1.0
+    -license: none
+  */
+
+  Array.from(_olElem.children).forEach( (li,index) => {
+    li.style.listStyleType = 'none'
+    li.style.counterIncrement = 'none'
+    li.style.position = 'relative'
+    li.style.paddingLeft = ''
+    li.innerHTML = `<span>${px.getThaiNumFrom(index + 1)}. </span>${li.innerHTML}`
+  })
+
+  // tested=ok, @devster, 2025-01-11T11:42+0700
+}
+
+
+// convert rgb to hex
+px.rgbHex = (rgb) => {
+
+  /*
+      -convert rgb(0,0,0) to #000000
+      -input is 'rgb(0,0,0)'
+
+      GUIDE
+      let getHex = px.rgbHex('rgb(255,0,0)')
+      and you get: #ff0000
+
+      tested=ok, @devster 2025-01-14T13:57+0700
+
+  */
+  
+  let parts = rgb.substring(rgb.indexOf('(') + 1, rgb.lastIndexOf(')')).split(',');
+  let r = parseInt(parts[0].trim(), 10);
+  let g = parseInt(parts[1].trim(), 10);
+  let b = parseInt(parts[2].trim(), 10);
+
+  // Convert each number to its hex equivalent and pad with 0 if necessary
+  let hex = '#' + 
+      ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).padStart(6, '0').toUpperCase();
+
+  return hex;
+}
+
