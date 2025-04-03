@@ -2044,7 +2044,7 @@ how:
 
 ------------------------------------------------------------------------*/
 px.make = {
-  uturn: {icon: '/icon/u-turn.svg'}
+  uturn: {icon: '/website/icon/u-turn.svg'}
 }
 
 px.make.set = () => {
