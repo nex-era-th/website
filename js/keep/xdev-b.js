@@ -42,12 +42,11 @@ const xb = {
   //this is main object, we use xb to make it as short as possible so faster to type but still remain the definition of xdev so just set xdev as another obj to prevent dup from other module. the xdev obj will use for about, help, etc.
 
   about: {
-    program   :"browser side tool making dev easier",
-    web       :'',
-    version   :'1.1.1',
-    by        :'@devster',
-    time      :'20:29 apr14/2025 +7',
-    lastUpdate: 'added xb.page'
+    program:"xdev_b is a tool for software development. Working in web browser side and co-working with xdev server side for seamless integration.",
+    web:'',
+    version:'0.1',
+    contact:'mutita.org@gmail.com',
+    date:'2023-06-13'
   },
 
   secure: {
@@ -1251,24 +1250,6 @@ xb.randomWords = function (length=16) {
   }
   return words
 }//ok
-
-
-xb.random2 = function (length=24) {
-  //gen a random code which includes a-z, A-Z, 0-9, - and _
-
-  let words = ''
-  let allowedStrings = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  for (i=0; i<length; i++) {
-    words += allowedStrings.charAt(
-      Math.floor(
-        Math.random() * 62
-      )
-    )
-  }
-  return words
-}
-
-
 
 
 xb.help.randomWords = {
@@ -3113,7 +3094,7 @@ xb.readPacket = async function (packt) {
 
 
 /*  Returns the text data url for the picture picked by user.
-    how:  <input type="file" onchange="xb.readPicFileAsDataUrl(this).then(dataUrl => ...)">
+    how:  <input type="file" onchange="xb.dataUrlFromPicFile(this).then(dataUrl => ...)">
     tested: ok, m20230830 
     -works with png, jpg, jpeg  /m20230904 
 */
@@ -3133,7 +3114,6 @@ xb.readPicFileAsDataUrl = async function (inputEl) {
     }
   })
 }
-xb.getDataUrlFromFileInput = xb.readPicFileAsDataUrl
 
 
 xb.help.readPicFileAsDataUrl = {
@@ -5646,8 +5626,6 @@ xb.help.convId = {
 
 
 xb.goodUuid = function (UUID) {
-  //check if the Input good UUID? Returns true or false
-
   if (!UUID || typeof UUID != 'string') return false
   
   let resul = UUID.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i)
@@ -6001,151 +5979,3 @@ xb.randomSym = () => {
 
 
 //----------------------------------------------------------------------
-
-
-/* cookie handling
-
-
-
-
-  test: [
-    {mar14t0758:'xb.cookie.clear() tested=ok, all cookies cleared, @devster'}
-  ]
-
------------------------------------------------------------------------*/
-xb.cookie = {
-  about: {
-    brief       :'let you work with cookie easier',
-    version     : '0.1',
-    status      : 'dev & test',
-    createdTime : '07:53 Mar14/2025 +7',
-    license     : 0,
-    by          : '@devster/nex-era',
-  },
-  help: {
-    clear: 'xb.cookie.clear() ...clears all cookies'
-  }
-
-}
-
-xb.cookie.clear = (param) => {
-  if (!param) {
-    //no parameter means 'all', so clear all cookies
-    document.cookie.split(';').forEach(xyz => {
-      const [cookName] = xyz.split('=')
-      document.cookie = `${cookName.trim()}=; max-age=0; path=/`
-    })
-    return document.cookie
-    //tested=ok, @devster
-  } else {
-    // xb.cookie.clear('xsess') ...clear 1 cookie
-    if (document.cookie.includes(param + '=')) {
-      document.cookie = param + '=; max-age=0'
-      return document.cookie
-    } else {
-      // not found the supplied cookie name
-      return false
-    }
-    //delete 1 cookie test=ok, @devster
-  }
-}
-
-xb.cookie.get = (param) => {
-  //get a cookie value, if no param just give whole cookie
-  if (param) {
-    try {
-      return document.cookie.match(eval('/' + param + '=(.+?)(;|$)/'))[1]
-    } catch {
-      return false
-    }
-  } else {
-    return document.cookie
-  }
-  //tested=ok, @devster 12:08 mar14/2025 +7
-}
-
-
-
-
-
-
-/*  xb.pointer -------------------------------------------------------------
-    handle pointer, first start with a longPress
-    tested=ok 20:34 mar19/2025 +7
-----------------------------------------------------------------------------*/
-
-xb.pointer = {
-  longPressSet: {
-    howLong : 1000
-  }
-}
-
-xb.pointer.longPress = ($elem, $runThis) => {
-
-  let timer
-
-  $elem.addEventListener('mousedown', event => {
-    event.preventDefault()
-    timer = setTimeout( f => $runThis(event), xb.pointer.longPressSet.howLong)
-  })
-
-  $elem.addEventListener('touchstart', event => {
-    event.preventDefault() //prevent browser to select text
-    timer = setTimeout( f => $runThis(event), xb.pointer.longPressSet.howLong)
-  },{passive: false})
-
-  //cancel if pointer up before the preset timer
-  $elem.addEventListener('mouseup', f => clearTimeout(timer))
-  $elem.addEventListener('mouseleave', f => clearTimeout(timer))
-  $elem.addEventListener('touchend', f => clearTimeout(timer))
-  $elem.addEventListener('touchcancel', f => clearTimeout(timer))
-}
-
-
-
-
-
-/*----------------------------------------------------------------
-xb.page -- handles about page tracking, good for web monitoring
-
-
------------------------------------------------------------------*/
-
-xb.page = {
-  for     : 'html page tracking stuff',
-  created : 'apr14/2025',
-  by      : '@devster'
-}
-
-xb.page.visitCount = async (_serverUrl, _dataToSend, _mode) => {
-  /*  _mode can be simple until advance
-      xb.page.loadCount('https://xyz.com/page-load-count')
-
-      example use this to count visit of a page
-      const resp = xb.page.loadCount(
-        '/nex-web-visit-count',
-        { page: location.pathname, lastVisit: Date.now() }
-      )
-  */
-  if (!_serverUrl) return
-  if (!_mode) _mode = 'simple'
-  if (!_dataToSend) _dataToSend = {test: true}
-
-  try {
-    const svResp = fetch(_serverUrl, {
-      method  : 'POST',
-      headers : { 'Content-Type': 'application/json'},
-      body    : JSON.stringify(_dataToSend) 
-    })
-
-    if (!svResp.ok) {
-      return new Error(`! error: ${svResp.status} ${svResp.statusText}`)
-    }
-
-    const svRespOj = await svResp.json()
-    return svRespOj
-
-  } catch (error) {
-    return error
-  }
-}

@@ -584,6 +584,11 @@
   <script>
     ////////////////////////////////////////////////////////////
 
+    const countStatus = await xb.page.visitCount('https://node-x-qd6s.onrender.com/nex-web-visit-count', 
+      { page: location.pathname, lastVisit: Date.now() })
+
+
+
     function xMoveAroundFreely(_elem,_x=0,_y=0,_time=2,_distance=45) {
       /*
         - move element around randomly & easily
