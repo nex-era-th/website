@@ -6,7 +6,7 @@
   <title>@nex-era / advisory, software & beyond</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="advisory software tech dev รับออกแบบและพัฒนาซอฟท์แวร์ ที่ปรึกษา ความเป็นผู้นำ บริหาร ธุรกิจ">
-
+  <script src="./config.js"></script>
   <script src="js/xdev-b.js"></script>
   <script src="js/projex.js"></script>
   <link href="js/w3.css" rel="stylesheet" type="text/css">
@@ -585,9 +585,10 @@
   <script>
     ////////////////////////////////////////////////////////////
 
+    // count page visit
     xb.page.visitCount('https://node-x-qd6s.onrender.com/nex-web-visit-count', 
       { page: location.pathname, lastVisit: Date.now() }
-    ).then( msg => console.log( msg))
+    ).then(/* msg => console.log( msg) */)
 
 
 
