@@ -6139,7 +6139,7 @@ xb.page.visitCount = async (_serverUrl, _dataToSend, _mode) => {
     })
 
     if (!svResp.ok) {
-      return new Error(`! error: ${svResp.status} ${svResp.statusText}`)
+      throw new Error(`! error: ${svResp.status} ${svResp.statusText}`)
     }
 
     const svRespOj = await svResp.json()
