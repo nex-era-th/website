@@ -8,6 +8,8 @@
   <link href="../js/w3.css" rel="stylesheet" type="text/css">
   <link href="../js/projex.css" rel="stylesheet" type="text/css">
   <link href="../js/material-x.css" rel="stylesheet" type="text/css">
+  <script src="/config.js"></script>
+  <script src="/js/xdev-b.js"></script>
   <script src="../js/projex.js"></script>
   <style>
     p, li, span {font-family: "Open Sans", sans-serif; font-size: 135%}
@@ -69,5 +71,12 @@
     <button class="w3-btn x-p8 w3-white" 
     onclick="location.href='../update.html';"><img src="../icon/u-turn.svg" width="32" height="32"></button>
   </div>
+
+  <script>
+    xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
+      { page: location.pathname, lastVisit: Date.now() }
+    )
+  </script>
+</body>
 </body>
 </html>
