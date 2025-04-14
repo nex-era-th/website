@@ -6132,7 +6132,7 @@ xb.page.visitCount = async (_serverUrl, _dataToSend, _mode) => {
   if (!_dataToSend) _dataToSend = {test: true}
 
   try {
-    const svResp = fetch(_serverUrl, {
+    const svResp = await fetch(_serverUrl, {
       method  : 'POST',
       headers : { 'Content-Type': 'application/json'},
       body    : JSON.stringify(_dataToSend) 
@@ -6142,7 +6142,7 @@ xb.page.visitCount = async (_serverUrl, _dataToSend, _mode) => {
       throw new Error(`! error: ${svResp.status} ${svResp.statusText}`)
     }
 */
-    const svRespOj = await svResp.json()
+    const svRespOj = svResp.json()
     return svRespOj
 
   } catch (error) {
