@@ -59,5 +59,11 @@
     <button class="w3-btn x-p8 w3-white" onclick="location.href='../advisory.html';"><img src="../icon/u-turn.svg" width="32" height="32"></button>
   </div>
 
+  <script>
+    xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
+      { page: location.pathname, lastVisit: Date.now() }
+    )
+  </script>
+
 </body>
 </html>
