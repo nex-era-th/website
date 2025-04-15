@@ -444,7 +444,7 @@
     <!-- signal / get attention from user -->
     <div id="signal" 
     style="position: fixed; top: 65%; left: 8px; display: grid; grid-template-columns: auto; row-gap: 60px; align-items: start;" class="x-center-left-edge">
-      <span class="w3-badge w3-red x-pointer" onclick="main_alert.hidden=false; this.style.display='none';">1</span>
+      <span class="w3-badge w3-red x-pointer" onclick="main_alert.hidden=false;">2</span>
       <span class="w3-badge w3-green x-hide">8</span>
     </div>
 
@@ -553,12 +553,18 @@
 
 
   <!-- main alert -->
-  <div id="main_alert" hidden
+  <div id="main_alert" 
   class="w3-card-4 x-center-screen x-round x-osans" 
-  style="width: 95%; min-height:; padding: 16px; background-color: var(--amber-900); z-index: 100">
+  style="width: 95%; min-height:; padding: 16px; background-color: var(--amber-800); z-index: 100">
 
-    <h3 id="alert_subject" hidden>This is a message</h3>
-    <p id="alert_msg" class="x-fz150">This is a test alert. So you acknowledge the important info and react to it.</p>
+    <h3 id="alert_subject">New stories published:</h3>
+    <div id="alert_msg" class="x-fz150 x-serif">
+      <ul>
+        <li style="margin-bottom: 12px"><a href="/blog/music-industry-note.html" style="all: revert; font-family: 'Times New Roman', Times, serif;">Lisa Choachella 2025</a></li>
+        <li><a href="/blog/art-of-the-deal-or-not.html" style="all: revert; font-family: 'Times New Roman', Times, serif;">Art of the deal, or not</a></li>
+      </ul>
+      
+    </div>
 
     <div style="height: 24px;"></div>
 
@@ -586,7 +592,7 @@
     ////////////////////////////////////////////////////////////
 
     // count page visit
-    xb.page.visitCount('https://node-x-qd6s.onrender.com/nex-web-visit-count', 
+    xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
       { page: location.pathname, lastVisit: Date.now() }
     ).then(/* msg => console.log( msg) */)
 
