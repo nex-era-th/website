@@ -1,0 +1,61 @@
+{{
+
+  version     = 1.0
+  author      = @devster
+
+}}
+
+
+# guide for nex-era web
+
+[s]//--{{ $date }} author={{ author }} version={{ version }}//[s]
+
+
+
+this is dev guide, so no serious on completeness by the language book.
+
+nex-era-web is the nex-era web site codes. We hosted in gitHub's page and linked to a domain [c] http://nex-era.xyz [c] everything is working smoothly.
+
+
+directory is at:
+
+[c] $home/nex-era-web [c]
+
+
+
+--------------------------------------------------------------
+
+## deploy [#deploy]
+
+[c] $ git push [c] is the deploy command. The rest will handle by gitHub's page engine. WOW!
+
+
+--------------------------------------------------------------
+
+## file structure
+
+[c]
+
+$home/nex-era-web/
+  |--index.html
+  |--config.js
+  |--js/
+  |    |--xdev-b.js
+  |    |--projex.js
+  |    |--projex.css 
+  |
+  |--pic/
+  |     |-- all pics here
+  |
+  |--icon/
+  |     |-- all icon files here
+  |
+  |-- all main pages here, like advisory.html, software.html, ...
+  |
+  |--section folders, like advisory-sect/
+  |
+  |--blog/
+  |     |--all blog posts here...
+
+
+[c.]
