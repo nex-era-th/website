@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"></head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="/js/xdev-b.js"></script>
+  <link rel="stylesheet" type="text/css" href="">
+  <style>
+    code { color: #5c6bc0 }
+    h2 { font-style: italic }
+    h3 { text-decoration: underline }
+    table { border-collapse: collapse; width: 100% } 
+    table, th, td { border: 1px solid black;  }
+    th, td { padding: 4px 8px }
+    .indent, .indent-16 { margin-left: 16px }
+    .sans-serif, .sans { font-family: sans-serif }
+    .mono { font-family: monospace }
+    .red { color: red }
+    .green { color: green }
+    .blue { color: blue }
+    .yellow { color: yellow }
+    .orange { color: orange }
+    .brown { color: brown }
+    .gray { color: gray }
+    .pink { color: pink }
+    .purple { color: purple}
+    .indigo { color: #5c6bc0 }
+    .c { text-align: center }
+    .r { text-align: right }
+    .l { text-align: left }
+  </style>
+<body><p>iFdTDBuN2MZg</p><div id="main_content">
+
+<h1>Proposal of Software Design & Development for Bualuang Capital</h1>
+<small><i>--Tue Apr 29 2025 10:31:16 GMT+0700 (Indochina Time) author=@mster</i></small>
+
+<div style="height: 16px"></div>
+<pre>
+Proposed to   : <a href="#about"><u>Bualuang Capital</u></a>
+By            : <a href="#about"><u>4Xtreme</u></a>
+Date          : <u>4/29/2025</u>
+Document ID   : <u>2025042909</u>
+Expiry Date   : <u>5/29/2025</u>
+Version       : <u>1.0</u>
+Doc Status    : <u>Draft</u>
+</pre>
+<p><div style="height: 16px"></div></p><ul><li><a href="#require">Requirement Understanding</a></li><li><a href="#architect">Architecture</a></li><li><a href="#ui">Idea of UI (User Interface)</a></li><li><a href="#qrcode">QR Code / Bar Code</a></li><li><a href="#plan">Project Plan</a></li><li><a href="#org">Team Organization Chart</a></li><li><a href="#fees">Fees</a></li><li><a href="#attention">Attention</a></li></ul><p><div style="height: 16px"></div></p><hr><h2 id="require" class="indigo">Requirement Understanding</h2><p>เราเข้าใจความต้องการของทาง Bualuang Capital คือจะทำ software ที่ทำหน้าที่ ออก ใบกำกับภาษีหัก ณ ที่จ่าย ตามแบบฟอร์มที่กำหนดโดยราชการ โดยหลักๆ มี 3 แบบฟอร์มคือ</p><ol><li>หนังสือรับรองการหักภาษี ณ ที่จ่าย</li><li>ใบแทนฯ</li><li>ใบแนบ ภ.ง.ด. 53</li></ol><hr><h2 id="architect" class="indigo">Architecture</h2><p><img src="architecture.png" style="width: 100%"></p><p>ที่ server ใช้ nodejs หรือ java ส่วน database ใช้ mySql/postgreSql แล้ว user ใช้งานด้วย web browser ผ่าน internet มีการกำหนด userName/password และกำหนด roles สำหรับ user แต่ละคน</p><hr><h2 id="ui" class="indigo">Idea of UI (User Interface)</h2><p>UI เหล่านี้แค่เป็น idea เดี๋ยวตอนทำงานจริงค่อยคุยกันอีกที ได้ ว่าจะเอาแบบไหน</p><p><img src="home.png" style="width: 100%"></p><p>หน้าหลักที่ user เข้ามาแล้วเจอ ซึ่งโดยมากเราก็วาง ปุ่ม หรือ icon หรือ box/card ให้ user เห็นเพื่อให้เขาเลือกว่าจะทำอะไรต่อจากนี้</p><p><img src="one-wht.png" style="width: 100%"></p><p>idea หน้าจอกรณีทำ หนังสือรับรองฯ แบบ ใบต่อใบ คือทำทีละใบ ไม่ได้ทำแบบ import จาก text file เข้ามาทีละเยอะๆ</p><p><img src="many-wht.png" style="width: 100%"></p><p>กรณีเรา import text file เข้ามา แล้วสั่งให้ App generate หนังสือรับรอง หรือเอกสารอะไรก็ตาม ทั้งชุด ออกมาเลย</p><p><img src="mobile.png" style="width: 100%"></p><p>ตัวอย่างหากเราจะทำหน้าจอ WHT ที่ทำทีละใบ แต่เป็นจอมือถือ ก็อาจทำแนวนี้ คือเป็น 1 column แล้วให้ user เลื่อนลงไป ทำงานจนจบ ในหน้าเดียว</p><hr><h2 id="dataModel" class="indigo">Data Model</h2><p><img src="data-model.png" style="width: 100%"></p><p>อันนี้เป็นแบบ draft ว่า น่าจะออกมาแนวไหน กรณีนี้เราใช้ RDBMS เป็นลักษณะ table ไม่ใช่แบบ no-sql ก็น่าจะมี table ต่างๆ ประมาณนี้</p><hr><h2 id="plan" class="indigo">Project Plan</h2><p><img src="plan.png" style="width: 100%"></p><p>ก็ใช้เวลา 2 เดือน ทำ design 3 weeks, dev & internal test ตรงนี้จะทำขนานกับ design ไปเลย แต่อาจเหลื่อม หลัง นิดหน่อย เพราะต้องรอ design มีวัตถุดิบอะไรบ้าง งาน dev ก็ประมาณ 5 weeks จากนั้นให้ลูกค้า test + training ใช้ประมาณ 2 weeks จบด้วยการ deploy ก็ใช้เวลา 2-3 วัน ตรงนี้เราจะ deploy ไปที่ server ของลูกค้า ในความเป็นจริงคงต้องประสานงานกันมาก่อน ว่ามี tech detail อะไรบ้าง ใครจะ deploy อะไรทำนองนั้น </p><hr><h2 id="org" class="indigo">Team Organization Chart</h2><p><img src="org-chart.png" style="width: 100%"></p><p>การจัดคนเข้าทำงาน จะใช้แบบ efficient ที่สุด คือคน 1 คน ทำหลายหน้าที่ ไม่งั้น ตัวเลขจะมากเกินไป ดังนั้น เราจะจัดคน 3 คน เข้าทำงาน มี PM ซึ่งทำหลายอย่าง และมี Lead Dev กับ Dev อีกคน เท่านั้น </p><hr><h2 id="fees" class="indigo">Fees</h2><p>เสนอราคาดังนี้</p><table ><tr><th>Description</th><th>Fees</th></tr><tr><td>Software Design & Development Services</td><td class="r k">3,450,000.00</td></tr></table><p>เงื่อนไข</p><ol><li>ราคาเป็นเงินบาท ไม่รวม VAT </li><li>ชำระเงินเป็นรายเดือน เดือนละ 431,250 บาท ต่อเนื่อง 8 เดือนติดต่อกัน</li><li>เมื่อเซ็นสัญญา จ่าย 2 เดือนแรก เดือน 3-8 ชำระทุกวันที่ 1 ของเดือน</li><li>ค่าบริการนี้ไม่รวม Annual Tech Support, Operation Outsourcing และไม่รวมค่า Cloud Services</li><li>ยืนราคา 30 วันนับจากวันเสนอราคา</li></ol><hr><h2 id="about" class="indigo">About</h2><p>เกี่ยวกับ Class Clinic และ 4 Xtreme</p><table ><tr><th>Class Clinic Co., Ltd</th><th>4 Xtreme Co., Ltd.</th></tr><tr><td>140/479 หมู่ 14 ตำบลในเมือง อำเภอเมืองขอนแก่น จังหวัดขอนแก่น</td><td>171/1 หมู่ 1 ตำบลสันกำแพง อำเภอสันกำแพง จังหวัดเชียงใหม่ 50130</td></tr></table><hr><h2 id="attention" class="indigo">Attention</h2><blockquote class="red"><p>This page is copyright of the author and proprietary for the client to read only. No copy or anything allowed.</p><p>To read this page you have to have the passCode. This page will be available as long as it is valid.</p></blockquote><p><div style="height: 16px"></div></p><p></div></p><div id="expire_msg" hidden>this page is expired.</div>
+<script>
+
+
+window.nexWeb = {
+  nodeXurl: 'https://node-x-qd6s.onrender.com'
+}
+
+
+
+
+//get passCode
+/*let passCode
+while ( passCode != 'Zbkylq13VSaP' ) {
+    passCode = prompt('passCode:')
+}
+*/
+
+
+
+//check expire
+function setExpireOn( dat_e ) {
+  let todaY = new Date
+  let yeaR = todaY.getFullYear()
+  let montH = todaY.getMonth + 1
+  let daY = todaY.getDate()
+
+  let [ checkY, checkM, checkD ] = dat_e.split('-')
+
+  if ( yeaR > checkY || montH > Number(checkM) || daY > Number(checkD) ) {
+    main_content.hidden = true
+    expire_msg.hidden = false
+  } else {
+    main_content.hidden = false
+    expire_msg.hidden = true
+  }
+}
+
+setExpireOn('2025-05-29')
+
+
+//count the visit
+xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
+    { page: location.pathname, lastVisit: Date.now() }
+)
+
+
+</script>
+
+</body>
+</html>

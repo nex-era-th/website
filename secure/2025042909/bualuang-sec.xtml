@@ -1,0 +1,250 @@
+{{
+    $jsFile     = /js/xdev-b.js
+    version     = 1.0
+    author      = @mster
+    docNumber   = 2025042909
+    client      = Bualuang Securities
+    by          = 4Xtreme
+    docDate     = 4/29/2025
+    expiryDate  = 5/29/2025
+    docLink     = http://nex-era.xyz/secure/2025042909/bualuang-sec.html
+    status      = Approved/Official
+    passCode    = T0QaP55L6OOP
+}}
+
+
+<div id="main_content">
+
+# Proposal of Software Design & Development for {{ client }}
+
+[s]//--{{ $date }} author={{ author }}//[s]
+
+[[ $blankLine ]]
+<pre>
+Proposed to   : [[ __{{ client }}__ ; $url = #about ]]
+By            : [[ __{{ by }}__ ;     $url = #about ]]
+Date          : __{{ docDate }}__
+Document ID   : __{{ docNumber }}__
+Expiry Date   : __{{ expiryDate }}__
+Version       : __{{ version }}__
+Doc Status    : __{{ status }}__
+</pre>
+
+
+[[ $blankLine ]]
+
+
+. [[ Requirement Understanding ; $url = #require ]]
+. [[ Architecture ; $url = #architect ]]
+. [[ Idea of UI (User Interface) ; $url = #ui ]]
+. [[ Project Plan ; $url = #plan ]]
+. [[ Team Organization Chart ; $url = #org ]]
+. [[ Fees ; $url = #fees ]]
+. [[ About ; $url = #about ]]
+. [[ Attention ; $url = #attention ]]
+
+
+
+[[ $blankLine ]]
+
+
+
+------------------------------------------------------------
+
+
+## Requirement Understanding [#require.indigo]
+
+เราเข้าใจความต้องการของทาง {{ client }} คือจะทำ software ที่ทำหน้าที่ ออก ใบกำกับภาษีหัก ณ ที่จ่าย ตามแบบฟอร์มที่กำหนดโดยราชการ โดยหลักๆ มี 3 แบบฟอร์มคือ
+
+1 หนังสือรับรองการหักภาษี ณ ที่จ่าย
+2 ใบแทนฯ
+3 ใบแนบ ภ.ง.ด. 53
+
+
+output ข้างบนนั้นให้ออกมาเป็นไฟล์ pdf ซึ่ง input ของระบบ มีได้ 2 แบบ เช่น user ป้อนข้อมูลเข้าไปโดยตรง หรือมาจาก text file กรณีนี้ มักจะเป็นหลายๆ records เพื่อให้ app สามารถ gen pdf ได้พร้อมๆกันทั้งหมด
+
+นอกนั้นเป็นสิ่งที่ต้องมี พื้นฐาน ประจำ app เช่นโมดุล user, admin, report ต่างๆ ซึ่งเดี๋ยวตอนทำงาน ก็สามารถคุยกันในรายละเอียดได้ 
+
+
+------------------------------------------------------------
+
+## Architecture [#architect.indigo]
+
+
+[[ $img = architecture.png ]]
+
+ที่ server ใช้ nodejs หรือ java ส่วน database ใช้ mySql/postgreSql แล้ว user ใช้งานด้วย web browser ผ่าน internet มีการกำหนด userName/password และกำหนด roles สำหรับ user แต่ละคน
+
+
+------------------------------------------------------------
+
+## Idea of UI (User Interface) [#ui.indigo]
+
+UI เหล่านี้แค่เป็น idea เดี๋ยวตอนทำงานจริงค่อยคุยกันอีกที ได้ ว่าจะเอาแบบไหน เบื้องต้น app สมัยใหม่ เรามักออกแบบให้แสดงผลใน 2 mode เช่น tablet กับ mobile ดังนั้น หาก user ใช้จอตั้งแต่ tablet ขึ้นไป เช่น width = 800px ขึ้นไป เราก็ให้แสดง tablet mode เป็นต้น เพื่อให้จอไม่ดู แน่น เกินไป ดูสบายๆ และเข้าใจง่าย ทำงานคล่อง สำหรับ user 
+
+
+[[ $img = home.png ]]
+
+หน้าหลักที่ user เข้ามาแล้วเจอ ซึ่งโดยมากเราก็วาง ปุ่ม หรือ icon หรือ box/card ให้ user เห็นเพื่อให้เขาเลือกว่าจะทำอะไรต่อจากนี้
+
+
+[[ $blankLine ]]
+[[ $img = one-wht.png ]]
+
+idea หน้าจอกรณีทำ หนังสือรับรองฯ แบบ ใบต่อใบ คือทำทีละใบ ไม่ได้ทำแบบ import จาก text file เข้ามาทีละเยอะๆ
+
+
+[[ $blankLine ]]
+[[ $img = many-wht.png ]]
+
+กรณีเรา import text file เข้ามา แล้วสั่งให้ App generate หนังสือรับรอง หรือเอกสารอะไรก็ตาม ทั้งชุด ออกมาเลย
+
+
+
+[[ $blankLine ]]
+[[ $img = mobile.png ]]
+
+
+ตัวอย่างหากเราจะทำหน้าจอ WHT ที่ทำทีละใบ แต่เป็นจอมือถือ ก็อาจทำแนวนี้ คือเป็น 1 column แล้วให้ user เลื่อนลงไป ทำงานจนจบ ในหน้าเดียว
+
+
+------------------------------------------------------------------
+
+## Data Model [#dataModel.indigo]
+
+[[ $img = data-model.png ]]
+
+อันนี้เป็นแบบ draft ว่า น่าจะออกมาแนวไหน กรณีนี้เราใช้ RDBMS เป็นลักษณะ table ไม่ใช่แบบ no-sql ก็น่าจะมี table ต่างๆ ประมาณนี้
+
+เราคิดว่าเราน่าจะมีการเก็บ pdf ทั้งหมดที่ generate ไปแล้ว ไว้ใน database ด้วย เพื่อใช้อ้างอิง หรืออาจมีการเรียกใช้ในอนาคต 
+
+
+------------------------------------------------------------------
+
+## Project Plan [#plan.indigo]
+
+
+[[ $img = plan.png ]]
+
+ก็ใช้เวลา 2 เดือน ทำ design 3 weeks, dev & internal test ตรงนี้จะทำขนานกับ design ไปเลย แต่อาจเหลื่อม หลัง นิดหน่อย เพราะต้องรอ design มีวัตถุดิบอะไรบ้าง งาน dev ก็ประมาณ 5 weeks จากนั้นให้ลูกค้า test + training ใช้ประมาณ 2 weeks จบด้วยการ deploy ก็ใช้เวลา 2-3 วัน ตรงนี้เราจะ deploy ไปที่ server ของลูกค้า ในความเป็นจริงคงต้องประสานงานกันมาก่อน ว่ามี tech detail อะไรบ้าง ใครจะ deploy อะไรทำนองนั้น 
+
+
+------------------------------------------------------------------
+
+## Team Organization Chart [#org.indigo]
+
+[[ $img = org-chart.png ]]
+
+การจัดคนเข้าทำงาน จะใช้แบบ efficient ที่สุด คือคน 1 คน ทำหลายหน้าที่ ไม่งั้น ตัวเลขจะมากเกินไป ดังนั้น เราจะจัดคน 3 คน เข้าทำงาน มี PM ซึ่งทำหลายอย่าง และมี Lead Dev กับ Dev อีกคน เท่านั้น 
+
+การทำงาน ส่วนใหญ่ ทำแบบ remote การสื่อสารเราใช้ online files อย่างเช่น google drive/docs ต่างๆ ส่วนการจัดการ programming codes ใช้ git/github และทุกอย่างก็แชร์กันหมด ทั้งทีม รวมลูกค้า ด้วย การประชุมต่าง ใช้ chat, video call บางกรณีถ้าจำเป็นต้องประชุม onsite ที่ลูกค้า หรือกรณีทำ design ซึ่งอาจต้องไปดูหน้างานจริง PM ก็จะไป onsite ไม่มีปัญหา (ไม่เก็บค่าใช้จ่ายเพิ่ม) แต่ทีม dev จะ 100% remote เพราะงานพวกนี้ต้องใช้สมาธิสูง และ focus 
+
+การ train ก็เป็นแบบ remote งานส่วนใหญ่ remote ได้ ยกเว้นที่จำเป็นจริงๆ ก็ให้ PM เข้าไปที่ site
+
+
+------------------------------------------------------------------
+
+## Fees [#fees.indigo]
+
+เสนอราคาดังนี้
+
+[t]
+
+Description                               | Fees 
+Software Design & Development Services    | 450000 .r.k 
+
+[t.]
+
+เงื่อนไข
+1 ราคาเป็นเงินบาท ไม่รวม VAT 
+2 ชำระเงิน 3 งวด / งวดแรกชำระเมื่อเซ็นสัญญา 30% เป็นจำนวน 135,000.00 บาท / งวด 2 ชำระเมื่อสิ้นเดือนที่ 1 สัดส่วน 30% จำนวน 135,000.00 บาท / ส่วนงวดที่ 3 สุดท้าย สัดส่วน 40% ชำระเมื่อส่งมอบทุกอย่างเรียบร้อย ซึ่งตามแผนเป็นสิ้นเดือนที่ 2 จำนวน 180,000.00 บาท
+4 ค่าบริการนี้ไม่รวม Annual Tech Support, Operation Outsourcing
+5 ยืนราคา 30 วันนับจากวันเสนอราคา
+
+
+------------------------------------------------------------------
+
+## About [#about.indigo]
+
+เกี่ยวกับ {{ client }} และ {{ by }}
+
+[t]
+
+Bualuang Securities Plc.      | 4 Xtreme Co., Ltd.
+อาคารสีลมคอมเพล็กซ์ ชั้น 29 เลขที่ 191 ถนนสีลม เขตบางรัก กทมฯ 10500 | 171/1 หมู่ 1 ตำบลสันกำแพง อำเภอสันกำแพง จังหวัดเชียงใหม่ 50130  
+
+[t.]
+
+
+
+
+------------------------------------------------------------------
+
+## Attention [#attention.indigo]
+
+
+".red
+
+This page is copyright of the author and proprietary for the client to read only. No copy or anything allowed.
+
+To read this page you have to have the passCode. This page will be available as long as it is valid.
+
+"
+
+
+
+[[ $blankLine ]]
+
+
+
+</div>
+<div id="expire_msg" hidden>this page is expired.</div>
+
+
+
+<script>
+
+
+window.nexWeb = {
+  nodeXurl: 'https://node-x-qd6s.onrender.com'
+}
+
+
+
+
+//get passCode
+let passCode
+while ( passCode != 'T0QaP55L6OOP' ) {
+    passCode = prompt('passCode:')
+}
+
+
+
+//check expire
+function setExpireOn( dat_e ) {
+  let todaY = new Date
+  let yeaR = todaY.getFullYear()
+  let montH = todaY.getMonth + 1
+  let daY = todaY.getDate()
+
+  let [ checkY, checkM, checkD ] = dat_e.split('-')
+
+  if ( yeaR > checkY || montH > Number(checkM) || daY > Number(checkD) ) {
+    main_content.hidden = true
+    expire_msg.hidden = false
+  } else {
+    main_content.hidden = false
+    expire_msg.hidden = true
+  }
+}
+
+setExpireOn('2025-05-29')
+
+
+//count the visit
+xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
+    { page: location.pathname, lastVisit: Date.now() }
+)
+
+
+</script>
