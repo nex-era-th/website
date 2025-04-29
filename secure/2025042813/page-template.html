@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>a secured page</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    .no-top-pad { padding-top: 0 }
+  </style>
+</head>
+<body>
+  
+ 
+  <div id="main_content" class="w3-container" hidden>
+    {{ $content }}
+  </div>
+
+  
+
+
+
+
+  <!-- page alert -->
+  <div id="page_alert" hidden
+  class="w3-card-4 x-center-screen x-round x-osans" 
+  style="width: 95%; min-height:; padding: 16px; background-color: var(--blue-400); z-index: 100">
+
+    <h3 id="alert_subject"></h3>
+    <div id="alert_msg" class="x-fz150 x-serif" style="text-align: center;"></div>
+
+    <div style="height: 16px;"></div>
+
+    <!--button class="w3-btn x-p8 x-round-4 x-mt" style="position: absolute; left: 0; bottom: 0;" style="display: none" onclick="page_alert.hidden=true"><img src="icon/x.svg" class="x-wh32"></button-->
+  </div>
+
+
+
+
+  <script>
+    xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
+      { page: location.pathname, lastVisit: Date.now() }
+    )
+
+
+
+    askPassCode()
+
+    function askPassCode() {
+      let passCode
+      while( passCode != 'thailand') {
+        passCode = prompt('passCode:')
+      }
+      main_content.hidden = false
+    }    
+
+
+
+
+  </script>
+
+</body>
+</html>

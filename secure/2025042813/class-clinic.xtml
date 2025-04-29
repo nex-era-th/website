@@ -1,18 +1,18 @@
 {{
-    $template   = page-template.html
-    version     = 0.1
+    $jsFile     = /js/xdev-b.js
+    version     = 1.0
     author      = @mster
     docNumber   = 2025042813
     client      = Class Clinic
-    by          = 4 Xtreme Co., Ltd.
-    docDate     = 4/28/2025
-    validUntil  = 5/31/2025
-    docLink     = http://nex-era.xyz/secure/2025042813
-    status      = draft
-    docCode     = 
+    by          = 4Xtreme
+    docDate     = 4/29/2025
+    expiryDate  = 5/29/2025
+    docLink     = http://nex-era.xyz/secure/2025042813/class-clinic.html
+    status      = Approved/Official
+    passCode    = Zbkylq13VSaP
 }}
 
-{{ $randomInt }}
+<div id="main_content">
 
 # Proposal of Software Design & Development for {{ client }}
 
@@ -20,13 +20,13 @@
 
 [[ $blankLine ]]
 <pre>
-Proposed to   : __{{ client }}__
-By            : __{{ by }}__
+Proposed to   : [[ __{{ client }}__ ; $url = #about ]]
+By            : [[ __{{ by }}__ ;     $url = #about ]]
 Date          : __{{ docDate }}__
 Document ID   : __{{ docNumber }}__
-Valid Until   : __{{ validUntil }}__
-version       : __{{ version }}__
-docStatus     : __{{ status }}__
+Expiry Date   : __{{ expiryDate }}__
+Version       : __{{ version }}__
+Doc Status    : __{{ status }}__
 </pre>
 
 
@@ -40,6 +40,7 @@ docStatus     : __{{ status }}__
 . [[ Project Plan ; $url = #plan ]]
 . [[ Team Organization Chart ; $url = #org ]]
 . [[ Fees ; $url = #fees ]]
+. [[ About ; $url = #about ]]
 . [[ Attention ; $url = #attention ]]
 
 
@@ -63,7 +64,7 @@ docStatus     : __{{ status }}__
 
 2 **Drug Stock** -- มีการจัดเก็บยา เวชภัณฑ์ หรืออะไรก็ตามที่ต้องใช้ ในการสร้าง  Clinical Services ขึ้นมา ดังนั้นงานส่วนนี้ต้องมีการ จัดเก็บให้เป็นระเบียบ มีการเบิก-จ่าย ตัดสต๊อค ให้ถูกต้อง
 
-3 **Sales** -- งานขาย ก็จะเป็นการรับจองจากลูกค้า มีการจัดคิวเมื่อลูกค้ามาถึงแล้ว มีการคำนวน commission มีการเก็บเงิน เมื่อลูกค้าใช้บริการเสร็จ (ตรงนี้ ขออนุมาฯว่าอยู่ในส่วนนี้ เพราะจากข้อมูลที่ได้มาไม่เห็นกำหนดว่ามีแผนกการเงิน จัดการเรื่องการเก็บเงิน ก็ถือเอาว่า งานส่วนนี้เป็นคนเก็บเงินลูกค้า ก่อนก็แล้วกัน ส่วนหน้างานอาจปรับเปลี่ยนตามความถูกต้องได้อีกที)
+3 **Sales** -- งานขาย ก็จะเป็นการรับจองจากลูกค้า มีการจัดคิวเมื่อลูกค้ามาถึงแล้ว มีการคำนวน commission มีการเก็บเงิน เมื่อลูกค้าใช้บริการเสร็จ (ตรงนี้ ขอประเมินว่าอยู่ในส่วนนี้ เพราะจากข้อมูลที่ได้มาไม่เห็นกำหนดว่ามีแผนกการเงิน จัดการเรื่องการเก็บเงิน ก็ถือเอาว่า งานส่วนนี้เป็นคนเก็บเงินลูกค้า ก่อนก็แล้วกัน ส่วนหน้างานอาจปรับเปลี่ยนตามความถูกต้องได้อีกที)
 
 4 **Customer** -- ส่วนนี้ก็จะเก็บข้อมูลลูกค้า การติดต่อ ประวัติการรักษา อะไรต่างๆ
 
@@ -124,14 +125,14 @@ docStatus     : __{{ status }}__
 
 บางที หากเราทำเป็นลักษณะ program หรือ course ซึ่งจะทำให้เรากำหนดชัดเจนไปเลยว่า แต่ละ program/course มี component/ส่วนประกอบ อะไรๆ บ้าง ตัว App ก็จะรู้โดยอัตโนมัติ ว่าลูกค้ารายนี้มาทำ course อะไร มันก็แสดงรายการทั้งหมด ออกมาได้เลย ไม่ต้องเลือก ทีละอัน
 
-แต่อันนี้ทำให้ดูเป็นตัวอย่าง ให้พอเห็นภาพเท่านั้น หน้าจอจะมีข้อมูลมากเท่าไหร่ user ก็เลื่อกน (scroll) ลงไปดูได้ จนครบ
+แต่อันนี้ทำให้ดูเป็นตัวอย่าง ให้พอเห็นภาพเท่านั้น หน้าจอจะมีข้อมูลมากเท่าไหร่ user ก็เลื่อน (scroll) ลงไปดูได้ จนครบ
 
 กรณีหน้าจอเป็นแบบมือถือ เราก็ทำให้เป็นแบบ responsive คือต้องปรับให้ดูได้ ในจอมือถือ เช่น
 
 [[ $img = sales-order-mobile.png ]]
 
 
-คิดว่าน่าจะประมาณนี้ เพื่อให้เห็นภาพว่า
+คิดว่าน่าจะประมาณนี้ เพื่อให้เห็นภาพว่า หน้าตาจะออกมาอย่างไร แต่ของจริงก็ค่อยออกแบบอีกที หลังจากเริ่มงานจริง
 
 
 
@@ -141,7 +142,7 @@ docStatus     : __{{ status }}__
 
 [[ $img = qr-code.png]]
 
-ไม่เห็นเขียนไว้ใน requirement แต่อยากเสนอว่า ควรใช้พวกนี้ ในการ รับของ-ส่งของ หรือเช็คข้อมูลสิ่งของใดก็ตาม โดยที่ลดการป้อนข้อมูลด้วยมือคน ทำให้งานคุณภาพมากขึ้น เร็วขึ้น
+ไม่เห็นเขียนไว้ใน requirement แต่อยากเสนอว่า ควรใช้พวกนี้ ในการ รับของ-ส่งของ หรือเช็คข้อมูลสิ่งของใดก็ตาม โดยที่ลดการป้อนข้อมูลด้วยมือคน ทำให้งานคุณภาพมากขึ้น เร็วขึ้น เช่นเรา scan บนเอกสาร-กระดาษ กล่อง สินค้า หรืออะไรก็ตามที่ติด QR Code ได้ จะสร้าง Quality + Efficiency ได้ดีมาก
 
 
 ------------------------------------------------------------------
@@ -152,7 +153,7 @@ docStatus     : __{{ status }}__
 
 [[ $img = plan.png ]]
 
-การออกแบบ จะใช้ประมาณ 2.5 เดือน แต่งานเขียนโปรแกรม จะเริ่มได้ ไม่ต้องรอ design เสร็จก่อน ดังนั้น งาน dev จะเริ่มตั้งแต่เดือน 2 หรือจริงๆอ่านเริ่มก่อนนั้นก็ได้ ขึ้นอยู่ว่าเรามีวัตถุดิบ มากน้อยแค่ไหน จากนั้นก็ทำงานทั้งหมดไป จนจบเดือน 7 จะเปิดให้ลูกค้า test และจะมีการ train จากนั้นก็ deploy เข้าสู่ตัวเซอร์เวอร์ตัวจริง ที่จะให้ใช้งาน ซึ่งน่าจะใช้เป็น cloud (ค่าบริการที่เราเสนอนี้ ไม่รวมค่าเช่า cloud รายเดือน ซึ่งเดี๋ยวเราค่อยคุยหน้างานอีกทีว่าจะเอาเจ้าไหน ราคาเท่าไหร่ กาติดตั้งทุกอย่าง ทางเราจะทำให้หมด)
+การออกแบบ จะใช้ประมาณ 2.5 เดือน แต่งานเขียนโปรแกรม จะเริ่มได้ ไม่ต้องรอ design เสร็จก่อน ดังนั้น งาน dev จะเริ่มตั้งแต่เดือน 2 หรือจริงๆอ่านเริ่มก่อนนั้นก็ได้ ขึ้นอยู่ว่าเรามีวัตถุดิบ มากน้อยแค่ไหน จากนั้นก็ทำงานทั้งหมดไป จนจบเดือน 7 จะเปิดให้ลูกค้า test และจะมีการ train จากนั้นก็ deploy เข้าสู่ตัวเซอร์เวอร์ตัวจริง ที่จะให้ใช้งาน ซึ่งน่าจะใช้เป็น cloud (ค่าบริการที่เราเสนอนี้ ไม่รวมค่าเช่า cloud รายเดือน ซึ่งเดี๋ยวเราค่อยคุยหน้างานอีกทีว่าจะเอาเจ้าไหน ราคาเท่าไหร่ การติดตั้งทุกอย่าง ทางเราจะทำให้หมด)
 
 เบ็ดเสร็จทั้งหมด 8 เดือน
 
@@ -183,10 +184,25 @@ Software Design & Development Services    | 3450000 .r.k
 
 เงื่อนไข
 1 ราคาเป็นเงินบาท ไม่รวม VAT 
-2 ชำระเงินเป็นรายเดือน เดือนละ 431,250 บาท 
+2 ชำระเงินเป็นรายเดือน เดือนละ 431,250 บาท ต่อเนื่อง 8 เดือนติดต่อกัน
 3 เมื่อเซ็นสัญญา จ่าย 2 เดือนแรก เดือน 3-8 ชำระทุกวันที่ 1 ของเดือน
 4 ค่าบริการนี้ไม่รวม Annual Tech Support, Operation Outsourcing และไม่รวมค่า Cloud Services
 5 ยืนราคา 30 วันนับจากวันเสนอราคา
+
+
+------------------------------------------------------------------
+
+## About [#about.indigo]
+
+เกี่ยวกับ Class Clinic และ 4 Xtreme
+
+[t]
+
+Class Clinic Co., Ltd                                | 4 Xtreme Co., Ltd.
+140/479 หมู่ 14 ตำบลในเมือง อำเภอเมืองขอนแก่น จังหวัดขอนแก่น | 171/1 หมู่ 1 ตำบลสันกำแพง อำเภอสันกำแพง จังหวัดเชียงใหม่ 50130  
+
+[t.]
+
 
 
 
@@ -206,3 +222,56 @@ To read this page you have to have the passCode. This page will be available as 
 
 
 [[ $blankLine ]]
+
+
+
+</div>
+<div id="expire_msg" hidden>this page is expired.</div>
+
+
+
+<script>
+
+
+window.nexWeb = {
+  nodeXurl: 'https://node-x-qd6s.onrender.com'
+}
+
+
+
+
+//get passCode
+let passCode
+while ( passCode != 'Zbkylq13VSaP' ) {
+    passCode = prompt('passCode:')
+}
+
+
+//check expire
+function setExpireOn( dat_e ) {
+  let todaY = new Date
+  let yeaR = todaY.getFullYear()
+  let montH = todaY.getMonth + 1
+  let daY = todaY.getDate()
+
+  let [ checkY, checkM, checkD ] = dat_e.split('-')
+
+  if ( yeaR > checkY || montH > Number(checkM) || daY > Number(checkD) ) {
+    main_content.hidden = true
+    expire_msg.hidden = false
+  } else {
+    main_content.hidden = false
+    expire_msg.hidden = true
+  }
+}
+
+setExpireOn('2025-05-29')
+
+
+//count the visit
+xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
+    { page: location.pathname, lastVisit: Date.now() }
+)
+
+
+</script>
