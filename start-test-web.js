@@ -26,10 +26,10 @@ http.createServer((req, res) => {
     if (err) {
       if (err.code == 'ENOENT') {
         res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8' });
-        res.end('404: ไม่พบไฟล์', 'utf-8');
+        res.end('404: file not found', 'utf-8');
       } else {
         res.writeHead(500, { 'Content-Type': 'text/plain; charset=UTF-8' });
-        res.end(`500: ข้อผิดพลาดของเซิร์ฟเวอร์: ${err.code}`, 'utf-8');
+        res.end(`500: server error: ${err.code}`, 'utf-8');
       }
     } else {
       // Specify UTF-8 encoding for HTML files
