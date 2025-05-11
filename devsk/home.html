@@ -565,22 +565,23 @@ function enableTouchDrag() {
 
 function touchStartHandler(event) {
   draggedSkill = event.target;
-    startX = event.touches[0].clientX;
-    startY = event.touches[0].clientY;
+  startX = event.touches[0].clientX;
+  startY = event.touches[0].clientY;
 
-    // Create a clone for visual dragging
-    cloneSkill = draggedSkill.cloneNode(true);
-    cloneSkill.style.position = "absolute";
-    cloneSkill.style.left = `${startX}px`;
-    cloneSkill.style.top = `${startY}px`;
-    cloneSkill.style.opacity = "0.7";
-    cloneSkill.style.pointerEvents = "none";
-    cloneSkill.style.transition = "opacity 0.2s";
-    cloneSkill.style.zIndex = "1000";
-    document.body.appendChild(cloneSkill);
+  // Create a clone for visual dragging
+  cloneSkill = draggedSkill.cloneNode(true);
+  cloneSkill.style.position = "absolute";
+  cloneSkill.style.left = `${startX}px`;
+  cloneSkill.style.top = `${startY}px`;
+  cloneSkill.style.opacity = "0.7";
+  cloneSkill.style.pointerEvents = "none";
+  cloneSkill.style.transition = "opacity 0.2s";
+  cloneSkill.style.zIndex = "1000";
+  document.body.appendChild(cloneSkill);
 
-    // Make original skill semi-transparent
-    draggedSkill.style.opacity = "0.5";
+  // Hide the original skill (for clean UI)
+  draggedSkill.style.opacity = "0";
+  draggedSkill.style.visibility = "hidden"; // Make sure it is hidden
 }
 
 function touchMoveHandler(event) {
@@ -593,30 +594,30 @@ function touchMoveHandler(event) {
 
 function touchEndHandler(event) {
   if (cloneSkill) {
-      // Check if dropped inside the container
-      const container = document.getElementById("skillContainer");
-      const containerRect = container.getBoundingClientRect();
-      const touch = event.changedTouches[0];
-      const isInsideContainer =
-        touch.clientX >= containerRect.left &&
-        touch.clientX <= containerRect.right &&
-        touch.clientY >= containerRect.top &&
-        touch.clientY <= containerRect.bottom;
+    // Check if dropped inside the container
+    const container = document.getElementById("skillContainer");
+    const containerRect = container.getBoundingClientRect();
+    const touch = event.changedTouches[0];
+    const isInsideContainer =
+      touch.clientX >= containerRect.left &&
+      touch.clientX <= containerRect.right &&
+      touch.clientY >= containerRect.top &&
+      touch.clientY <= containerRect.bottom;
 
-      // Remove the clone after the drag ends
-      cloneSkill.remove();
-      cloneSkill = null;
+    // Remove the clone
+    cloneSkill.remove();
+    cloneSkill = null;
 
-      // If dropped inside, restore the skill
-      if (isInsideContainer) {
-        draggedSkill.style.opacity = "1";
-      } else {
-        // If outside, remove the original
-        draggedSkill.remove();
-      }
-
-      draggedSkill = null;
+    if (isInsideContainer) {
+      // Restore the original skill
+      draggedSkill.style.opacity = "1";
+      draggedSkill.style.visibility = "visible";
+    } else {
+      // Ensure the original is removed completely
+      draggedSkill.remove();
+      draggedSkill = null; // Clear reference to avoid memory leak
     }
+  }
 }
 
 
