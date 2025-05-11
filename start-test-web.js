@@ -7,6 +7,27 @@ const fs = require('fs');
 const path = require('path');
 
 http.createServer((req, res) => {
+
+  //set CORS
+  res.setHeader('Access-Control-Allow-Origin','*')
+  res.setHeader('Access-Control-Allow-Methods','GET, POST, PUT, DELETE, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, xcert')
+
+  // handle preflight
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204)
+    res.end()
+    return
+  }
+
+  //main response
+  //res.writeHead(200, { 'Content-Type': 'text/plain' })
+  //res.end('CORS is configured for your basic HTTP server.')
+
+
+
+
+
   let filePath = path.join(__dirname, req.url === '/' ? 'index.html' : req.url);
 
   const extname = String(path.extname(filePath)).toLowerCase();

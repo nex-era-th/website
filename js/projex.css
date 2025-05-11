@@ -643,7 +643,7 @@ changed to below line to import all 3 famlies at once
 /*
 .x-mono { font-family: monospace; }
 .x-sans { font-family: sans-serif; } */
-.x-serif  { font-family: serif; }
+.x-serif  { font-family: "Times New Roman", Georgia, serif; }
 /*.x-thin { font-family: Ubuntu Condensed;}*/
 
 

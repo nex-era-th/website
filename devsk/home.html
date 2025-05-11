@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>@nex-era / advises on management, software design & dev / ให้คำปรึกษาด้านบริหารและอื่นๆ ออกแบบ-พัฒนาซอฟท์แวร์</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/flat_design_colors_full.css" type="text/css">
+  <link href="/js/projex.css" rel="stylesheet" type="text/css">
+  <script src="/config.js"></script>
+  <script src="/js/xfetch.js"></script>
+  <script src="/js/xdev-b.js"></script>
+  <script src="/js/projex.js"></script>
+  <style>
+    p, li, span {font-family: "Open Sans", sans-serif; font-size: 135%}
+    table { width: 100%; border-collapse: collapse;}
+    tr,th,td { border: 1px solid lightgray; }
+    th { font-weight: normal; font-size: smaller;}
+  </style>
+</head>
+<body>
+
+<div id="main" class="w3-container" style="max-width: 800px; margin: 0 auto;">
+
+  <div class="mat-text-red10 x-fz135 gloria">dev-skill</div>
+  <div><i class="mat-text-indigo4">find all the dev guys...</i></div>
+
+  <code id="profile_display" style="position: fixed; top: 0; right: 4px">@guest</code>
+
+  <!--search box-->
+  <div id="search_box" class="x-mt24">
+
+    <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
+      <input id="search_word" type="text" class="w3-input w3-border x-round-14 x-fz135" placeholder="java, mongo" onkeydown="if(event.key === 'Enter') findSkill()">
+      <button class="w3-button w3-blue w3-ripple x-round-23 x-fz135" onclick="findSkill()">
+        <img src="/icon/search.svg">
+      </button>
+    </div>
+    
+    <p class="x-small x-pointer x-mt24 mat-text-indigo"><img id="option_sign" src="/icon/off.svg" class="x-wh32"  onclick="toggleOption()"> option</p>
+    <script>
+      function toggleOption() {
+        if (option_sign.src.includes('off')) {
+          search_option.hidden = false
+          option_sign.src = "/icon/switch-on.svg"
+        } else {
+          search_option.hidden = true
+          option_sign.src = "/icon/off.svg"
+        }
+      }
+    </script>
+
+    <div id="search_option" class="x-background x-p" style="padding-top: 8px" hidden><!--option-->
+      <div style="display: grid; grid-template-columns: auto;" class="x-fz120">
+        <label class="x-condensed mat-text-indigo">LOCATION</label>
+        <input type="text" class="w3-input w3-border" placeholder="thai, singapore">
+        <label class="x-condensed x-mt mat-text-indigo">EXPERIENCE</label>
+        <select class="w3-select w3-border w3-white">
+          <option>0-2 years</option>
+          <option>2-5 years</option>
+          <option>5-10 years</option>
+          <option>10+ years</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!--search result-->
+  <div id="result" class="x-fz120 x-mt24">
+    <h6 class="mat-text-brown4 x-fz100"><i>what we found:</i></h6>
+    <table id="search_result" class="">
+      <tr style="font-size: medium"><th>profile</th><th>skills</th><th>availability</th></tr>
+      <tr><td>--</td><td></td><td></td></tr>
+
+      <!--tr><td>@john</td><td>java script, mongoDb, html, css</td><td>now</td></tr>
+      <tr><td>@jane</td><td>python, mysql</td><td>2 weeks notice</td></tr-->
+
+    </table>
+
+
+  </div>
+
+  <!--more you can do-->
+  <div id="more_space" class="x-mt40">
+    <h6 class="mat-text-brown4"><i>what else you can do</i></h6>
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+      <button class="w3-button w3-ripple w3-green x-p" onclick="search_box.hidden=true; result.hidden=true; more_space.hidden=true; sign_up.hidden=false; signup_profileName.focus()">Sign-up to make my profile</button>
+
+      <button class="w3-button w3-ripple w3-blue x-p" onclick="showSpace([log_in_space]); login_profileName.focus()">Log-in to see activities</button>
+      
+      <button class="w3-button w3-ripple w3-pink x-p" onclick="editProfile()">I wana contact these guys</button>
+
+    </div>
+
+
+
+
+
+  </div>
+
+
+  <!--sign up-->
+  <div id="sign_up" hidden>
+    <div class="mat-text-green8 x-fz135 x-center"><u>SIGN-UP</u></div>
+
+    <div style="display: grid; grid-template-columns: 10% 90%; align-items: center;" class="x-mt x-mb">
+      <img src="/icon/info-o.svg" class="x-wh">
+      <i class="mat-text-indigo x-small" style="line-height: 1.2;">After sign-up you can make your own profile or contact each dev guy within this little web.</i>
+    </div>
+
+    <div style="display: grid; grid-template-columns: auto; align-items: center;" class="x-fz135">
+      <label>profileName</label>
+      <input id="signup_profileName" type="text" class="w3-input w3-border">
+      <label class="x-mt">password</label>
+      <input id="signup_password" type="password" class="w3-input w3-border">
+      <label class="x-mt">confirm password again</label>
+      <input id="signup_password_repeat" type="password" class="w3-input w3-border">
+    </div>
+    <div class="x-mt x-condensed">
+      <button class="w3-button w3-ripple w3-blue" onclick="signupConfirm()">CONFIRM</button>
+      <button class="w3-button w3-ripple w3-yellow" onclick="sign_up.hidden=true; search_box.hidden=false; result.hidden=false; more_space.hidden=false; signup_profileName.value=''; signup_password.value='';">CLEAR & CLOSE</button>
+    </div>
+  </div>
+
+
+
+  <!--log in-->
+  <div id="log_in_space" hidden>
+    <div class="x-fz135 mat-text-blue8 x-center"><u>LOG-IN</u></div>
+    
+    <div style="display: grid; grid-template-columns: auto;" class="x-mt">
+      <label>profileName</label>
+      <input id="login_profileName" type="text" class="w3-input w3-border x-fz135" value="devster">
+      <label class="x-mt">password</label>
+      <input id="login_password" type="password" class="w3-input w3-border x-fz135" value="ThailandIsTheLandOfSmile">
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 16px" class="x-mt">
+      <button class="w3-button w3-ripple x-condensed w3-blue" onclick="logIn()">OK</button>
+      <button class="w3-button w3-ripple x-condensed w3-yellow">CLEAR & CLOSE</button>
+    </div>
+    
+
+
+  </div>
+
+
+
+  <!--edit profile-->
+  <div id="edit_profile" hidden>
+    <div id="edit_profile_name" class="mat-text-blue x-fz135">@john</div>
+
+    <div style="display: grid; grid-template-columns: 75% 25%;">
+      <input id="edit_skill_field" type="text" class="w3-input w3-border">
+      <button class="w3-button w3-ripple w3-blue x-condensed">ADD</button>
+    </div>
+
+
+
+
+  </div>
+
+
+
+
+  <!--login home-->
+  <div id="login_home" hidden>
+    <div id="login_home_profile" class="mat-text-blue8 x-fz135 x-center x-mt24"></div>
+    <i>this is where you already logged in will see</i>
+
+    <div style="display: grid; grid-template-columns: auto auto; gap: 16px" class="x-mt">
+      <div class="w3-card-4 x-round w3-container mat-red2" style="">
+        <small>view on your profile</small>
+        <h1>100</h1>
+      </div>
+      <div class="w3-card-4 x-round w3-container mat-orange2" style="">
+        <small>in dealing</small>
+        <h1>8</h1>
+      </div>
+      <div class="w3-card-4 x-round w3-container mat-green2" style="">
+        <small>working on jobs</small>
+        <h1>3</h1>
+      </div>
+      <div class="w3-card-4 x-round w3-container mat-blue2" style="">
+        <small>job done</small>
+        <h1>25</h1>
+      </div>
+      <div class="w3-card-4 x-round w3-container mat-deep-orange x-pb" style="">
+        <small>satisfaction score</small>
+        <div class="x-mtb">
+          <img src="/icon/star-black.svg">
+          <img src="/icon/star-black.svg">
+          <img src="/icon/star-black.svg">
+          <img src="/icon/star-black.svg">
+          <img src="/icon/star-black.svg">
+        </div>
+      </div>
+    </div>
+
+    <div class="x-mt36">
+      <div class="mat-text-indigo x-condensed">MY BRIEF</div>
+      <p class="x-fz135 x-mt0">I'm focus on only dev and with JavaScript mainly. Front-end to Back-end no problem.</p>
+    </div>
+
+
+    <div class="x-mt36">
+      <h6 class="mat-text-indigo x-condensed">MY SKILLS</h6>
+      <div id="skillContainer" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;" class="x-fz100">
+        <span class="w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">JavaScript</span>
+        <span class="w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">MongoDb</span>
+        <span class="w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">HTML</span>
+        <span class="w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">CSS</span>
+        <span class="w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">Bash</span>
+        <img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer" onclick="add_skill.hidden=false; add_skill_field.focus()">
+      </div>
+    </div>
+    <!--add skill-->
+    <div id="add_skill" class="x-mt" hidden>
+      <div style="display: grid; grid-template-columns: 75% 25%;">
+        <input id="add_skill_field" type="text" class="w3-input w3-border" onkeyup="getSkill( this.value)">
+        <button class="x-condensed w3-button w3-blue w3-ripple" onclick="addSkill( add_skill_field.value )">ADD</button>
+      </div>
+    </div>
+    <script>
+      function removeSkill( event, elem) {
+        const container = document.getElementById('skillContainer')
+        const containerRect = container.getBoundingClientRect()
+        const mouseX = event.clientX
+        const mouseY = event.clientY
+
+        if (
+          mouseX < containerRect.left ||  
+          mouseX > containerRect.right ||
+          mouseY < containerRect.top || 
+          mouseY > containerRect.bottom) {
+          elem.remove()
+        }
+      }
+
+      function getSkill( input_skill) {
+
+        if ( input_skill == '') {
+          return
+        }
+
+        clearTimeout( devsk.addTimer)        
+        devsk.addTimer = setTimeout( f => {
+          let matched = skillData.find(v => v.skill.match( eval('/' + input_skill + '/i') ))
+        
+          if (matched) {
+            add_skill_field.value = matched.skill
+          }
+        }, 1000)
+      }
+
+      function addSkill( new_skill ) {
+        /*let htmlTemplate = `<span class="w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">${ new_skill }</span>`*/
+
+        let newSpan = document.createElement('span')
+        newSpan.className = "w3-tag w3-round-xlarge x-pointer"
+        newSpan.setAttribute('ondragend',"removeSkill(event, this)")
+        newSpan.setAttribute('draggable','true')
+        newSpan.innerHTML = new_skill
+        skillContainer.insertBefore( newSpan, add_skill_icon)
+      }
+
+
+
+    </script>
+
+    <div class="x-mt36">
+      <h6 class="mat-text-indigo x-condensed">MY EXPERIENCES (YEARS)</h6>
+      <input type="text" class="w3-input w3-border x-fz135" value="3">
+    </div>
+
+    <div class="x-mt36">
+      <h6 class="mat-text-indigo x-condensed">MY AVAILABILITY</h6>
+      <select class="w3-select w3-border x-fz135">
+        <option>now</option>
+        <option>1 week notice</option>
+        <option>2 weeks notice</option>
+        <option>4 weeks notice</option>
+        <option>discussion</option>
+      </select>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <div style="height: 36px;"></div>
+
+</div>
+  
+    
+
+
+
+
+<!-- page act ---------------------------------------------------->
+<!--div style="height: 48px"></div>
+<div style="position: fixed; left: 0; bottom: 0;">
+  <button class="w3-btn x-p8 w3-white" onclick="location.href='index.html';"><img src="/icon/u-turn.svg" width="32" height="32"></button>
+</div-->
+
+<script>
+///////////////////////////////////////////////////////////////////
+
+
+xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', {
+  page: location.pathname, lastVisit: Date.now()
+})
+
+
+//----------------------------------------------------------
+
+const apiUrl = 'http://192.168.1.111:10000'
+const contentSpace = [
+  search_box, result, more_space, sign_up, edit_profile,
+  log_in_space, login_home
+]
+const devsk = {
+  about: 'simply the place you can search for dev guys',
+  version: '0.1',
+  by: '@devster'
+}
+
+
+//get skill data
+let skillData
+justPost( apiUrl + '/nexdb-find', {
+  collection: 'skill',
+  query: {}
+}).then( data => skillData = data)
+
+
+
+
+async function logIn() {
+
+if (login_profileName.value.length < 3 || login_password.value.length < 12) {
+  alert('profileName must be 3 chars min. / password must be 12 chars min.')
+  return
+}
+
+let loginApproval = await justPost( apiUrl + '/devsk/log-in', {
+  profileName: login_profileName.value,
+  passwordHash: await xb.hash( login_password.value)
+})
+
+// loginApproval => {done: true|false, msg: '....', from: ...}
+if (loginApproval.done) {
+  alert( 'done / ' + loginApproval.msg)
+  devsk.loginProfile = '@' + login_profileName.value
+  profile_display.textContent = devsk.loginProfile
+
+  //clear the log-in form
+  login_profileName.value = ''
+  login_password.value = ''
+
+  //open home page for logged in user
+  showSpace([ login_home ])
+  login_home_profile.textContent = devsk.loginProfile
+
+} else {
+  alert( 'fail / ' + loginApproval.msg)
+}
+}
+
+
+
+
+async function justPost( ur_l, dat_a) {
+  try {
+    const resp = await fetch( ur_l, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify( dat_a)
+    })
+
+    if (!resp.ok) {
+      throw new Error('fail, network error')
+    }
+
+    return await resp.json()
+  
+  } catch( error) {
+    console.error( error )
+    return {done: false, msg: 'fail, network error', from:'justPost'}
+  }
+
+  // tested=ok, @devster
+}
+
+
+
+
+
+async function signupConfirm() {
+  //when user open sign-up form and click confirm
+
+  if (signup_profileName.value.length < 3 || signup_password.value.length < 12) {
+    alert('profileName must >= 3, password must >= 12')
+    return
+  }
+
+  if (signup_password.value != signup_password_repeat.value) {
+    alert('your typed password mismatched, try again')
+    return
+  }
+
+  //let passHash = await xb.hash( signup_password.value)
+
+  let signupResponse = await justPost(`${ apiUrl }/devsk/sign-up`, { 
+    profileName: signup_profileName.value,
+    passwordHash: await xb.hash( signup_password.value)
+  })
+
+  if (signupResponse.done) {
+    alert('your sign-up done')
+    sign_up.hidden = true
+    edit_profile.hidden = false
+    edit_profile_name.textContent = '@' + signup_profileName.value
+    signup_profileName.value = ''
+    signup_password.value = ''
+
+
+  } else {
+    alert('fail, sign-up')
+  }
+}
+
+
+
+
+function showSpace( space_elem_array ) {
+  // show this space but hide the rest
+
+  contentSpace.forEach( sp => {
+    if (space_elem_array.includes( sp )) {
+      sp.hidden = false
+    } else {
+      sp.hidden = true
+    }
+  })
+}
+
+
+
+
+async function editProfile() {
+  showSpace([ edit_profile ])
+
+  let allSkill = await justPost(
+    apiUrl + '/nexdb-find', 
+    { collection: 'skill', query: {} })
+}
+
+
+
+async function logIn() {
+  try {
+    if (login_profileName.value.length < 3 || login_password.value.length < 12) {
+      alert('profileName must be 3 chars min. / password must be 12 chars min.')
+      return
+    }
+
+    devsk.passwordHash = await xb.hash( login_password.value)
+
+    let loginApproval = await justPost( apiUrl + '/devsk/log-in', {
+      profileName: login_profileName.value,
+      passwordHash: devsk.passwordHash
+      //'841653433fb7430cc3b33936430fb1e15e473efbc9973fa267b866f16eab8a31'
+    })
+
+    // loginApproval => {done: true|false, msg: '....', from: ...}
+    if (loginApproval.done) {
+      alert( 'done / ' + loginApproval.msg)
+      devsk.loginProfile = '@' + login_profileName.value
+      profile_display.textContent = devsk.loginProfile
+
+      //clear the log-in form
+      login_profileName.value = ''
+      login_password.value = ''
+
+      //open home page for logged in user
+      showSpace([ login_home ])
+      login_home_profile.textContent = devsk.loginProfile
+
+    } else {
+      alert( 'fail / ' + loginApproval.msg)
+    }
+  } catch (error) {
+    alert(error)
+  }
+}
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
