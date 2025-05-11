@@ -2033,7 +2033,7 @@ px.sessionId.set = () => {
 
 now making u-turn act first
 
-how: 
+HOW 
   create shell element by:
   <div x-make="u-turn" x-href="URL YOU WANT"></div>
 
@@ -2041,6 +2041,11 @@ how:
   px.make.set()
 
   it will run through page to find the x-make shell elements and complete the element for you
+
+TEST=ok @devster 12:46 Mar13/2025 +7
+
+NOTE
+  now use in nex-era web first so when use with PX you have to set the px.make.uturn.icon
 
 ------------------------------------------------------------------------*/
 px.make = {
@@ -2059,6 +2064,56 @@ px.make.set = () => {
       temPlate = temPlate.replace('{{x-href}}', ea.getAttribute('x-href'))
       ea.setAttribute('style',"position: fixed; left: 0; bottom: 0;")
       ea.innerHTML = temPlate
+
+      //tested=ok ; still has no validation stuff
     }
+  }
+}
+
+
+
+
+/*--------------------------------------------------------------------
+
+program   : px.hash256()
+for       : hash function that works for both laptop & mobile, SHA-256
+by        : @devster
+note      : put below in your CDN too
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+---------------------------------------------------------------------*/
+
+// Safe SHA-256 hash function
+px.hash256 = async (text) => {
+  // Check if crypto.subtle is available
+  if (window.crypto?.subtle) {
+    try {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(text);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(hashBuffer))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+    } catch (err) {
+      console.error("Crypto error:", err);
+    }
+  }
+
+  // Fallback: crypto-js for older browsers or restricted environments
+  if (window.CryptoJS) {
+    return CryptoJS.SHA256(text).toString(CryptoJS.enc.Hex);
+  }
+
+  // Final fallback: Error message
+  throw new Error("Secure hashing is not supported on this browser.");
+}
+
+// Usage Example:
+async function testHash() {
+  try {
+    const hash = await safeHashSHA256("your-password-here");
+    alert("Hash: " + hash);
+  } catch (err) {
+    alert("Error: " + err.message);
   }
 }
