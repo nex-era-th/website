@@ -193,24 +193,24 @@
     <i>this is where you already logged in will see</i>
 
     <div style="display: grid; grid-template-columns: auto auto; gap: 16px" class="x-mt">
-      <div class="w3-card-4 x-round w3-container mat-red2" style="">
-        <small>view on your profile</small>
+      <div class="w3-card x-round w3-container mat-red2" style="">
+        <span class="x-fz100 x-condensed">VIEW</span>
         <h1>100</h1>
       </div>
-      <div class="w3-card-4 x-round w3-container mat-orange2" style="">
-        <small>in dealing</small>
+      <div class="w3-card x-round w3-container mat-orange2" style="">
+        <span class="x-fz100 x-condensed">IN DEALING</span>
         <h1>8</h1>
       </div>
-      <div class="w3-card-4 x-round w3-container mat-green2" style="">
-        <small>working on jobs</small>
+      <div class="w3-card x-round w3-container mat-green2" style="">
+        <span class="x-fz100 x-condensed">WORKING JOBS</span>
         <h1>3</h1>
       </div>
-      <div class="w3-card-4 x-round w3-container mat-blue2" style="">
-        <small>job done</small>
+      <div class="w3-card x-round w3-container mat-blue2" style="">
+        <span class="x-fz100 x-condensed">JOB DONE</span>
         <h1>25</h1>
       </div>
-      <div class="w3-card-4 x-round w3-container mat-deep-orange x-pb" style="">
-        <small>satisfaction score</small>
+      <div class="w3-card x-round w3-container mat-deep-orange x-pb" style="">
+        <span class="x-fz100 x-condensed">SATISFY</span>
         <div class="x-mtb">
           <img src="/icon/star-black.svg">
           <img src="/icon/star-black.svg">
@@ -223,24 +223,27 @@
 
     <div class="x-mt36">
       <div class="mat-text-indigo x-condensed">MY BRIEF</div>
-      <p class="x-fz135 x-mt0">I'm focus on only dev and with JavaScript mainly. Front-end to Back-end no problem.</p>
+      <p class="x-fz135 x-mt0" contenteditable="true">I'm focus on only dev and with JavaScript mainly. Front-end to Back-end no problem.</p>
     </div>
 
 
     <div class="x-mt36">
       <h6 class="mat-text-indigo x-condensed">MY SKILLS</h6>
       <div id="skillContainer" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;" class="x-fz100">
-        <span class="skill w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">JavaScript</span>
-        <span class="skill w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">MongoDb</span>
-        <span class="skill w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">HTML</span>
-        <span class="skill w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">CSS</span>
-        <span class="skill w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">Bash</span>
-        <img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer" onclick="add_skill_box.hidden=false; add_skill_field.focus()">
+        
+        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">JavaScript</span>
+        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">MongoDb</span>
+        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">HTML</span>
+        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">CSS</span>
+        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">Bash</span>
+
+        <img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">
+
       </div>
     </div>
     <!--add skill-->
     <div id="add_skill_box" class="x-mt" hidden>
-      <div style="display: grid; grid-template-columns: 75% 25%;">
+      <div style="display: grid; grid-template-columns: 75% 25%;" class="x-fz135">
         <input id="add_skill_field" type="text" class="w3-input w3-border" onkeyup="getSkill( this.value)">
         <button class="x-condensed w3-button w3-blue w3-ripple" onclick="addSkill( add_skill_field.value )">ADD</button>
       </div>
@@ -281,7 +284,7 @@
         /*let htmlTemplate = `<span class="w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">${ new_skill }</span>`*/
 
         let newSpan = document.createElement('span')
-        newSpan.className = "w3-tag w3-round-xlarge x-pointer"
+        newSpan.className = "w3-tag w3-round-xlarge x-pointer x-fz120"
         newSpan.setAttribute('ondragend',"removeSkill(event, this)")
         newSpan.setAttribute('draggable','true')
         newSpan.innerHTML = new_skill
@@ -307,7 +310,7 @@
         <option>now</option>
         <option>1 week notice</option>
         <option>2 weeks notice</option>
-        <option>4 weeks notice</option>
+        <option>1 month notice</option>
         <option>discussion</option>
       </select>
     </div>
