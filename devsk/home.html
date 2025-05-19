@@ -39,6 +39,7 @@
       </button>
     </div>
     <script>
+
       async function findSkill() {
         if (search_word.value.trim() != '') {
           let foundGuys = await justPost(apiUrl + '/devsk/find', {
@@ -53,12 +54,15 @@
             //make each row
             foundGuys.forEach( guy => {
               let newTr = document.createElement('tr')
-              newTr.innerHTML = '<td>@' + guy.profileName + '</td><td>' + guy.skill + '</td><td>' + guy.availability + '</td>'
+              
+              newTr.innerHTML = `<td><a href="${apiUrl}/devsk/prof/@${encodeURIComponent( guy.profileName)}">@${guy.profileName}</a></td><td>${ guy.skill}</td><td>${ guy.availability }</td>`
+
               search_result.append( newTr)
             })
           }
         }
       }
+
     </script>
     
     <p class="x-small x-pointer x-mt24 mat-text-indigo"><img id="option_sign" src="/icon/off.svg" class="x-wh32"  onclick="toggleOption()"> option</p>
