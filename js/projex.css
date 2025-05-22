@@ -1,9 +1,9 @@
 /* 
 
 file      = projex.css
-version   = 2.0.6
-last note = changed note at animation classes
-time      = 11:22 Feb4/2025 +7
+version   = 2.0.12
+last note = changed in x-round....
+time      = 09:53 Feb23/2025 +7
 brief     = for all styles using in projex
 by        = @devster/nex-era
 
@@ -12,7 +12,7 @@ by        = @devster/nex-era
 
 
 
-/* import */
+/* import ---------------------------------------------------------------*/
 
 
 
@@ -143,7 +143,7 @@ changed to below line to import all 3 famlies at once
 
 
 
-/* font classes */
+/* font ---------------------------------------------------------------*/
 
 
 
@@ -643,10 +643,11 @@ changed to below line to import all 3 famlies at once
 /*
 .x-mono { font-family: monospace; }
 .x-sans { font-family: sans-serif; } */
-.x-serif  { font-family: "Times New Roman", Georgia, serif; }
+.x-serif  { font-family: serif; }
 /*.x-thin { font-family: Ubuntu Condensed;}*/
 
 
+/* font size -------------------------------------------------------*/
 .x-fz8    { font-size: 8px  }
 .x-fz10   { font-size: 10px }
 .x-fz12   { font-size: 12px }
@@ -686,13 +687,13 @@ changed to below line to import all 3 famlies at once
 .x-small  { font-size: 12px}
 
 
-/* font style */
+/* font style -------------------------------------------------------*/
 .x-fw-b, .x-bold { font-weight: bold; }
 .x-fi, .x-italic { font-style: italic }
 
 
 
-/* back control */
+/* back control -----------------------------------------------------*/
 .x-back-position { position: fixed; left: 0; bottom: 0 }
 .x-back-img  { width: 32px; height: 32px; cursor: pointer; }
 
@@ -703,7 +704,7 @@ changed to below line to import all 3 famlies at once
 
 
 
-/* color */
+/* color ------------------------------------------------------------*/
 .x-white      { color: white }
 .x-white2, .x-white-milk  { color: ghostwhite}
 .x-lgray, .x-gray-light { color: lightgray }
@@ -754,7 +755,7 @@ changed to below line to import all 3 famlies at once
 .x-blue3-bg, .x-bg-blue3, .x-teal-bg, .x-bg-teal { background-color: teal;}
 
 
-/* line */
+/* line -------------------------------------------------------------*/
 .x-tall   { line-height: 190%;}
 
 
@@ -777,7 +778,7 @@ changed to below line to import all 3 famlies at once
 
 
 
-/* margin */
+/* margin -----------------------------------------------------------*/
 .x-m0     { margin: 0 }
 .x-m2     { margin: 2px}
 .x-m4     { margin: 4px}
@@ -885,7 +886,7 @@ changed to below line to import all 3 famlies at once
 .x-mb60 { margin-bottom: 60px }
 .x-mb80 { margin-bottom: 80px }
 
-/* padding */
+/* padding ----------------------------------------------------------*/
 .x-p0, .x-pad0  { padding: 0 }
 .x-p2           { padding: 2px}
 .x-p3           { padding: 3px}
@@ -926,17 +927,25 @@ changed to below line to import all 3 famlies at once
 .x-plr, .x-plr16  { padding-left: 16px; padding-right: 16px;}
 
 
-/* opacity */
+/* opacity ------------------------------------------------------------*/
+.x-opa2   { opacity: 0.2;}
 .x-opa3   { opacity: 0.3 }
 .x-opa4   { opacity: 0.4 }
 .x-opa5, .x-opa { opacity: 0.5 }
 .x-opa6   { opacity: 0.6 }
-.x-opa8   { opacity: 0.8; }
+.x-opa7   { opacity: 0.7;}
+.x-opa8   { opacity: 0.8;}
+
+/* opacity on white background */
+.x-opa-wbg-2 { background-color: rgba(255,255,255,0.2);}
+.x-opa-wbg-4 { background-color: rgba(255,255,255,0.4);}
+.x-opa-wbg-5, .x-opa-bg { background-color: rgba(255,255,255,0.5);}
+.x-opa-wbg-7 {background-color: rgba(255,255,255,0.7);}
 
 
 
 
-/* text */
+/* text --------------------------------------------------------------*/
 .x-dec-none, .x-nodec { text-decoration: none; }
 .x-underln, .x-underline  { text-decoration: underline;}
 .x-2underln, .x-2underline { text-decoration: underline; text-decoration-style: double;}
@@ -958,9 +967,9 @@ changed to below line to import all 3 famlies at once
 
 
 
-/* general, tag */
-*   { font-family: sans-serif }
-/*h1  { 
+/* general, tag ----------------------------------------------------*/
+/* *   { font-family: sans-serif }
+h1  { 
   color:      tomato; 
   font-family:  "Open Sans", sans-serif; 
   font-weight:  400; 
@@ -968,7 +977,7 @@ changed to below line to import all 3 famlies at once
 
 
 
-/* display */
+/* display -----------------------------------------------------------*/
 .x-flex     { display: flex; align-items: center; gap:;}
 .x-flex-center  { display: flex; align-items: center; justify-content: center;}
 /*.x-flex > * { flex-grow: 1; flex-shrink: 1}
@@ -979,7 +988,7 @@ changed to below line to import all 3 famlies at once
 .x-grow     { flex-grow: 1;}
 .x-shrink   { flex-shrink: 1;}
 
-/* width */
+/* width ------------------------------------------------------------*/
 .x-mw250, .x-w-max250 { max-width: 250px }
 .x-w0       { width: 0}
 .x-w10      { width: 10%}
@@ -1002,7 +1011,10 @@ changed to below line to import all 3 famlies at once
 .x-w90      { width: 90%}
 .x-w95      { width: 95%}
 .x-w100, .x-fullw { width: 100% }
+.x-w-1of3  { width: calc(100%/3)}
+.x-w-2of3 { width: calc(100%/3*2)}
 
+/* height --------------------------------------------------------------*/
 .x-h0       { height: 0}
 .x-h10      { height: 10%}
 .x-h15      { height: 15%;}
@@ -1032,11 +1044,16 @@ changed to below line to import all 3 famlies at once
 .x-wh32     { width: 32px; height: 32px;}
 .x-wh36     { width: 36px; height: 36px;}
 .x-wh40     { width: 40px; height: 40px;}
+.x-wh50     { width: 50px; height: 50px;}
+.x-wh60     { width: 60px; height: 60px;}
+.x-wh70     { width: 70px; height: 70px;}
+.x-wh80     { width: 80px; height: 80px;}
+.x-wh90     { width: 90px; height: 90px;}
+.x-wh100    { width: 100px; height: 100px;}
 .x-full-wh, .x-fullwh  { width: 100%; height: 100%}
 
 
-.x-w13  { width: calc(100%/3)}
-.x-w23 { width: calc(100%/3*2)}
+
 
 
 
@@ -1165,7 +1182,7 @@ changed to below line to import all 3 famlies at once
 .x-inline-block { display: inline-block}
 
 
-/* border */
+/* border -----------------------------------------------------------*/
 .x-b, .x-bor, .x-border { border: 1px solid lightgray}
 
 .x-bt      { border-top: 1px solid gray}
@@ -1179,7 +1196,7 @@ changed to below line to import all 3 famlies at once
 
 
 
-/* line, space,  */
+/* line, space,  -----------------------------------------------------*/
 .x-hr     { border: none; height: 1px; background-color: lightgray; 
                 margin: 0}
 .x-hr2    { border: none; height: 2px; background-color: gray; margin: 0}
@@ -1193,7 +1210,7 @@ changed to below line to import all 3 famlies at once
 
 
 
-/* line space */
+/* line space ---------------------------------------------------------*/
 .x-div-space4 { height: 4px}
 .x-div-space8 { height: 8px}
 .x-div-space  { height: 16px}
@@ -1202,12 +1219,12 @@ changed to below line to import all 3 famlies at once
 .x-div-space36 { height: 36px}
 
 
-/* show, hide */
+/* show, hide ---------------------------------------------------------*/
 .x-hide       { display: none }
 .x-show       { display: block;  }
 
 
-/* round */
+/* round --------------------------------------------------------------*/
 .x-round, .x-round-all { border-radius: 10px;}
 .x-round-s { border-radius: 5px;}   /* smaller round corner */
 .x-round-1 { border-radius: 10px 0 0 0;}
@@ -1218,6 +1235,10 @@ changed to below line to import all 3 famlies at once
 .x-round-23 { border-radius: 0 10px 10px 0;}
 .x-round-34 { border-radius: 0 0 10px 10px;}
 .x-round-14 { border-radius: 10px 0 0 10px;}
+.x-round-123, .x-round-not4 { border-radius: 10px 10px 10px 0;}
+.x-round-234, .x-round-not1 { border-radius: 0 10px 10px 10px;}
+.x-round-134, .x-round-not2 { border-radius: 10px 0 10px 10px;}
+.x-round-124, .x-round-not3 { border-radius: 10px 10px 0 10px;}
 
 
 /* trucate or clamp text and put ... at the tail if the text goes beyond boudary */
@@ -1255,7 +1276,7 @@ changed to below line to import all 3 famlies at once
 
 
 
-/* zoom */
+/* zoom --------------------------------------------------------------*/
 .x-zoom110  { zoom: 110% }
 .x-zoom120  { zoom: 120% }
 .x-zoom130  { zoom: 130% }
@@ -1263,7 +1284,7 @@ changed to below line to import all 3 famlies at once
 .x-zoom150  { zoom: 150% }
 
 
-/* picture */
+/* picture -------------------------------------------------------------*/
 .x-fullw-pic              { width: 100%}
 .x-cover-pic              { width: 100%; height: 100%; object-fit: cover;}
 .x-circle, .x-circle-pic  { border-radius: 50%;}
@@ -1273,7 +1294,7 @@ changed to below line to import all 3 famlies at once
 
 
 
-/* animation ---------------------------------------------------
+/* animation -----------------------------------------------------------
   
 all these classess for animation already tested by @devster, 2025-01-05T10:35+0700
 
@@ -1291,7 +1312,7 @@ GUIDE
 BY
   @devster, 2025-01-05T10:39+0700
 
-*/
+-----------------------------------------------------------------------*/
 
 @keyframes x-fadeIn {
   from {opacity: 0;}
@@ -1311,7 +1332,7 @@ BY
   from {transform: translateY(100%)}
   to {transform: translateY(0)}
 }
-.x-slide-up-from-bottom-edge {
+.x-slide-up-from-bottom-edge, .x-slide-from-bottom-edge {
   position: fixed; left: 0; bottom: 0; height: 100%; width: 100%; 
   animation: x-slideUpFromBottomEdge 1s forwards;
 }
@@ -1321,7 +1342,7 @@ BY
   from {transform: translate(0);}
   to {transform: translateY(100%);}
 }
-.x-slide-down-to-bottom-edge {
+.x-slide-down-to-bottom-edge, .x-slide-to-bottom-edge {
   position: fixed; left: 0; bottom: 0; height: 100%; width: 100%; 
   animation: x-slideDownToBottomEdge 1s forwards;
 }
@@ -1331,7 +1352,7 @@ BY
   from {transform: translateX(-100%);}
   to {transform: translateX(0);}
 }
-.x-slide-right-from-left-edge {
+.x-slide-right-from-left-edge, .x-slide-from-left-edge {
   position: fixed; left: 0; bottom: 0; height: 100%; width: 100%;
   animation: x-slideRightFromLeftEdge 1s forwards;
 }
@@ -1341,7 +1362,7 @@ BY
   from {transform: translateX(0);}
   to {transform: translateX(-100%);}
 }
-.x-slide-left-to-left-edge {
+.x-slide-left-to-left-edge, .x-slide-to-left-edge {
   position: fixed; left: 0; bottom: 0; height: 100%; width: 100%;
   animation: x-slideLeftToLeftEdge 1s forwards;
 }
@@ -1351,7 +1372,7 @@ BY
   from {transform: translateX(100%);}
   to {transform: translateX(0);}
 }
-.x-slide-left-from-right-edge {
+.x-slide-left-from-right-edge, .x-slide-from-right-edge {
   position: fixed; right: 0; bottom: 0; height: 100%; width: 100%;
   animation: x-slideLeftFromRightEdge 1s forwards;
 }
@@ -1361,7 +1382,7 @@ BY
   from {transform: translateX(0);}
   to {transform: translateX(100%);}
 }
-.x-slide-right-to-right-edge {
+.x-slide-right-to-right-edge, .x-slide-to-right-edge {
   position: fixed; right: 0; bottom: 0; height: 100%; width: 100%;
   animation: x-slideRightToRightEdge 1s forwards;
 }
@@ -1371,7 +1392,7 @@ BY
   from {transform: translateY(-100%);}
   to {transform: translateY(0);}
 }
-.x-slide-down-from-top-edge {
+.x-slide-down-from-top-edge, .x-slide-from-top-edge {
   position: fixed; left: 0; top: 0; width: 100%; height: 100%;
   animation: x-slideDownFromTopEdge 1s forwards;
 }
@@ -1381,7 +1402,7 @@ BY
   from {transform: translateY(0);}
   to {transform: translateY(-100%);}
 }
-.x-slide-up-to-top-edge {
+.x-slide-up-to-top-edge, .x-slide-to-top-edge {
   position: fixed; left: 0; top: 0; width: 100%; height: 100%;
   animation: x-slideUpToTopEdge 1s forwards;
 }
@@ -1429,8 +1450,10 @@ BY
 
 
 /*  positioning ---------------------------------------------
+
     all classes tested=ok, @devster 2025-01-07T11:19+0700
-*/
+
+-----------------------------------------------------------------------*/
 .x-center-screen {
   position: fixed; top: 50%; left: 50%;
   transform: translate(-50%,-50%);
@@ -1465,21 +1488,22 @@ BY
 
 
 
-/* shadow */
-.x-shadow {
-  box-shadow: 3px 3px 6px lightgray;
-}
+/* shadow ----------------------------------------------------------*/
+.x-shadow         { box-shadow: 3px 3px 6px lightgray;}
+.x-shadow-text    { text-shadow: 1px 1px 2px lightgray }
+.x-shadow-0       { box-shadow: none }
+.x-shadow-text-0  { text-shadow: none }
 
 
 
 
 
+/* Thai format -----------------------------------------------------
 
-/* Thai format --------------------------------------------------*/
+  list in Thai number 
+  GUIDE <ol class="thai">
 
-/*  list in Thai number 
-    GUIDE <ol class="thai">
-*/
+--------------------------------------------------------------------*/
 ol.thai {
   list-style-type: none;
   counter-reset: item;
@@ -1517,6 +1541,14 @@ ol.thai li:nth-child(n+10)::before {
 .x-hover-yellow:hover { background-color: var(--amber-50);}
 .x-hover-brown:hover  { background-color: var(--brown-50);}
 .x-hover-grey:hover   { background-color: var(--blue-grey-50);}
+.x-hover-border:hover { border: 1px solid lightgrey}
+.x-hover-border-pink:hover  { border: 1px solid pink}
+.x-hover-border-red:hover   { border: 1px solid red}
+.x-hover-border-green:hover { border: 1px solid green}
+.x-hover-border-blue:hover  { border: 1px solid blue}
+.x-hover-border-yellow:hover  { border: 1px solid yellow}
+
+
 
 
 /* background color ------------------------------------------------*/
@@ -1573,10 +1605,11 @@ ol.thai li:nth-child(n+10)::before {
 
 
 /* level is layer of elements, or z-index ------------------------*/
-x-level1  { z-index: 25}
-x-level2  { z-index: 50}
-x-level3  { z-index: 75}
-x-level4, x-level-top { z-index: 100}
+.x-level0, .x-layer0, .x-layer-bottom   { z-index: 0 }
+.x-level1, .x-layer1   { z-index: 25 }
+.x-level2, .x-layer2, .x-layer-mid   { z-index: 50 }
+.x-level3, .x-layer3   { z-index: 75 }
+.x-level4, .x-level-top, .x-layer4, .x-layer-top { z-index: 100 }
 
 
 
@@ -1584,9 +1617,103 @@ x-level4, x-level-top { z-index: 100}
 
 
 /* text handling --------------------------------------------------*/
-x-word-wrap { word-break: break-all; /*overflow-wrap: break-word;*/ }
+.x-word-wrap { word-break: break-all; /*overflow-wrap: break-word;*/ }
+.x-dont-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
 
 
+
+
+
+
+
+/* overlay ----------------------------------------------------------*/
+.x-overlay { min-width: 100vw; min-height: 100vh; position: fixed; top: 0; left: 0; background-color: rgba(0,0,0,0.6);}
+
+
+
+
+
+/* chat bubble ----------------------------------------------------*/
+
+.chat-bubble-r,
+.chat-bubble-l {
+  position: relative;
+  display: inline-block;
+  background: #f2f2f2;
+  border: 1px solid #ccc;
+  padding: 10px 14px;
+  border-radius: 10px;
+  /*font-size: 14px;*/
+  color: #333;
+  max-width: 100%;
+  width: fit-content;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+/* === RIGHT bubble spike (points right) === */
+
+/* outer border triangle */
+.chat-bubble-r::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-left-color: #ccc; /* border color */
+  z-index: 1;
+}
+
+/* inner background triangle */
+.chat-bubble-r::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%) translateX(-1px);
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-left-color: #f2f2f2; /* background color */
+  z-index: 2;
+}
+
+/* === LEFT bubble spike (points left) === */
+
+/* outer border triangle */
+.chat-bubble-l::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-right-color: #ccc; /* border color */
+  z-index: 1;
+}
+
+/* inner background triangle */
+.chat-bubble-l::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%) translateX(1px);
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-right-color: #f2f2f2; /* background color */
+  z-index: 2;
+}
 
 
 
@@ -1617,4 +1744,4 @@ x-word-wrap { word-break: break-all; /*overflow-wrap: break-word;*/ }
 
 
 
-*/
+-------------------------------------------------------------------*/

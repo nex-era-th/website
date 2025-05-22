@@ -1,12 +1,27 @@
 /* 
-$WEB/xcss/projex.css
------------------------ 
-for all basic styles
-last update: 2025-01-06T07:42+0700
-by: @devster
-*/
+
+file      = projex.css
+version   = 2.0.6
+last note = changed note at animation classes
+time      = 11:22 Feb4/2025 +7
+brief     = for all styles using in projex
+by        = @devster/nex-era
+
+----------------------------------------------------------------------*/
+
+
+
 
 /* import */
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+
+@import 'material-x.css';
+
+
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap');
 
 
@@ -52,15 +67,26 @@ by: @devster
 
 
 
-/* Ubuntu */
+/* Ubuntu 
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:ital,wdth,wght@0,75,100..800;1,75,100..800&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:ital,wght@0,75,100..800;1,75,100..800&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans+Mono:ital,wght@0,400..700;1,400..700&display=swap');
 
+changed to below line to import all 3 famlies at once
+*/
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Condensed&family=Ubuntu+Sans+Mono:ital,wght@0,400..700;1,400..700&family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap');
 
 
-/* Roboto */
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,75,100..1000&display=swap');
+
+/* Roboto */ 
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,75,100..1000&Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+/*
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+*/
+
+
 
 
 
@@ -98,9 +124,9 @@ by: @devster
 
 @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
 
-
+/*
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
+*/
 
 
 @import url('https://fonts.googleapis.com/css2?family=Thasadith:ital,wght@0,400;0,700;1,400;1,700&display=swap');
@@ -120,6 +146,33 @@ by: @devster
 /* font classes */
 
 
+
+/*  <uniquifier>: Use a unique and descriptive class name
+    <weight>: Use a value from 100 to 900 */
+
+.inter {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+.inter-light {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+.inter-thin {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+}
+
+
+
+
+
 .kranky-regular {
   font-family: "Kranky", serif;
   font-weight: 400;
@@ -128,7 +181,7 @@ by: @devster
 
 
 
-.beth-ellen-regular {
+.beth-ellen-regular, .beth-ellen, .x-script {
   font-family: "Beth Ellen", serif;
   font-weight: 400;
   font-style: normal;
@@ -160,7 +213,7 @@ by: @devster
 
 
 
-.thasadith-regular {
+.thasadith {
   font-family: "Thasadith", serif;
   font-weight: 400;
   font-style: normal;
@@ -172,7 +225,7 @@ by: @devster
   font-style: normal;
 }
 
-.thasadith-regular-italic {
+.thasadith-italic {
   font-family: "Thasadith", serif;
   font-weight: 400;
   font-style: italic;
@@ -187,16 +240,21 @@ by: @devster
 
 
 
-.x-sharetech-mono {
+.sharetech-mono {
   font-family: "Share Tech Mono", serif;
   font-weight: 400;
   font-style: normal;
 }
 
+/*
+.sharetech {
+  font-family: "Share Tech Mono", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+*/
 
-
-
-.x-oxanium-light {
+.oxanium-light {
   font-family: "Oxanium", serif;
   font-optical-sizing: auto;
   font-weight: 200;
@@ -205,7 +263,7 @@ by: @devster
 
 
 
-.x-bungee-hairline {
+.bungee-hairline {
   font-family: "Bungee Hairline", serif;
   font-weight: 400;
   font-style: normal;
@@ -214,7 +272,7 @@ by: @devster
 
 
 
-.x-genos {
+.genos {
   font-family: "Genos", serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -222,7 +280,7 @@ by: @devster
 }
 
 
-.x-mplus {
+.mplus {
   font-family: "M PLUS 1 Code", serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -233,7 +291,7 @@ by: @devster
 
 
 
-.x-homenaje {
+.homenaje {
   font-family: "Homenaje", serif;
   font-weight: 400;
   font-style: normal;
@@ -242,7 +300,7 @@ by: @devster
 
 
 
-.x-orbitron {
+.orbitron {
   font-family: "Orbitron", serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -251,7 +309,7 @@ by: @devster
 
 
 
-.x-gruppo {
+.gruppo {
   font-family: "Gruppo", serif;
   font-weight: 400;
   font-style: normal;
@@ -260,7 +318,7 @@ by: @devster
 
 
 
-.x-gluten {
+.gluten {
   font-family: "Gluten", serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -269,7 +327,7 @@ by: @devster
     "slnt" 0;
 }
 
-.x-gluten-light {
+.gluten-light {
   font-family: "Gluten", serif;
   font-optical-sizing: auto;
   font-weight: 300;
@@ -278,7 +336,7 @@ by: @devster
     "slnt" 0;
 }
 
-.x-gluten-ultralight {
+.gluten-ultralight {
   font-family: "Gluten", serif;
   font-optical-sizing: auto;
   font-weight: 100;
@@ -287,7 +345,7 @@ by: @devster
     "slnt" 0;
 }
 
-.x-noto-thai {
+.noto-thai {
   font-family: "Noto Sans Thai", serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -298,7 +356,7 @@ by: @devster
 
 
 
-.x-noto {
+.noto {
   font-family: "Noto Sans", serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -314,7 +372,7 @@ by: @devster
 
 
 /* Roboto */
-.x-roboto {
+.roboto {
   font-family: "Roboto Flex", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -333,7 +391,7 @@ by: @devster
     "YTUC" 712;
 }
 
-.x-roboto-light {
+.roboto-light {
   font-family: "Roboto Flex", sans-serif;
   font-optical-sizing: auto;
   font-weight: 300;
@@ -352,7 +410,26 @@ by: @devster
     "YTUC" 712;
 }
 
-.x-roboto-ultralight {
+.roboto-ultralight, .roboto-ultra {
+  font-family: "Roboto Flex", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 100,
+    "GRAD" 0,
+    "XOPQ" 96,
+    "XTRA" 468,
+    "YOPQ" 79,
+    "YTAS" 750,
+    "YTDE" -203,
+    "YTFI" 738,
+    "YTLC" 514,
+    "YTUC" 712;
+}
+
+.roboto-thin {
   font-family: "Roboto Flex", sans-serif;
   font-optical-sizing: auto;
   font-weight: 100;
@@ -371,7 +448,7 @@ by: @devster
     "YTUC" 712;
 }
 
-.x-roboto-thin, x-thin {
+.roboto-condensed {
   font-family: "Roboto Flex", sans-serif;
   font-optical-sizing: auto;
   font-weight: 300;
@@ -390,10 +467,22 @@ by: @devster
     "YTUC" 712;
 }
 
+.roboto-mono {
+  font-family: "Roboto Mono", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
 
 
 
-.x-ubuntu {
+
+
+
+
+
+
+.ubuntu, .x-sans {
   font-family: "Ubuntu Sans", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -402,7 +491,7 @@ by: @devster
     "wdth" 100;
 }
 
-.x-ubuntu-light {
+.ubuntu-light, .x-light {
   font-family: "Ubuntu Sans", sans-serif;
   font-optical-sizing: auto;
   font-weight: 300;
@@ -411,18 +500,18 @@ by: @devster
     "wdth" 100;
 }
 
-.x-ubuntu-thin {
+.ubuntu-thin, .x-thin {
   font-family: "Ubuntu Sans", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 400;
+  font-weight: 100;
   font-style: normal;
   font-variation-settings:
-    "wdth" 75;
+    "wdth" 100;
 }
 
 
 
-.x-ubuntu-mono {
+.ubuntu-mono, .x-mono {
   font-family: "Ubuntu Sans Mono", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -431,6 +520,11 @@ by: @devster
 
 
 
+.ubuntu-condensed, .x-condensed {
+  font-family: "Ubuntu Condensed", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
 
 
 
@@ -439,15 +533,14 @@ by: @devster
 
 
 
-
-.x-dosis {
+.dosis {
   font-family: "Dosis", serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }
 
-.x-dosis-light {
+.dosis-light {
   font-family: "Dosis", serif;
   font-optical-sizing: auto;
   font-weight: 300;
@@ -455,16 +548,12 @@ by: @devster
 }
 
 
-.x-sharetech {
-  font-family: "Share Tech Mono", serif;
-  font-weight: 400;
-  font-style: normal;
-}
 
 
 
 
-.x-lekton {
+
+.lekton {
   font-family: "Lekton", serif;
   font-weight: 400;
   font-style: normal;
@@ -472,28 +561,29 @@ by: @devster
 
 
 
-.x-nothing {
+.nothing {
   font-family:  "Nothing You Could Do", serif;
   font-weight:  400;
   font-style:   normal;
 }
 
 
-.x-gloria {
+.gloria {
   font-family:  "Gloria Hallelujah", serif;
   font-weight:  400;
   font-style:   normal;
 }
 
+/*
 .x-script {
   font-family:  "Nanum Brush Script", cursive;
   font-weight:  400;
   font-style:   normal;
 }
-
+*/
 
 /* Open Sans */ 
-.x-osans, .x-open-sans {
+.x-osans, .open-sans {
   font-family: "Open Sans", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -502,7 +592,7 @@ by: @devster
     "wdth" 100;
 }
 
-.x-osans-light {
+.open-sans-light, .osans-light {
   font-family: "Open Sans", sans-serif;
   font-optical-sizing: auto;
   font-weight: 300;
@@ -517,14 +607,14 @@ by: @devster
 
 
 
-.x-caveat {
+.caveat {
   font-family: "Caveat", serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }
 
-.x-fjalla {
+.fjalla {
   font-family: "Fjalla One", serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -538,7 +628,7 @@ by: @devster
   font-style: normal;
 }*/
 
-.x-labelle {
+.labelle {
   font-family: "La Belle Aurore", serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -550,10 +640,10 @@ by: @devster
 
 
 
-
+/*
 .x-mono { font-family: monospace; }
-.x-sans { font-family: sans-serif; }
-.x-serif  { font-family: serif; }
+.x-sans { font-family: sans-serif; } */
+.x-serif  { font-family: "Times New Roman", Georgia, serif; }
 /*.x-thin { font-family: Ubuntu Condensed;}*/
 
 
@@ -802,6 +892,7 @@ by: @devster
 .x-p4           { padding: 4px }
 .x-p6           { padding: 6px}
 .x-p8, .x-pad8  { padding: 8px }
+.x-p12          { padding: 12px }
 .x-p, .x-pad16, .x-pad  { padding: 16px }
 
 .x-pt3          { padding-top: 3px}
@@ -869,16 +960,16 @@ by: @devster
 
 /* general, tag */
 *   { font-family: sans-serif }
-h1  { 
+/*h1  { 
   color:      tomato; 
   font-family:  "Open Sans", sans-serif; 
   font-weight:  400; 
-}
+}*/
 
 
 
 /* display */
-.x-flex     { display: flex}
+.x-flex     { display: flex; align-items: center; gap:;}
 .x-flex-center  { display: flex; align-items: center; justify-content: center;}
 /*.x-flex > * { flex-grow: 1; flex-shrink: 1}
 .x-flex2    { display: flex} */
@@ -926,6 +1017,7 @@ h1  {
 .x-h90      { height: 90%;}
 .x-h100, .x-fullh { height: 100%}
 
+/* normally we scale from 8, 16, 24, 32, 40... step-8 */
 .x-wh4      { width: 4px; height: 4px}
 .x-wh6      { width: 6px; height: 6px}
 .x-wh8      { width: 8px; height: 8px}
@@ -936,9 +1028,11 @@ h1  {
 .x-wh18     { width: 18px; height: 18px}
 .x-wh20     { width: 20px; height: 20px;}
 .x-wh24     { width: 24px; height: 24px;}
+.x-wh28     { width: 28px; height: 28px;}
 .x-wh32     { width: 32px; height: 32px;}
+.x-wh36     { width: 36px; height: 36px;}
 .x-wh40     { width: 40px; height: 40px;}
-.x-full-wh  { width: 100%; height: 100%}
+.x-full-wh, .x-fullwh  { width: 100%; height: 100%}
 
 
 .x-w13  { width: calc(100%/3)}
@@ -947,22 +1041,71 @@ h1  {
 
 
 
-/* layout, container, content --------------------------------*/
-.x-card { 
-  width: 100%; 
-  height: 150px; 
-  overflow: hidden; 
-  border: 1px solid lightgray;
-  border-collapse: collapse;
-  border-radius: 0;
-  margin: 2px 0;
-  background-color: white;
-  position: relative;
+/* card, layout, container, content --------------------------------*/
+.x-card {
+  /* x-style card to display img, text, whatever */ 
+  width             : 100%; /* mobile first */
+  max-width         : /*475px*/; 
+  height            : 150px; 
+  overflow          : hidden; 
+  border            : ;
+  border-collapse   : collapse;
+  background-color  : white;
+  position          : relative;
+  box-shadow        : 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* copied from w3-card-4 */
+  border-radius     : 10px;
 }
+
+.x-card-sect {
+  /* section for the x-card , it will change column qty based on width of the screen */
+  display               : grid; 
+  grid-template-columns : 100%; /* start mobile first */
+  gap                   : 16px; 
+  /*column-gap            : 10px;*/
+  align-items           : center;
+  justify-content       : space-around;
+  /*padding               : 0 16px 0 16px;*/
+  /*box-sizing            : border-box;*/
+}
+
+
+/*------------------------------------------------------------------
+
+    set grid columns based on screen's width
+    container, content, etc.
+
+-------------------------------------------------------------------*/
+
+@media (min-width: 700px) {
+  .x-card-sect {grid-template-columns: repeat(2, 1fr);}
+}
+
+@media (min-width: 1000px) {
+  .x-card-sect {grid-template-columns: repeat(3, 1fr);}
+}
+
+@media (min-width: 1400px) {
+  .x-card-sect {grid-template-columns: repeat(4, 1fr);}
+}
+
+@media (min-width: 1600px) {
+  .x-card-sect {grid-template-columns: repeat(5, 1fr);}
+}
+
+@media (min-width: 1850px) {
+  .x-card-sect {grid-template-columns: repeat(6, 1fr);}
+}
+
+
 
 .x-container, .x-content, .x-cont {
   padding: 20px 16px;
   /* 2025-1-13 */
+}
+
+.x-content-tb {
+  /* use this where we inside another container which defined left & right padding, but we need more space for the top & bottom so the x-content-tb fillable here */
+  padding: 32px 0
 }
 
 .x-title-cont {
@@ -973,12 +1116,40 @@ h1  {
   margin: 0;
 }
 
+.x-grid {
+  /* 1 column grid box */
+  display: grid;
+  grid-template-columns: 100%;
+  align-items: center;
+}
+
+.x-grid2 {
+  /* 2 columns grid box */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+}
+
+.x-grid3 {
+  /* 3 columns grid box */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+}
+
+.x-grid4 {
+  /* 4 columns grid box */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+}
 
 
-
-
-
-
+.x-centered-content {
+  /* keep content centered at this max-width */
+  max-width: 800px;
+  margin: 0 auto;
+}
 
 
 
@@ -989,6 +1160,8 @@ h1  {
   /*font-family:  "Open Sans", sans-serif; 
   font-weight:  400; */ 
 }
+
+
 .x-inline-block { display: inline-block}
 
 
@@ -1036,6 +1209,7 @@ h1  {
 
 /* round */
 .x-round, .x-round-all { border-radius: 10px;}
+.x-round-s { border-radius: 5px;}   /* smaller round corner */
 .x-round-1 { border-radius: 10px 0 0 0;}
 .x-round-2 { border-radius: 0 10px 0 0;}
 .x-round-3 { border-radius: 0 0 10px 0;}
@@ -1047,7 +1221,7 @@ h1  {
 
 
 /* trucate or clamp text and put ... at the tail if the text goes beyond boudary */
-.x-clamp1 {           /* clamp 1 lines */
+.x-clamp1, .x-1line-only {           /* clamp 1 lines */
   display             : -webkit-box;
   -webkit-box-orient  : vertical;
   -webkit-line-clamp  : 1;
@@ -1055,7 +1229,7 @@ h1  {
   text-overflow       : ellipsis
 }
 
-.x-clamp2 {           /* clamp 2 lines */
+.x-clamp2, .x-2line-only {           /* clamp 2 lines */
   display             : -webkit-box;
   -webkit-box-orient  : vertical;
   -webkit-line-clamp  : 2;
@@ -1063,7 +1237,7 @@ h1  {
   text-overflow       : ellipsis
 }
 
-.x-clamp3 {           /* clamp 3 lines */
+.x-clamp3, .x-3line-only {           /* clamp 3 lines */
   display             : -webkit-box;
   -webkit-box-orient  : vertical;
   -webkit-line-clamp  : 3;
@@ -1071,7 +1245,13 @@ h1  {
   text-overflow       : ellipsis
 }
 
-
+.x-clamp4, .x-4line-only {           /* clamp 3 lines */
+  display             : -webkit-box;
+  -webkit-box-orient  : vertical;
+  -webkit-line-clamp  : 4;
+  overflow            : hidden;
+  text-overflow       : ellipsis
+}
 
 
 
@@ -1099,10 +1279,12 @@ all these classess for animation already tested by @devster, 2025-01-05T10:35+07
 
 GUIDE
 
-  <div id="xyz" class="x-slide-up-from-bottom" style="width: 100%; height: 40%" hidden> ... </div>
+  <div id="xyz" class="x-slide-up-from-bottom-edge" style="width: 100%; height: 40%" hidden> ... </div>
   
   set hidden=false to the <div> will slide the <div> up 
-  to slide it back down, set: xyz.classList.add('x-slide-back-to-bottom')
+  to slide it back down, set: xyz.classList.add('x-slide-down-to-bottom-edge')
+
+  now you have both slide-up... & slide-down... classes you can remove the slide-down.. to get it up, and add the slide-down.. to get it down. So handle only last class can be all done.
   
   for other classes work the same
 
@@ -1295,7 +1477,9 @@ BY
 
 /* Thai format --------------------------------------------------*/
 
-/* list in Thai number */
+/*  list in Thai number 
+    GUIDE <ol class="thai">
+*/
 ol.thai {
   list-style-type: none;
   counter-reset: item;
@@ -1325,6 +1509,82 @@ ol.thai li:nth-child(n+10)::before {
 
 
 
+
+/* hover, effect ------------------------------------------------*/
+.x-hover-red:hover    { background-color: var(--red-50);}
+.x-hover-green:hover  { background-color: var(--green-50);}
+.x-hover-blue:hover, .x-hover:hover   { background-color: var(--blue-50);}
+.x-hover-yellow:hover { background-color: var(--amber-50);}
+.x-hover-brown:hover  { background-color: var(--brown-50);}
+.x-hover-grey:hover   { background-color: var(--blue-grey-50);}
+
+
+/* background color ------------------------------------------------*/
+.x-background, .x-background-grey { background-color: var(--grey-200);}
+.x-background-red { background-color: var(--red-200);}
+.x-background-green { background-color: var(--green-200);}
+.x-background-blue { background-color: var(--blue-200);}
+.x-background-brown { background-color: var(--brown-200);}
+.x-background-yellow { background-color: var(--amber-200);}
+
+
+
+
+/* variables ----------------------------------------------------*/
+:root {
+  --one3: calc(100%/3);
+  --one5: calc(100%/5);
+  --one6: calc(100%/6);
+  --one7: calc(100%/7);
+  --one8: calc(100%/8);
+  --one9: calc(100%/9);
+}
+
+
+.x-wid3 { width: var(--one3)}
+.x-wid5 { width: var(--one5)} 
+
+
+
+
+/* table -------------------------------------------------------------
+      
+    by putting this class to a table you get it all, the border collapse, background color, border color, hovering, padding, etc.
+
+----------------------------------------------------------------------*/
+.x-table {
+  width: 100%;
+  border: 1px solid white;
+  border-collapse: collapse;
+  background-color: var(--grey-200);
+}
+
+.x-table tr, 
+.x-table th, 
+.x-table td {
+  border: 1px solid white;
+  border-collapse: collapse;
+  padding: 12px 8px;
+}
+
+.x-table tr:hover { background-color: var(--blue-50); }
+
+
+
+
+/* level is layer of elements, or z-index ------------------------*/
+x-level1  { z-index: 25}
+x-level2  { z-index: 50}
+x-level3  { z-index: 75}
+x-level4, x-level-top { z-index: 100}
+
+
+
+
+
+
+/* text handling --------------------------------------------------*/
+x-word-wrap { word-break: break-all; /*overflow-wrap: break-word;*/ }
 
 
 
