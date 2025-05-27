@@ -22,37 +22,46 @@
 </head>
 <body>
 
-<div id="main" class="w3-container" style="max-width: 800px; margin: 0 auto;">
-  <!--we'll keep the appName always on the top of the page. The userName is fixed at the top-right corner-->
-
-  <!--appName-->
-  <div>
+<!--appName-->
+<div class="x-background">
+  <div class="w3-container">
     <div class="x-fz135 gloria x-pointer" style="color: darkred" onclick="showSpace( [home_space] )">dev-skill</div>
     <div><i class="mat-text-indigo4">find all the dev guys...</i></div>
   </div>
+</div>
+
+
+<!--userName-->
+<code id="profile_display" style="position: fixed; top: 0; right: 4px">@guest</code>
+
+
+
+<div id="main" class="w3-container" style="max-width: 800px; margin: 0 auto;">
+  <!--we'll keep the appName always on the top of the page. The userName is fixed at the top-right corner-->
+
+  
   
 
-  <!--userName-->
-  <code id="profile_display" style="position: fixed; top: 0; right: 4px">@guest</code>
+  
 
 
   <!--homeSpace ; the first seen before everything-->
   <div id="home_space" class="x-mt24">
 
     <div style="display: grid; grid-template-columns: auto auto; gap: 8px">
-      <div class="mat-red2 x-round x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;" onclick="showSpace( [skill_space])">
+      <div class="mat-red2 x-round-1 x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;" onclick="showSpace( [skill_space])">
         <div class="x-center x-fz150">Skills</div>
         <div class="x-center">3,000</div>
       </div>
-      <div class="mat-lime2 x-round x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
+      <div class="mat-lime2 x-round-2 x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
         <div class="x-center x-fz150">Jobs</div>
         <div class="x-center">500</div>
       </div>
-      <div class="mat-indigo2 x-round x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
+      <div class="mat-indigo2 x-round-4 x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
         <div class="x-center x-fz150">Projects</div>
         <div class="x-center">150</div>
       </div>
-      <div class="mat-orange2 x-round x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
+      <div class="mat-orange2 x-round-3 x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
         <div class="x-center x-fz150">Funding</div>
         <div class="x-center">58</div>
       </div>      
@@ -86,7 +95,7 @@
     <div id="search_box" class="x-mt24">
 
       <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
-        <input id="search_word" type="text" class="w3-input w3-border x-round-14 x-fz135" placeholder="dev skill" onkeydown="if(event.key === 'Enter') findSkill()">
+        <input id="search_word" type="text" class="w3-input w3-border x-round-14 x-fz135" placeholder="skill/@profileName" onkeydown="if(event.key === 'Enter') findSkill()">
         <button class="w3-button w3-blue w3-ripple x-round-23 x-fz135" onclick="findSkill()">
           <img src="/icon/search.svg">
         </button>
@@ -174,6 +183,12 @@
 
       </div>
     </div>
+    <div style="height: 40px;"></div>
+
+    <!--u turn-->
+    <div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="showSpace([ home_space ])">
+      <img src="/icon/u-turn.svg" class="x-wh32">
+    </div>
 
   </div>
 
@@ -218,12 +233,12 @@
 
   <!--loginSpace-->
   <div id="login_space" hidden>
-    <div class="x-fz135 mat-text-blue8 x-center"><u>LOG-IN</u></div>
+    <h3 class="x-center x-mt24 x-condensed">LOG-IN</h3>
     
     <div style="display: grid; grid-template-columns: auto;" class="x-mt">
-      <label>profileName</label>
+      <label class="x-small x-condensed mat-text-indigo">PROFILE NAME</label>
       <input id="login_profileName" type="text" class="w3-input w3-border x-fz135" value="devster">
-      <label class="x-mt">password</label>
+      <label class="x-mt x-small x-condensed mat-text-indigo">PASSWORD</label>
       <input id="login_password" type="password" class="w3-input w3-border x-fz135" value="ThailandIsTheLandOfSmile">
     </div>
 
@@ -257,27 +272,27 @@
 
   <!--afterLoginSpace-->
   <div id="after_login_space" hidden>
-    <h3 id="after_login_profileName" class="x-center x-mt24"></h3>
+    <h3 id="after_login_profileName" class="x-center x-mt24 mat-text-blue10"></h3>
     <i>this is where you already logged in will see</i>
 
     <div style="display: grid; grid-template-columns: auto auto; gap: 8px" class="x-mt24">
-      <div class="w3-card x-round w3-container mat-red2">
+      <div class="x-round-1 w3-container mat-red2 x-pointer" onclick="after_login_space.hidden = true; who_view_space.hidden = false">
         <span class="x-fz100 x-condensed">VIEW</span>
         <h1>100</h1>
       </div>
-      <div class="w3-card x-round w3-container mat-orange2">
-        <span class="x-fz100 x-condensed">DEALING</span>
+      <div class="x-round-2 w3-container mat-orange2">
+        <span class="x-fz100 x-condensed">CONTACT</span>
         <h1>8</h1>
       </div>
-      <div class="w3-card x-round w3-container mat-green2">
+      <div class="w3-container mat-green2">
         <span class="x-fz100 x-condensed">JOBS</span>
         <h1>3</h1>
       </div>
-      <div class="w3-card x-round w3-container mat-blue2">
-        <span class="x-fz100 x-condensed">JOB DONE</span>
+      <div class="w3-container mat-blue2">
+        <span class="x-fz100 x-condensed">DONE</span>
         <h1>25</h1>
       </div>
-      <div class="w3-card x-round w3-container mat-deep-orange x-pb" style="grid-column: span 2">
+      <div class="x-round-34 w3-container mat-brown2 x-pb" style="grid-column: span 2">
         <span class="x-fz100 x-condensed">SATISFY</span>
         <div class="x-mtb">
           <img src="/icon/star-black.svg">
@@ -383,10 +398,33 @@
         <option>discussion</option>
       </select>
     </div>
+    <div style="height: 40px;"></div>
+
+    <!--u turn-->
+    <div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="showSpace([ home_space ])">
+      <img src="/icon/u-turn.svg" class="x-wh32">
+    </div>    
 
   </div>
 
 
+
+
+  <!--whoViewMyProfile-->
+  <div id="who_view_space" hidden>
+    <h3 class="x-center">who view my profile</h3>
+    <table style="font-size: 120%">
+      <tr><th>who</th><th>time</th></tr>
+      <tr><td>@elon</td><td>5/12 09:00</td></tr>
+      <tr><td>@trump</td><td>5/16 12:45</td></tr>
+      <tr><td>@putin</td><td>5/20 20:12</td></tr>
+
+    </table>
+
+    <div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="who_view_space.hidden = true; after_login_space.hidden = false">
+      <img src="/icon/u-turn.svg" class="x-wh32">
+    </div>
+  </div>
 
 
 
@@ -593,13 +631,13 @@ async function logIn() {
 
     // loginApproval => {done: true|false, msg: '....', from: ...}
     if (loginApproval.done) {
-      alert( 'done / ' + loginApproval.msg)
+      //alert( 'done / ' + loginApproval.msg)
       devsk.loginProfile = '@' + login_profileName.value
       profile_display.textContent = devsk.loginProfile
 
       //clear the log-in form
-      login_profileName.value = ''
-      login_password.value = ''
+      //login_profileName.value = ''
+      //login_password.value = ''
 
       //open home page for logged in user
       showSpace([ after_login_space ])
