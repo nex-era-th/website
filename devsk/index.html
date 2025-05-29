@@ -22,17 +22,11 @@
 </head>
 <body>
 
-<!--appName-->
-<div class="x-background">
-  <div class="w3-container">
-    <div class="x-fz135 gloria x-pointer" style="color: darkred" onclick="showSpace( [home_space] )">dev-skill</div>
-    <div><i class="mat-text-indigo4">find all the dev guys...</i></div>
-  </div>
-</div>
+
 
 
 <!--userName-->
-<code id="profile_display" style="position: fixed; top: 0; right: 4px">@guest</code>
+<code id="profile_display" style="position: fixed; top: 0; right: 4px" class="x-small mat-text-indigo">@guest</code>
 
 
 
@@ -42,11 +36,8 @@
   
   
 
-  
-
-
   <!--homeSpace ; the first seen before everything-->
-  <div id="home_space" class="x-mt24">
+  <div id="home_space" class="x-mt32" hidden>
 
     <div style="display: grid; grid-template-columns: auto auto; gap: 8px">
       <div class="mat-red2 x-round-1 x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;" onclick="showSpace( [skill_space])">
@@ -77,10 +68,9 @@
     </div>
 
     <div id="home_act" class="x-mt40">
-      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
-        <button class="w3-button w3-ripple w3-pink">Log-in</button>
-        <button class="w3-button w3-ripple w3-teal">Sign-up</button>
-        
+      <div>
+        <button class="w3-button w3-ripple w3-pink" onclick="showSpace([ login_space ]); login_profileName.focus()">Log-in</button>
+        <button class="w3-button w3-ripple w3-teal" onclick="showSpace([ signup_space ]); signup_profileName.focus()">Sign-up</button>
       </div>
     </div>
 
@@ -89,13 +79,21 @@
 
 
   <!--skillSpace ; everything about skills-->
-  <div id="skill_space" hidden>
+  <div id="skill_space">
+
+    <!--appName-->
+    <div class="x-mt32 x-mb40">
+      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill</h2>
+      <div class="x-center x-gray x-italic x-serif">Find all the dev guys here 8-D</div>
+    </div>
+    
+
 
     <!--search box-->
-    <div id="search_box" class="x-mt24">
+    <div id="search_box" class="x-mt32">
 
       <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
-        <input id="search_word" type="text" class="w3-input w3-border x-round-14 x-fz135" placeholder="skill/@profileName" onkeydown="if(event.key === 'Enter') findSkill()">
+        <input id="search_word" type="text" class="w3-input w3-border x-round-14 x-fz135" placeholder="aaa, bbb, ..." onkeydown="if(event.key === 'Enter') findSkill()">
         <button class="w3-button w3-blue w3-ripple x-round-23 x-fz135" onclick="findSkill()">
           <img src="/icon/search.svg">
         </button>
@@ -127,14 +125,14 @@
 
       </script>
       
-      <p class="x-small x-pointer x-mt24 mat-text-indigo"><img id="option_sign" src="/icon/off.svg" class="x-wh32"  onclick="toggleOption()"> option</p>
+      <p class="x-small x-pointer x-mt24 mat-text-indigo"><img id="option_sign" src="/icon/off.svg" class="x-wh32"  onclick="toggleOption()"> option (not now)</p>
       <script>
         function toggleOption() {
           if (option_sign.src.includes('off')) {
-            search_option.hidden = false
+            //search_option.hidden = false
             option_sign.src = "/icon/switch-on.svg"
           } else {
-            search_option.hidden = true
+            //search_option.hidden = true
             option_sign.src = "/icon/off.svg"
           }
         }
@@ -171,24 +169,28 @@
     </div>
 
     <!--actions for skillSpace-->
-    <div id="skill_act_div" class="x-mt40">
+    <div id="skill_act_div" class="x-mtb32">
       <h6 class="mat-text-brown4"><i>what else you can do</i></h6>
-      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px" class="x-fz120">
 
-        <button class="w3-button w3-ripple w3-pink" onclick="showSpace([ login_space]); login_profileName.focus()">Log-in</button>
+      <div class="x-fz100 x-condensed" style="display: flex; flex-wrap: wrap; gap: 8px">
 
-        <button class="w3-button w3-ripple w3-teal" onclick="showSpace([ signup_space]); signup_profileName.focus()">Sign-up</button>
+        <button id="login_button" class="w3-button w3-ripple w3-pink" 
+        onclick="showSpace([ login_space]); login_profileName.focus()">Log-in</button>
 
-        
+        <button id="signup_button" class="w3-button w3-ripple w3-teal" 
+        onclick="showSpace([ signup_space]); signup_profileName.focus()">Sign-up</button>
 
+        <button id="my_profile_button" class="w3-button w3-ripple w3-brown" onclick="showSpace([ after_login_space ])" disabled>My Profile</button>
+
+        <button id="logout_button" class="w3-button w3-orange w3-ripple" onclick="location.reload()"  disabled>Log-out</button>
       </div>
     </div>
-    <div style="height: 40px;"></div>
+    <!--div style="height: 40px;"></div-->
 
     <!--u turn-->
-    <div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="showSpace([ home_space ])">
+    <!--div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="showSpace([ home_space ])">
       <img src="/icon/u-turn.svg" class="x-wh32">
-    </div>
+    </div-->
 
   </div>
 
@@ -199,31 +201,26 @@
 
 
 
-
-
-  
-
-
   <!--signUp space-->
-  <div id="signup_space" hidden>
-    <div class="mat-text-green8 x-fz135 x-center"><u>SIGN-UP</u></div>
+  <div id="signup_space" class="x-mt32" hidden>
+    <h3 class="x-center x-condensed">SIGN UP</h3>
 
-    <div style="display: grid; grid-template-columns: 10% 90%; align-items: center;" class="x-mt x-mb">
-      <img src="/icon/info-o.svg" class="x-wh">
-      <i class="mat-text-indigo x-small" style="line-height: 1.2;">After sign-up you can make your own profile or contact each dev guy within this little web.</i>
-    </div>
+    <div style="line-height: 1.3" class="mat-text-red x-center x-fz100">Sign-up แล้วท่านจะสามารถป้อนข้อมูล skill ของท่านได้ ระบบนี้จะเก็บเฉพาะ skill ไม่เก็บข้อมูลส่วนตัว รวมถึง password</div>
 
-    <div style="display: grid; grid-template-columns: auto; align-items: center;" class="x-fz135">
-      <label>profileName</label>
+    <div style="display: grid; grid-template-columns: auto; align-items: center;" class="x-fz135 x-mt32">
+      <label class="x-small x-condensed mat-text-indigo">PROFILE NAME *</label>
       <input id="signup_profileName" type="text" class="w3-input w3-border">
-      <label class="x-mt">password</label>
+      <label class="x-mt x-small x-condensed mat-text-indigo">PASSWORD *</label>
       <input id="signup_password" type="password" class="w3-input w3-border">
-      <label class="x-mt">confirm password again</label>
+      <label class="x-mt x-small x-condensed mat-text-indigo">CONFIRM PASSWORD *</label>
       <input id="signup_password_repeat" type="password" class="w3-input w3-border">
     </div>
-    <div class="x-mt x-condensed">
-      <button class="w3-button w3-ripple w3-blue" onclick="signupConfirm()">CONFIRM</button>
-      <button class="w3-button w3-ripple w3-yellow" onclick="showSpace([ home_space]); signup_profileName.value=''; signup_password.value='';">CLEAR & CLOSE</button>
+
+    <div class="x-mt32 x-mb32">
+      <button class="w3-button w3-ripple w3-blue x-condensed" 
+      onclick="signupConfirm()">Confirm</button>
+
+      <button class="w3-button w3-ripple x-condensed" onclick="showSpace([ skill_space]); signup_profileName.value=''; signup_password.value=''; signup_password_repeat.value = '';">Clear & Close</button>
     </div>
   </div>
 
@@ -232,94 +229,85 @@
 
 
   <!--loginSpace-->
-  <div id="login_space" hidden>
-    <h3 class="x-center x-mt24 x-condensed">LOG-IN</h3>
+  <div id="login_space" class="x-mt32" hidden>
+    <h3 class="x-center x-condensed">LOG IN</h3>
     
-    <div style="display: grid; grid-template-columns: auto;" class="x-mt">
-      <label class="x-small x-condensed mat-text-indigo">PROFILE NAME</label>
-      <input id="login_profileName" type="text" class="w3-input w3-border x-fz135" value="devster">
-      <label class="x-mt x-small x-condensed mat-text-indigo">PASSWORD</label>
-      <input id="login_password" type="password" class="w3-input w3-border x-fz135" value="ThailandIsTheLandOfSmile">
+    <div style="display: grid; grid-template-columns: auto;" class="x-mt40">
+      <label class="x-small x-condensed mat-text-indigo">PROFILE NAME *</label>
+      <input id="login_profileName" type="text" class="w3-input w3-border x-fz135">
+      <label class="x-mt x-small x-condensed mat-text-indigo">PASSWORD *</label>
+      <input id="login_password" type="password" class="w3-input w3-border x-fz135">
     </div>
 
-    <div style="display: flex; align-items: center; gap: 16px" class="x-mt">
-      <button class="w3-button w3-ripple x-condensed w3-blue" onclick="logIn()">OK</button>
-      <button class="w3-button w3-ripple x-condensed w3-yellow">CLEAR & CLOSE</button>
+    <div class="x-mtb32 x-fz100">
+      <button class="w3-button w3-ripple x-condensed w3-blue" onclick="logIn()">Submit</button>
+      <button class="w3-button w3-ripple x-condensed" onclick="showSpace([ skill_space ])">Clear & Close</button>
     </div>
-    
-
-
   </div>
 
 
 
-  <!--edit profile  => keep          -->
-  <div hidden>
-    <div id="edit_profile_name" class="mat-text-blue x-fz135">@john</div>
-
-    <div style="display: grid; grid-template-columns: 75% 25%;">
-      <input id="edit_skill_field" type="text" class="w3-input w3-border">
-      <button class="w3-button w3-ripple w3-blue x-condensed">ADD</button>
-    </div>
-
-
-
-
-  </div>
+ 
 
 
 
 
   <!--afterLoginSpace-->
   <div id="after_login_space" hidden>
-    <h3 id="after_login_profileName" class="x-center x-mt24 mat-text-blue10"></h3>
-    <i>this is where you already logged in will see</i>
+    <h3 id="after_login_profileName" class="x-center x-mt32"></h3>
+    <div class="mat-text-red x-center" style="font-size: 100%">หากมีการแก้ไขข้อมูล ต้องกด Save เพื่อเก็บข้อมูลด้วย</div>
 
-    <div style="display: grid; grid-template-columns: auto auto; gap: 8px" class="x-mt24">
-      <div class="x-round-1 w3-container mat-red2 x-pointer" onclick="after_login_space.hidden = true; who_view_space.hidden = false">
-        <span class="x-fz100 x-condensed">VIEW</span>
-        <h1>100</h1>
-      </div>
-      <div class="x-round-2 w3-container mat-orange2">
-        <span class="x-fz100 x-condensed">CONTACT</span>
-        <h1>8</h1>
-      </div>
-      <div class="w3-container mat-green2">
-        <span class="x-fz100 x-condensed">JOBS</span>
-        <h1>3</h1>
-      </div>
-      <div class="w3-container mat-blue2">
-        <span class="x-fz100 x-condensed">DONE</span>
-        <h1>25</h1>
-      </div>
-      <div class="x-round-34 w3-container mat-brown2 x-pb" style="grid-column: span 2">
-        <span class="x-fz100 x-condensed">SATISFY</span>
-        <div class="x-mtb">
-          <img src="/icon/star-black.svg">
-          <img src="/icon/star-black.svg">
-          <img src="/icon/star-black.svg">
-          <img src="/icon/star-black.svg">
-          <img src="/icon/star-black.svg">
+    <div hidden><!--dashboard-->
+      <div style="display: grid; grid-template-columns: auto auto; gap: 8px" class="x-mt24">
+        <div class="x-round-1 w3-container mat-red2 x-pointer" onclick="after_login_space.hidden = true; who_view_space.hidden = false">
+          <span class="x-fz100 x-condensed">VIEW</span>
+          <h1>100</h1>
+        </div>
+        <div class="x-round-2 w3-container mat-orange2">
+          <span class="x-fz100 x-condensed">CONTACT</span>
+          <h1>8</h1>
+        </div>
+        <div class="w3-container mat-green2">
+          <span class="x-fz100 x-condensed">JOBS</span>
+          <h1>3</h1>
+        </div>
+        <div class="w3-container mat-blue2">
+          <span class="x-fz100 x-condensed">DONE</span>
+          <h1>25</h1>
+        </div>
+        <div class="x-round-34 w3-container mat-brown2 x-pb" style="grid-column: span 2">
+          <span class="x-fz100 x-condensed">SATISFY</span>
+          <div class="x-mtb">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
+          </div>
         </div>
       </div>
     </div>
+    
 
-    <div class="x-mt36">
-      <div class="mat-text-indigo x-condensed">MY BRIEF</div>
-      <p class="x-fz135 x-mt0" contenteditable="true">I'm focus on only dev and with JavaScript mainly. Front-end to Back-end no problem.</p>
+    <div class="x-mt32">
+      <div class="mat-text-indigo x-condensed">MY BRIEF *</div>
+      <p id="my_brief" class="x-fz135 x-mt0" contenteditable="true" oninput="after_update_button.disabled=false"></p>
     </div>
 
 
-    <div class="x-mt36">
-      <h6 class="mat-text-indigo x-condensed">MY SKILLS</h6>
+    <div class="x-mt32">
+      <h6 class="mat-text-indigo x-condensed">MY SKILLS *</h6>
       <div id="skillContainer" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;" class="x-fz100">
         
+        <!--
         <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">JavaScript</span>
         <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">MongoDb</span>
         <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">HTML</span>
         <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">CSS</span>
         <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">Bash</span>
+        -->
 
+        <!--add icon-->
         <img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">
 
       </div>
@@ -345,6 +333,7 @@
           mouseY < containerRect.top || 
           mouseY > containerRect.bottom) {
           elem.remove()
+          after_update_button.disabled = false
         }
       }
 
@@ -377,20 +366,21 @@
         //hide the add_skill_box, reset add_skill_field
         add_skill_box.hidden = true
         add_skill_field.value = ''
+        after_update_button.disabled = false
       }
 
 
 
     </script>
 
-    <div class="x-mt36">
-      <h6 class="mat-text-indigo x-condensed">MY EXPERIENCES (YEARS)</h6>
-      <input type="text" class="w3-input w3-border x-fz135" value="3">
+    <div class="x-mt32">
+      <h6 class="mat-text-indigo x-condensed">MY EXPERIENCES (YEARS) *</h6>
+      <input id="my_experience" type="number" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
     </div>
 
-    <div class="x-mt36">
-      <h6 class="mat-text-indigo x-condensed">MY AVAILABILITY</h6>
-      <select class="w3-select w3-border x-fz135">
+    <div class="x-mt32">
+      <h6 class="mat-text-indigo x-condensed">MY AVAILABILITY *</h6>
+      <select id="my_availability" class="w3-select w3-border x-fz135" onchange="after_update_button.disabled = false">
         <option>now</option>
         <option>1 week notice</option>
         <option>2 weeks notice</option>
@@ -398,15 +388,98 @@
         <option>discussion</option>
       </select>
     </div>
-    <div style="height: 40px;"></div>
 
-    <!--u turn-->
-    <div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="showSpace([ home_space ])">
+
+    <div class="x-mt32">
+      <h6 class="mat-text-indigo x-condensed">LOCATION</h6>
+      <input id="my_location" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
+    </div>
+
+    <div class="x-mt32">
+      <h6 class="mat-text-indigo x-condensed">NATIONALITY</h6>
+      <input id="my_nationality" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
+    </div>
+
+
+    <!--action-->
+    <div class="x-mtb32">
+      <button id="after_update_button" class="w3-button w3-blue w3-ripple x-condensed" disabled 
+      onclick="editProfile('update')">Update</button>
+
+      <button class="w3-button w3-ripple x-condensed" onclick="showSpace([ skill_space ])">Close</button>
+    </div>
+
+
+    <!--u turn
+    <div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="showSpace([ skill_space ])">
       <img src="/icon/u-turn.svg" class="x-wh32">
     </div>    
-
+-->
   </div>
+  <script>
+    async function editProfile( mode='update' ) {
+      //update the profile to server
+      let dataToUpdate = {
+        profileName: after_login_profileName.textContent.slice(1),
+        brief: my_brief.textContent,
+        skill: Array.from( xb.at([ skillContainer, {all:'span'} ]) ).map(v => v.textContent).join().replaceAll(',',', '),
+        experience: my_experience.value,
+        availability: my_availability.value,
+        location: my_location.value,
+        nationality: my_nationality.value
+      }
 
+      if (mode == 'update') {
+        try {
+          let serverReply = await justPost( apiUrl + '/devsk/edit-profile', dataToUpdate)
+
+          if (serverReply.done) {
+            alert('done, updated your profile')
+            after_update_button.disabled = true
+
+          } else {
+            alert('fail, cannot update your profile')
+          }
+        } catch (error) {
+          console.error( error)
+          alert('fail, network problem')
+        }
+
+      } else if (mode == 'add') {
+
+        //validate
+        if ( my_brief.textContent == '' || xb.at([ skillContainer, {all:'span'} ]).length == 0 || my_experience.value == '' || my_availability.value == '') {
+
+          alert('Please complete the * fields')
+          return
+        }
+
+        try {
+          let serverReply = await justPost( apiUrl + '/devsk/add-profile', dataToUpdate)
+
+          if (serverReply.done) {
+            alert('done, added your profile')
+
+            //then change button label to 'Update' and disable it
+            after_update_button.textContent = 'Update'
+            after_update_button.setAttribute('onlick',"editProfile('update')")
+            after_update_button.disabled = true
+
+            //set main buttons
+            my_profile_button.disabled = false //on skill_space
+            logout_button.disabled = false
+
+          } else {
+            alert('fail, cannot add your profile')
+          }
+        } catch (error) {
+          console.error( error)
+          alertt('fail, network problem')
+        }
+      }
+      
+    }
+  </script>
 
 
 
@@ -418,7 +491,6 @@
       <tr><td>@elon</td><td>5/12 09:00</td></tr>
       <tr><td>@trump</td><td>5/16 12:45</td></tr>
       <tr><td>@putin</td><td>5/20 20:12</td></tr>
-
     </table>
 
     <div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="who_view_space.hidden = true; after_login_space.hidden = false">
@@ -433,7 +505,6 @@
 
 
 
-  <div style="height: 36px;"></div>
 
 </div>
   
@@ -463,7 +534,7 @@ const apiUrl = 'http://192.168.1.111:10000'
 
 const contentSpace = [
   home_space, skill_space, signup_space, 
-  login_space, after_login_space
+  login_space, after_login_space, who_view_space
 ]
 
 const devsk = {
@@ -489,38 +560,7 @@ justPost( apiUrl + '/nexdb-find', {
 
 
 
-/*
-async function logIn() {
 
-  if (login_profileName.value.length < 3 || login_password.value.length < 12) {
-    alert('profileName must be 3 chars min. / password must be 12 chars min.')
-    return
-  }
-
-  let loginApproval = await justPost( apiUrl + '/devsk/log-in', {
-    profileName: login_profileName.value,
-    passwordHash: await px.hash256( login_password.value)
-  })
-
-  // loginApproval => {done: true|false, msg: '....', from: ...}
-  if (loginApproval.done) {
-    alert( 'done / ' + loginApproval.msg)
-    devsk.loginProfile = '@' + login_profileName.value
-    profile_display.textContent = devsk.loginProfile
-
-    //clear the log-in form
-    login_profileName.value = ''
-    login_password.value = ''
-
-    //open home page for logged in user
-    showSpace([ after_login_space ])
-    after_login_profileName.textContent = devsk.loginProfile
-
-  } else {
-    alert( 'fail / ' + loginApproval.msg)
-  }
-}
-*/
 
 
 
@@ -574,15 +614,36 @@ async function signupConfirm() {
 
   if (signupResponse.done) {
     alert('your sign-up done')
-    sign_up.hidden = true
-    edit_profile.hidden = false
-    edit_profile_name.textContent = '@' + signup_profileName.value
+    showSpace([ after_login_space ])
+
+    //clear after_login_space
+    resetAfterLoginSpace()
+
+    after_login_profileName.textContent = '@' + signup_profileName.value
+
     signup_profileName.value = ''
     signup_password.value = ''
+    signup_password_repeat.value = ''
 
+    after_update_button.textContent = 'Add'
+    after_update_button.setAttribute('onclick',"editProfile('add')")
+    devsk.loginProfile = after_login_profileName.textContent.slice(1)
+    profile_display.textContent = '@' + devsk.loginProfile
+    my_brief.textContent = 'Write here...'
+
+    //select my_brief for user to get start editing her profile
+    const range = document.createRange()
+    const selection = window.getSelection()
+    range.selectNodeContents( my_brief)
+    selection.removeAllRanges()
+    selection.addRange( range)
+
+    //set buttons
+    login_button.disabled = true
+    signup_button.disabled = true
 
   } else {
-    alert('fail, sign-up')
+    alert('fail: ' + signupResponse.msg)
   }
 }
 
@@ -602,15 +663,6 @@ function showSpace( space_elem_array ) {
 }
 
 
-
-
-async function editProfile() {
-  showSpace([ edit_profile ])
-
-  let allSkill = await justPost(
-    apiUrl + '/nexdb-find', 
-    { collection: 'skill', query: {} })
-}
 
 
 
@@ -642,6 +694,29 @@ async function logIn() {
       //open home page for logged in user
       showSpace([ after_login_space ])
       after_login_profileName.textContent = devsk.loginProfile
+
+      my_brief.textContent = loginApproval.data.brief
+      my_experience.value = loginApproval.data.experience 
+      my_availability.value = loginApproval.data.availability
+      my_location.value = loginApproval.data.location
+      my_nationality.value = loginApproval.data.nationality
+
+      let skillList = loginApproval.data.skill.split(',').map(v => v.trim())
+
+      skillList.forEach( sk => {
+        let skTag = getSkillTag( sk)
+        skillContainer.insertBefore( skTag, add_skill_icon)
+      })
+
+      after_update_button.textContent = 'Update'
+      after_update_button.setAttribute('onclick',"editProfile('update')")
+      after_update_button.disabled = true
+
+      //main buttons
+      login_button.disabled = true
+      signup_button.disabled = true
+      my_profile_button.disabled = false //on the skill_space
+      logout_button.disabled = false
 
     } else {
       alert( 'fail / ' + loginApproval.msg)
@@ -727,12 +802,38 @@ function touchEndHandler(event) {
       // Ensure the original is removed completely
       draggedSkill.remove();
       draggedSkill = null; // Clear reference to avoid memory leak
+      after_update_button.disabled = false
     }
   }
 }
 
 
 
+
+function getSkillTag( skill_name) {
+
+  let newSkillTag = document.createElement('span')
+  newSkillTag.className = "skill w3-tag w3-round-xlarge x-pointer x-fz120"
+  newSkillTag.setAttribute('draggable',"true")
+  newSkillTag.setAttribute('ondragend',"removeSkill(event, this)")
+  newSkillTag.textContent = skill_name
+
+  return newSkillTag
+}
+
+
+
+function resetAfterLoginSpace() {
+  after_login_profileName.textContent = ''
+  my_brief.textContent = ''
+  skillContainer.innerHTML = `<img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">`
+  my_experience.value = ''
+  my_availability.value = ''
+  my_location.value = ''
+  my_nationality.value = ''
+  after_update_button.textContent = 'Update'
+  after_update_button.setAttribute('onclick',"editProfile('update')")
+}
 
 
 
