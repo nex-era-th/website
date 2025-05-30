@@ -209,7 +209,7 @@
 
     <div style="display: grid; grid-template-columns: auto; align-items: center;" class="x-fz135 x-mt32">
       <label class="x-small x-condensed mat-text-indigo">PROFILE NAME *</label>
-      <input id="signup_profileName" type="text" class="w3-input w3-border">
+      <input id="signup_profileName" type="text" class="w3-input w3-border" placeholder="a-zA-Z0-9_- only">
       <label class="x-mt x-small x-condensed mat-text-indigo">PASSWORD *</label>
       <input id="signup_password" type="password" class="w3-input w3-border">
       <label class="x-mt x-small x-condensed mat-text-indigo">CONFIRM PASSWORD *</label>
@@ -597,7 +597,7 @@ async function signupConfirm() {
   //when user open sign-up form and click confirm
 
   if (signup_profileName.value.length < 3 || signup_password.value.length < 12) {
-    alert('profileName must >= 3, password must >= 12')
+    alert('profileName must >= 3 chars, password must >= 12')
     return
   }
 
