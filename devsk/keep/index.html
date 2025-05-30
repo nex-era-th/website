@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>dev-skill find dev guys here</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/flat_design_colors_full.css" type="text/css">
+  <link href="/js/projex.css" rel="stylesheet" type="text/css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="/config.js"></script>
+  <script src="/js/xfetch.js"></script>
+  <script src="/js/xdev-b.js"></script>
+  <script src="/js/projex.js"></script>
+  <style>
+    p, li, span {font-family: "Open Sans", sans-serif; font-size: 135%}
+    table { width: 100%; border-collapse: collapse;}
+    tr,th,td { border: 1px solid lightgray; }
+    th { font-weight: normal; font-size: smaller;}
+  </style>
+</head>
+<body>
+
+
+
+
+<!--userName-->
+<code id="profile_display" style="position: fixed; top: 0; right: 4px" class="x-small mat-text-indigo">@guest</code>
+
+
+
+<div id="main" class="w3-container" style="max-width: 800px; margin: 0 auto;">
+  <!--we'll keep the appName always on the top of the page. The userName is fixed at the top-right corner-->
+
+  
+  
+
+  <!--homeSpace ; the first seen before everything-->
+  <div id="home_space" class="x-mt32" hidden>
+
+    <div style="display: grid; grid-template-columns: auto auto; gap: 8px">
+      <div class="mat-red2 x-round-1 x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;" onclick="showSpace( [skill_space])">
+        <div class="x-center x-fz150">Skills</div>
+        <div class="x-center">3,000</div>
+      </div>
+      <div class="mat-lime2 x-round-2 x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
+        <div class="x-center x-fz150">Jobs</div>
+        <div class="x-center">500</div>
+      </div>
+      <div class="mat-indigo2 x-round-4 x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
+        <div class="x-center x-fz150">Projects</div>
+        <div class="x-center">150</div>
+      </div>
+      <div class="mat-orange2 x-round-3 x-pointer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
+        <div class="x-center x-fz150">Funding</div>
+        <div class="x-center">58</div>
+      </div>      
+    </div>
+
+    <div id="home_alert">
+      <div class="mat-text-indigo x-condensed x-mt24 x-fz120">ALERT</div>
+      <ul style="display: grid; grid-template-columns: auto; gap: 10px; font-size: 120%">
+        <li class="x-fz120"><a href="#">@john</a>, java script, mongoDb, html, css -- joined 1h ago <span class="w3-tag w3-small x-round w3-green">SKILL</span></li>
+        <li class="x-fz120"><a href="#">@jane</a> joined company xyz -- 30min ago <span class="w3-tag w3-small x-round w3-orange">JOB</span></li>
+        <li class="x-fz120"><a href="#">@devster</a> and <a href="#">@xyz</a> starts <a href="#">smart farm project</a> -- may 21 <span class="w3-tag w3-small w3-blue x-round">PROJECT</span></li>
+      </ul>
+    </div>
+
+    <div id="home_act" class="x-mt40">
+      <div>
+        <button class="w3-button w3-ripple w3-pink" onclick="showSpace([ login_space ]); login_profileName.focus()">Log-in</button>
+        <button class="w3-button w3-ripple w3-teal" onclick="showSpace([ signup_space ]); signup_profileName.focus()">Sign-up</button>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!--skillSpace ; everything about skills-->
+  <div id="skill_space">
+
+    <!--appName-->
+    <div class="x-mt32 x-mb40">
+      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill</h2>
+      <div class="x-center x-gray x-italic x-serif">Find all the dev guys here 8-D</div>
+    </div>
+    
+
+
+    <!--search box-->
+    <div id="search_box" class="x-mt32">
+
+      <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
+        <input id="search_word" type="text" class="w3-input w3-border x-round-14 x-fz135" placeholder="aaa, bbb, ..." onkeydown="if(event.key === 'Enter') findSkill()">
+        <button class="w3-button w3-blue w3-ripple x-round-23 x-fz135" onclick="findSkill()">
+          <img src="/icon/search.svg">
+        </button>
+      </div>
+      <script>
+
+        async function findSkill() {
+          if (search_word.value.trim() != '') {
+            let foundGuys = await justPost(apiUrl + '/devsk/find', {
+              skill: search_word.value
+            })
+
+            if (foundGuys.length) {
+
+              //clear table display
+              search_result_table.innerHTML = '<tr><th class="x-condensed x-small">PROFILE</th><th class="x-condensed x-small">SKILL</th><th class="x-condensed x-small">AVAILABILITY</th></tr>'
+
+              //make each row
+              foundGuys.forEach( guy => {
+                let newTr = document.createElement('tr')
+                
+                newTr.innerHTML = `<td><a href="${apiUrl}/devsk/prof/@${encodeURIComponent( guy.profileName)}">@${guy.profileName}</a></td><td>${ guy.skill}</td><td>${ guy.availability }</td>`
+
+                search_result_table.append( newTr)
+              })
+            }
+          }
+        }
+
+      </script>
+      
+      <p class="x-small x-pointer x-mt24 mat-text-indigo"><img id="option_sign" src="/icon/off.svg" class="x-wh32"  onclick="toggleOption()"> option (not now)</p>
+      <script>
+        function toggleOption() {
+          if (option_sign.src.includes('off')) {
+            //search_option.hidden = false
+            option_sign.src = "/icon/switch-on.svg"
+          } else {
+            //search_option.hidden = true
+            option_sign.src = "/icon/off.svg"
+          }
+        }
+      </script>
+
+      <!--option-->
+      <div id="search_option" class="x-background x-p" style="padding-top: 4px" hidden>
+        <div style="display: grid; grid-template-columns: auto;" class="x-fz120">
+          <label class="x-condensed mat-text-indigo">LOCATION</label>
+          <input type="text" class="w3-input w3-border" placeholder="thai, singapore">
+          <label class="x-condensed x-mt8 mat-text-indigo">EXPERIENCE</label>
+          <select class="w3-select w3-border w3-white">
+            <option>0-2 years</option>
+            <option>2-5 years</option>
+            <option>5-10 years</option>
+            <option>10+ years</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!--search result-->
+    <div id="result_div" class="x-fz120 x-mt24">
+
+      <h6 class="mat-text-brown4 x-fz100"><i>what we found:</i></h6>
+      <table id="search_result_table" class="">
+        <tr><th class="x-condensed x-small">PROFILE</th><th class="x-condensed x-small">SKILL</th><th class="x-condensed x-small">AVAILABILITY</th></tr>
+        <tr><td>--</td><td></td><td></td></tr>
+
+        <!--tr><td>@john</td><td>java script, mongoDb, html, css</td><td>now</td></tr>
+        <tr><td>@jane</td><td>python, mysql</td><td>2 weeks notice</td></tr-->
+      </table>
+
+    </div>
+
+    <!--actions for skillSpace-->
+    <div id="skill_act_div" class="x-mtb32">
+      <h6 class="mat-text-brown4"><i>what else you can do</i></h6>
+
+      <div class="x-fz100 x-condensed" style="display: flex; flex-wrap: wrap; gap: 8px">
+
+        <button id="login_button" class="w3-button w3-ripple w3-pink" 
+        onclick="showSpace([ login_space]); login_profileName.focus()">Log-in</button>
+
+        <button id="signup_button" class="w3-button w3-ripple w3-teal" 
+        onclick="showSpace([ signup_space]); signup_profileName.focus()">Sign-up</button>
+
+        <button id="my_profile_button" class="w3-button w3-ripple w3-brown" onclick="showSpace([ after_login_space ])" disabled>My Profile</button>
+
+        <button id="logout_button" class="w3-button w3-orange w3-ripple" onclick="location.reload()"  disabled>Log-out</button>
+      </div>
+    </div>
+    <!--div style="height: 40px;"></div-->
+
+    <!--u turn-->
+    <!--div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="showSpace([ home_space ])">
+      <img src="/icon/u-turn.svg" class="x-wh32">
+    </div-->
+
+  </div>
+
+
+
+
+
+
+
+
+  <!--signUp space-->
+  <div id="signup_space" class="x-mt32" hidden>
+    <h3 class="x-center x-condensed">SIGN UP</h3>
+
+    <div style="line-height: 1.3" class="mat-text-red x-center x-fz100">Sign-up แล้วท่านจะสามารถป้อนข้อมูล skill ของท่านได้ ระบบนี้จะเก็บเฉพาะ skill ไม่เก็บข้อมูลส่วนตัว รวมถึง password</div>
+
+    <div style="display: grid; grid-template-columns: auto; align-items: center;" class="x-fz135 x-mt32">
+      <label class="x-small x-condensed mat-text-indigo">PROFILE NAME *</label>
+      <input id="signup_profileName" type="text" class="w3-input w3-border" placeholder="a-zA-Z0-9_- only">
+      <label class="x-mt x-small x-condensed mat-text-indigo">PASSWORD * (min 12 chars)</label>
+      <input id="signup_password" type="password" class="w3-input w3-border">
+      <label class="x-mt x-small x-condensed mat-text-indigo">CONFIRM PASSWORD *</label>
+      <input id="signup_password_repeat" type="password" class="w3-input w3-border">
+    </div>
+
+    <div class="x-mt32 x-mb32">
+      <button class="w3-button w3-ripple w3-blue x-condensed" 
+      onclick="signupConfirm()">Confirm</button>
+
+      <button class="w3-button w3-ripple x-condensed" onclick="showSpace([ skill_space]); signup_profileName.value=''; signup_password.value=''; signup_password_repeat.value = '';">Clear & Close</button>
+    </div>
+  </div>
+
+
+
+
+
+  <!--loginSpace-->
+  <div id="login_space" class="x-mt32" hidden>
+    <h3 class="x-center x-condensed">LOG IN</h3>
+    
+    <div style="display: grid; grid-template-columns: auto;" class="x-mt40">
+      <label class="x-small x-condensed mat-text-indigo">PROFILE NAME *</label>
+      <input id="login_profileName" type="text" class="w3-input w3-border x-fz135">
+      <label class="x-mt x-small x-condensed mat-text-indigo">PASSWORD *</label>
+      <input id="login_password" type="password" class="w3-input w3-border x-fz135">
+    </div>
+
+    <div class="x-mtb32 x-fz100">
+      <button class="w3-button w3-ripple x-condensed w3-blue" onclick="logIn()">Submit</button>
+      <button class="w3-button w3-ripple x-condensed" onclick="showSpace([ skill_space ])">Clear & Close</button>
+    </div>
+  </div>
+
+
+
+ 
+
+
+
+
+  <!--afterLoginSpace-->
+  <div id="after_login_space" hidden>
+    <h3 id="after_login_profileName" class="x-center x-mt32"></h3>
+    <div class="mat-text-red x-center" style="font-size: 100%">หากมีการแก้ไขข้อมูล ต้องกด Save เพื่อเก็บข้อมูลด้วย</div>
+
+    <div hidden><!--dashboard-->
+      <div style="display: grid; grid-template-columns: auto auto; gap: 8px" class="x-mt24">
+        <div class="x-round-1 w3-container mat-red2 x-pointer" onclick="after_login_space.hidden = true; who_view_space.hidden = false">
+          <span class="x-fz100 x-condensed">VIEW</span>
+          <h1>100</h1>
+        </div>
+        <div class="x-round-2 w3-container mat-orange2">
+          <span class="x-fz100 x-condensed">CONTACT</span>
+          <h1>8</h1>
+        </div>
+        <div class="w3-container mat-green2">
+          <span class="x-fz100 x-condensed">JOBS</span>
+          <h1>3</h1>
+        </div>
+        <div class="w3-container mat-blue2">
+          <span class="x-fz100 x-condensed">DONE</span>
+          <h1>25</h1>
+        </div>
+        <div class="x-round-34 w3-container mat-brown2 x-pb" style="grid-column: span 2">
+          <span class="x-fz100 x-condensed">SATISFY</span>
+          <div class="x-mtb">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <div class="x-mt32">
+      <div class="mat-text-indigo x-condensed">MY BRIEF *</div>
+      <p id="my_brief" class="x-fz135 x-mt0" contenteditable="true" oninput="after_update_button.disabled=false"></p>
+    </div>
+
+
+    <div class="x-mt32">
+      <h6 class="mat-text-indigo x-condensed">MY SKILLS *</h6>
+      <div id="skillContainer" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;" class="x-fz100">
+        
+        <!--
+        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">JavaScript</span>
+        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">MongoDb</span>
+        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">HTML</span>
+        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">CSS</span>
+        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">Bash</span>
+        -->
+
+        <!--add icon-->
+        <img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">
+
+      </div>
+    </div>
+
+    <!--add skill-->
+    <div id="add_skill_box" class="x-mt" hidden>
+      <div style="display: grid; grid-template-columns: 75% 25%;" class="x-fz135">
+        <input id="add_skill_field" type="text" class="w3-input w3-border" onkeyup="getSkill( this.value)">
+        <button class="x-condensed w3-button w3-blue w3-ripple" onclick="addSkill( add_skill_field.value )">ADD</button>
+      </div>
+    </div>
+    <script>
+      function removeSkill( event, elem) {
+        const container = document.getElementById('skillContainer')
+        const containerRect = container.getBoundingClientRect()
+        const mouseX = event.clientX
+        const mouseY = event.clientY
+
+        if (
+          mouseX < containerRect.left ||  
+          mouseX > containerRect.right ||
+          mouseY < containerRect.top || 
+          mouseY > containerRect.bottom) {
+          elem.remove()
+          after_update_button.disabled = false
+        }
+      }
+
+      function getSkill( input_skill) {
+
+        if ( input_skill == '') {
+          return
+        }
+
+        clearTimeout( devsk.addTimer)        
+        devsk.addTimer = setTimeout( f => {
+          let matched = skillData.find(v => v.skill.match( eval('/' + input_skill + '/i') ))
+        
+          if (matched) {
+            add_skill_field.value = matched.skill
+          }
+        }, 1000)
+      }
+
+      function addSkill( new_skill ) {
+        /*let htmlTemplate = `<span class="w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">${ new_skill }</span>`*/
+
+        let newSpan = document.createElement('span')
+        newSpan.className = "w3-tag w3-round-xlarge x-pointer x-fz120"
+        newSpan.setAttribute('ondragend',"removeSkill(event, this)")
+        newSpan.setAttribute('draggable','true')
+        newSpan.innerHTML = new_skill
+        skillContainer.insertBefore( newSpan, add_skill_icon)
+
+        //hide the add_skill_box, reset add_skill_field
+        add_skill_box.hidden = true
+        add_skill_field.value = ''
+        after_update_button.disabled = false
+      }
+
+
+
+    </script>
+
+    <div class="x-mt32">
+      <h6 class="mat-text-indigo x-condensed">MY EXPERIENCES (YEARS) *</h6>
+      <input id="my_experience" type="number" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
+    </div>
+
+    <div class="x-mt32">
+      <h6 class="mat-text-indigo x-condensed">MY AVAILABILITY *</h6>
+      <select id="my_availability" class="w3-select w3-border x-fz135" onchange="after_update_button.disabled = false">
+        <option>now</option>
+        <option>1 week notice</option>
+        <option>2 weeks notice</option>
+        <option>1 month notice</option>
+        <option>discussion</option>
+      </select>
+    </div>
+
+
+    <div class="x-mt32">
+      <h6 class="mat-text-indigo x-condensed">LOCATION</h6>
+      <input id="my_location" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
+    </div>
+
+    <div class="x-mt32">
+      <h6 class="mat-text-indigo x-condensed">NATIONALITY</h6>
+      <input id="my_nationality" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
+    </div>
+
+
+    <!--action-->
+    <div class="x-mtb32">
+      <button id="after_update_button" class="w3-button w3-blue w3-ripple x-condensed" disabled 
+      onclick="editProfile('update')">Update</button>
+
+      <button class="w3-button w3-ripple x-condensed" onclick="showSpace([ skill_space ])">Close</button>
+    </div>
+
+
+    <!--u turn
+    <div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="showSpace([ skill_space ])">
+      <img src="/icon/u-turn.svg" class="x-wh32">
+    </div>    
+-->
+  </div>
+  <script>
+    async function editProfile( mode='update' ) {
+      //update the profile to server
+      let dataToUpdate = {
+        profileName: after_login_profileName.textContent.slice(1),
+        brief: my_brief.textContent,
+        skill: Array.from( xb.at([ skillContainer, {all:'span'} ]) ).map(v => v.textContent).join().replaceAll(',',', '),
+        experience: my_experience.value,
+        availability: my_availability.value,
+        location: my_location.value,
+        nationality: my_nationality.value
+      }
+
+      if (mode == 'update') {
+        try {
+          let serverReply = await justPost( apiUrl + '/devsk/edit-profile', dataToUpdate)
+
+          if (serverReply.done) {
+            alert('done, updated your profile')
+            after_update_button.disabled = true
+
+          } else {
+            alert('fail, cannot update your profile')
+          }
+        } catch (error) {
+          console.error( error)
+          alert('fail, network problem')
+        }
+
+      } else if (mode == 'add') {
+
+        //validate
+        if ( my_brief.textContent == '' || xb.at([ skillContainer, {all:'span'} ]).length == 0 || my_experience.value == '' || my_availability.value == '') {
+
+          alert('Please complete the * fields')
+          return
+        }
+
+        try {
+          let serverReply = await justPost( apiUrl + '/devsk/add-profile', dataToUpdate)
+
+          if (serverReply.done) {
+            alert('done, added your profile')
+
+            //then change button label to 'Update' and disable it
+            after_update_button.textContent = 'Update'
+            after_update_button.setAttribute('onlick',"editProfile('update')")
+            after_update_button.disabled = true
+
+            //set main buttons
+            my_profile_button.disabled = false //on skill_space
+            logout_button.disabled = false
+
+          } else {
+            alert('fail, cannot add your profile')
+          }
+        } catch (error) {
+          console.error( error)
+          alertt('fail, network problem')
+        }
+      }
+      
+    }
+  </script>
+
+
+
+  <!--whoViewMyProfile-->
+  <div id="who_view_space" hidden>
+    <h3 class="x-center">who view my profile</h3>
+    <table style="font-size: 120%">
+      <tr><th>who</th><th>time</th></tr>
+      <tr><td>@elon</td><td>5/12 09:00</td></tr>
+      <tr><td>@trump</td><td>5/16 12:45</td></tr>
+      <tr><td>@putin</td><td>5/20 20:12</td></tr>
+    </table>
+
+    <div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="who_view_space.hidden = true; after_login_space.hidden = false">
+      <img src="/icon/u-turn.svg" class="x-wh32">
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+</div>
+  
+    
+
+
+
+
+<!-- page act ---------------------------------------------------->
+<!--div style="height: 48px"></div>
+<div style="position: fixed; left: 0; bottom: 0;">
+  <button class="w3-btn x-p8 w3-white" onclick="location.href='index.html';"><img src="/icon/u-turn.svg" width="32" height="32"></button>
+</div-->
+
+<script>
+///////////////////////////////////////////////////////////////////
+
+
+xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', {
+  page: location.pathname, lastVisit: Date.now()
+})
+
+
+//----------------------------------------------------------
+
+const apiUrl = 'https://node-x-qd6s.onrender.com' 
+//'http://192.168.1.111:10000'
+
+const contentSpace = [
+  home_space, skill_space, signup_space, 
+  login_space, after_login_space, who_view_space
+]
+
+const devsk = {
+  about: 'simply the place you can search for dev guys',
+  version: '0.1',
+  by: '@devster'
+}
+
+//mobile touch init
+document.addEventListener("DOMContentLoaded", enableTouchDrag)
+//let draggedSkill = null
+
+
+
+
+
+//get skill data
+let skillData
+justPost( apiUrl + '/nexdb-find', {
+  collection: 'skill',
+  query: {}
+}).then( data => skillData = data)
+
+
+
+
+
+
+
+async function justPost( ur_l, dat_a) {
+  try {
+    const resp = await fetch( ur_l, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify( dat_a)
+    })
+
+    if (!resp.ok) {
+      throw new Error('fail, network error')
+    }
+
+    return await resp.json()
+  
+  } catch( error) {
+    console.error( error )
+    return {done: false, msg: 'fail, network error', from:'justPost'}
+  }
+
+  // tested=ok, @devster
+}
+
+
+
+
+
+async function signupConfirm() {
+  //when user open sign-up form and click confirm
+
+  if (signup_profileName.value.length < 3 || signup_password.value.length < 12) {
+    alert('profileName must >= 3 chars, password must >= 12')
+    return
+  }
+
+  if (signup_password.value != signup_password_repeat.value) {
+    alert('your typed password mismatched, try again')
+    return
+  }
+
+  //let passHash = await px.hash256( signup_password.value)
+
+  let signupResponse = await justPost(`${ apiUrl }/devsk/sign-up`, { 
+    profileName: signup_profileName.value,
+    passwordHash: await px.hash256( signup_password.value)
+  })
+
+  if (signupResponse.done) {
+    alert('your sign-up done')
+    showSpace([ after_login_space ])
+
+    //clear after_login_space
+    resetAfterLoginSpace()
+
+    after_login_profileName.textContent = '@' + signup_profileName.value
+
+    signup_profileName.value = ''
+    signup_password.value = ''
+    signup_password_repeat.value = ''
+
+    after_update_button.textContent = 'Add'
+    after_update_button.setAttribute('onclick',"editProfile('add')")
+    devsk.loginProfile = after_login_profileName.textContent.slice(1)
+    profile_display.textContent = '@' + devsk.loginProfile
+    my_brief.textContent = 'Write here...'
+
+    //select my_brief for user to get start editing her profile
+    const range = document.createRange()
+    const selection = window.getSelection()
+    range.selectNodeContents( my_brief)
+    selection.removeAllRanges()
+    selection.addRange( range)
+
+    //set buttons
+    login_button.disabled = true
+    signup_button.disabled = true
+
+  } else {
+    alert('fail: ' + signupResponse.msg)
+  }
+}
+
+
+
+
+function showSpace( space_elem_array ) {
+  // show this space but hide the rest
+
+  contentSpace.forEach( sp => {
+    if (space_elem_array.includes( sp )) {
+      sp.hidden = false
+    } else {
+      sp.hidden = true
+    }
+  })
+}
+
+
+
+
+
+async function logIn() {
+  try {
+    if (login_profileName.value.length < 3 || login_password.value.length < 12) {
+      alert('profileName must be 3 chars min. / password must be 12 chars min.')
+      return
+    }
+
+    devsk.passwordHash = await px.hash256( login_password.value)
+
+    let loginApproval = await justPost( apiUrl + '/devsk/log-in', {
+      profileName: login_profileName.value,
+      passwordHash: devsk.passwordHash
+      //'841653433fb7430cc3b33936430fb1e15e473efbc9973fa267b866f16eab8a31'
+    })
+
+    // loginApproval => {done: true|false, msg: '....', from: ...}
+    if (loginApproval.done) {
+      //alert( 'done / ' + loginApproval.msg)
+      devsk.loginProfile = '@' + login_profileName.value
+      profile_display.textContent = devsk.loginProfile
+
+      //clear the log-in form
+      //login_profileName.value = ''
+      //login_password.value = ''
+
+      //open home page for logged in user
+      showSpace([ after_login_space ])
+      after_login_profileName.textContent = devsk.loginProfile
+
+      my_brief.textContent = loginApproval.data.brief
+      my_experience.value = loginApproval.data.experience 
+      my_availability.value = loginApproval.data.availability
+      my_location.value = loginApproval.data.location
+      my_nationality.value = loginApproval.data.nationality
+
+      let skillList = loginApproval.data.skill.split(',').map(v => v.trim())
+
+      skillList.forEach( sk => {
+        let skTag = getSkillTag( sk)
+        skillContainer.insertBefore( skTag, add_skill_icon)
+      })
+
+      after_update_button.textContent = 'Update'
+      after_update_button.setAttribute('onclick',"editProfile('update')")
+      after_update_button.disabled = true
+
+      //main buttons
+      login_button.disabled = true
+      signup_button.disabled = true
+      my_profile_button.disabled = false //on the skill_space
+      logout_button.disabled = false
+
+    } else {
+      alert( 'fail / ' + loginApproval.msg)
+    }
+  } catch (error) {
+    alert(error)
+  }
+}
+
+
+
+//--------------------------------------
+//func for mobile touch handling
+
+let draggedSkill = null
+let cloneSkill = null
+let startX = 0
+let startY = 0
+let originalContainer = null
+
+// Initialize touch drag functionality
+function enableTouchDrag() {
+  const skills = document.querySelectorAll(".skill");
+  skills.forEach(skill => {
+    skill.addEventListener("touchstart", touchStartHandler);
+    skill.addEventListener("touchmove", touchMoveHandler);
+    skill.addEventListener("touchend", touchEndHandler);
+  });
+}
+
+//let draggedSkill = null;
+
+function touchStartHandler(event) {
+  draggedSkill = event.target;
+  startX = event.touches[0].clientX;
+  startY = event.touches[0].clientY;
+
+  // Create a clone for visual dragging
+  cloneSkill = draggedSkill.cloneNode(true);
+  cloneSkill.style.position = "absolute";
+  cloneSkill.style.left = `${startX}px`;
+  cloneSkill.style.top = `${startY}px`;
+  cloneSkill.style.opacity = "0.7";
+  cloneSkill.style.pointerEvents = "none";
+  cloneSkill.style.transition = "opacity 0.2s";
+  cloneSkill.style.zIndex = "1000";
+  document.body.appendChild(cloneSkill);
+
+  // Hide the original skill (for clean UI)
+  draggedSkill.style.opacity = "0";
+  draggedSkill.style.visibility = "hidden"; // Make sure it is hidden
+}
+
+function touchMoveHandler(event) {
+  if (cloneSkill) {
+      const touch = event.touches[0];
+      cloneSkill.style.left = `${touch.clientX - cloneSkill.clientWidth / 2}px`;
+      cloneSkill.style.top = `${touch.clientY - cloneSkill.clientHeight / 2}px`;
+    }
+}
+
+function touchEndHandler(event) {
+  if (cloneSkill) {
+    // Check if dropped inside the container
+    const container = document.getElementById("skillContainer");
+    const containerRect = container.getBoundingClientRect();
+    const touch = event.changedTouches[0];
+    const isInsideContainer =
+      touch.clientX >= containerRect.left &&
+      touch.clientX <= containerRect.right &&
+      touch.clientY >= containerRect.top &&
+      touch.clientY <= containerRect.bottom;
+
+    // Remove the clone
+    cloneSkill.remove();
+    cloneSkill = null;
+
+    if (isInsideContainer) {
+      // Restore the original skill
+      draggedSkill.style.opacity = "1";
+      draggedSkill.style.visibility = "visible";
+    } else {
+      // Ensure the original is removed completely
+      draggedSkill.remove();
+      draggedSkill = null; // Clear reference to avoid memory leak
+      after_update_button.disabled = false
+    }
+  }
+}
+
+
+
+
+function getSkillTag( skill_name) {
+
+  let newSkillTag = document.createElement('span')
+  newSkillTag.className = "skill w3-tag w3-round-xlarge x-pointer x-fz120"
+  newSkillTag.setAttribute('draggable',"true")
+  newSkillTag.setAttribute('ondragend',"removeSkill(event, this)")
+  newSkillTag.textContent = skill_name
+
+  return newSkillTag
+}
+
+
+
+function resetAfterLoginSpace() {
+  after_login_profileName.textContent = ''
+  my_brief.textContent = ''
+  skillContainer.innerHTML = `<img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">`
+  my_experience.value = ''
+  my_availability.value = ''
+  my_location.value = ''
+  my_nationality.value = ''
+  after_update_button.textContent = 'Update'
+  after_update_button.setAttribute('onclick',"editProfile('update')")
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>
