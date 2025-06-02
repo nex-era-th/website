@@ -99,12 +99,12 @@
       <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
         <input id="search_word" type="text" class="w3-input w3-border x-round-14 x-fz135" placeholder="aaa, bbb, ..." onkeydown="if(event.key === 'Enter') findSkill()">
         <button class="w3-button w3-blue w3-ripple x-round-23 x-fz135" onclick="findSkill()">
-          <img src="/svg/search.svg">
+          <img src="/icon/search.svg">
         </button>
       </div>
       
       
-      <p class="x-small x-pointer x-mt24 mat-text-indigo"><img id="option_sign" src="/svg/off.svg" class="x-wh32"  onclick="toggleOption()"> option (not now)</p>
+      <p class="x-small x-pointer x-mt24 mat-text-indigo"><img id="option_sign" src="/icon/off.svg" class="x-wh32"  onclick="toggleOption()"> option (not now)</p>
      
 
       <!--option-->
@@ -163,7 +163,7 @@
     <!--info/about-->
     <div id="about" style="position: fixed; left: 16px; bottom: 24px;">
       <div style="display: flex; gap: 4px; align-items: center; cursor: pointer" onclick="location.href = 'about.html';">
-        <img src="/svg/info-o.svg" class="x-wh">
+        <img src="/icon/info-o.svg" class="x-wh">
         <code class="x-small mat-text-indigo">About</code>
       </div>
     </div>
@@ -254,11 +254,11 @@
         <div class="x-round-34 w3-container mat-brown2 x-pb" style="grid-column: span 2">
           <span class="x-fz100 x-condensed">SATISFY</span>
           <div class="x-mtb">
-            <img src="/svg/star-black.svg">
-            <img src="/svg/star-black.svg">
-            <img src="/svg/star-black.svg">
-            <img src="/svg/star-black.svg">
-            <img src="/svg/star-black.svg">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
+            <img src="/icon/star-black.svg">
           </div>
         </div>
       </div>
@@ -284,7 +284,7 @@
         -->
 
         <!--add icon-->
-        <img id="add_skill_icon" src="/svg/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">
+        <img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">
 
       </div>
     </div>
@@ -356,7 +356,7 @@
     </table>
 
     <div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="who_view_space.hidden = true; after_login_space.hidden = false">
-      <img src="/svg/u-turn.svg" class="x-wh32">
+      <img src="/icon/u-turn.svg" class="x-wh32">
     </div>
   </div>
 
@@ -741,7 +741,7 @@ function getSkillTag( skill_name) {
 function resetAfterLoginSpace() {
   after_login_profileName.textContent = ''
   my_brief.textContent = ''
-  skillContainer.innerHTML = `<img id="add_skill_icon" src="/svg/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">`
+  skillContainer.innerHTML = `<img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">`
   my_experience.value = ''
   my_availability.value = ''
   my_location.value = ''
