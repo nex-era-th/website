@@ -87,7 +87,7 @@
 
     <!--appName-->
     <div class="x-mt32 x-mb40">
-      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span class="x-small w3-tag x-round">0.9</span></h2>
+      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span class="x-small w3-tag x-round">1.0</span></h2>
       <div class="x-center x-gray x-italic x-serif">Find all the dev guys here 8-D</div>
     </div>
     
@@ -461,7 +461,7 @@ justPost( apiUrl + '/nexdb-find', {
 
 
 
-
+//justPost
 async function justPost( ur_l, dat_a) {
   try {
     const resp = await fetch( ur_l, {
@@ -480,7 +480,11 @@ async function justPost( ur_l, dat_a) {
   
   } catch( error) {
     console.error( error )
-    return {done: false, msg: 'fail, network error', from:'justPost'}
+    return {
+      done  : false, 
+      msg   : 'fail, network error',
+      attach: error, 
+      from  : 'justPost'}
   }
 
   // tested=ok, @devster
@@ -489,22 +493,28 @@ async function justPost( ur_l, dat_a) {
 
 
 
-
+//signupConfirm
 async function signupConfirm() {
   //when user open sign-up form and click confirm
 
   if (signup_profileName.value.length < 3 || signup_password.value.length < 8) {
-    alert('profileName must >= 3 chars, password must >= 8')
+    alert('Profile Name must >= 3 chars, Password must >= 8 chars')
     return
   }
 
   if (signup_password.value != signup_password_repeat.value) {
-    alert('your typed password mismatched, try again')
+    alert('Password & Confirm Password mismatched')
     return
   }
 
   if (!signup_password_hint.value) {
-    alert('Please provide the password hint')
+    alert('Please provide the Password Hint')
+    return
+  }
+
+  if ( !signup_profileName.value.match(/^[\w-]{3,}$/)) {
+    //profileName invalid
+    alert('The Profile Name allows for: a-zA-Z0-9_- only')
     return
   }
 
@@ -517,7 +527,7 @@ async function signupConfirm() {
   })
 
   if (signupResponse.done) {
-    alert('your sign-up done')
+    alert('Your Sign-up Done')
     showSpace([ after_login_space ])
     document.getElementById('after_close_button').disabled = true
 
@@ -548,13 +558,13 @@ async function signupConfirm() {
     signup_button.disabled = true
 
   } else {
-    alert('fail: ' + signupResponse.msg)
+    alert('Fail: ' + signupResponse.msg)
   }
 }
 
 
 
-
+//showSpace
 function showSpace( space_elem_array ) {
   // show this space but hide the rest
 
@@ -571,13 +581,18 @@ function showSpace( space_elem_array ) {
 
 
 
-
+//logIn
 async function logIn() {
+
+  if (login_profileName.value.length < 3 || 
+  login_password.value.length < 8) {
+  
+    alert('Profile Name must be 3 chars min. / Password must be 8 chars min.')
+    return
+  }
+
   try {
-    if (login_profileName.value.length < 3 || login_password.value.length < 8) {
-      alert('profileName must be 3 chars min. / password must be 8 chars min.')
-      return
-    }
+    
 
     devsk.passwordHash = await px.hash256( login_password.value)
 
@@ -625,10 +640,10 @@ async function logIn() {
       logout_button.disabled = false
 
     } else {
-      alert( 'fail / ' + loginApproval.msg)
+      alert( 'Fail: ' + loginApproval.msg)
     }
   } catch (error) {
-    alert(error)
+    alert('Fail: ' + error)
   }
 }
 
@@ -768,7 +783,7 @@ function touchEndHandler(event) {
 
 
 
-
+//getSkillTag
 function getSkillTag( skill_name) {
 
   let newSkillTag = document.createElement('span')
@@ -781,7 +796,7 @@ function getSkillTag( skill_name) {
 }
 
 
-
+//resetAfterLoginSpace
 function resetAfterLoginSpace() {
   after_login_profileName.textContent = ''
   my_brief.textContent = ''
@@ -795,6 +810,7 @@ function resetAfterLoginSpace() {
 }
 
 
+//findSkill
 async function findSkill() {
   if (search_word.value.trim() != '') {
     let foundGuys = await justPost(apiUrl + '/devsk/find', {
@@ -818,7 +834,7 @@ async function findSkill() {
   }
 }
 
-
+//toggleOption
 function toggleOption() {
   if (option_sign.src.includes('off')) {
     //search_option.hidden = false
@@ -829,7 +845,7 @@ function toggleOption() {
   }
 }
 
-
+//removeSkill
 function removeSkill( event, elem) {
   const container = document.getElementById('skillContainer')
   const containerRect = container.getBoundingClientRect()
@@ -846,6 +862,7 @@ function removeSkill( event, elem) {
   }
 }
 
+//getSkill
 function getSkill( input_skill) {
 
   if ( input_skill == '') {
@@ -862,6 +879,7 @@ function getSkill( input_skill) {
   }, 1000)
 }
 
+//addSkill
 function addSkill( new_skill ) {
   /*let htmlTemplate = `<span class="w3-tag w3-round-xlarge x-pointer" draggable="true" ondragend="removeSkill(event, this)">${ new_skill }</span>`*/
 
@@ -878,7 +896,7 @@ function addSkill( new_skill ) {
   after_update_button.disabled = false
 }
 
-
+//editProfile
 async function editProfile( mode='update' ) {
   //update the profile to server
   let dataToUpdate = {
@@ -896,15 +914,15 @@ async function editProfile( mode='update' ) {
       let serverReply = await justPost( apiUrl + '/devsk/edit-profile', dataToUpdate)
 
       if (serverReply.done) {
-        alert('done, updated your profile')
+        alert('Done, Updated your profile')
         after_update_button.disabled = true
 
       } else {
-        alert('fail, cannot update your profile')
+        alert('Fail, Cannot update your profile, ' + serverReply.msg)
       }
     } catch (error) {
       console.error( error)
-      alert('fail, network problem')
+      alert('Fail, Network problem, ' + error)
     }
 
   } else if (mode == 'add') {
@@ -920,7 +938,7 @@ async function editProfile( mode='update' ) {
       let serverReply = await justPost( apiUrl + '/devsk/add-profile', dataToUpdate)
 
       if (serverReply.done) {
-        alert('done, added your profile')
+        alert('Done, Added your profile')
 
         //then change button label to 'Update' and disable it
         after_update_button.textContent = 'Update'
@@ -933,11 +951,11 @@ async function editProfile( mode='update' ) {
         logout_button.disabled = false
 
       } else {
-        alert('fail, cannot add your profile')
+        alert('Fail, Cannot add your profile')
       }
     } catch (error) {
       console.error( error)
-      alertt('fail, network problem')
+      alert('Fail, Network problem, ' + error)
     }
   }
   
@@ -946,7 +964,7 @@ async function editProfile( mode='update' ) {
 
 //resetPassword
 async function resetPassword() {
-  if (!reset_password_hint.value || !reset_new_password.value || !reset_repeat_password) {
+  if ( !reset_profile_name || !reset_password_hint.value || !reset_new_password.value || !reset_repeat_password) {
     alert('Please complete all the * fields')
     return
   }
@@ -955,16 +973,24 @@ async function resetPassword() {
     return
   }
 
-  let serverReply = await justPost( apiUrl + '/devsk/reset-password', {
-    profileName     : reset_profile_name.value,
-    passwordHint    : reset_password_hint.value,
-    newPasswordHash : await px.hash256( reset_new_password.value )
-  })
+  try {
+    let serverReply = await justPost( apiUrl + '/devsk/reset-password', {
+      profileName     : reset_profile_name.value,
+      passwordHint    : reset_password_hint.value,
+      newPasswordHash : await px.hash256( reset_new_password.value )
+    })
 
-  if (serverReply.done) {
-    alert('Done, Your password is reset')
-    showSpace([ contentSpace[1] ])
+    if (serverReply.done) {
+      alert( 'Done, Your password is reset')
+      showSpace([ contentSpace[1] ])
+    } else {
+      alert( 'Fail, ' + serverReply.msg)
+    }
+  } catch (error) {
+    console.error( 'resetPassword', error)
+    alert( 'Fail, ' + error)
   }
+  
 }
 
 
