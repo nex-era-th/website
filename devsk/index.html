@@ -10,7 +10,7 @@
   <link href="/js/projex.css" rel="stylesheet" type="text/css">
   <script>
     const apiUrl = 'https://node-x-qd6s.onrender.com' 
-    //const apiUrl = '' //'http://192.168.1.111:10000'
+    //const apiUrl = 'http://192.168.1.111:10000'
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <!--script src="/config.js"></script-->
@@ -87,7 +87,7 @@
 
     <!--appName-->
     <div class="x-mt32 x-mb40">
-      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span class="x-small w3-tag x-round">0.7</span></h2>
+      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span class="x-small w3-tag x-round">0.9</span></h2>
       <div class="x-center x-gray x-italic x-serif">Find all the dev guys here 8-D</div>
     </div>
     
@@ -150,6 +150,8 @@
         <button id="my_profile_button" class="w3-button w3-ripple w3-brown" disabled>My Profile</button>
 
         <button id="logout_button" class="w3-button w3-orange w3-ripple" disabled>Log-out</button>
+
+        <button id="reset_password_button" class="w3-button w3-pale-red w3-ripple">Reset Password</button>
       </div>
     </div>
     <!--div style="height: 40px;"></div-->
@@ -161,11 +163,17 @@
 
 
     <!--info/about-->
-    <div id="about" style="position: fixed; left: 16px; bottom: 24px;">
+    <div id="about" style="margin-top: 60px; margin-bottom: 30px; display: flex; align-items: center; gap: 24px">
+
       <div style="display: flex; gap: 4px; align-items: center; cursor: pointer" onclick="location.href = 'about.html';">
         <img src="/icon/info-o.svg" class="x-wh">
         <code class="x-small mat-text-indigo">About</code>
       </div>
+      <div style="display: flex; gap: 4px; align-items: center; cursor: pointer" onclick="location.href = 'help.html';">
+        <img src="/icon/page.svg" class="x-wh">
+        <code class="x-small mat-text-indigo">Help</code>
+      </div>
+
     </div>
 
   </div>
@@ -186,10 +194,12 @@
     <div style="display: grid; grid-template-columns: auto; align-items: center;" class="x-fz135 x-mt32">
       <label class="x-small x-condensed mat-text-indigo">PROFILE NAME *</label>
       <input id="signup_profileName" type="text" class="w3-input w3-border" placeholder="a-zA-Z0-9_- only">
-      <label class="x-mt x-small x-condensed mat-text-indigo">PASSWORD * (min 12 chars)</label>
+      <label class="x-mt x-small x-condensed mat-text-indigo">PASSWORD * (min 8 chars)</label>
       <input id="signup_password" type="password" class="w3-input w3-border">
       <label class="x-mt x-small x-condensed mat-text-indigo">CONFIRM PASSWORD *</label>
       <input id="signup_password_repeat" type="password" class="w3-input w3-border">
+      <label class="x-mt x-small x-condensed mat-text-indigo">PASSWORD HINT *</label>
+      <input id="signup_password_hint" type="text" class="w3-input w3-border" placeholder="ใช้ในการ reset password">
     </div>
 
     <div class="x-mt32 x-mb32">
@@ -362,8 +372,30 @@
 
 
 
+  <!--reset password space-->
+  <div id="reset_password_space" class="x-mt32" hidden>
+    <h3 class="x-center x-condensed">RESET PASSWORD</h3>
+    <div class="x-red x-center">ท่านต้องจำ Password Hint ตอนที่ Sign-up ได้ ไม่งั้นจะไม่สามารถ reset password ได้</div>
 
+    <div class="x-mt40">
+      <label class="x-small x-condensed mat-text-indigo">PROFILE NAME *</label>
+      <input id="reset_profile_name" type="text" class="w3-input w3-border x-fz135">
 
+      <label class="x-small x-condensed mat-text-indigo x-mt">PASSWORD HINT *</label>
+      <input id="reset_password_hint" type="text" class="w3-input w3-border x-fz135">
+
+      <label class="x-small x-condensed mat-text-indigo x-mt">NEW PASSWORD *</label>
+      <input id="reset_new_password" type="password" class="w3-input w3-border x-fz135">
+      
+      <label class="x-small x-condensed mat-text-indigo x-mt">REPEAT NEW PASSWORD *</label>
+      <input id="reset_repeat_password" type="password" class="w3-input w3-border x-fz135">
+    </div>
+    <div class="x-mt32">
+      <button class="w3-button w3-ripple w3-blue x-condensed" onclick="resetPassword()">Reset</button>
+
+      <button class="w3-button w3-ripple x-condensed" onclick="showSpace([ contentSpace[1] ]); reset_password_hint.value = ''; reset_new_password.value = ''; reset_repeat_password.value = '';">Clear & Close</button>
+    </div>
+  </div>
 
 
 
@@ -392,8 +424,6 @@
 
 //----------------------------------------------------------
 
-//const apiUrl = 'https://node-x-qd6s.onrender.com' 
-//const apiUrl = 'http://192.168.1.111:10000'
 
 const contentSpace = [
   document.getElementById('home_space'), 
@@ -401,7 +431,8 @@ const contentSpace = [
   document.getElementById('signup_space'), 
   document.getElementById('login_space'), 
   document.getElementById('after_login_space'), 
-  document.getElementById('who_view_space')
+  document.getElementById('who_view_space'),
+  document.getElementById('reset_password_space')
 ]
 
 const devsk = {
@@ -418,7 +449,7 @@ const devsk = {
 
 
 
-//get skill data
+//get skill data ; this is the poke already
 let skillData
 justPost( apiUrl + '/nexdb-find', {
   collection: 'skill',
@@ -462,8 +493,8 @@ async function justPost( ur_l, dat_a) {
 async function signupConfirm() {
   //when user open sign-up form and click confirm
 
-  if (signup_profileName.value.length < 3 || signup_password.value.length < 12) {
-    alert('profileName must >= 3 chars, password must >= 12')
+  if (signup_profileName.value.length < 3 || signup_password.value.length < 8) {
+    alert('profileName must >= 3 chars, password must >= 8')
     return
   }
 
@@ -472,11 +503,17 @@ async function signupConfirm() {
     return
   }
 
+  if (!signup_password_hint.value) {
+    alert('Please provide the password hint')
+    return
+  }
+
   //let passHash = await px.hash256( signup_password.value)
 
   let signupResponse = await justPost(`${ apiUrl }/devsk/sign-up`, { 
     profileName: signup_profileName.value,
-    passwordHash: await px.hash256( signup_password.value)
+    passwordHash: await px.hash256( signup_password.value),
+    passwordHint: signup_password_hint.value
   })
 
   if (signupResponse.done) {
@@ -537,8 +574,8 @@ function showSpace( space_elem_array ) {
 
 async function logIn() {
   try {
-    if (login_profileName.value.length < 3 || login_password.value.length < 12) {
-      alert('profileName must be 3 chars min. / password must be 12 chars min.')
+    if (login_profileName.value.length < 3 || login_password.value.length < 8) {
+      alert('profileName must be 3 chars min. / password must be 8 chars min.')
       return
     }
 
@@ -607,6 +644,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const signupBtn = document.getElementById('signup_button')
   const myProfileBtn = document.getElementById('my_profile_button')
   const logoutBtn = document.getElementById('logout_button')
+  const resetPasswordBtn = document.getElementById('reset_password_button')
 
   if (loginBtn) {
     loginBtn.addEventListener('click', function() {
@@ -630,6 +668,12 @@ document.addEventListener('DOMContentLoaded', function() {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       location.reload()
+    })
+  }
+  if (resetPasswordBtn) {
+    resetPasswordBtn.addEventListener('click', () => {
+      showSpace([ contentSpace[6] ])
+      document.getElementById('reset_profile_name').focus()
     })
   }
 
@@ -900,8 +944,28 @@ async function editProfile( mode='update' ) {
 }
 
 
+//resetPassword
+async function resetPassword() {
+  if (!reset_password_hint.value || !reset_new_password.value || !reset_repeat_password) {
+    alert('Please complete all the * fields')
+    return
+  }
+  if (reset_new_password.value != reset_repeat_password.value) {
+    alert('The New Password must as same as the Repeat New Password')
+    return
+  }
 
+  let serverReply = await justPost( apiUrl + '/devsk/reset-password', {
+    profileName     : reset_profile_name.value,
+    passwordHint    : reset_password_hint.value,
+    newPasswordHash : await px.hash256( reset_new_password.value )
+  })
 
+  if (serverReply.done) {
+    alert('Done, Your password is reset')
+    showSpace([ contentSpace[1] ])
+  }
+}
 
 
 </script>

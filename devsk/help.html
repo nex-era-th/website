@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="/js/material-x.css">
+<link rel="stylesheet" type="text/css" href="/js/projex.css">
+<style>
+  p, li, code, blockquote { font-size: 135% }
+  h2 { color: steelblue }
+  h3 { text-decoration: underline; }
+  code { color: green; background-color: lightgrey; }
+  blockquote { color: red}
+</style>
+</head>
+<body>
+<div style="padding: 0 16px; max-width: 800px; margin: 0 auto 60px auto">
+
+  <h1 style="color: darkred; text-align: center; margin-bottom: 0;">Help</h1>
+  
+
+  <p style="margin-top: 32px;">ใน version 1.0 นี้ dev-skill ทำงานเบื้องต้น คือ</p>
+
+  <ul>
+    <li>Add</li>
+    <li>Find</li>
+  </ul>
+
+
+  <h2>Access</h2>
+  <p>การใช้งาน ก็ใช้ web browser เข้าไปที่ <a href="http://nex-era.xyz/">http://nex-era.xyz/devsk/</a></p>
+
+
+
+  <h2>Add</h2>
+  <p>การเก็บข้อมูลไว้ใน dev-skill ก็ต้อง sign-up ก่อน จากนั้นก็ป้อนข้อมูลเข้าไป สรุปขั้นตอน</p>
+  <ul>
+    <li>Sign-up (ลงทะเบียน)</li>
+    <li>ป้อนข้อมูล</li>
+  </ul>
+
+  <p>การ sign-up หรือลงทะเบียน ชื่อของ profile จะต้องมีความยาวตั้งแต่ 3 ตัวอักษรขึ้นไป เป็นตัวภาษาอังกฤษ สามารถใช้ตัวอักษร <code>-</code> กับ <code>_</code> ได้ ใช้ตัวเลขได้ ตัวอักษรใหญ่-และเล็ก ได้ เช่น <code>@nex-era</code> (นึกภาพว่าตรงนี้เหมือนชื่อ userName แต่ในที่นี้เราเรียก profileName แทน)</p>
+  <p>การ sign-up ก็กดปุ่ม Sign-up อยู่ด้านล่าง เมื่อกดแล้วจะได้หน้าจอให้ป้อน Profile Name กับ Password ก็ป้อน ให้ครบ สำหรับ password ให้ใช้ 8 ตัวอักษรขึ้นไป ช่อง Confirm Password ก็กรอกรหัสผ่านอีกครั้ง เพื่อยืนยัน จากนั้นกด Confirm ถ้าเรียบร้อย จะมีหน้าจอให้กรอกข้อมูล skill ต่างๆ เมื่อเสร็จแล้วก็กด Add เป็นอันเรียบร้อย</p>
+
+  <p>จากตรงนี้กดปุ่ม Close เพื่อกลับไปหน้าแรก ได้</p>
+
+  <h3>การเพิ่ม skill</h3>
+  <p>การเพิ่มจะเห็น icon เครื่องหมายบวกอยู่ ก็กดตรงนั้น จะมีช่องให้ป้อนชื่อ skill เข้าไป เราไม่จำเป็นต้องป้อนทั้งหมด แค่บางคำเช่น java แล้ว app มันจะไปค้นหาว่า ใกล้เคียงกับชื่อ dev language อะไรให้ แต่ถ้าหากเราจะเอาชื่อที่เราป้อนเอง จริงๆ เพราะอาจไม่มีใน app ก็ป้อนให้ครบชื่อเต็มของเรา ก็ได้</p>
+
+  <h3>การลบ skill</h3>
+  <p>จะเห็นว่า แต่ละ skill จะเป็นลักษณะ capsule (หรือปุ่มมนๆ) ถ้าหากเราจะเอา skill ไหนออก เราก็ กดแช่ ไว้ แล้วลากออกไป</p>
+
+
+
+  <h2>Find</h2>
+  <p>ใน version 1.0 หน้าแรก จะเป็นหน้าสำหรับค้นหาข้อมูลเลย ดังนั้นก็สามารถป้อน skill ที่ต้องการค้นหาได้เลย โดยคั่นด้วย <code>,</code> เช่นป้อนว่า <code>aaa,bbb,ccc</code> เป็นต้น จากนั้นกดปุ่มทางขวาที่เป็นรูปแว่นขยาย สีน้ำเงิน ผลลัพธ์จะแสดงที่ตารางข้างล่าง</p>
+
+  <p>ในรายการ profile ที่แสดงในตาราง เราสามารถกดตรงชื่อโปรไฟล์นั้นๆ เพื่อดูรายละเอียดของ profile นั้นๆได้</p>
+
+  <blockquote>เราสามารถค้นหา profileName ได้ด้วย เช่นป้อนว่า @john แบบนี้จะเป็นการค้นหา profileName</blockquote>
+
+  <p>เท่านี้เอง v1.0 ไม่ได้มีอะไรซับซ้อน</p>
+
+
+  <h2>Log-in</h2>
+  <p>เมื่อ log-in แล้วเราสามารถแก้ไขข้อมูล profile เราได้ วิธีการคือเปิดเข้ามาแล้ว ก็กดปุ่ม Log-in จากนั้นจะเห็นข้อมูล profile ของเราเอง ก็ปรับแก้ให้ถูกต้อง แล้วก็กด Update</p>
+
+  <h2>My Profile</h2>
+  <p>หลังจากเรา log-in แล้ว ปุ่ม My Profile จะ enable ให้กดได้ หมายความว่าเราสามารถกดไปดูข้อมูล profile ของเราได้ เช่นเราอยู่หน้า home อยู่ แต่อยากไปดู profile ตัวเอง ก็กดปุ่มนี้ได้</p>
+
+</div>
+
+
+<div style="position: fixed; left: 0; bottom: 0; padding: 4; cursor: pointer;" onclick="history.back()">
+  <img src="/icon/u-turn.svg" style="width: 32px; height: 32px;">
+</div>
+</body>  
+</html>
