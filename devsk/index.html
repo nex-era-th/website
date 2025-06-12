@@ -8,20 +8,16 @@
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
   <link href="/js/flat_design_colors_full.css" type="text/css">
   <link href="/js/projex.css" rel="stylesheet" type="text/css">
-  <script>
-    const apiUrl = 'https://node-x-qd6s.onrender.com' 
-    //const apiUrl = 'http://192.168.1.111:10000'
-  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
-  <!--script src="/config.js"></script-->
+  <script src="config.js"></script>
   <script src="/js/xfetch.js"></script>
   <script src="/js/xdev-b.js"></script>
   <script src="/js/projex.js"></script>
   <style>
     p, li, span {font-family: "Open Sans", sans-serif; font-size: 135%}
     table { width: 100%; border-collapse: collapse;}
-    tr,th,td { border: 1px solid lightgray; }
+    tr,th,td { border: 1px solid white; }
     th { font-weight: normal; font-size: smaller;}
     a { color: blue; cursor: pointer; text-decoration: underline;}
   </style>
@@ -89,7 +85,7 @@
 
     <!--appName-->
     <div class="x-mt32 x-mb40">
-      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span class="x-small w3-tag x-round">1.2.3</span></h2>
+      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span id="version_display" class="x-small w3-tag x-round"></span></h2>
       <div class="x-center x-gray x-italic x-serif">Find all the dev guys here 8-D</div>
     </div>
     
@@ -136,12 +132,12 @@
         
       </table-->
 
-      <table id="search_result_table" class="x-background">
-        <tr><th>profile</th></tr>
+      <table id="search_result_table" class="x-background x-fz105">
+        <tr><th class="x-condensed x-small">PROFILE</th></tr>
 
         <tr><td class="x-p8">
-          <div><a href="#">@sample</a> --avail: <span class="x-fz100">2 weeks</span></div>
-          <div>java script, html, css, mongodb <span class="x-fz100">(5y)</span></div>
+          <div><a href="#">@sample</a> --avail: <span class="x-fz105">2 weeks</span></div>
+          <div>java script, html, css, mongodb <span class="x-fz105">(5y)</span></div>
         </td></tr>
         <!--tr><td class="x-p8">
           <div><a href="#">@john</a> --avail: <span class="x-fz100">dicuss</span></div>
@@ -167,9 +163,9 @@
 
         <button id="my_profile_button" class="w3-button w3-ripple mat-lime9" disabled>My Profile</button>
 
-        <button id="logout_button" class="w3-button mat-brown4 w3-ripple" disabled>Log-out</button>
+        <button id="logout_button" class="w3-button mat-grey6 w3-ripple" disabled>Log-out</button>
 
-        <button id="reset_password_button" class="w3-button mat-purple3 w3-ripple">Reset Password</button>
+        <button id="reset_password_button" class="w3-button mat-deep-purple3 w3-ripple">Reset Password</button>
       </div>
     </div>
     <!--div style="height: 40px;"></div-->
@@ -304,7 +300,7 @@
 
 
     <div class="x-mt32">
-      <h6 class="mat-text-indigo x-condensed">MY SKILLS *</h6>
+      <h6 class="mat-text-indigo x-condensed">MY SKILLS * (กดแช่ แล้วลากออก เพื่อลบ)</h6>
       <div id="skillContainer" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;" class="x-fz100">
         
         <!--add icon-->
@@ -454,6 +450,10 @@
 //----------------------------------------------------------
 
 
+version_display.textContent = conf.versionDisplay
+
+
+
 const contentSpace = [
   document.getElementById('home_space'), 
   document.getElementById('skill_space'), 
@@ -481,7 +481,7 @@ const devsk = {
 
 //get skill data ; this is the poke already
 let skillData
-justPost( apiUrl + '/nexdb-find', {
+justPost( conf.apiUrl + '/nexdb-find', {
   collection: 'skill',
   query: {}
 }).then( data => skillData = data)
@@ -566,7 +566,7 @@ async function signupConfirm() {
 
   //let passHash = await px.hash256( signup_password.value)
 
-  let signupResponse = await justPost(`${ apiUrl }/devsk/sign-up`, { 
+  let signupResponse = await justPost(`${ conf.apiUrl }/devsk/sign-up`, { 
     profileName : signup_profileName.value,
     passwordHash: await px.hash256( signup_password.value ),
     passwordHint: await px.hash256( signup_password_hint.value )
@@ -643,7 +643,7 @@ async function logIn() {
   }
 
   //main
-  let loginApproval = await justPost( apiUrl + '/devsk/log-in', {
+  let loginApproval = await justPost( conf.apiUrl + '/devsk/log-in', {
     profileName : clean( login_profileName.value ),
     passwordHash: await px.hash256( login_password.value)
   })
@@ -867,7 +867,7 @@ function resetAfterLoginSpace() {
 async function findSkill() {
 
   if (search_word.value.trim() != '') {
-    let foundGuys = await justPost(apiUrl + '/devsk/find', 
+    let foundGuys = await justPost(conf.apiUrl + '/devsk/find', 
       { skill: search_word.value }
     )
 
@@ -883,15 +883,15 @@ async function findSkill() {
         //resultTable.deleteRow( resultTable.rows.length - 1)
       //}
 
-      resultTable.innerHTML = '<tr><th>profile</th></tr>'
+      resultTable.innerHTML = '<tr><th class="x-condensed x-small">PROFILE</th></tr>'
 
       //make each row
       foundGuys.forEach( guy => {
         let newTr = document.createElement('tr')
         
         newTr.innerHTML = `<td class="x-p8">
-          <div><a href="${apiUrl}/devsk/prof/@${encodeURIComponent( clean(guy.profileName) )}">@${ clean( guy.profileName )}</a> --avail: <span class="x-fz100">${ clean( guy.availability )}</span></div>
-          <div>${ clean( guy.skill )} <span class="x-fz100">${ '(' + clean( guy.experience ) + 'y)'}</span>
+          <div><a href="${conf.apiUrl}/devsk/prof/@${encodeURIComponent( clean(guy.profileName) )}">@${ clean( guy.profileName )}</a> --avail: <span class="x-fz105">${ clean( guy.availability )}</span></div>
+          <div>${ clean( guy.skill )} <span class="x-fz105">${ '(' + clean( guy.experience ) + 'y)'}</span>
         </td>`
 
         search_result_table.append( newTr)
@@ -1027,7 +1027,7 @@ async function editProfile( mode='update' ) {
     }
 
     let serverReply = await justPost( 
-      apiUrl + '/devsk/edit-profile', 
+      conf.apiUrl + '/devsk/edit-profile', 
       dataToUpdate,
       { logincert: devsk.loginCert } //header
     )
@@ -1063,7 +1063,7 @@ async function editProfile( mode='update' ) {
 
     //main of add
     let serverReply = await justPost( 
-      apiUrl + '/devsk/add-profile', 
+      conf.apiUrl + '/devsk/add-profile', 
       dataToUpdate, 
       { logincert: devsk.loginCert } 
     )
@@ -1119,7 +1119,7 @@ async function resetPassword() {
 
   //main
   let serverReply = await justPost( 
-    apiUrl + '/devsk/reset-password', 
+    conf.apiUrl + '/devsk/reset-password', 
     {
       profileName     : reset_profile_name.value,
       passwordHint    : await px.hash256( reset_password_hint.value ),
@@ -1167,7 +1167,7 @@ async function sendContact() {
 
   */
 
-  let serverReply = await justPost( apiUrl + '/devsk/contact', {
+  let serverReply = await justPost( conf.apiUrl + '/devsk/contact', {
     yourMsg : yourMsg,
     from    : yourContact
   })
@@ -1235,7 +1235,7 @@ async function logOut() {
   }
 
 
-  let logoutApprove = await justPost( apiUrl + '/devsk/log-out', 
+  let logoutApprove = await justPost( conf.apiUrl + '/devsk/log-out', 
     { profileName : devsk.loginProfile },
     { logincert   : devsk.loginCert } //header
   )
