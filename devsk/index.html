@@ -89,7 +89,7 @@
 
     <!--appName-->
     <div class="x-mt32 x-mb40">
-      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span class="x-small w3-tag x-round">1.2.2</span></h2>
+      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span class="x-small w3-tag x-round">1.2.3</span></h2>
       <div class="x-center x-gray x-italic x-serif">Find all the dev guys here 8-D</div>
     </div>
     
@@ -865,16 +865,18 @@ function resetAfterLoginSpace() {
 
 //findSkill---------------------------------------------------------
 async function findSkill() {
+
   if (search_word.value.trim() != '') {
-    let foundGuys = await justPost(apiUrl + '/devsk/find', {
-      skill: search_word.value
-    })
+    let foundGuys = await justPost(apiUrl + '/devsk/find', 
+      { skill: search_word.value }
+    )
+
+    let resultTable = document.getElementById('search_result_table')
 
     if (foundGuys.length) {
 
       //delete exam row in table
       //search_result_table.innerHTML = '<tr><th class="x-condensed x-small">PROFILE</th><th class="x-condensed x-small">SKILL</th><th class="x-condensed x-small">AVAILABILITY</th></tr>'
-      let resultTable = document.getElementById('search_result_table')
       //let tableLastRow = resultTable.rows[ resultTable.rows.length - 1]
 
       //if (tableLastRow) {
@@ -894,6 +896,11 @@ async function findSkill() {
 
         search_result_table.append( newTr)
       })
+
+    } else {
+      //if not found the server replies with false
+      resultTable.innerHTML = `<tr><th>profile</th></tr>
+      <tr><td style="padding: 16px 8px">-- not found</td></tr>`
     }
   }
 }
