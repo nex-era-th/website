@@ -23,6 +23,7 @@
     table { width: 100%; border-collapse: collapse;}
     tr,th,td { border: 1px solid lightgray; }
     th { font-weight: normal; font-size: smaller;}
+    a { color: blue; cursor: pointer; text-decoration: underline;}
   </style>
 </head>
 <body>
@@ -83,12 +84,12 @@
 
 
 
-  <!--skillSpace ; everything about skills-->
+  <!--skill space ; everything about skills------------------------->
   <div id="skill_space">
 
     <!--appName-->
     <div class="x-mt32 x-mb40">
-      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span class="x-small w3-tag x-round">1.0.1</span></h2>
+      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span class="x-small w3-tag x-round">1.2</span></h2>
       <div class="x-center x-gray x-italic x-serif">Find all the dev guys here 8-D</div>
     </div>
     
@@ -128,12 +129,27 @@
     <div id="result_div" class="x-fz120 x-mt24">
 
       <h6 class="mat-text-brown4 x-fz100"><i>what we found:</i></h6>
-      <table id="search_result_table" class="">
+      <!--table id="search_result_table" class="">
         <tr><th class="x-condensed x-small">PROFILE</th><th class="x-condensed x-small">SKILL</th><th class="x-condensed x-small">AVAILABILITY</th></tr>
         <tr><td>--</td><td></td><td></td></tr>
 
-        <!--tr><td>@john</td><td>java script, mongoDb, html, css</td><td>now</td></tr>
-        <tr><td>@jane</td><td>python, mysql</td><td>2 weeks notice</td></tr-->
+        
+      </table-->
+
+      <table id="search_result_table" class="x-background">
+        <tr><th>profile</th></tr>
+        <tr><td class="x-p8">
+          <div><a href="#">@sample</a> --avail: <span class="x-fz100">2 weeks</span></div>
+          <div>java script, html, css, mongodb <span class="x-fz100">(5y)</span></div>
+        </td></tr>
+        <!--tr><td class="x-p8">
+          <div><a href="#">@john</a> --avail: <span class="x-fz100">dicuss</span></div>
+          <div>digital marketing</div>
+        </td></tr>
+        <tr><td class="x-p8">
+          <div><a href="#">@jane</a> --avail: <span class="x-fz100">1 week</span></div>
+          <div>html</div>
+        </td></tr-->
       </table>
 
     </div>
@@ -144,15 +160,15 @@
 
       <div class="x-fz110 x-condensed" style="display: flex; flex-wrap: wrap; gap: 8px">
 
-        <button id="login_button" class="w3-button w3-ripple w3-pink">Log-in</button>
+        <button id="login_button" class="w3-button w3-ripple w3-blue">Log-in</button>
 
-        <button id="signup_button" class="w3-button w3-ripple w3-teal">Sign-up</button>
+        <button id="signup_button" class="w3-button w3-ripple mat-pink3">Sign-up</button>
 
-        <button id="my_profile_button" class="w3-button w3-ripple w3-brown" disabled>My Profile</button>
+        <button id="my_profile_button" class="w3-button w3-ripple w3-teal" disabled>My Profile</button>
 
-        <button id="logout_button" class="w3-button w3-orange w3-ripple" disabled>Log-out</button>
+        <button id="logout_button" class="w3-button w3-brown w3-ripple" disabled>Log-out</button>
 
-        <button id="reset_password_button" class="w3-button w3-pale-red w3-ripple">Reset Password</button>
+        <button id="reset_password_button" class="w3-button mat-deep-orange3 w3-ripple">Reset Password</button>
       </div>
     </div>
     <!--div style="height: 40px;"></div-->
@@ -191,9 +207,8 @@
 
   <!--signup space-->
   <div id="signup_space" class="x-mt32" hidden>
-    <h3 class="x-center x-condensed">SIGN UP</h3>
-
-    <div style="line-height: 1.3" class="mat-text-red x-center x-fz100">Sign-up แล้วท่านจะสามารถป้อนข้อมูล skill ของท่านได้ ระบบนี้จะเก็บเฉพาะ skill ไม่เก็บข้อมูลส่วนตัว รวมถึง password</div>
+    <h3 class="x-center x-darkred">sign-up</h3>
+    <div style="line-height: 1.3" class="x-center x-fz100">sign-up เพื่อป้อนข้อมูล skill ของท่าน ไม่มีการเก็บข้อมูลส่วนตัวใดๆ</div>
 
     <div style="display: grid; grid-template-columns: auto; align-items: center;" class="x-mt32">
       <label class="x-condensed mat-text-indigo">PROFILE NAME *</label>
@@ -220,9 +235,10 @@
 
   <!--login space-->
   <div id="login_space" class="x-mt32" hidden>
-    <h3 class="x-center x-condensed">LOG IN</h3>
+    <h3 class="x-center x-darkred">log-in</h3>
+    <div style="line-height: 1.3" class="x-center x-fz100">log-in เพื่อแก้ไขข้อมูล skill และอื่นๆ</div>
     
-    <div style="display: grid; grid-template-columns: auto;" class="x-mt40">
+    <div style="display: grid; grid-template-columns: auto;" class="x-mt32">
       <label class="x-condensed mat-text-indigo">PROFILE NAME *</label>
       <input id="login_profileName" type="text" class="w3-input w3-border x-fz135">
       <label class="x-mt x-condensed mat-text-indigo">PASSWORD *</label>
@@ -242,10 +258,10 @@
 
 
 
-  <!--afterLoginSpace-->
+  <!--after login space----------------------------------------------->
   <div id="after_login_space" hidden>
-    <h3 id="after_login_profileName" class="x-center x-mt32"></h3>
-    <div class="mat-text-red x-center" style="font-size: 100%">หากมีการแก้ไขข้อมูล ต้องกด Save เพื่อเก็บข้อมูลด้วย</div>
+    <h3 id="after_login_profileName" class="x-center x-mt32 x-darkred"></h3>
+    <div class="x-center x-fz100" style="line-height: 1.3;">นี่เป็นข้อมูลใน skill profile ของคุณ คุณสามารถแก้ไขได้ เมื่อแก้เสร็จแล้ว กดปุ่ม Update</div>
 
     <div hidden><!--dashboard-->
       <div style="display: grid; grid-template-columns: auto auto; gap: 8px" class="x-mt24">
@@ -289,14 +305,6 @@
       <h6 class="mat-text-indigo x-condensed">MY SKILLS *</h6>
       <div id="skillContainer" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;" class="x-fz100">
         
-        <!--
-        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">JavaScript</span>
-        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">MongoDb</span>
-        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">HTML</span>
-        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">CSS</span>
-        <span class="skill w3-tag w3-round-xlarge x-pointer x-fz120" draggable="true" ondragend="removeSkill(event, this)">Bash</span>
-        -->
-
         <!--add icon-->
         <img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">
 
@@ -313,12 +321,12 @@
    
 
     <div class="x-mt32">
-      <h6 class="mat-text-indigo x-condensed">MY EXPERIENCES (YEARS) *</h6>
+      <h6 class="mat-text-indigo x-condensed x-mb0">MY EXPERIENCES (YEARS) *</h6>
       <input id="my_experience" type="number" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
     </div>
 
-    <div class="x-mt32">
-      <h6 class="mat-text-indigo x-condensed">MY AVAILABILITY *</h6>
+    <div class="x-mt">
+      <h6 class="mat-text-indigo x-condensed x-mb0">MY AVAILABILITY *</h6>
       <select id="my_availability" class="w3-select w3-border x-fz135" onchange="after_update_button.disabled = false">
         <option>now</option>
         <option>1 week notice</option>
@@ -329,13 +337,13 @@
     </div>
 
 
-    <div class="x-mt32">
-      <h6 class="mat-text-indigo x-condensed">LOCATION</h6>
+    <div class="x-mt">
+      <h6 class="mat-text-indigo x-condensed x-mb0">LOCATION</h6>
       <input id="my_location" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
     </div>
 
-    <div class="x-mt32">
-      <h6 class="mat-text-indigo x-condensed">NATIONALITY</h6>
+    <div class="x-mt">
+      <h6 class="mat-text-indigo x-condensed x-mb0">NATIONALITY</h6>
       <input id="my_nationality" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
     </div>
 
@@ -348,18 +356,12 @@
       <button id="after_close_button" class="w3-button w3-ripple x-condensed" onclick="showSpace([ skill_space ])">Close</button>
     </div>
 
-
-    <!--u turn
-    <div style="position: fixed; left: 0; bottom: 0" class="x-pointer x-p4" onclick="showSpace([ skill_space ])">
-      <img src="/svg/u-turn.svg" class="x-wh32">
-    </div>    
--->
   </div>
   
 
 
 
-  <!--whoViewMyProfile-->
+  <!--whoViewMyProfile----------------------------------------------->
   <div id="who_view_space" hidden>
     <h3 class="x-center">who view my profile</h3>
     <table style="font-size: 120%">
@@ -376,12 +378,12 @@
 
 
 
-  <!--reset password space-->
+  <!--reset password space------------------------------------------->
   <div id="reset_password_space" class="x-mt32" hidden>
-    <h3 class="x-center x-condensed">RESET PASSWORD</h3>
-    <div class="x-red x-center">ท่านต้องจำ Password Hint ตอนที่ Sign-up ได้ ไม่งั้นจะไม่สามารถ reset password ได้</div>
+    <h3 class="x-center x-darkred">reset password</h3>
+    <div class="x-center x-fz100" style="line-height: 1.3;">ต้องมี password hint ด้วย ไม่งั้นจะไม่สามารถ reset ได้</div>
 
-    <div class="x-mt40">
+    <div class="x-mt32" style="display: grid; grid-template-columns: auto;">
       <label class="x-condensed mat-text-indigo">PROFILE NAME *</label>
       <input id="reset_profile_name" type="text" class="w3-input w3-border x-fz135">
 
@@ -402,14 +404,14 @@
   </div>
 
 
-  <!--contact space-->
+  <!--contact space------------------------------------------------->
   <div id="contact_space" class="x-mt32" hidden>
-    <h3 class="x-center x-condensed">CONTACT</h3>
-    <div class="x-red x-center">สื่อสารกับเราได้ทุกเรื่อง จะแจ้งปัญหา เสนอแนะ หรือคุยเรื่องใดๆ ได้ทั้งหมด</div>
+    <h3 class="x-center x-darkred">contact us</h3>
+    <div class="x-center x-fz100" style="line-height: 1.3;">สื่อสารกับเราได้ทุกเรื่อง จะแจ้งปัญหา เสนอแนะ หรือคุยเรื่องใดๆ ได้ทั้งหมด ตอนนี้ยังเป็นทางเดียวอยู่ ต่อไปน่าจะเป็นแบบ 2 ทางได้</div>
 
-    <div class="x-mt40">
+    <div class="x-mt32" style="display: grid; grid-template-columns: auto;">
       <label class="x-condensed mat-text-indigo">YOUR MESSAGE *</label>
-      <textarea id="your_message" style="width: 100%; font-size: 135%" rows="8"></textarea>
+      <textarea id="your_message" style="width: 100%; font-size: 135%" rows="5"></textarea>
 
       <label class="x-condensed mat-text-indigo x-mt">YOUR CONTACT (OPTION)</label>
       <input id="your_contact" type="text" class="w3-input w3-border x-fz135">
@@ -515,10 +517,10 @@ async function justPost( ur_l, dat_a, headerField) {
       throw new Error(`fail, network error, ${resp.status}: ${errorText}`)
     }
 
-    return await resp.json()
+    return await resp.json() //this is from where we fetched.
   
   } catch( error) {
-    console.error( error )
+    console.error( 'justPost', error )
     return {
       done  : false, 
       msg   : 'fail, fetch from server (3000)',
@@ -532,29 +534,30 @@ async function justPost( ur_l, dat_a, headerField) {
 
 
 
-//signupConfirm
+//signupConfirm---------------------------------------------------
 async function signupConfirm() {
   //when user open sign-up form and click confirm
 
   //validate
   if (signup_profileName.value.length < 3 || signup_password.value.length < 8) {
-    alert('Profile Name must >= 3 chars. | Password must >= 8 chars.')
+
+    alert('Fail. Profile Name must >= 3 chars. | Password must >= 8 chars.')
     return
   }
 
   if (signup_password.value != signup_password_repeat.value) {
-    alert('Password & Confirm Password mismatched.')
+    alert('Fail. Password & Confirm Password mismatched.')
     return
   }
 
   if (!signup_password_hint.value) {
-    alert('Please provide the Password Hint.')
+    alert('Fail. Please provide the Password Hint.')
     return
   }
 
   if ( badProfile( signup_profileName.value )) {
     //profileName invalid
-    alert('The Profile Name allows for: a-zA-Z0-9_- only.')
+    alert('Fail. The Profile Name allows for: a-zA-Z0-9_- only.')
     return
   }
 
@@ -562,41 +565,44 @@ async function signupConfirm() {
   //let passHash = await px.hash256( signup_password.value)
 
   let signupResponse = await justPost(`${ apiUrl }/devsk/sign-up`, { 
-    profileName: signup_profileName.value,
+    profileName : signup_profileName.value,
     passwordHash: await px.hash256( signup_password.value ),
     passwordHint: await px.hash256( signup_password_hint.value )
   })
 
   if (signupResponse.done) {
-    alert('Your Sign-up is done.')
+    //take key values
+    devsk.loginProfile  = signup_profileName.value
+    devsk.loginCert     = signupResponse.loginCert
+
     showSpace([ after_login_space ])
-    document.getElementById('after_close_button').disabled = true
 
-    //clear after_login_space
+    //clear after_login_space & signup_space
     resetAfterLoginSpace()
-
-    after_login_profileName.textContent = '@' + signup_profileName.value
-
-    signup_profileName.value = ''
-    signup_password.value = ''
-    signup_password_repeat.value = ''
-
+    after_login_profileName.textContent = '@' + devsk.loginProfile
     after_update_button.textContent = 'Add'
     after_update_button.setAttribute('onclick',"editProfile('add')")
-    devsk.loginProfile = after_login_profileName.textContent.slice(1)
-    profile_display.textContent = '@' + devsk.loginProfile
-    my_brief.textContent = 'Write here...'
+    signup_profileName.value      = ''
+    signup_password.value         = ''
+    signup_password_repeat.value  = ''
+    profile_display.textContent   = '@' + devsk.loginProfile
+    my_brief.textContent          = 'Write here...'
 
     //select my_brief for user to get start editing her profile
-    const range = document.createRange()
+    const range     = document.createRange()
     const selection = window.getSelection()
     range.selectNodeContents( my_brief)
     selection.removeAllRanges()
     selection.addRange( range)
 
     //set buttons
-    login_button.disabled = true
-    signup_button.disabled = true
+    login_button.disabled   = true
+    signup_button.disabled  = true
+    document.getElementById('after_close_button').disabled = true
+
+    //tell user
+    alert('Done. Your Sign-up is done.')
+
 
   } else {
     alert('ERROR: ' + signupResponse.msg)
@@ -605,7 +611,7 @@ async function signupConfirm() {
 
 
 
-//showSpace
+//showSpace---------------------------------------------------------
 function showSpace( space_elem_array ) {
   // show this space but hide the rest
 
@@ -622,7 +628,7 @@ function showSpace( space_elem_array ) {
 
 
 
-//logIn
+//logIn--------------------------------------------------------------
 async function logIn() {
 
   //validate
@@ -635,57 +641,53 @@ async function logIn() {
   }
 
   //main
-  try {
+  let loginApproval = await justPost( apiUrl + '/devsk/log-in', {
+    profileName : clean( login_profileName.value ),
+    passwordHash: await px.hash256( login_password.value)
+  })
 
-    let loginApproval = await justPost( apiUrl + '/devsk/log-in', {
-      profileName : clean( login_profileName.value ),
-      passwordHash: await px.hash256( login_password.value)
+  // loginApproval => {done: true|false, msg: '....', from: ...}
+  if (loginApproval.done) {
+    //alert( 'done / ' + loginApproval.msg)
+    devsk.loginProfile          = login_profileName.value
+    devsk.loginCert             = loginApproval.loginCert
+    profile_display.textContent = '@' + devsk.loginProfile
+
+    //clear the log-in form
+    //login_profileName.value = ''
+    //login_password.value = ''
+
+    //open home page for logged in user
+    showSpace([ after_login_space ])
+    after_login_profileName.textContent = '@' + devsk.loginProfile
+
+    my_brief.textContent  = loginApproval.attach.brief
+    my_experience.value   = loginApproval.attach.experience 
+    my_availability.value = loginApproval.attach.availability
+    my_location.value     = loginApproval.attach.location
+    my_nationality.value  = loginApproval.attach.nationality
+
+    let skillList = loginApproval.attach.skill.split(',').map(v => v.trim())
+
+    skillList.forEach( sk => {
+      let skTag = getSkillTag( sk)
+      skillContainer.insertBefore( skTag, add_skill_icon)
     })
 
-    // loginApproval => {done: true|false, msg: '....', from: ...}
-    if (loginApproval.done) {
-      //alert( 'done / ' + loginApproval.msg)
-      devsk.loginProfile = '@' + login_profileName.value
-      devsk.loginCert = loginApproval.loginCert
-      profile_display.textContent = devsk.loginProfile
+    after_update_button.textContent = 'Update'
+    after_update_button.setAttribute('onclick',"editProfile('update')")
+    after_update_button.disabled = true
 
-      //clear the log-in form
-      //login_profileName.value = ''
-      //login_password.value = ''
+    //main buttons
+    login_button.disabled       = true
+    signup_button.disabled      = true
+    my_profile_button.disabled  = false //on the skill_space
+    logout_button.disabled      = false
 
-      //open home page for logged in user
-      showSpace([ after_login_space ])
-      after_login_profileName.textContent = devsk.loginProfile
-
-      my_brief.textContent  = loginApproval.attach.brief
-      my_experience.value   = loginApproval.attach.experience 
-      my_availability.value = loginApproval.attach.availability
-      my_location.value     = loginApproval.attach.location
-      my_nationality.value  = loginApproval.attach.nationality
-
-      let skillList = loginApproval.attach.skill.split(',').map(v => v.trim())
-
-      skillList.forEach( sk => {
-        let skTag = getSkillTag( sk)
-        skillContainer.insertBefore( skTag, add_skill_icon)
-      })
-
-      after_update_button.textContent = 'Update'
-      after_update_button.setAttribute('onclick',"editProfile('update')")
-      after_update_button.disabled = true
-
-      //main buttons
-      login_button.disabled = true
-      signup_button.disabled = true
-      my_profile_button.disabled = false //on the skill_space
-      logout_button.disabled = false
-
-    } else {
-      alert( 'ERROR: ' + loginApproval.msg)
-    }
-  } catch (error) {
-    alert('ERROR: ' + error)
+  } else {
+    alert( 'ERROR: ' + loginApproval.msg)
   }
+ 
 }
 
 
@@ -693,7 +695,7 @@ async function logIn() {
 
 
 // ensure all contents loaded before calling -------------------
-
+// skill space act ; main act
 document.addEventListener('DOMContentLoaded', function() {
 
   const loginBtn = document.getElementById('login_button')
@@ -705,15 +707,15 @@ document.addEventListener('DOMContentLoaded', function() {
   if (loginBtn) {
     loginBtn.addEventListener('click', function() {
       showSpace([ contentSpace[3] ])
-      const login_profileName = document.getElementById('login_profileName')
-      if (login_profileName) login_profileName.focus()
+      //const login_profileName = document.getElementById('login_profileName')
+      //if (login_profileName) login_profileName.focus()
     })
   }
   if (signupBtn) {
     signupBtn.addEventListener('click', () => {
       showSpace([ contentSpace[2] ])
-      const signup_profileName = document.getElementById('signup_profileName')
-      if (signup_profileName) signup_profileName.focus()
+      //const signup_profileName = document.getElementById('signup_profileName')
+      //if (signup_profileName) signup_profileName.focus()
     })
   }
   if (myProfileBtn) {
@@ -727,7 +729,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (resetPasswordBtn) {
     resetPasswordBtn.addEventListener('click', () => {
       showSpace([ contentSpace[6] ])
-      document.getElementById('reset_profile_name').focus()
+      //document.getElementById('reset_profile_name').focus()
     })
   }
 
@@ -741,7 +743,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-//--------------------------------------
+//----------------------------------------------------------------
 //func for mobile touch handling
 
 let draggedSkill      = null
@@ -822,8 +824,16 @@ function touchEndHandler(event) {
 
 
 
-//getSkillTag
+//getSkillTag-----------------------------------------------------------
 function getSkillTag( skill_name) {
+
+  /*yaml
+
+  for   : make the input skill_name as a w3-tag style and return
+  input : string of skill name
+  output: <span> with proper decoration
+
+  */
 
   let newSkillTag = document.createElement('span')
   newSkillTag.className = "skill w3-tag w3-round-xlarge x-pointer x-fz120"
@@ -839,18 +849,19 @@ function getSkillTag( skill_name) {
 function resetAfterLoginSpace() {
 
   after_login_profileName.textContent = ''
-  my_brief.textContent = ''
-  skillContainer.innerHTML = `<img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">`
-  my_experience.value = ''
+  my_brief.textContent      = ''
+  skillContainer.innerHTML  = `<img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">`
+  my_experience.value   = ''
   my_availability.value = ''
-  my_location.value = ''
-  my_nationality.value = ''
+  my_location.value     = ''
+  my_nationality.value  = ''
   after_update_button.textContent = 'Update'
   after_update_button.setAttribute('onclick',"editProfile('update')")
 }
 
 
-//findSkill
+
+//findSkill---------------------------------------------------------
 async function findSkill() {
   if (search_word.value.trim() != '') {
     let foundGuys = await justPost(apiUrl + '/devsk/find', {
@@ -859,20 +870,33 @@ async function findSkill() {
 
     if (foundGuys.length) {
 
-      //clear table display
-      search_result_table.innerHTML = '<tr><th class="x-condensed x-small">PROFILE</th><th class="x-condensed x-small">SKILL</th><th class="x-condensed x-small">AVAILABILITY</th></tr>'
+      //delete exam row in table
+      //search_result_table.innerHTML = '<tr><th class="x-condensed x-small">PROFILE</th><th class="x-condensed x-small">SKILL</th><th class="x-condensed x-small">AVAILABILITY</th></tr>'
+      let resultTable = document.getElementById('search_result_table')
+      let tableLastRow = resultTable.rows[ resultTable.rows.length - 1]
+
+      if (tableLastRow) {
+        resultTable.deleteRow( resultTable.rows.length - 1)
+      }
 
       //make each row
       foundGuys.forEach( guy => {
         let newTr = document.createElement('tr')
         
-        newTr.innerHTML = `<td><a href="${apiUrl}/devsk/prof/@${encodeURIComponent( clean(guy.profileName) )}">@${ clean(guy.profileName) }</a></td><td>${ clean(guy.skill) }</td><td>${ clean(guy.availability) }</td>`
+        newTr.innerHTML = `<td class="x-p8">
+          <div><a href="${apiUrl}/devsk/prof/@${encodeURIComponent( clean(guy.profileName) )}">@${ clean( guy.profileName )}</a> --avail: <span class="x-fz100">${ clean( guy.availability )}</span></div>
+          <div>${ clean( guy.skill )} <span class="x-fz100">${ '(' + clean( guy.experience ) + 'y)'}</span>
+        </td>`
 
         search_result_table.append( newTr)
       })
     }
   }
 }
+
+
+//------------------------------------------------------------------
+
 
 //toggleOption
 function toggleOption() {
@@ -941,8 +965,20 @@ function addSkill( new_skill ) {
 }
 
 
-//editProfile
+//editProfile--------------------------------------------------------
 async function editProfile( mode='update' ) {
+
+  /*yaml
+
+  for   : this func for the after_login_space where user can edit her own profile. But the func has 2 modes, update and add. The default button in after_login_space is Update but after sign-up the button changes to Add.
+
+  input : when user clicks Update or Add buttons in the after_login_space
+  output: 
+    - calls /devsk/edit-profile for Update
+    - calls /devsk/add-profile for Add
+
+  */
+
   //update the profile to server
   let dataToUpdate = {
     profileName : after_login_profileName.textContent.slice(1),
@@ -954,90 +990,100 @@ async function editProfile( mode='update' ) {
     nationality : my_nationality.value
   }
 
-
   //validate
+  if (  !dataToUpdate.profileName || !devsk.loginCert ||
+        badProfile( dataToUpdate.profileName ) ||
+        badUuid( devsk.loginCert) ) {
+
+          alert('Fail. Profile Name is incorrect. | Please log-in first.')
+          return
+  }  
+  
   for (ky in dataToUpdate) {
     if ( hasTag( dataToUpdate[ky] )) {
-      alert('The value in key: ' + ky + ' is invalid')
+      alert('Fail. Field ' + ky + ' is invalid (5000)')
       return
     }
   }
 
 
-  //main
+  //main of update
   if (mode == 'update') {
 
     if ( !devsk.loginCert || badUuid( devsk.loginCert)) {
-      alert('You have to log-in first')
+      alert('Fail. You have to log-in first.')
       return
     }
 
-    try {
-      let serverReply = await justPost( 
-        apiUrl + '/devsk/edit-profile', 
-        dataToUpdate,
-        { loginCert: devsk.loginCert }
-      )
+    let serverReply = await justPost( 
+      apiUrl + '/devsk/edit-profile', 
+      dataToUpdate,
+      { logincert: devsk.loginCert } //header
+    )
 
-      if (serverReply.done) {
-        alert('Done, Updated your profile')
-        after_update_button.disabled = true
+    if (serverReply.done) {
+      alert('Done. Your profile is updated.')
+      after_update_button.disabled = true
 
-      } else {
-        alert('ERROR: ' + serverReply.msg)
-      }
-    } catch (error) {
-      console.error( error)
-      alert('ERROR: ' + error)
+    } else {
+      alert('ERROR: ' + serverReply.msg)
     }
+
+
 
   } else if (mode == 'add') {
 
     //validate
-    if ( my_brief.textContent == '' || xb.at([ skillContainer, {all:'span'} ]).length == 0 || my_experience.value == '' || my_availability.value == '') {
+    if (  my_brief.textContent  == '' || 
+          xb.at([ skillContainer, {all:'span'} ]).length == 0 || my_experience.value   == '' || 
+          my_availability.value == '' ) {
 
-      alert('Please complete the * fields')
+      alert('Fail. Please complete all the * fields.')
       return
     }
 
     //validate
     for (ky in dataToUpdate) {
       if ( hasTag( dataToUpdate[ky] )) {
-        alert('The value in field: ' + ky + ' is invalid')
+        alert('Fail. Field ' + ky + ' is invalid (5000)')
         return
       }
     }
 
-    //main
-    try {
-      let serverReply = await justPost( apiUrl + '/devsk/add-profile', dataToUpdate)
+    //main of add
+    let serverReply = await justPost( 
+      apiUrl + '/devsk/add-profile', 
+      dataToUpdate, 
+      { logincert: devsk.loginCert } 
+    )
 
-      if (serverReply.done) {
-        alert('Done, Added your profile')
 
-        //then change button label to 'Update' and disable it
-        after_update_button.textContent = 'Update'
-        after_update_button.setAttribute('onlick',"editProfile('update')")
-        after_update_button.disabled = true
-        after_close_button.disabled = false //so user can close and get back to home
+    if (serverReply.done) {
+      alert('Done. Your profile is added.')
 
-        //set main buttons
-        my_profile_button.disabled = false //on skill_space
-        logout_button.disabled = false
+      //then change button label to 'Update' and disable it
+      after_update_button.textContent = 'Update'
+      after_update_button.setAttribute('onlick',"editProfile('update')")
+      after_update_button.disabled = true
+      after_close_button.disabled = false //so user can close and get back to home
 
-      } else {
-        alert('ERROR: ' + serverReply.msg)
-      }
-    } catch (error) {
-      console.error( error)
-      alert('ERROR: ' + error)
+      //set main buttons
+      my_profile_button.disabled = false //on skill_space
+      logout_button.disabled = false
+
+    } else {
+      alert('ERROR: ' + serverReply.msg)
     }
+
   }
   
 }
 
 
-//resetPassword
+
+
+
+//resetPassword------------------------------------------------------
 async function resetPassword() {
 
   //validate
@@ -1049,39 +1095,40 @@ async function resetPassword() {
     alert('Please complete all the * fields. | Minimum password is 8 characters. | The Profile Name is allowed for: a-zA-Z0-9_- only.')
     return
   }
+
   if (reset_new_password.value != reset_repeat_password.value) {
     alert('The New Password must as same as the Repeat New Password')
     return
   }
+
   if ( badProfile( reset_profile_name.value )) {
     alert('Invalid Profile Name')
     return
   }
 
   //main
-  try {
-    let serverReply = await justPost( apiUrl + '/devsk/reset-password', {
+  let serverReply = await justPost( 
+    apiUrl + '/devsk/reset-password', 
+    {
       profileName     : reset_profile_name.value,
       passwordHint    : await px.hash256( reset_password_hint.value ),
       newPasswordHash : await px.hash256( reset_new_password.value )
-    })
-
-    if (serverReply.done) {
-      alert( 'Done, Your password is reset')
-      showSpace([ contentSpace[1] ])
-    } else {
-      alert( 'ERROR: ' + serverReply.msg)
     }
-  } catch (error) {
-    console.error( 'resetPassword', error)
-    alert( 'ERROR: ' + error)
+  )
+
+  if (serverReply.done) {
+    alert( 'Done. Your password is reset.')
+    showSpace([ contentSpace[1] ])
+  } else {
+    alert( 'ERROR: ' + serverReply.msg)
   }
+
   
 }
 
 
 
-//sendContact
+//sendContact--------------------------------------------------------
 async function sendContact() {
   /*
     data: your_message , your_contact
@@ -1093,11 +1140,12 @@ async function sendContact() {
 
   //validate
   if (!yourMsg) {
-    alert('Please put your message')
+    alert('Fail.Please put your message.')
     return
   }
+
   if ( hasTag( yourMsg) || hasTag( yourContact) ) {
-    alert('Html tag is not allowed in your message and your contact')
+    alert('Fail. The html tag or code is not allowed in your message.')
     return
   }
 
@@ -1114,12 +1162,15 @@ async function sendContact() {
   })
 
   if (serverReply.done) {
-    alert('Done, your message sent to the admin')
+    alert('Done. your message sent to the admin.')
     showSpace([ skill_space ])
   } else {
     alert('ERROR: ' + serverReply.msg)
   }
 }
+
+
+//-----------------------------------------------------------------
 
 
 //clean -- clean before put in html
@@ -1153,7 +1204,7 @@ function badUuid( UUID_STRING ) {
 
 
 
-//logOut
+//logOut------------------------------------------------------------
 async function logOut() {
   /* 
     brief : send loginProfile & loginCert to devsk
@@ -1165,24 +1216,24 @@ async function logOut() {
   */
 
   //validate
-  if (  badProfile( devsk.loginProfile.slice(1)) || 
+  if (  badProfile( devsk.loginProfile ) || 
         badUuid( devsk.loginCert )) {
 
-          alert('You have not log-in yet | or something happens to your browser')
+          alert('Fail. You have not log-in yet. | Something happens to your browser.')
           return
   }
 
 
   let logoutApprove = await justPost( apiUrl + '/devsk/log-out', 
-    { profileName : devsk.loginProfile.slice(1) },
+    { profileName : devsk.loginProfile },
     { logincert   : devsk.loginCert } //header
   )
 
   if (logoutApprove.done) {
-    alert('You are now logged out. See you soon :-)')
+    alert('Done. You are now logged out. See you soon :-)')
     location.reload()
   } else {
-    alert('Fail, Cannot log-out (3000)')
+    alert('ERROR: ' + logoutApprove.msg)
   }
 }
 
