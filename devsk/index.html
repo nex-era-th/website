@@ -89,7 +89,7 @@
 
     <!--appName-->
     <div class="x-mt32 x-mb40">
-      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span class="x-small w3-tag x-round">1.2.1</span></h2>
+      <h2 class="x-center gloria x-mb0" style="color: darkred">dev-skill <span class="x-small w3-tag x-round">1.2.2</span></h2>
       <div class="x-center x-gray x-italic x-serif">Find all the dev guys here 8-D</div>
     </div>
     
@@ -138,6 +138,7 @@
 
       <table id="search_result_table" class="x-background">
         <tr><th>profile</th></tr>
+
         <tr><td class="x-p8">
           <div><a href="#">@sample</a> --avail: <span class="x-fz100">2 weeks</span></div>
           <div>java script, html, css, mongodb <span class="x-fz100">(5y)</span></div>
@@ -323,7 +324,7 @@
 
     <div class="x-mt32">
       <h6 class="mat-text-indigo x-condensed x-mb0">MY EXPERIENCES (YEARS) *</h6>
-      <input id="my_experience" type="number" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
+      <input id="my_experience" type="number" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false" placeholder="numbers only">
     </div>
 
     <div class="x-mt">
@@ -339,13 +340,13 @@
 
 
     <div class="x-mt">
-      <h6 class="mat-text-indigo x-condensed x-mb0">LOCATION</h6>
-      <input id="my_location" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
+      <h6 class="mat-text-indigo x-condensed x-mb0">LOCATION/CITY</h6>
+      <input id="my_location" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false" placeholder="Bangkok, Thailand">
     </div>
 
     <div class="x-mt">
       <h6 class="mat-text-indigo x-condensed x-mb0">NATIONALITY</h6>
-      <input id="my_nationality" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false">
+      <input id="my_nationality" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false" placeholder="Thai">
     </div>
 
 
@@ -874,11 +875,13 @@ async function findSkill() {
       //delete exam row in table
       //search_result_table.innerHTML = '<tr><th class="x-condensed x-small">PROFILE</th><th class="x-condensed x-small">SKILL</th><th class="x-condensed x-small">AVAILABILITY</th></tr>'
       let resultTable = document.getElementById('search_result_table')
-      let tableLastRow = resultTable.rows[ resultTable.rows.length - 1]
+      //let tableLastRow = resultTable.rows[ resultTable.rows.length - 1]
 
-      if (tableLastRow) {
-        resultTable.deleteRow( resultTable.rows.length - 1)
-      }
+      //if (tableLastRow) {
+        //resultTable.deleteRow( resultTable.rows.length - 1)
+      //}
+
+      resultTable.innerHTML = '<tr><th>profile</th></tr>'
 
       //make each row
       foundGuys.forEach( guy => {
