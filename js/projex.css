@@ -708,12 +708,12 @@ changed to below line to import all 3 famlies at once
 .x-white      { color: white }
 .x-white2, .x-white-milk  { color: ghostwhite}
 .x-lgray, .x-gray-light { color: lightgray }
-.x-gray       { color: gray }
-.x-gray2      { color: slategray}
-.x-gray3, .x-gray-dark  { color: dimgray}
+.x-gray, .x-grey       { color: gray }
+.x-gray2, .x-slategray, .x-slategrey      { color: slategray}
+.x-gray3, .x-gray-dark, .x-dimgray, .x-dimgrey  { color: dimgray}
 .x-black      { color: black }
 .x-red        { color: tomato }
-.x-red2, .x-red-dark  { color: darkred}
+.x-red2, .x-red-dark, .x-darkred  { color: darkred}
 .x-lyellow    { color: cornsilk}
 .x-yellow     { color: goldenrod }
 .x-yellow2, .x-yellow-dark  { color: chocolate}
