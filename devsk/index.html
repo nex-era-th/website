@@ -151,7 +151,7 @@
 
     </div>
 
-    <!--actions for skillSpace-->
+    <!--skill_act_div-->
     <div id="skill_act_div" class="x-mtb32">
       <h6 class="mat-text-brown4"><i>what else you can do</i></h6>
 
@@ -440,7 +440,7 @@
 
 <script>
 ///////////////////////////////////////////////////////////////////
-//main_script
+//main script
 
 //xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', {
 //  page: location.pathname, lastVisit: Date.now()
@@ -453,6 +453,16 @@
 version_display.innerHTML = conf.versionDisplay
 
 
+const devsk = {
+  about   : 'search dev guys here',
+  version : 'beta',
+  by      : 'nex-era',
+  browserName: navigator.userAgent,
+  language: navigator.languages,
+
+  //loginProfile <--keep logged in profileName here, eg, john
+  //loginCert <--keep loginCert from server
+}
 
 const contentSpace = [
   document.getElementById('home_space'), 
@@ -465,11 +475,31 @@ const contentSpace = [
   document.getElementById('contact_space')
 ]
 
-const devsk = {
-  about: 'simply the place you can search for dev guys',
-  version: '0.1',
-  by: '@devster'
+
+
+//check session after reload
+if (  sessionStorage.getItem('loginProfile') && 
+      sessionStorage.getItem('loginCert')) {
+
+  profile_display.textContent = '@' + sessionStorage.getItem('loginProfile')
+  devsk.loginProfile = sessionStorage.getItem('loginProfile')
+  devsk.loginCert = sessionStorage.getItem('loginCert')
+  setAfterLoginButtonState()
+
+  if ( sessionStorage.getItem('loginData')) {
+    loadLoginData( JSON.parse( sessionStorage.getItem( 'loginData')))
+  } else {
+    alert('Your logged in data is lost. Please re log-in to get it.')
+  }
 }
+
+
+
+
+
+
+
+
 
 //mobile touch init
 //document.addEventListener("DOMContentLoaded", enableTouchDrag)
@@ -479,12 +509,7 @@ const devsk = {
 
 
 
-//get skill data ; this is the poke already
-let skillData
-justPost( conf.apiUrl + '/nexdb-find', {
-  collection: 'skill',
-  query: {}
-}).then( data => skillData = data)
+
 
 
 
@@ -532,6 +557,21 @@ async function justPost( ur_l, dat_a, headerField) {
 
   // tested=ok, @devster
 }
+
+
+
+//setAfterLoginButton----------------------------------------------
+function setAfterLoginButtonState () {
+  login_button.disabled           = true;
+  signup_button.disabled          = true
+  my_profile_button.disabled      = false
+  logout_button.disabled          = false
+  reset_password_button.disabled  = false
+}
+
+
+
+
 
 
 
@@ -654,6 +694,11 @@ async function logIn() {
     devsk.loginProfile          = login_profileName.value
     devsk.loginCert             = loginApproval.loginCert
     profile_display.textContent = '@' + devsk.loginProfile
+    sessionStorage.setItem('loginProfile', devsk.loginProfile)
+    sessionStorage.setItem('loginCert', devsk.loginCert)
+    sessionStorage.setItem('loginData', 
+      JSON.stringify( loginApproval.attach)
+    )
 
     //clear the log-in form
     //login_profileName.value = ''
@@ -692,6 +737,24 @@ async function logIn() {
  
 }
 
+
+//loadLoginData-----------------------------------------------------
+function loadLoginData( LOGIN_DATA ) {
+  //showSpace([ after_login_space ])
+  after_login_profileName.textContent = '@' + devsk.loginProfile
+  my_brief.textContent  = LOGIN_DATA.brief
+  my_experience.value   = LOGIN_DATA.experience 
+  my_availability.value = LOGIN_DATA.availability
+  my_location.value     = LOGIN_DATA.location
+  my_nationality.value  = LOGIN_DATA.nationality
+
+  let skillList = LOGIN_DATA.skill.split(',').map(v => v.trim())
+
+  skillList.forEach( sk => {
+    let skTag = getSkillTag( sk)
+    skillContainer.insertBefore( skTag, add_skill_icon)
+  })
+}
 
 
 
@@ -1242,11 +1305,28 @@ async function logOut() {
 
   if (logoutApprove.done) {
     alert('Done. You are now logged out. See you soon :-)')
+    sessionStorage.clear()
     location.reload()
   } else {
     alert('ERROR: ' + logoutApprove.msg)
   }
 }
+
+
+
+
+
+
+// heavy load stuff------------------------------------------------
+
+//get skill data ; this is the poke already
+let skillData
+justPost( conf.apiUrl + '/nexdb-find', 
+  { collection: 'skill', query: {} }
+).then( data => skillData = data)
+
+
+
 
 
 
