@@ -12,10 +12,8 @@ const conf = {
   salt: 'DJo4C-QNU~C8',
 
   //real server
-  apiUrl        : 'https://node-x-qd6s.onrender.com', 
-  versionDisplay: '&beta;',
+  //apiUrl: 'https://node-x-qd6s.onrender.com', versionDisplay: '&beta;',
   
   //test server
-  //apiUrl        : 'http://192.168.1.111:10000',
-  //versionDisplay: '&beta;'
+  apiUrl: 'http://192.168.1.111:10000', versionDisplay: '&beta;.1'
 }

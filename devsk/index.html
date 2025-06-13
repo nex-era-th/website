@@ -176,8 +176,8 @@
     </div-->
 
 
-    <!--info/about-->
-    <div id="about" style="margin-top: 60px; margin-bottom: 30px; display: flex; align-items: center; gap: 24px">
+    <!--info/about/footer-->
+    <div id="about" style="margin-top: 60px; margin-bottom: 30px; display: flex; align-items: center; gap: 16px">
 
       <div style="display: flex; gap: 4px; align-items: center; cursor: pointer" onclick="location.href = 'about.html';">
         <img src="/icon/info-o.svg" class="x-wh">
@@ -190,6 +190,10 @@
       <div style="display: flex; gap: 4px; align-items: center; cursor: pointer" onclick="showSpace([ contact_space ]);">
         <img src="/icon/mail.svg" class="x-wh">
         <code class="x-small">Contact</code>
+      </div>
+      <div style="display: flex; gap: 4px; align-items: center; cursor: pointer" onclick="showAppLog()">
+        <img src="/icon/time.svg" class="x-wh">
+        <code class="x-small">Log</code>
       </div>
     </div>
 
@@ -376,6 +380,8 @@
 
 
 
+
+
   <!--reset password space------------------------------------------->
   <div id="reset_password_space" class="x-mt32" hidden>
     <h3 class="x-center x-darkred">reset password</h3>
@@ -402,6 +408,9 @@
   </div>
 
 
+
+
+
   <!--contact space------------------------------------------------->
   <div id="contact_space" class="x-mt32" hidden>
     <h3 class="x-center x-darkred">contact us</h3>
@@ -421,6 +430,29 @@
       <button class="w3-button w3-ripple x-condensed" onclick="showSpace([ contentSpace[1] ]); your_message.value = '';">Clear & Close</button>
     </div>
   </div>
+
+
+
+
+  <!--app log space-------------------------------------------------->
+  <div id="app_log_space" class="x-mt32" hidden>
+    <h3 class="x-center x-darkred">app log</h3>
+    <div class="x-center x-fz100" style="line-height: 1.3;">หน้านี้ไว้แจ้งความคืบหน้าของ dev-skill ว่าเราได้มีการแก้ไขอะไรบ้าง</div>
+
+    <table id="app_log_table" class="x-background x-fz105 x-mt24">
+      <tr><td style="padding: 16px 8px">
+        --no data
+      </td></tr>
+      
+    </table>
+
+    <div style="position: fixed; left: 0; bottom: 0; padding: 4; cursor: pointer;" onclick="showSpace([ skill_space ])">
+      <img src="/icon/u-turn.svg" style="width: 32px; height: 32px;">
+    </div>
+  </div>
+
+
+
 
 
 
@@ -472,7 +504,8 @@ const contentSpace = [
   document.getElementById('after_login_space'), 
   document.getElementById('who_view_space'),
   document.getElementById('reset_password_space'),
-  document.getElementById('contact_space')
+  document.getElementById('contact_space'),
+  document.getElementById('app_log_space')
 ]
 
 
@@ -1314,6 +1347,43 @@ async function logOut() {
 
 
 
+//showAppLog---------------------------------------------------------
+async function showAppLog() {
+
+  showSpace([ app_log_space ])
+  let logData = await justPost( conf.apiUrl + '/nexdb-find',
+    { collection: 'devskLogDisplay', query: {} }
+  )
+
+  if (logData) {
+    app_log_table.innerHTML = '' //clear first
+
+    //sort time by descending
+    logData.sort( (a,b) => Number(b.time) - Number(a.time))
+
+    logData.forEach(v => {
+      let newRow = document.createElement('tr')
+      newRow.innerHTML = `<td class="x-p8">
+        <div>${ new Date( Number(v.time)) }<br>
+          <span class="x-fz105">- ${ v.msg }</span><br>
+          <span class="x-fz105">- version: ${ v.version }</span>
+        </div></td>`
+
+      app_log_table.append( newRow)
+    })
+
+  } else {
+
+    //no log data
+    let newRow = document.createElement('tr')
+    newRow.innerHTML = `<td style="padding: 16px 8px">
+        --no data
+      </td>`
+
+    app_log_table.innerHTML = newRow
+  }
+}
+
 
 
 
@@ -1324,6 +1394,8 @@ let skillData
 justPost( conf.apiUrl + '/nexdb-find', 
   { collection: 'skill', query: {} }
 ).then( data => skillData = data)
+
+
 
 
 
