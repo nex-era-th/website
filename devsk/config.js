@@ -8,7 +8,7 @@ var: conf
 
 const conf = {
   apiUrl        : 'https://node-x-qd6s.onrender.com', 
-  versionDisplay: '1.2.4',
+  versionDisplay: '&beta;',
   //apiUrl        : 'http://192.168.1.111:10000',
-  //versionDisplay: '1.3*'
+  //versionDisplay: '&beta;'
 }
