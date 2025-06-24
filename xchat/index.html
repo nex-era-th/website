@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>node-x/xchat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--script src="/config.js"></script-->
+  <link rel="stylesheet" href="/js/w3.css">
+  <link rel="stylesheet" href="/js/projex.css">
+  <link rel="stylesheet" href="/js/material-x.css">
+  <style>
+    * { font-family: sans-serif }
+    h1, h2, h3 { color: darkred }
+    p { font-size: 135% }
+    table { width: 100%; border-collapse: collapse}
+    tr, th, td { 
+      border-collapse : collapse; 
+      border          : 1px solid white; 
+      font-size       : 105%; 
+      padding         : 8px
+    }
+    .view-profile-act:hover { background-color: var(--indigo-50);}
+    #chat_box > div { padding: 8px; background-color: var(--grey-200);}
+  </style>
+</head>
+<body>
+
+<div id="main_content" class="w3-container" style="max-width: 800px; margin: 0 auto">
+
+  <code id="profile_display" style="position: fixed; top: 0; right: 4px" class="x-small mat-text-indigo x-layer-top">@guest</code>
+
+  <!--title space------------------------------------------------------->
+  <div id="title_space">
+    <h3 class="x-center">chat</h3>
+    <div style="line-height: 1.3;" class="x-center x-fz100">chat with anyone in dev-skill by search her profileName and send your message.</div>
+  </div>
+  
+  <!--find space------------------------------------------------------->
+  <div id="find_space" class="x-mt32">
+    <h6 class="mat-text-brown x-italic x-mb0">Find someone to chat to:</h6>
+    <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
+      
+      <input id="search_word" type="text" 
+      class="w3-input w3-border x-round-14 x-fz135" 
+      placeholder="@john" 
+      onkeydown="if(event.key === 'Enter') findUser()">
+
+      <button class="w3-button w3-blue w3-ripple x-round-23 x-fz135" onclick="findUser()">
+        <img src="/icon/search.svg">
+      </button>
+    </div>
+
+    <div id="found_user" class="x-mt24">
+      <table class="x-fz105 x-background">
+        <tr><td><a href="#" onclick="title_space.hidden=true; find_space.hidden=true; chat_space.hidden=false;">@xxx -- chat# 123456</a></td></tr>
+        <tr><td><a href="#">@yyy -- chat# 45465132</a></td></tr>
+        <tr><td><a href="#">@zzz</a></td></tr>
+      </table>
+    </div>
+
+  </div>
+
+
+  <!--chat space------------------------------------------------------->
+  <div id="chat_space" class="" hidden>
+    <div id="chat_box" style="display: grid; grid-template-columns: 100%; font-size: 120%; gap: 1px" class="x-white-bg">
+
+      <div style="background-color: var(--indigo-200); position: sticky; top: 0">chat# 13546512 (@xxx, @yyy)</div>
+
+      <div>
+        <div style="display: grid; grid-template-columns: auto auto; justify-content: space-between;">
+          <div class="x-bold" style="font-size: 18px">@xxx</div>
+          <div class="x-right x-small">9:15 /Jun12</div>
+        </div>
+        <div>are you available for some project?</div>
+      </div>
+      <div>
+        <div style="display: grid; grid-template-columns: auto auto; justify-content: space-between;">
+          <div class="x-bold" style="font-size: 18px">@yyy</div>
+          <div class="x-right x-small">9:20 /Jun13</div>
+        </div>
+        <div>ok, what's up?</div>
+      </div>
+
+      <!--write row-->
+      <div id="write_row">
+        <textarea id="write_box" rows="3" class="x-fullw x-white-bg x-fz135"></textarea>
+
+        <div style="display: grid; justify-content: space-between; grid-template-columns: 50% 50%; margin-top: 0">
+          
+          <button class="w3-button w3-ripple mat-text-indigo" onclick="addNewMessage('xxx', write_box.value)"><img src="/icon/send.svg"> Send</button>
+
+          <button class="w3-button w3-ripple mat-text-indigo" onclick="title_space.hidden=false; find_space.hidden=false; chat_space.hidden=true"><img src="/icon/x.svg"> Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>    
+
+
+
+
+
+
+</div>
+  
+
+
+
+
+
+
+
+
+<div style="height: 60px"></div>
+
+<!--u turn-->
+<div style="position: fixed; left: 0; bottom: 0">
+  <div style="display: inline-block" class="x-p4 x-pointer" 
+  onclick="history.back()">
+    <img src="/icon/u-turn.svg" style="width: 32px; height: 32px;">
+  </div>
+</div>
+
+
+<script>
+////////////////////////////////////////////////////////////////////
+
+function addNewMessage( who, msg ) {
+
+  if (msg) {
+    let htmlTemplate = `<div style="display: grid; grid-template-columns: auto auto; justify-content: space-between;">
+          <div class="x-bold" style="font-size: 18px">@${ who }</div>
+          <div class="x-right x-small">${ getTinyTime( new Date().getTime() )}</div>
+        </div>
+        <div>${ msg }</div>`
+  
+
+    let newRow = document.createElement('div')
+    newRow.innerHTML = htmlTemplate 
+    let lastRow = document.getElementById('write_row')
+    let table = document.getElementById('chat_box')
+    lastRow.insertAdjacentElement('beforebegin', newRow)
+    write_box.value = ''
+    window.scrollTo(0, document.body.scrollHeight)
+  }
+  
+}
+
+
+
+function getTinyTime( MILISEC ) {
+  let tt = new Date( MILISEC)
+  let yr = tt.getFullYear()
+  let mth = tt.toLocaleString('default',{month:'short'})
+  let dt = tt.getDate()
+  let hr = tt.getHours()
+  let min = tt.getMinutes()
+
+  //output format = jun13 20:04
+  if (yr == new Date().getFullYear()) {
+    yr = ''
+  } else {
+    yr = '/' + yr
+  }
+
+  return hr + ':' + min + ' /' + mth + dt + yr
+}
+
+
+
+
+
+
+</script>
+</body>
+</html>

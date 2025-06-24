@@ -1605,12 +1605,12 @@ ol.thai li:nth-child(n+10)::before {
 
 
 /* level is layer of elements, or z-index ------------------------*/
-.x-level0, .x-layer0, .x-layer-bottom   { z-index: 0 }
-.x-level1, .x-layer1   { z-index: 25 }
-.x-level2, .x-layer2, .x-layer-mid   { z-index: 50 }
-.x-level3, .x-layer3   { z-index: 75 }
-.x-level4, .x-level-top, .x-layer4, .x-layer-top { z-index: 100 }
-
+.x-level0, .x-layer0, .x-layer-bottom, .xlayer-ground { z-index: 0 }
+.x-level1, .x-layer1                                  { z-index: 25 }
+.x-level2, .x-layer2, .x-layer-mid                    { z-index: 50 }
+.x-level3, .x-layer3                                  { z-index: 75 }
+.x-level4, .x-layer4, .x-level-top, .x-layer-top      { z-index: 100 }
+.x-level-auto, .x-layer-auto                          { z-index: auto }
 
 
 

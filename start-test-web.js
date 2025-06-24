@@ -5,6 +5,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const url = require('url')
 
 http.createServer((req, res) => {
 
@@ -27,8 +28,12 @@ http.createServer((req, res) => {
 
 
 
+  const parsedUrl = url.parse(req.url)
+  let filePath = path.join(
+    __dirname, parsedUrl === '/' ? 'index.html' : parsedUrl.pathname
+  );
 
-  let filePath = path.join(__dirname, req.url === '/' ? 'index.html' : req.url);
+
 
   const extname = String(path.extname(filePath)).toLowerCase();
   const mimeTypes = {
@@ -46,9 +51,11 @@ http.createServer((req, res) => {
   fs.readFile(filePath, (err, content) => {
     if (err) {
       if (err.code == 'ENOENT') {
+        console.warn(`× 404 Not Found: ${filePath}`);
         res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8' });
         res.end('404: file not found', 'utf-8');
       } else {
+        console.error(`× 500 Server Error (${err.code}): ${filePath}`);
         res.writeHead(500, { 'Content-Type': 'text/plain; charset=UTF-8' });
         res.end(`500: server error: ${err.code}`, 'utf-8');
       }
@@ -59,6 +66,7 @@ http.createServer((req, res) => {
       } else {
         res.writeHead(200, { 'Content-Type': contentType });
       }
+      console.log(`→ 200 OK: ${filePath}`);
       res.end(content, 'utf-8');
     }
   });
