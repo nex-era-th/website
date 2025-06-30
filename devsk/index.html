@@ -14,6 +14,9 @@
   <script src="/js/xfetch.js"></script>
   <script src="/js/xdev-b.js"></script>
   <script src="/js/projex.js"></script>
+  <script src="https://unpkg.com/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+  <script src="/js/xchat-b.js"></script>
+  <script src="/js/nodex-b.js"></script>
   <style>
     p, li, span {font-family: "Open Sans", sans-serif; font-size: 135%}
     table { width: 100%; border-collapse: collapse;}
@@ -34,9 +37,9 @@
 
 <!--alert icon-->
 <div id="top_space" style="position: fixed; top: 0; left: 0">
-  <div id="alert_icon" class="x-p8 x-ml8 x-pointer" onclick="alert_box.hidden=false">
+  <div id="alert_icon" class="x-p8 x-ml8 x-pointer" onclick="alert_box.hidden=false" hidden>
     <img src="/icon-svgrepo/information-svgrepo-com--red.svg" class="x-wh20">
-    <small id="alert_count">4</small>
+    <small id="alert_count"></small>
   </div>
 </div>
 
@@ -46,9 +49,9 @@
 <div id="alert_box" style="position: fixed; top: 0; width: 100%; min-height: 10%; max-height: 90%; font-size: 135%; animation: x-slideDownFromTopEdge 1s forwards;" 
 class="mat-amber5 x-round-34 w3-card" hidden>
   <div id="alert_msg" class="x-p">
-    <div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/message-rectangular-filled-speech-bubble-svgrepo-com.svg" class="x-wh16"> &nbsp; you've got messages from @xyz</div>
+    <!--div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/message-rectangular-filled-speech-bubble-svgrepo-com.svg" class="x-wh16"> &nbsp; you've got messages from @xyz</div>
     <div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/portfolio-filled-tool-svgrepo-com.svg" class="x-wh"> &nbsp; you got order from @putin</div>
-    <div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/trophy-sportive-cup-silhouette-svgrepo-com.svg" class="x-wh"> &nbsp; you got some award</div>
+    <div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/trophy-sportive-cup-silhouette-svgrepo-com.svg" class="x-wh"> &nbsp; you got some award</div-->
   </div>
   <div id="alert_box_act">
     <div id="alert_box_close_icon" class="x-p4 x-pointer" onclick="alert_box.hidden=true">
@@ -541,6 +544,12 @@ class="mat-amber5 x-round-34 w3-card" hidden>
 
 version_display.innerHTML = conf.versionDisplay
 
+//sessionId
+if (!sessionStorage.sessionId && !nodex.validUuid( sessionStorage.sessionId)) {
+  const sessionId = xb.uuid()
+  sessionStorage.setItem('sessionId', sessionId)
+}
+
 
 const devsk = {
   about   : 'search dev guys here',
@@ -585,7 +594,7 @@ if (  sessionStorage.getItem('loginProfile') &&
 
 
 
-
+//setInterval( checkAlert, 30000);
 
 
 
@@ -760,7 +769,7 @@ function showSpace( space_elem_array ) {
 
 
 
-//logIn--------------------------------------------------------------
+//log-in--------------------------------------------------------------
 async function logIn() {
 
   //validate
@@ -780,12 +789,14 @@ async function logIn() {
 
   // loginApproval => {done: true|false, msg: '....', from: ...}
   if (loginApproval.done) {
-    //alert( 'done / ' + loginApproval.msg)
-    devsk.loginProfile          = login_profileName.value
-    devsk.loginCert             = loginApproval.loginCert
+
+    devsk.loginProfile  = login_profileName.value
+    devsk.loginCert     = loginApproval.loginCert
+    devsk.jwt           = loginApproval.jwt
     profile_display.textContent = '@' + devsk.loginProfile
     sessionStorage.setItem('loginProfile', devsk.loginProfile)
     sessionStorage.setItem('loginCert', devsk.loginCert)
+    sessionStorage.setItem('jwt', loginApproval.jwt)
     sessionStorage.setItem('loginData', 
       JSON.stringify( loginApproval.attach)
     )
@@ -820,6 +831,9 @@ async function logIn() {
     signup_button.disabled      = true
     my_profile_button.disabled  = false //on the skill_space
     logout_button.disabled      = false
+
+    //check alert
+    checkAlert()
 
   } else {
     alert( 'ERROR: ' + loginApproval.msg)
@@ -1387,16 +1401,16 @@ async function logOut() {
 
   //validate
   if (  badProfile( devsk.loginProfile ) || 
-        badUuid( devsk.loginCert )) {
+        !px.validJwt( sessionStorage.jwt )) {
 
-          alert('Fail. You have not log-in yet. | Something happens to your browser.')
+          alert('Fail. You have not log-in yet. OR, something happens to your browser.')
           return
   }
 
 
   let logoutApprove = await justPost( conf.apiUrl + '/devsk/log-out', 
-    { profileName : devsk.loginProfile },
-    { logincert   : devsk.loginCert } //header
+    { logOut: true },
+    { jwt: sessionStorage.jwt } //header
   )
 
   if (logoutApprove.done) {
@@ -1450,7 +1464,7 @@ async function showAppLog() {
 
 
 //open profile page---------------------------------------------------
-function openProfilePage( PROF_NAME_TO_OPEN ) {
+async function openProfilePage( PROF_NAME_TO_OPEN ) {
 
   /*
   for: when people look at list of dev she searched then she clicks on a profile, this func ask the server to show the profile detail for her
@@ -1463,16 +1477,16 @@ function openProfilePage( PROF_NAME_TO_OPEN ) {
   */
 
   if (PROF_NAME_TO_OPEN) {
-    let hasLoginProfile = sessionStorage.getItem('loginProfile')
+    let hasJwt = sessionStorage.getItem('jwt')
     let thisQuery = ''
   
-    if (hasLoginProfile) {
-      thisQuery = '?loginprofile=' + hasLoginProfile
+    if (hasJwt) {
+      thisQuery = '?xwt=' + nodex.getXwt( sessionStorage.loginProfile, hasJwt)
     } 
 
     //location.href = conf.apiUrl + '/devsk/prof/@' + PROF_NAME_TO_OPEN + thisQuery
     location.href = conf.apiUrl + '/devsk/@' + PROF_NAME_TO_OPEN + thisQuery
-      // ^ change to http://NODE-X/devsk/@nex-era to show @nex-era profile
+      // ^ change to http://NODE-X/devsk/@nex-era to show @nex-era profile not /devsk/prof/@nex-era any more, so shorter/cleaner
 
   }
 }
@@ -1510,14 +1524,90 @@ function toggleUserHomeActChat() {
 //check alert--------------------------------------------------
 async function checkAlert() {
   
-  let reply = await justPost( 
-    conf.apiUrl + '/xchat/check-alert',
-    { loginProfile: sessionStorage.getItem('loginProfile')},
-    { logincert: sessionStorage.getItem('loginCert') }
+  //const proFile = sessionStorage.getItem('loginProfile')
+  //const cerT    = sessionStorage.getItem('loginCert')
+
+  //if (!proFile) {
+    //proFile = 'guest'
+    //cerT = ''
+  //}
+
+  const myJwt = sessionStorage.getItem('jwt')
+  if (!myJwt || !px.validJwt( myJwt)) {
+    console.error('fail, no jwt (checkAlert)')
+  }
+
+  let serverReply = await justPost( 
+    conf.apiUrl + '/core/check-alert',
+    { checkAlert: true },
+    { jwt: myJwt }
   )
 
-  console.log( reply) 
+  if (serverReply.done) {
+    
+    // icon & count
+    if (alert_icon.hidden) {
+      alert_icon.hidden = false
+      alert_count.textContent = serverReply.attach.length
+    } else {
+      alert_count.textContent = Number( alert_count.textContent) + serverReply.attach.length
+    }
+
+    // alert msg, now we show only chat alert so there'll be only chat icon showing in the alert msg
+    serverReply.attach.forEach( v => {
+
+      let htmlCode = `<div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/message-rectangular-filled-speech-bubble-svgrepo-com.svg" class="x-wh16"> &nbsp; ${ v.msg }</div>`
+
+      let newElem = document.createElement('div')
+      newElem.innerHTML = htmlCode
+      newElem.setAttribute('onclick',`${ v.onclick }; this.remove(); clearAlert()`)
+      alert_msg.append( newElem)
+
+    })
+    
+
+
+  } else {
+    //console.error('ERROR: ', serverReply)
+  }
 }
+
+
+
+function clearAlert() {
+  /*
+  for: every click on alert will clear or remove that one off, until all gone. At every alert gone, the icon will hide and count is 0.
+  */
+
+  alert_count = Number( alert_count.textContent) - 1
+  if ( alert_msg.children.length == 0) {
+    alert_icon.hidden = true
+    alert_box.hidden = true
+  } 
+}
+
+
+
+
+
+async function getXcert() {
+  /*
+  for: we use xcert to avoid sending loginCert over internet so we send xcert instead. When browser goes to some pages like that are generating from node-x the xcert will allow the server to verify the user's log-in certification by checking with devProfile.
+  output: SHA-256 64 chars
+  rule:
+    - only gen the xcert if there're loginProfile and loginCert only, missing any of these will reject
+  */
+
+  const loginProfile = sessionStorage.getItem('loginProfile')
+  const loginCert = sessionStorage.getItem('loginCert')
+
+  if (loginProfile && loginCert) {
+    return await xb.hash( loginProfile + loginCert)
+  } else {
+    return false
+  }
+}
+
 
 
 
@@ -1527,6 +1617,9 @@ async function checkAlert() {
 
 // run after load but light weight not heavy------------------------
 
+/*
+for: handles query of the page. Right now work for act=log-in first, may add more in future
+*/
 const param = new URLSearchParams(window.location.search)
 if (param.has('act')) {
   if (param.get('act') == 'log-in') {
@@ -1555,6 +1648,11 @@ window.addEventListener('beforeunload', (f) => {
   }
 })
 */
+
+
+
+const salt = new nodex.Secret 
+
 
 
 

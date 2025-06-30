@@ -2117,3 +2117,49 @@ async function testHash() {
     alert("Error: " + err.message);
   }
 }
+
+
+
+
+
+
+px.readJwt = (token) => {
+
+  /*
+  for: read payload of the jwt, not sign or verify
+  test: ok
+  released: jun25/2025 23:37+7
+  */
+
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+      
+    return JSON.parse(jsonPayload); 
+
+  } catch (error) {
+    //console.error( error)
+    return false
+  }
+}
+
+
+px.validJwt = ( JWT ) => {
+
+  /*
+  for: validate the format of the token if it's corret.
+  caution: this is not jwt verify, just check the format that's it.
+  input: jwt-token
+  output: true|false
+  */
+
+  if (typeof JWT !== 'string') return false;
+
+  const parts = JWT.split('.');
+  return parts.length === 3 &&
+    parts.every(part => /^[A-Za-z0-9\-_]+$/.test(part)); // base64url format
+}
