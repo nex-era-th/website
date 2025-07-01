@@ -15,8 +15,9 @@ const conf = {
   //apiUrl: 'https://node-x-qd6s.onrender.com', versionDisplay: '&beta;.1',
   
   //test server
-  //apiUrl: 'http://192.168.1.111:10000', versionDisplay: '&beta;.2', nodexUrl: 'http://192.168.1.111:10000'
-  apiUrl: 'http://localhost:10000',
-  nodexUrl: 'http://localhost:10000',
-  versionDisplay: '&beta;.2'
+  versionDisplay: '&beta;.2',
+  apiUrl: 'http://192.168.1.111:10000',  
+  nodexUrl: 'http://192.168.1.111:10000'
+  //apiUrl: 'http://localhost:10000',
+  //nodexUrl: 'http://localhost:10000',
 }

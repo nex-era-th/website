@@ -262,12 +262,12 @@ xb.help.random = {
 
 
 //2-----------------------------------------
-xb.uuid = function () {
+/*xb.uuid = function () {
   //re standard uuid eg 92798ca1-0bd5-4c32-bb9a-493c9e8050b2
 
   return self.crypto.randomUUID()
 }//ok
-
+*/
 xb.help.uuid = {
   about:'gen uuid from self.crypto',
   use:'let v = xb.uuid()'

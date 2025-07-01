@@ -565,3 +565,84 @@ nodex.Secret = class {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+/**
+ * Generates a UUID (Universally Unique Identifier) string.
+ * This implementation is based on RFC 4122, version 4.
+ * It produces a random UUID.
+ *
+ * @returns {string} A randomly generated UUID string.
+ */
+nodex.getUuid = () => {
+  // Generate 16 random hexadecimal digits (32 characters total)
+  // The 'x' and 'y' characters are placeholders for specific UUID patterns.
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    // Generate a random number between 0 and 15 (inclusive)
+    const r = Math.random() * 16 | 0;
+    // If 'c' is 'y', apply a specific bitwise operation to 'r'
+    // This ensures the correct UUID format for the 'y' character.
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    // Convert the resulting number to a hexadecimal string
+    return v.toString(16);
+  });
+}
+
+// Example usage:
+// console.log(generateUUID());
+// console.log(generateUUID());
+
+
+
+
+nodex.getUuid2 = () => {
+
+  /*
+  for: gen the UUID from secure engine inside js but if not available, fallback to simple one
+  */
+
+
+  // Check if crypto.randomUUID() is supported (modern browsers)
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  } else if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    // Fallback for browsers supporting crypto.getRandomValues but not randomUUID
+    // This generates a Version 4 UUID using cryptographically strong random numbers.
+    const uuid = new Uint8Array(16);
+    crypto.getRandomValues(uuid);
+
+    // Set the version (4) and variant (RFC 4122) bits
+    uuid[6] = (uuid[6] & 0x0f) | 0x40; // Version 4
+    uuid[8] = (uuid[8] & 0x3f) | 0x80; // RFC 4122 variant
+
+    // Convert to hexadecimal string format
+    let uuidStr = '';
+    for (let i = 0; i < 16; i++) {
+      uuidStr += uuid[i].toString(16).padStart(2, '0');
+      if (i === 3 || i === 5 || i === 7 || i === 9) {
+        uuidStr += '-';
+      }
+    }
+    return uuidStr;
+  } else {
+    // Fallback for very old browsers (less secure, but functional)
+    // This uses Math.random(), which is not cryptographically secure.
+    console.warn("Using Math.random() for UUID generation. Consider updating your browser for stronger randomness.");
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+}
+
+// Example usage:
+// console.log(generateUUID());
+// console.log(generateUUID());

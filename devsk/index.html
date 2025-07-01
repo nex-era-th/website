@@ -546,7 +546,7 @@ version_display.innerHTML = conf.versionDisplay
 
 //sessionId
 if (!sessionStorage.sessionId && !nodex.validUuid( sessionStorage.sessionId)) {
-  const sessionId = xb.uuid()
+  const sessionId = nodex.getUuid()
   sessionStorage.setItem('sessionId', sessionId)
 }
 
@@ -594,7 +594,7 @@ if (  sessionStorage.getItem('loginProfile') &&
 
 
 
-//setInterval( checkAlert, 30000);
+setInterval( checkAlert, 3000);
 
 
 
@@ -1532,15 +1532,14 @@ async function checkAlert() {
     //cerT = ''
   //}
 
-  const myJwt = sessionStorage.getItem('jwt')
-  if (!myJwt || !px.validJwt( myJwt)) {
-    console.error('fail, no jwt (checkAlert)')
-  }
+  const myXwt = nodex.getXwt( 
+    sessionStorage.loginProfile, sessionStorage.getItem('jwt') 
+  )
 
   let serverReply = await justPost( 
     conf.apiUrl + '/core/check-alert',
     { checkAlert: true },
-    { jwt: myJwt }
+    { xwt: myXwt }
   )
 
   if (serverReply.done) {
@@ -1556,7 +1555,7 @@ async function checkAlert() {
     // alert msg, now we show only chat alert so there'll be only chat icon showing in the alert msg
     serverReply.attach.forEach( v => {
 
-      let htmlCode = `<div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/message-rectangular-filled-speech-bubble-svgrepo-com.svg" class="x-wh16"> &nbsp; ${ v.msg }</div>`
+      let htmlCode = `<div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/message-rectangular-filled-speech-bubble-svgrepo-com.svg" class="x-wh16"> &nbsp;${ v.msg }</div>`
 
       let newElem = document.createElement('div')
       newElem.innerHTML = htmlCode
@@ -1582,7 +1581,7 @@ function clearAlert() {
   alert_count = Number( alert_count.textContent) - 1
   if ( alert_msg.children.length == 0) {
     alert_icon.hidden = true
-    alert_box.hidden = true
+    alert_box.hidden  = true
   } 
 }
 
