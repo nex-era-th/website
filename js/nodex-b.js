@@ -646,3 +646,79 @@ nodex.getUuid2 = () => {
 // Example usage:
 // console.log(generateUUID());
 // console.log(generateUUID());
+
+
+
+//get tiny time---------------------------------------------------
+nodex.getTinyTime = ( MILISEC ) => {
+  let tt = new Date( MILISEC)
+  let yr = tt.getFullYear()
+  let mth = tt.toLocaleString('default',{month:'short'})
+  let dt = tt.getDate()
+  let hr = tt.getHours()
+  let min = String( tt.getMinutes() ).padStart(2,'0') // makes :00
+
+  //output format = jun13 20:04
+  if (yr == new Date().getFullYear()) {
+    yr = ''
+  } else {
+    yr = '/' + yr
+  }
+
+  return hr + ':' + min + ' /' + mth + dt + yr
+}
+
+
+
+
+
+
+nodex.sortArray = (arr, field, OPT = 'as') => {
+  /*
+  for: sort objects in an array, getting new array as output not affecting the original array
+  input:
+    arr: [[input array]]
+    field: [[field to sort]]
+    OPT: [[default is 'as' (ascending) if put 'de' it is descending]]
+  output: the sorted array, not affecting original array
+  test: ok
+  createdDate: jul1/2025 18:05+7
+  by: @devster 
+  */
+
+  const sortedArr = [...arr];
+  let ascending = true //default
+  if (OPT == 'as') {
+    ascending = true
+  } else if (OPT == 'de') {
+    ascending = false
+  } else {
+    // will be true
+  }
+
+  sortedArr.sort((a, b) => {
+    const valA = a[field];
+    const valB = b[field];
+
+    if (valA === undefined || valB === undefined) {
+      // Handle cases where the field might be missing in some objects.
+      // You might want to adjust this behavior based on your specific needs.
+      // For now, we'll treat undefined as "less than" defined values.
+      if (valA === undefined && valB === undefined) return 0;
+      if (valA === undefined) return ascending ? -1 : 1;
+      if (valB === undefined) return ascending ? 1 : -1;
+    }
+
+    // Basic comparison for numbers and strings
+    if (typeof valA === 'number' && typeof valB === 'number') {
+      return ascending ? valA - valB : valB - valA;
+    } else {
+      // For strings, use localeCompare for proper alphabetical sorting
+      const comparison = String(valA).localeCompare(String(valB));
+      return ascending ? comparison : -comparison;
+    }
+  });
+
+  return sortedArr;
+}
+
