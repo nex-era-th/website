@@ -327,6 +327,28 @@ class="mat-amber5 x-round-34 w3-card" hidden>
     
     <!--user home act chat area-->
     <div id="user_home_chat" class="mat-grey3" style="padding: 16px;" hidden>
+
+      <div id="list_of_chat">
+        <h5>List of My Chat Rooms</h5>
+        <p class="x-small">สามารถกดบนชื่อ Chat Room เพื่อเข้าไป Chat ได้ทันที</p>
+        <ul id="list_chat_box">
+          <!--li><a style="text-decoration: none;">xyz</a></li>
+          <li><a>my_chat_with_some_one</a></li>
+          <li><a>lets_chat</a></li-->
+        </ul>
+
+        <!--label class="x-small x-condensed x-blue">CHAT MEMBER / ROOM NAME</label>
+        <input id="whom_to_chat_with" type="text" class="w3-input w3-border" placeholder="@nex-era or johnjane"-->
+
+        <div class="x-mt16" style="display: grid; grid-template-columns: auto auto; align-items: center; justify-content: space-between;">
+          <!--button class="w3-button w3-blue w3-ripple" onclick="chatWith( whom_to_chat_with.value)">Chat</button-->
+          <!--div class="x-p0 x-pointer" 
+          onclick="toggleUserHomeActChat()"><img src="/icon-x/X.svg" class="x-wh32"></div-->
+        </div>
+      </div>
+
+      <hr style="background-color: lightgrey; height: 1px">
+      
       <div id="create_team_chat">
         <h5>Chat With Someone</h5>
         <p class="x-small">ป้อน @nex-era กรณีรู้ชื่อ profileName หรือหากรู้ชื่อ roomName ก็ป้อนเช่น johnjane</p>
@@ -1517,6 +1539,22 @@ function toggleUserHomeActChat() {
     user_home_chat.hidden = false //show it
     user_home_act_chat.style.backgroundColor = 'var(--grey-200)'
     user_home_profile.hidden = true
+
+    //if already have chat list, don't get it any more from server
+    if ( list_chat_box.children.length == 0 ) {
+
+      //user may refresh browser so get from session. But if session doesn't have, then get from server
+      const list = JSON.parse( sessionStorage.getItem('chatList') )
+
+      if (list) {
+        list.forEach( room => showChatListItem( room))
+      } else {
+        //seems nothing in the session, so get from server
+        getListOfMyChat()
+      }
+
+    }//if not 0 means the list still there 
+
   } else {
     //from show to hide | normal <- chat
     user_home_chat.hidden = true // hide it
@@ -1666,6 +1704,99 @@ function newChatRoom() {
   //no value, no action
 
 }
+
+
+
+function seeGroupInvite( ROOM ) {
+  if (ROOM) {
+    location.href = conf.nodexUrl + '/xchat/see-group-invite?room=' + ROOM + '&xwt=' + nodex.getXwt( sessionStorage.loginProfile, sessionStorage.jwt)
+  }
+}
+
+
+
+
+async function getListOfMyChat() {
+  /*
+  for: get list of your chat rooms from server
+  input:
+    xwt: 
+  output: |
+    {
+      done: true,
+      msg: 'done, you got some chat rooms',
+      attach: [
+        { roomName: __, member: [ ] },
+         ...
+      ]
+    }
+  */
+
+  if (sessionStorage.jwt) {
+
+    const myList = await justPost( conf.nodexUrl + '/xchat/list-chat',
+      {}, 
+      { xwt: nodex.getXwt( 
+        sessionStorage.loginProfile, sessionStorage.jwt
+      )}
+    )
+
+    if (myList.done) {
+      //got data back
+      /*
+
+        {
+          done: true,
+          msg: sssssssssssssssssssssss,
+          attach: [ 
+            aaa, bbb, ccc, ....
+          ]
+        }    
+      
+      */
+
+      //keep it in case the browser refreshes, we take from here
+      sessionStorage.setItem('chatList', JSON.stringify( myList.attach))
+
+      myList.attach.forEach( room => {
+
+        showChatListItem( room)
+        /*if (room.match(/^[\w]+$/)) {
+
+          let htmlCode = `<a onclick="chatWith( '${ room }' )" style="text-decoration: none">${ room }</a>`
+
+          let newListItem = document.createElement('li')
+          newListItem.innerHTML = htmlCode
+          list_chat_box.append( newListItem)
+        }*/
+        //if invalid just pass it
+
+      })
+
+    } else {
+      alert('problem while requesting your chat list')
+    }
+  }
+  //no jwt, no action
+}
+
+
+function showChatListItem( CHAT_ROOM ) {
+  
+  if (CHAT_ROOM.match(/^[\w]+$/)) {
+
+    let htmlCode = `<a onclick="chatWith( '${ CHAT_ROOM }' )" style="text-decoration: none">${ CHAT_ROOM }</a>`
+
+    let newListItem = document.createElement('li')
+    newListItem.innerHTML = htmlCode
+    list_chat_box.append( newListItem)
+  }
+}
+
+
+
+
+
 
 
 
