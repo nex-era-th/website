@@ -744,7 +744,10 @@ async function signupConfirm() {
   if (signupResponse.done) {
     //take key values
     devsk.loginProfile  = signup_profileName.value
-    devsk.loginCert     = signupResponse.loginCert
+    //devsk.loginCert     = signupResponse.loginCert
+
+    sessionStorage.setItem('loginProfile', devsk.loginProfile)
+    sessionStorage.setItem('jwt', signupResponse.jwt)
 
     showSpace([ after_login_space ])
 
@@ -1023,7 +1026,9 @@ function touchEndHandler(event) {
 
 
 
-//getSkillTag-----------------------------------------------------------
+//-------------------------------------------------------------------
+
+
 function getSkillTag( skill_name) {
 
   /*yaml
@@ -1044,6 +1049,9 @@ function getSkillTag( skill_name) {
 }
 
 
+//------------------------------------------------------------------
+
+
 //resetAfterLoginSpace
 function resetAfterLoginSpace() {
 
@@ -1060,7 +1068,10 @@ function resetAfterLoginSpace() {
 
 
 
-//findSkill---------------------------------------------------------
+//-------------------------------------------------------------------
+
+
+
 async function findSkill() {
 
   if (search_word.value.trim() != '') {
@@ -1173,7 +1184,9 @@ function addSkill( new_skill ) {
 }
 
 
-//editProfile--------------------------------------------------------
+//--------------------------------------------------------------------
+
+
 async function editProfile( mode='update' ) {
 
   /*yaml
@@ -1226,7 +1239,9 @@ async function editProfile( mode='update' ) {
     let serverReply = await justPost( 
       conf.apiUrl + '/devsk/edit-profile', 
       dataToUpdate,
-      { logincert: devsk.loginCert } //header
+      { xwt: nodex.getXwt( 
+        sessionStorage.loginProfile, sessionStorage.jwt) 
+      } //header
     )
 
     if (serverReply.done) {
@@ -1265,7 +1280,9 @@ async function editProfile( mode='update' ) {
     let serverReply = await justPost( 
       conf.apiUrl + '/devsk/add-profile', 
       dataToUpdate, 
-      { logincert: devsk.loginCert } 
+      { xwt: nodex.getXwt( 
+        sessionStorage.loginProfile, sessionStorage.jwt) 
+      } 
     )
 
 
@@ -1294,7 +1311,10 @@ async function editProfile( mode='update' ) {
 
 
 
-//resetPassword------------------------------------------------------
+//---------------------------------------------------------------------
+
+
+
 async function resetPassword() {
 
   //validate
@@ -1339,7 +1359,10 @@ async function resetPassword() {
 
 
 
-//sendContact--------------------------------------------------------
+//-------------------------------------------------------------------
+
+
+
 async function sendContact() {
   /*
   for: people to send message to the app's admin
@@ -1418,7 +1441,10 @@ function badUuid( UUID_STRING ) {
 
 
 
-//logOut------------------------------------------------------------
+//-------------------------------------------------------------------
+
+
+
 async function logOut() {
   /* 
     brief : send loginProfile & loginCert to devsk
@@ -1440,7 +1466,9 @@ async function logOut() {
 
   let logoutApprove = await justPost( conf.apiUrl + '/devsk/log-out', 
     { logOut: true },
-    { jwt: sessionStorage.jwt } //header
+    { xwt: nodex.getXwt( 
+      sessionStorage.loginProfile, sessionStorage.jwt )
+    } //header
   )
 
   if (logoutApprove.done) {
@@ -1454,7 +1482,10 @@ async function logOut() {
 
 
 
-//showAppLog---------------------------------------------------------
+//--------------------------------------------------------------------
+
+
+
 async function showAppLog() {
 
   showSpace([ app_log_space ])
@@ -1493,7 +1524,10 @@ async function showAppLog() {
 
 
 
-//open profile page---------------------------------------------------
+//--------------------------------------------------------------------
+
+
+
 async function openProfilePage( PROF_NAME_TO_OPEN ) {
 
   /*
@@ -1522,7 +1556,10 @@ async function openProfilePage( PROF_NAME_TO_OPEN ) {
 }
 
 
-//toggle user home act chat------------------------------------------
+//--------------------------------------------------------------------
+
+
+
 function toggleUserHomeActChat() {
 
   /*yaml

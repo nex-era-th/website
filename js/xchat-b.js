@@ -33,3 +33,22 @@ xchat.chatWith = ( MEMBER ) => {
     alert('Please log-in first')
   }
 }
+
+
+xchat.chatInRoom = ( ROOM ) => {
+  /*
+  for: open a chat room
+  fetch:
+    method: GET
+    url: /xchat/room/roomName
+    query:
+      xwt: [[xwt]]
+  reply: xchat.ejs the chat screen       
+  */
+
+  if (sessionStorage.jwt && sessionStorage.loginProfile) {
+
+    location.href = conf.nodexUrl + '/xchat/room/' + ROOM + '?xwt=' + nodex.getXwt( sessionStorage.loginProfile, sessionStorage.jwt)
+  }
+
+}
