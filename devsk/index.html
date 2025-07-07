@@ -1644,8 +1644,9 @@ async function checkAlert() {
       let htmlCode = `<div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/message-rectangular-filled-speech-bubble-svgrepo-com.svg" class="x-wh16"> &nbsp;${ v.msg } at ${ nodex.getTinyTime( v.time )}</div>`
 
       let newElem = document.createElement('div')
+      newElem.id = v.id
       newElem.innerHTML = htmlCode
-      newElem.setAttribute('onclick',`${ v.onclick }; this.remove(); clearAlert()`)
+      newElem.setAttribute('onclick',`${ v.onclick }; this.remove(); clearAlert(this)`)
       alert_msg.prepend( newElem)
 
     })
@@ -1659,7 +1660,7 @@ async function checkAlert() {
 
 
 //--------------------------------------------------------
-function clearAlert() {
+function clearAlert( ELEM ) {
   /*
   for: every click on alert will clear or remove that one off, until all gone. At every alert gone, the icon will hide and count is 0.
   */
@@ -1669,6 +1670,13 @@ function clearAlert() {
     alert_icon.hidden = true
     alert_box.hidden  = true
   } 
+
+  //now tell server that this is read
+  justPost( conf.nodexUrl + '/core/alert-is-read',
+    { id: ELEM.id },
+    { xwt: nodex.getXwt( 
+      sessionStorage.loginProfile, sessionStorage.jwt)}
+  )
 }
 
 

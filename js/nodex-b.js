@@ -670,7 +670,7 @@ nodex.getTinyTime = ( MILISEC ) => {
 
 
 
-
+//------------------------------------------------------------------
 
 
 nodex.sortArray = (arr, field, OPT = 'as') => {
@@ -722,3 +722,382 @@ nodex.sortArray = (arr, field, OPT = 'as') => {
   return sortedArr;
 }
 
+
+
+//---------------------------------------------------------------
+
+/*
+nodex.getDataUrlimage = async (FILE_INPUT_ELEM, options = {}) => {
+  
+  /*
+  for: get pic from file input and makes it dataUrl, also crop to 4:3 ratio
+  useGuide: |
+    <input type="file" onchange="nodex.getDataUrlimage( this, { crop: '4:3', outputWidth: 1000 } ).then( durl => show_pic_elem.src = durl)">
+  note: the default crop is 4:3 and outputWidth is 1000, so you can leave the option blank. Right now, the func just do 4:3
+  warning: the input file's width must be at least 1000 if we set output width 1000
+  test: ok
+  by: @devster
+  */
+/*
+  const file = FILE_INPUT_ELEM.files[0]; // Get the selected file Blob
+
+
+  //                            validate
+
+
+  if (!file || !file.type.startsWith('image/')) {
+      //errorMessageElem.textContent = 'No file selected.';
+      return;
+  }
+
+  
+
+  //                            main logic
+
+  try {
+    // --- Core image processing logic ---
+    const {
+      crop = '4:3',
+      outputWidth = 1000,
+      outputHeight
+    } = options;
+
+    const processedDataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = () => {
+          const originalWidth = img.naturalWidth;
+          const originalHeight = img.naturalHeight;
+
+          let sx = 0,
+              sy = 0,
+              sWidth = originalWidth,
+              sHeight = originalHeight;
+
+          const targetAspectRatio = 4 / 3;
+
+          if (crop === '4:3') {
+            if (originalWidth / originalHeight > targetAspectRatio) {
+              sHeight = originalHeight;
+              sWidth = originalHeight * targetAspectRatio;
+              sx = (originalWidth - sWidth) / 2;
+              sy = 0;
+            } else {
+              sWidth = originalWidth;
+              sHeight = originalWidth / targetAspectRatio;
+              sx = 0;
+              sy = (originalHeight - sHeight) / 2;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          let destWidth, destHeight;
+          const currentAspectRatio = sWidth / sHeight;
+
+          if (outputWidth && outputHeight) {
+              destWidth = outputWidth;
+              destHeight = outputHeight;
+          } else if (outputWidth) {
+              destWidth = outputWidth;
+              destHeight = outputWidth / currentAspectRatio;
+          } else if (outputHeight) {
+              destHeight = outputHeight;
+              destWidth = outputHeight * currentAspectRatio;
+          } else {
+              destWidth = sWidth;
+              destHeight = sHeight;
+          }
+
+          canvas.width = destWidth;
+          canvas.height = destHeight;
+
+          ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, destWidth, destHeight);
+
+          resolve(canvas.toDataURL(file.type));
+        };
+
+        img.onerror = () => {
+            reject(new Error("Failed to load image for processing."));
+        };
+
+        img.src = event.target.result;
+      };
+
+      reader.onerror = () => {
+          reject(new Error("Failed to read the image file."));
+      };
+
+      reader.readAsDataURL(file); // Start reading the file
+    });
+
+    // Display the processed image
+    //outputImageElem.src = processedDataUrl;
+    //outputImageElem.style.display = 'block';
+
+    //console.log('Image processed and displayed successfully!');
+
+    return processedDataUrl
+
+  } catch (error) {
+      console.error('Error processing image:', error);
+      //errorMessageElem.textContent = `Error: ${error.message}`;
+      //outputImageElem.src = '';
+      //outputImageElem.style.display = 'none';
+  }
+  //}); // End of event listener
+}
+
+*/
+
+
+// Ensure 'nodex' object exists
+//if (typeof nodex === 'undefined') {
+//  var nodex = {};
+//}
+
+nodex.getDataUrlimage = async (FILE_INPUT_ELEM, options = {}) => {
+
+  /*
+  for: get pic from file input and makes it dataUrl, also crop to 4:3 ratio
+  useGuide: |
+    <input type="file" onchange="nodex.getDataUrlimage( this, { crop: '4:3', outputWidth: 1000, text: 'Hello World' } ).then( durl => show_pic_elem.src = durl)">
+  note: the default crop is 4:3 and outputWidth is 1000.
+        If 'text' option is provided, it will stamp at top: 4px, left: 4px, font-size: 12px, semi-transparent white (fixed).
+  warning: the input file's width must be at least 1000 if we set output width 1000, otherwise quality may degrade.
+  test: ok
+  by: @devster
+  time: 21:03 jul6/2025 +7
+  */
+
+  const file = FILE_INPUT_ELEM.files[0]; // Get the selected file Blob
+
+  //                            validate
+  if (!file || !file.type.startsWith('image/')) {
+    return; // Return early if no valid file
+  }
+
+  //                            main logic
+  try {
+    // --- Destructure main image options ---
+    const {
+      crop = '4:3',
+      outputWidth = 1000,
+      outputHeight,
+      text = Date.now() + '-' + nodex.getRandomWord() 
+    } = options;
+
+    const processedDataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = () => {
+          const originalWidth = img.naturalWidth;
+          const originalHeight = img.naturalHeight;
+
+          let sx = 0,
+            sy = 0,
+            sWidth = originalWidth,
+            sHeight = originalHeight;
+
+          const targetAspectRatio = 4 / 3;
+
+          if (crop === '4:3') {
+            if (originalWidth / originalHeight > targetAspectRatio) {
+              sHeight = originalHeight;
+              sWidth = originalHeight * targetAspectRatio;
+              sx = (originalWidth - sWidth) / 2;
+              sy = 0;
+            } else {
+              sWidth = originalWidth;
+              sHeight = originalWidth / targetAspectRatio;
+              sx = 0;
+              sy = (originalHeight - sHeight) / 2;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          let destWidth, destHeight;
+          const currentAspectRatio = sWidth / sHeight;
+
+          // Determine final canvas dimensions
+          let finalOutputWidth = outputWidth;
+          let finalOutputHeight = outputHeight;
+
+          if (finalOutputWidth && finalOutputWidth > sWidth) {
+            finalOutputWidth = sWidth;
+          }
+          if (finalOutputWidth && !finalOutputHeight) {
+              finalOutputHeight = finalOutputWidth / currentAspectRatio;
+          }
+
+          if (finalOutputHeight && finalOutputHeight > sHeight) {
+            finalOutputHeight = sHeight;
+          }
+          if (finalOutputHeight && !finalOutputWidth) {
+              finalOutputWidth = finalOutputHeight * currentAspectRatio;
+          }
+
+          if (!finalOutputWidth && !finalOutputHeight) {
+              finalOutputWidth = sWidth;
+              finalOutputHeight = sHeight;
+          }
+
+          destWidth = finalOutputWidth;
+          destHeight = finalOutputHeight;
+
+          canvas.width = destWidth;
+          canvas.height = destHeight;
+
+          // 1. Draw the image onto the canvas
+          ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, destWidth, destHeight);
+
+          // 2. Stamp text if provided (using fixed defaults)
+          if (text) {
+            // Hardcoded text properties
+            const fixedFont = '30px monospace';
+            const fixedColor = 'rgba(255, 255, 255, 0.5)'; // Semi-transparent white
+            const fixedPositionX = 4; // 4px from left
+            const fixedPositionY = 4; // 4px from top
+
+            ctx.font = fixedFont;
+            ctx.fillStyle = fixedColor;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+
+            ctx.fillText(
+              `xzell/${destWidth}x${destHeight}/` + text, 
+              fixedPositionX, fixedPositionY
+            );
+          }
+
+          resolve(canvas.toDataURL(file.type));
+        };
+
+        img.onerror = () => {
+          reject(new Error("Failed to load image for processing."));
+        };
+
+        img.src = event.target.result;
+      };
+
+      reader.onerror = () => {
+        reject(new Error("Failed to read the image file."));
+      };
+
+      reader.readAsDataURL(file); // Start reading the file
+    });
+
+    return processedDataUrl;
+
+  } catch (error) {
+    console.error('Error processing image:', error);
+  }
+}
+
+
+/*
+nodex.getRandomWords = (length) => {
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+
+    // Optional: Basic validation for the length
+    if (typeof length !== 'number' || length < 0 || !Number.isInteger(length)) {
+        console.warn("getRandomWords: Length must be a non-negative integer. Returning empty string.");
+        return '';
+    }
+
+    for (let i = 0; i < length; i++) {
+        // Get a random index from 0 to charactersLength - 1
+        const randomIndex = Math.floor(Math.random() * charactersLength);
+        // Append the character at the random index to the result
+        result += characters.charAt(randomIndex);
+    }
+
+    return result;
+}
+*/
+
+
+//------------------------------------------------------------------
+
+
+nodex.getRandomWord = (length=10) => {
+  /*
+  for: gen randome words includes a-zA-Z0-9, user can set length
+  test: ok
+  by: @devster
+  time: 21:04 jul6/2025 +7
+  */
+
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+
+//------------------------------------------------------------------
+
+
+nodex.getCleanString = ( inputString ) => {
+
+  /*
+  for: clean input-string to ensure there's no harm code. This can be used when taking the user-input into server/db, or cleaning before showing server/db-data into html page
+  whereToUse: both server or browser
+  input: string from someone/external/user
+  output: clean string
+  by: google gemini
+  time: 09:14 jul7/2025 +7
+  test: pending
+  */
+
+  if (typeof inputString !== 'string') {
+    return ''; // Return an empty string or throw an error for non-string inputs
+  }
+
+  let cleanedString = inputString;
+
+  // 1. HTML Entity Encoding (basic)
+  // This helps prevent basic HTML injection by converting characters like <, >, &, " to their HTML entities.
+  cleanedString = cleanedString.replace(/&/g, '&amp;');
+  cleanedString = cleanedString.replace(/</g, '&lt;');
+  cleanedString = cleanedString.replace(/>/g, '&gt;');
+  cleanedString = cleanedString.replace(/"/g, '&quot;');
+  cleanedString = cleanedString.replace(/'/g, '&#x27;'); // Apostrophe
+  cleanedString = cleanedString.replace(/\//g, '&#x2F;'); // Forward slash (useful for closing tags)
+
+  // 2. Remove potentially dangerous tags and attributes (more aggressive)
+  // This part is more direct in removing known dangerous patterns.
+  // Note: Regular expressions for parsing HTML are notoriously difficult to get right perfectly.
+  // For critical applications, consider using a dedicated DOMPurify-like library.
+
+  // Remove script tags (case-insensitive, allows for spaces/newlines)
+  cleanedString = cleanedString.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+
+  // Remove img tags with onerror attributes
+  cleanedString = cleanedString.replace(/<img[^>]*onerror=[^>]*>/gi, '');
+
+  // Remove common event handlers (e.g., onclick, onload, onerror) from any tag
+  // This is a simplified approach. A more robust solution might parse attributes.
+  cleanedString = cleanedString.replace(/\bon(?:click|load|error|submit|mouseover|mouseout|keydown|keyup|keypress)\s*=\s*['"]?[^'"]*['"]?/gi, '');
+
+  // Remove `javascript:` URIs in href or src attributes
+  cleanedString = cleanedString.replace(/href=["']javascript:[^"']*["']/gi, 'href="#"');
+  cleanedString = cleanedString.replace(/src=["']javascript:[^"']*["']/gi, 'src="#"');
+
+  // 3. Optional: Strip leading/trailing whitespace
+  cleanedString = cleanedString.trim();
+
+  return cleanedString;
+}
