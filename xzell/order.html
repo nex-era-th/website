@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>xzell -- ซื้อ-ขาย online อย่างมั่นใจ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="/js/w3.css" rel="stylesheet" type="text/css">
+<link href="/js/projex.css" rel="stylesheet" type="text/css">
+<link href="/js/material-x.css" rel="stylesheet" type="text/css">
+
+<style>
+
+  /* layout */
+  body { background-color: /*var(--grey-200);*/ }
+  .mother { 
+    max-width: 800px; 
+    display: grid; 
+    grid-template-columns: 100%;
+    margin: 0 auto;
+  }
+  .left-part { display: none; height: 100vh; }
+  .right-part { display: none; height: 100vh; }
+  .center-part {
+    width: 100%;
+    height: 100vh;
+    padding: 0 16px;
+  }
+
+  /* font */
+  html { font-size: 16px }
+  p, li, span, input, option { font-size: 1.1rem }
+  label { font-size: 0.9rem;}
+  button { font-size: 0.8rem }
+  label { font-family: Ubuntu Condensed; color: var(--indigo-400)}
+  h1 { font-size: 2rem; font-family: Ubuntu Condensed; color: darkred; }
+  h2 { font-size: 1.75rem; font-family: Ubuntu Condensed; }
+  h3 { font-size: 1.5rem; font-family: Ubuntu Condensed; }
+  h4 { font-size: 1.25rem; font-family: Ubuntu Condensed; }
+  a { color: #0000ff; text-decoration: underline;}
+  a:link { color: #0000ff }
+  a:visited { color: #0000ff }
+  a:hover { color: #0000cc; text-decoration: none; }
+  a:active { color: #000099 }
+
+</style>
+</head>
+<body>
+
+<div class="mother">
+  <div class="left-part"></div>
+
+
+  <!--main part-->
+  <div class="center-part" >
+    <h1 style="text-align: center;">Order #22333</h1>
+
+    <p style="text-align: center; font-size: 0.8rem; color: grey">ซื้ออย่างมั่นใจด้วย <a href="#">xzell</a> เพราะคืนเงินเต็มจำนวนหากมีปัญหา</p>
+
+    <!--show off-->
+    <div style="display: grid; grid-template-columns: 50% 50%; margin: 32px 0">
+      
+      <img src="/xzell/pic/pad-gaprao1.jpeg" style="width:100%; height: 100%; object-fit: cover; cursor: pointer;" onclick="show_full_pic.style.display='flex';">
+
+      <div style="padding: 0 8px; ">
+        <div><img src="/icon-x/Star-black.svg" class="x-wh16"><img src="/icon-x/Star-black.svg" class="x-wh16"></div>
+        <div><u>ผัดกะเพรา หมูสับ ไข่ดาว</u></div>
+        <div>#444</div>
+        <div><a href="#">@foods4you</a></div>
+      </div>
+    </div>
+
+    <!--form-->
+    <div style="display: grid; grid-template-columns: auto; gap: 16px;">
+      <div>
+        <label>CUSTOMER / ลูกค้า</label>
+        <input id="customer_input" type="text" class="w3-input" value="@jack">
+      </div>
+      <div>
+        <label>PRODUCT / สินค้า</label>
+        <input id="product_input" type="text" class="w3-input" value="ผัดกะเพรา หมูสับ ไข่ดาว (#444)">
+      </div>
+      <div>
+        <label>PRICE / ราคา (THB/บาท)</label>
+        <input id="price_input" type="text" class="w3-input" value="1,000.00">
+      </div>
+      <div>
+        <label style="color: darkred">1. QTY / จำนวน (จาน)</label>
+
+        <div style="display: grid; grid-template-columns: 65% 35%;">
+          <input id="qty_input" type="number" class="w3-input" value="1">
+        
+          <div style="display: grid; grid-template-columns: 50% 50%;">
+            <button class="w3-button w3-grey"><img src="/icon-x/Minus.svg" class="x-wh16" onclick="qtyCal('-')"></button>
+
+            <button class="w3-button w3-grey"><img src="/icon-x/Plus.svg" class="x-wh16" onclick="qtyCal('+')"></button>
+          </div>            
+        </div>
+
+      </div>
+      <div>
+        <label>TOTAL / ราคารวม (THB/บาท)</label>
+        <input id="total_input" type="text" class="w3-input">
+      </div>
+      <div>
+        <label>TAX / ภาษี -- VAT 7% (THB/บาท)</label>
+        <input id="tax_input" type="text" class="w3-input">
+      </div>
+      <div>
+        <label>NET PRICE / ราคาสุทธิ (THB/บาท)</label>
+        <input id="net_input" type="text" class="w3-input">
+      </div>
+      <div>
+        <label style="color: darkred">2. DELIVER BY / ส่งของโดย</label>
+        <select class="w3-select">
+          <option>Faster than Fastest</option>
+          <optio>Send to the World</optio>
+          <option>Just send it</option>
+          <option>Same Day Delivered</option>
+        </select>
+      </div>
+      <div>
+        <label style="color: darkred">3. MY PAYMENT</label>
+        <select class="w3-select">
+          <option>nex-pay</option>
+          <option>Credit Card #12345</option>
+          <option>Debit Card #45612</option>
+          <option>Cash on Delivery</option>
+        </select>
+      </div>
+      <div>
+        <label style="color: darkred">4. TRADE GUARANTEED BY / รับประกันการซื้อ-ขาย โดย</label>
+        <select class="w3-select">
+          <option>nex-trade</option>
+          <option>a bank that doing this</option>
+        </select>
+      </div>
+      <div>
+        <label>TERMS / เงื่อนไข</label>
+        <textarea style="width: 100%" rows="4">ท่านได้รับการประกันการซื้อ-ขาย จาก nex-trade ซึ่งหากมีปัญหาในการซื้อขาย ผู้เสียหายจะได้รับเงินคืน เต็มมูลค่าของสินค้านั้น</textarea>
+      </div>
+    </div>
+
+    <p style="font-size: 0.9rem;"><img src="/icon-x/Info.svg" class="x-wh20"> <a href="#">ศึกษารายละเอียดการซื้อ-ขาย ผ่าน xzell ได้ โดยกดข้อความนี้</a></p>
+
+    <!--action-->
+    <div class="x-mt32">
+      <button class="w3-button w3-ripple w3-blue">ORDER</button>
+      <button class="w3-button w3-ripple">CANCEL</button>
+    </div>
+
+
+
+
+    <div style="height: 32px;"></div>
+
+
+    <!--feature-->
+    <div id="show_full_pic" style="width: 100vw; height: 100vh; background-color: black; display: none; justify-content: center; align-items: center; position: fixed; left: 0; top: 0">
+      <div style="position: relative;">
+        <img src="/xzell/pic/pad-gaprao1.jpeg" style="width: 100%; max-height: 100%; object-fit: contain;">
+        <div style="display: inline-block; padding: 8px; cursor: pointer;" onclick="show_full_pic.style.display = 'none';">
+          <img src="/icon/x-grey.svg" class="x-wh32">
+        </div>
+        <!--span style="position: absolute; top: 8px; left: 8px; background-color: rgba(255,255,255,0.5);" class="x-round">@foods4you #444</span-->
+      </div>
+    </div>
+
+
+
+  </div>
+
+
+  <div class="right-part"></div>
+</div>
+
+
+<script>
+function qtyCal( SIGN ) {
+  // SIGN: - | +
+  if ( SIGN == '+') {
+    qty_input.value = Number(qty_input.value) + 1
+    total_input.value = Number(qty_input.value) * Number(price_input.value)
+    calAll()
+  } else {
+    if ( qty_input.value > 1) {
+      qty_input.value = Number(qty_input.value) - 1
+      total_input.value = Number(qty_input.value) * Number(price_input.value)
+      calAll()
+    }
+    
+  }
+}
+
+
+function calAll() {
+  const taxRate = 0.07
+  const price   = getRawNumber( price_input.value)
+  const qty     = Number( qty_input.value)
+  const total   = price * qty
+  const tax     = total * taxRate
+  const net     = total + tax
+  total_input.value = getTradeValue( total) 
+  tax_input.value   = getTradeValue( tax) 
+  net_input.value   = getTradeValue( net) 
+}
+
+
+
+function getTradeValue(value) {
+  // Ensure the input is a number
+  if (typeof value !== 'number') {
+    // You might want to throw an error, return a default, or convert the value
+    console.warn("getTradeValue expects a number. Received:", value);
+    return String(value); // Return original value as string for non-numeric input
+  }
+
+  // Create a NumberFormat instance
+  // 'en-US' locale for comma thousands separator and dot decimal
+  // minimumFractionDigits and maximumFractionDigits ensure exactly two decimal places
+  const formatter = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    useGrouping: true // Ensures thousands separators are used
+  });
+
+  return formatter.format(value);
+}
+
+
+function getRawNumber(formattedValue) {
+  // Ensure the input is a string
+  if (typeof formattedValue !== 'string') {
+    // If it's already a number, just return it.
+    // If it's null/undefined/etc., return null or throw an error.
+    if (typeof formattedValue === 'number') {
+      return formattedValue;
+    }
+    console.warn("getRawNumber expects a string or number. Received:", formattedValue);
+    return null; // Or throw new TypeError("Input must be a string or number");
+  }
+
+  // 1. Remove thousands separators (commas in this case)
+  // The g flag ensures ALL commas are replaced, not just the first one.
+  const stringWithoutCommas = formattedValue.replace(/,/g, '');
+
+  // 2. Parse the string into a floating-point number
+  const rawNumber = parseFloat(stringWithoutCommas);
+
+  // 3. Check if the parsing was successful (i.e., not NaN - Not a Number)
+  if (isNaN(rawNumber)) {
+    console.warn(`Failed to parse "${formattedValue}" into a number.`);
+    return null; // Or return 0, or throw an error
+  }
+
+  return rawNumber;
+}
+
+
+
+
+
+calAll()
+
+
+</script>
+</body>
+</html>

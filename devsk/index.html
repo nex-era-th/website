@@ -14,12 +14,16 @@
   <script src="/js/xfetch.js"></script>
   <script src="/js/xdev-b.js"></script>
   <script src="/js/projex.js"></script>
+  <script src="https://unpkg.com/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+  <script src="/js/xchat-b.js"></script>
+  <script src="/js/nodex-b.js"></script>
   <style>
     p, li, span {font-family: "Open Sans", sans-serif; font-size: 135%}
     table { width: 100%; border-collapse: collapse;}
     tr,th,td { border: 1px solid white; }
     th { font-weight: normal; font-size: smaller;}
     a { color: blue; cursor: pointer; text-decoration: underline;}
+    #alert_msg > div:hover { background-color: var(--indigo-100);}
   </style>
 </head>
 <body>
@@ -31,7 +35,39 @@
 <code id="profile_display" style="position: fixed; top: 0; right: 4px" class="x-small mat-text-indigo">@guest</code>
 
 
+<!--alert icon-->
+<div id="top_space" style="position: fixed; top: 0; left: 0">
+  <div id="alert_icon" class="x-p8 x-ml8 x-pointer" onclick="alert_box.hidden=false" hidden>
+    <img src="/icon-svgrepo/information-svgrepo-com--red.svg" class="x-wh20">
+    <small id="alert_count"></small>
+  </div>
+</div>
 
+
+
+<!--alert box-->
+<div id="alert_box" style="position: fixed; top: 0; width: 100%; min-height: 10%; max-height: 90%; font-size: 135%; animation: x-slideDownFromTopEdge 1s forwards;" 
+class="mat-amber5 x-round-34 w3-card" hidden>
+  <div id="alert_msg" class="x-p">
+    <!--div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/message-rectangular-filled-speech-bubble-svgrepo-com.svg" class="x-wh16"> &nbsp; you've got messages from @xyz</div>
+    <div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/portfolio-filled-tool-svgrepo-com.svg" class="x-wh"> &nbsp; you got order from @putin</div>
+    <div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/trophy-sportive-cup-silhouette-svgrepo-com.svg" class="x-wh"> &nbsp; you got some award</div-->
+  </div>
+  <div id="alert_box_act">
+    <div id="alert_box_close_icon" class="x-p4 x-pointer" onclick="alert_box.hidden=true">
+      <img src="/icon-x/X.svg" class="x-wh32">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<!--main content-->
 <div id="main" class="w3-container" style="max-width: 800px; margin: 0 auto;">
   <!--we'll keep the appName always on the top of the page. The userName is fixed at the top-right corner-->
 
@@ -161,7 +197,7 @@
 
         <button id="signup_button" class="w3-button w3-ripple mat-orange8">Sign-up</button>
 
-        <button id="my_profile_button" class="w3-button w3-ripple mat-lime9" disabled>My Profile</button>
+        <button id="my_profile_button" class="w3-button w3-ripple mat-lime9" disabled>My Home</button>
 
         <button id="logout_button" class="w3-button mat-grey6 w3-ripple" disabled>Log-out</button>
 
@@ -214,7 +250,7 @@
 
     <div style="display: grid; grid-template-columns: auto; align-items: center;" class="x-mt32">
       <label class="x-condensed mat-text-indigo">PROFILE NAME *</label>
-      <input id="signup_profileName" type="text" class="w3-input w3-border x-fz135" placeholder="a-zA-Z0-9_- only">
+      <input id="signup_profileName" type="text" class="w3-input w3-border x-fz135" placeholder="a-z0-9_- only">
       <label class="x-mt x-condensed mat-text-indigo">PASSWORD * (min 8 chars)</label>
       <input id="signup_password" type="password" class="w3-input w3-border x-fz135">
       <label class="x-mt x-condensed mat-text-indigo">CONFIRM PASSWORD *</label>
@@ -235,7 +271,7 @@
 
 
 
-  <!--login space-->
+  <!--login space------------------------------------------------------>
   <div id="login_space" class="x-mt32" hidden>
     <h3 class="x-center x-darkred">log-in</h3>
     <div style="line-height: 1.3" class="x-center x-fz100">log-in เพื่อแก้ไขข้อมูล skill และอื่นๆ</div>
@@ -261,101 +297,155 @@
 
 
   <!--after login space----------------------------------------------->
+  <!--user home-->
   <div id="after_login_space" hidden>
     <h3 id="after_login_profileName" class="x-center x-mt32 x-darkred"></h3>
-    <div class="x-center x-fz100" style="line-height: 1.3;">นี่เป็นข้อมูลใน skill profile ของคุณ คุณสามารถแก้ไขได้ เมื่อแก้เสร็จแล้ว กดปุ่ม Update</div>
 
-    <div hidden><!--dashboard-->
-      <div style="display: grid; grid-template-columns: auto auto; gap: 8px" class="x-mt24">
-        <div class="x-round-1 w3-container mat-red2 x-pointer" onclick="after_login_space.hidden = true; who_view_space.hidden = false">
-          <span class="x-fz100 x-condensed">VIEW</span>
-          <h1>100</h1>
-        </div>
-        <div class="x-round-2 w3-container mat-orange2">
-          <span class="x-fz100 x-condensed">CONTACT</span>
-          <h1>8</h1>
-        </div>
-        <div class="w3-container mat-green2">
-          <span class="x-fz100 x-condensed">JOBS</span>
-          <h1>3</h1>
-        </div>
-        <div class="w3-container mat-blue2">
-          <span class="x-fz100 x-condensed">DONE</span>
-          <h1>25</h1>
-        </div>
-        <div class="x-round-34 w3-container mat-brown2 x-pb" style="grid-column: span 2">
-          <span class="x-fz100 x-condensed">SATISFY</span>
-          <div class="x-mtb">
-            <img src="/icon/star-black.svg">
-            <img src="/icon/star-black.svg">
-            <img src="/icon/star-black.svg">
-            <img src="/icon/star-black.svg">
-            <img src="/icon/star-black.svg">
-          </div>
-        </div>
+
+    <!--div class="x-center x-fz100" style="line-height: 1.3;">นี่เป็นข้อมูลใน skill profile ของคุณ คุณสามารถแก้ไขได้ เมื่อแก้เสร็จแล้ว กดปุ่ม Update</div-->
+
+    <div id="user_home_act" class="x-mt24 x-small x-condensed mat-text-indigo" style="display: grid; grid-template-columns: auto auto auto auto; align-items: center;  box-sizing: border-box;">
+
+      <div id="user_home_act_chat" 
+      class="x-pointer x-p8" 
+      style="height: 100%"
+      onclick="toggleUserHomeActChat()">
+        <img src="/icon-x/Comment.svg" class="x-wh32"> Chat
+      </div>
+      <div class="x-p8">
+        <img src="/icon-x/HandSuitcase.svg" class="x-wh32"> Work
+      </div>
+      <div class="x-p8">
+        <img src="/icon-x/TalkingSpeaker.svg" class="x-wh32"> Score
+      </div>
+      <div class="x-p8">
+        <img src="/icon-x/Database.svg" class="x-wh32"> Report
       </div>
     </div>
+
+    
+    
+    <!--user home act chat area-->
+    <div id="user_home_chat" class="mat-grey3" style="padding: 16px;" hidden>
+
+      <div id="list_of_chat">
+        <h5>List of My Chat Rooms</h5>
+        <p class="x-small">สามารถกดบนชื่อ Chat Room เพื่อเข้าไป Chat ได้ทันที</p>
+        <ul id="list_chat_box">
+          <!--li><a style="text-decoration: none;">xyz</a></li>
+          <li><a>my_chat_with_some_one</a></li>
+          <li><a>lets_chat</a></li-->
+        </ul>
+
+        <!--label class="x-small x-condensed x-blue">CHAT MEMBER / ROOM NAME</label>
+        <input id="whom_to_chat_with" type="text" class="w3-input w3-border" placeholder="@nex-era or johnjane"-->
+
+        <div class="x-mt16" style="display: grid; grid-template-columns: auto auto; align-items: center; justify-content: space-between;">
+          <!--button class="w3-button w3-blue w3-ripple" onclick="chatWith( whom_to_chat_with.value)">Chat</button-->
+          <!--div class="x-p0 x-pointer" 
+          onclick="toggleUserHomeActChat()"><img src="/icon-x/X.svg" class="x-wh32"></div-->
+        </div>
+      </div>
+
+      <hr style="background-color: lightgrey; height: 1px">
+      
+      <div id="create_team_chat">
+        <h5>Chat With Someone</h5>
+        <p class="x-small">ป้อน @nex-era กรณีรู้ชื่อ profileName หรือหากรู้ชื่อ roomName ก็ป้อนเช่น johnjane</p>
+        <label class="x-small x-condensed x-blue">CHAT MEMBER / ROOM NAME</label>
+        <input id="whom_to_chat_with" type="text" class="w3-input w3-border" placeholder="@nex-era or johnjane">
+
+        <div class="x-mt16" style="display: grid; grid-template-columns: auto auto; align-items: center; justify-content: space-between;">
+          <button class="w3-button w3-blue w3-ripple" onclick="chatWith( whom_to_chat_with.value)">Chat</button>
+          <!--div class="x-p0 x-pointer" 
+          onclick="toggleUserHomeActChat()"><img src="/icon-x/X.svg" class="x-wh32"></div-->
+        </div>
+      </div>
+      <hr style="background-color: lightgrey; height: 1px">
+
+      <div id="create_public_chat">
+        <h5>Create Chat Room</h5>
+        <p class="x-small">สร้าง Chat Room เพื่อคุยกัน มีแบบ private กับ public (แบบ public คือใครก็ได้ ไม่จำเป็นต้องอยู่ใน dev-skill ก็คุยได้)</p>
+        
+        <label class="x-small x-condensed x-blue">ROOM NAME</label>
+        <input id="new_chat_room_name" type="text" class="w3-input w3-border" placeholder="a-z0-9_ allowed">
+
+        <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 24px; margin-top: 16px">
+          <div><input type="radio" name="chat_visibility" value="group" class="w3-radio" checked> <label>Group</label></div>
+          <div><input type="radio" name="chat_visibility" value="public" class="w3-radio"> <label>Public</label></div>
+        </div>
+
+        <div class="x-mt20" style="display: grid; grid-template-columns: auto auto; align-items: center; justify-content: space-between;">
+          <button class="w3-button w3-blue w3-ripple" onclick="newChatRoom()">Create</button>
+          <!--div class="x-p0 x-pointer" 
+          onclick="toggleUserHomeActChat()"><img src="/icon-x/X.svg" class="x-wh32"></div-->
+        </div>
+      </div>
+
+    </div>
+
+
+    <div id="user_home_profile">
+      <div class="x-mt32">
+        <div class="mat-text-indigo x-condensed">MY BRIEF *</div>
+        <p id="my_brief" class="x-fz135 x-mt0" contenteditable="true" oninput="after_update_button.disabled=false"></p>
+      </div>
+
+
+      <div class="x-mt32">
+        <h6 class="mat-text-indigo x-condensed">MY SKILLS * (กดแช่ แล้วลากออก เพื่อลบ)</h6>
+        <div id="skillContainer" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;" class="x-fz100">
+          
+          <!--add icon-->
+          <img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">
+
+        </div>
+      </div>
+
+      <!--add skill-->
+      <div id="add_skill_box" class="x-mt" hidden>
+        <div style="display: grid; grid-template-columns: 75% 25%;" class="x-fz135">
+          <input id="add_skill_field" type="text" class="w3-input w3-border" onkeyup="getSkill( this.value)">
+          <button class="x-condensed w3-button w3-blue w3-ripple" onclick="addSkill( add_skill_field.value )">ADD</button>
+        </div>
+      </div>
     
 
-    <div class="x-mt32">
-      <div class="mat-text-indigo x-condensed">MY BRIEF *</div>
-      <p id="my_brief" class="x-fz135 x-mt0" contenteditable="true" oninput="after_update_button.disabled=false"></p>
-    </div>
-
-
-    <div class="x-mt32">
-      <h6 class="mat-text-indigo x-condensed">MY SKILLS * (กดแช่ แล้วลากออก เพื่อลบ)</h6>
-      <div id="skillContainer" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;" class="x-fz100">
-        
-        <!--add icon-->
-        <img id="add_skill_icon" src="/icon/plus-o.svg" class="x-wh24 x-pointer x-ml" onclick="add_skill_box.hidden=false; add_skill_field.focus()">
-
+      <div class="x-mt32">
+        <h6 class="mat-text-indigo x-condensed x-mb0">MY EXPERIENCES (YEARS) *</h6>
+        <input id="my_experience" type="number" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false" placeholder="numbers only">
       </div>
-    </div>
 
-    <!--add skill-->
-    <div id="add_skill_box" class="x-mt" hidden>
-      <div style="display: grid; grid-template-columns: 75% 25%;" class="x-fz135">
-        <input id="add_skill_field" type="text" class="w3-input w3-border" onkeyup="getSkill( this.value)">
-        <button class="x-condensed w3-button w3-blue w3-ripple" onclick="addSkill( add_skill_field.value )">ADD</button>
+      <div class="x-mt">
+        <h6 class="mat-text-indigo x-condensed x-mb0">MY AVAILABILITY *</h6>
+        <select id="my_availability" class="w3-select w3-border x-fz135" onchange="after_update_button.disabled = false">
+          <option>now</option>
+          <option>1 week notice</option>
+          <option>2 weeks notice</option>
+          <option>1 month notice</option>
+          <option>discussion</option>
+        </select>
       </div>
-    </div>
-   
-
-    <div class="x-mt32">
-      <h6 class="mat-text-indigo x-condensed x-mb0">MY EXPERIENCES (YEARS) *</h6>
-      <input id="my_experience" type="number" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false" placeholder="numbers only">
-    </div>
-
-    <div class="x-mt">
-      <h6 class="mat-text-indigo x-condensed x-mb0">MY AVAILABILITY *</h6>
-      <select id="my_availability" class="w3-select w3-border x-fz135" onchange="after_update_button.disabled = false">
-        <option>now</option>
-        <option>1 week notice</option>
-        <option>2 weeks notice</option>
-        <option>1 month notice</option>
-        <option>discussion</option>
-      </select>
-    </div>
 
 
-    <div class="x-mt">
-      <h6 class="mat-text-indigo x-condensed x-mb0">LOCATION/CITY</h6>
-      <input id="my_location" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false" placeholder="Bangkok, Thailand">
-    </div>
+      <div class="x-mt">
+        <h6 class="mat-text-indigo x-condensed x-mb0">LOCATION/CITY</h6>
+        <input id="my_location" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false" placeholder="Bangkok, Thailand">
+      </div>
 
-    <div class="x-mt">
-      <h6 class="mat-text-indigo x-condensed x-mb0">NATIONALITY</h6>
-      <input id="my_nationality" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false" placeholder="Thai">
-    </div>
+      <div class="x-mt">
+        <h6 class="mat-text-indigo x-condensed x-mb0">NATIONALITY</h6>
+        <input id="my_nationality" type="text" class="w3-input w3-border x-fz135" onchange="after_update_button.disabled = false" placeholder="Thai">
+      </div>
 
 
-    <!--action-->
-    <div class="x-mtb32 x-fz110">
-      <button id="after_update_button" class="w3-button w3-blue w3-ripple x-condensed" disabled 
-      onclick="editProfile('update')">Update</button>
+      <!--action-->
+      <div class="x-mtb32 x-fz110">
+        <button id="after_update_button" class="w3-button w3-blue w3-ripple x-condensed" disabled 
+        onclick="editProfile('update')">Update</button>
 
-      <button id="after_close_button" class="w3-button w3-ripple x-condensed" onclick="showSpace([ skill_space ])">Close</button>
+        <button id="after_close_button" class="w3-button w3-ripple x-condensed" onclick="showSpace([ skill_space ])">Close</button>
+      </div>
     </div>
 
   </div>
@@ -446,8 +536,8 @@
       
     </table>
 
-    <div style="position: fixed; left: 0; bottom: 0; padding: 4; cursor: pointer;" onclick="showSpace([ skill_space ])">
-      <img src="/icon/u-turn.svg" style="width: 32px; height: 32px;">
+    <div style="position: fixed; left: 0; bottom: 0; padding: 4; cursor: pointer; background-color: rgba(197,202,233,0.5)" onclick="showSpace([ skill_space ])">
+      <img src="/icon-x/Undo.svg" style="width: 32px; height: 32px;">
     </div>
   </div>
 
@@ -483,6 +573,12 @@
 
 
 version_display.innerHTML = conf.versionDisplay
+
+//sessionId
+if (!sessionStorage.sessionId && !nodex.validUuid( sessionStorage.sessionId)) {
+  const sessionId = nodex.getUuid()
+  sessionStorage.setItem('sessionId', sessionId)
+}
 
 
 const devsk = {
@@ -528,7 +624,7 @@ if (  sessionStorage.getItem('loginProfile') &&
 
 
 
-
+setInterval( checkAlert, 3000);
 
 
 
@@ -632,7 +728,7 @@ async function signupConfirm() {
 
   if ( badProfile( signup_profileName.value )) {
     //profileName invalid
-    alert('Fail. The Profile Name allows for: a-zA-Z0-9_- only.')
+    alert('Fail. The Profile Name allows for: a-z0-9_- only.')
     return
   }
 
@@ -648,7 +744,10 @@ async function signupConfirm() {
   if (signupResponse.done) {
     //take key values
     devsk.loginProfile  = signup_profileName.value
-    devsk.loginCert     = signupResponse.loginCert
+    //devsk.loginCert     = signupResponse.loginCert
+
+    sessionStorage.setItem('loginProfile', devsk.loginProfile)
+    sessionStorage.setItem('jwt', signupResponse.jwt)
 
     showSpace([ after_login_space ])
 
@@ -703,7 +802,7 @@ function showSpace( space_elem_array ) {
 
 
 
-//logIn--------------------------------------------------------------
+//log-in--------------------------------------------------------------
 async function logIn() {
 
   //validate
@@ -723,12 +822,14 @@ async function logIn() {
 
   // loginApproval => {done: true|false, msg: '....', from: ...}
   if (loginApproval.done) {
-    //alert( 'done / ' + loginApproval.msg)
-    devsk.loginProfile          = login_profileName.value
-    devsk.loginCert             = loginApproval.loginCert
+
+    devsk.loginProfile  = login_profileName.value
+    devsk.loginCert     = loginApproval.loginCert
+    devsk.jwt           = loginApproval.jwt
     profile_display.textContent = '@' + devsk.loginProfile
     sessionStorage.setItem('loginProfile', devsk.loginProfile)
     sessionStorage.setItem('loginCert', devsk.loginCert)
+    sessionStorage.setItem('jwt', loginApproval.jwt)
     sessionStorage.setItem('loginData', 
       JSON.stringify( loginApproval.attach)
     )
@@ -763,6 +864,9 @@ async function logIn() {
     signup_button.disabled      = true
     my_profile_button.disabled  = false //on the skill_space
     logout_button.disabled      = false
+
+    //check alert
+    checkAlert( { getFetch: true })
 
   } else {
     alert( 'ERROR: ' + loginApproval.msg)
@@ -922,7 +1026,9 @@ function touchEndHandler(event) {
 
 
 
-//getSkillTag-----------------------------------------------------------
+//-------------------------------------------------------------------
+
+
 function getSkillTag( skill_name) {
 
   /*yaml
@@ -943,6 +1049,9 @@ function getSkillTag( skill_name) {
 }
 
 
+//------------------------------------------------------------------
+
+
 //resetAfterLoginSpace
 function resetAfterLoginSpace() {
 
@@ -959,7 +1068,10 @@ function resetAfterLoginSpace() {
 
 
 
-//findSkill---------------------------------------------------------
+//-------------------------------------------------------------------
+
+
+
 async function findSkill() {
 
   if (search_word.value.trim() != '') {
@@ -986,7 +1098,7 @@ async function findSkill() {
         let newTr = document.createElement('tr')
         
         newTr.innerHTML = `<td class="x-p8">
-          <div><a href="${conf.apiUrl}/devsk/prof/@${encodeURIComponent( clean(guy.profileName) )}">@${ clean( guy.profileName )}</a> --avail: <span class="x-fz105">${ clean( guy.availability )}</span></div>
+          <div><a onclick="openProfilePage('${ guy.profileName }')">@${ clean( guy.profileName )}</a> --avail: <span class="x-fz105">${ clean( guy.availability )}</span></div>
           <div>${ clean( guy.skill )} <span class="x-fz105">${ '(' + clean( guy.experience ) + 'y)'}</span>
         </td>`
 
@@ -1072,7 +1184,9 @@ function addSkill( new_skill ) {
 }
 
 
-//editProfile--------------------------------------------------------
+//--------------------------------------------------------------------
+
+
 async function editProfile( mode='update' ) {
 
   /*yaml
@@ -1125,12 +1239,17 @@ async function editProfile( mode='update' ) {
     let serverReply = await justPost( 
       conf.apiUrl + '/devsk/edit-profile', 
       dataToUpdate,
-      { logincert: devsk.loginCert } //header
+      { xwt: nodex.getXwt( 
+        sessionStorage.loginProfile, sessionStorage.jwt) 
+      } //header
     )
 
     if (serverReply.done) {
       alert('Done. Your profile is updated.')
       after_update_button.disabled = true
+      sessionStorage.setItem('loginData', 
+        JSON.stringify( serverReply.attach )
+      )
 
     } else {
       alert('ERROR: ' + serverReply.msg)
@@ -1161,7 +1280,9 @@ async function editProfile( mode='update' ) {
     let serverReply = await justPost( 
       conf.apiUrl + '/devsk/add-profile', 
       dataToUpdate, 
-      { logincert: devsk.loginCert } 
+      { xwt: nodex.getXwt( 
+        sessionStorage.loginProfile, sessionStorage.jwt) 
+      } 
     )
 
 
@@ -1190,7 +1311,10 @@ async function editProfile( mode='update' ) {
 
 
 
-//resetPassword------------------------------------------------------
+//---------------------------------------------------------------------
+
+
+
 async function resetPassword() {
 
   //validate
@@ -1235,11 +1359,17 @@ async function resetPassword() {
 
 
 
-//sendContact--------------------------------------------------------
+//-------------------------------------------------------------------
+
+
+
 async function sendContact() {
   /*
-    data: your_message , your_contact
-    sendTo: /devsk/contact
+  for: people to send message to the app's admin
+  input: 
+    - yourMsg
+    - yourContact
+  api: /devsk/contact
   */
 
   let yourMsg = document.getElementById('your_message').value
@@ -1296,12 +1426,22 @@ function hasTag( STRING ) {
   return /<[^>]+>/.test( STRING )
 }
 
+function hasNoTag( STR ) {
+  return !hasTag( STR)
+}
+
 
 //badProfile
 function badProfile( PROFILE_NAME ) {
-  return !/^[\w-]{3,}$/.test( PROFILE_NAME )
+  return !/^[a-z0-9_-]{3,}$/.test( PROFILE_NAME )
+  // ^ so allows only a-z and 0-9 and _ and -
 }
 
+const isBadUserName = badProfile
+
+function isValidUserName( USER_NAME ) {
+  return !badProfile( USER_NAME)
+}
 
 
 //badUuid
@@ -1309,9 +1449,17 @@ function badUuid( UUID_STRING ) {
   return !/\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b/i.test( UUID_STRING)
 }
 
+const isInvalidUuid = badUuid
+
+function isValidUuid( UUID_STR ) {
+  return !badUuid( UUID_STR)
+}
 
 
-//logOut------------------------------------------------------------
+//-------------------------------------------------------------------
+
+
+
 async function logOut() {
   /* 
     brief : send loginProfile & loginCert to devsk
@@ -1324,16 +1472,18 @@ async function logOut() {
 
   //validate
   if (  badProfile( devsk.loginProfile ) || 
-        badUuid( devsk.loginCert )) {
+        !px.validJwt( sessionStorage.jwt )) {
 
-          alert('Fail. You have not log-in yet. | Something happens to your browser.')
+          alert('Fail. You have not log-in yet. OR, something happens to your browser.')
           return
   }
 
 
   let logoutApprove = await justPost( conf.apiUrl + '/devsk/log-out', 
-    { profileName : devsk.loginProfile },
-    { logincert   : devsk.loginCert } //header
+    { logOut: true },
+    { xwt: nodex.getXwt( 
+      sessionStorage.loginProfile, sessionStorage.jwt )
+    } //header
   )
 
   if (logoutApprove.done) {
@@ -1347,7 +1497,10 @@ async function logOut() {
 
 
 
-//showAppLog---------------------------------------------------------
+//--------------------------------------------------------------------
+
+
+
 async function showAppLog() {
 
   showSpace([ app_log_space ])
@@ -1375,14 +1528,386 @@ async function showAppLog() {
   } else {
 
     //no log data
-    let newRow = document.createElement('tr')
+    /*let newRow = document.createElement('tr')
     newRow.innerHTML = `<td style="padding: 16px 8px">
         --no data
       </td>`
 
-    app_log_table.innerHTML = newRow
+    app_log_table.innerHTML = newRow*/
   }
 }
+
+
+
+//--------------------------------------------------------------------
+
+
+
+async function openProfilePage( PROF_NAME_TO_OPEN ) {
+
+  /*
+  for: when people look at list of dev she searched then she clicks on a profile, this func ask the server to show the profile detail for her
+  api: /devsk/prof/@(profileName)
+  query: ?loginprofile=(the requester profileName)
+    note: if it is @guest, we not send this query
+  input:
+    PROF_NAME_TO_OPEN: (like devster, john, ...)
+  output: get html from server showing the profile detail
+  */
+
+  if (PROF_NAME_TO_OPEN) {
+    let hasJwt = sessionStorage.getItem('jwt')
+    let thisQuery = ''
+  
+    if (hasJwt) {
+      thisQuery = '?xwt=' + nodex.getXwt( sessionStorage.loginProfile, hasJwt)
+    } 
+
+    //location.href = conf.apiUrl + '/devsk/prof/@' + PROF_NAME_TO_OPEN + thisQuery
+    location.href = conf.apiUrl + '/devsk/@' + PROF_NAME_TO_OPEN + thisQuery
+      // ^ change to http://NODE-X/devsk/@nex-era to show @nex-era profile not /devsk/prof/@nex-era any more, so shorter/cleaner
+
+  }
+}
+
+
+//--------------------------------------------------------------------
+
+
+
+function toggleUserHomeActChat() {
+
+  /*yaml
+
+  for: toggle user_home_chat area
+  use: 
+    - click on chat icon to show the chat area
+    - click again to hide
+
+  */
+
+  if (user_home_chat.hidden) {
+    //from hide to show | normal -> chat
+    user_home_chat.hidden = false //show it
+    user_home_act_chat.style.backgroundColor = 'var(--grey-200)'
+    user_home_profile.hidden = true
+
+    //if already have chat list, don't get it any more from server
+    if ( list_chat_box.children.length == 0 ) {
+
+      //user may refresh browser so get from session. But if session doesn't have, then get from server
+      const list = JSON.parse( sessionStorage.getItem('chatList') )
+
+      if (list) {
+        list.forEach( room => showChatListItem( room))
+      } else {
+        //seems nothing in the session, so get from server
+        getListOfMyChat()
+      }
+
+    }//if not 0 means the list still there 
+
+  } else {
+    //from show to hide | normal <- chat
+    user_home_chat.hidden = true // hide it
+    user_home_act_chat.style.backgroundColor = ''
+    user_home_profile.hidden = false
+  }
+}
+
+
+
+
+
+//check alert--------------------------------------------------
+async function checkAlert( OPT = { getFetch: false }) {
+  
+  //const proFile = sessionStorage.getItem('loginProfile')
+  //const cerT    = sessionStorage.getItem('loginCert')
+
+  //if (!proFile) {
+    //proFile = 'guest'
+    //cerT = ''
+  //}
+
+  if (!sessionStorage.jwt || !sessionStorage.loginProfile || typeof OPT != 'object' || !OPT.getFetch ) return
+
+
+
+  //                       main logic
+
+
+
+  const myXwt = nodex.getXwt( 
+    sessionStorage.loginProfile, sessionStorage.getItem('jwt') 
+  )
+
+
+  let serverReply = await justPost( 
+    conf.apiUrl + '/core/check-alert',
+    OPT,
+    { xwt: myXwt }
+  )
+
+  if (serverReply.done) {
+    
+    // icon & count
+    if (alert_icon.hidden) {
+      alert_icon.hidden = false
+      alert_count.textContent = serverReply.attach.length
+    } else {
+      alert_count.textContent = Number( alert_count.textContent) + serverReply.attach.length
+    }
+
+    //sort time in ascending and then prepend we get the latest at top
+    const alertData = nodex.sortArray( serverReply.attach, 'time')
+
+    // alert msg, now we show only chat alert so there'll be only chat icon showing in the alert msg
+    alertData.forEach( v => {
+
+      let htmlCode = `<div class="x-ptb8 x-plr4 x-pointer"><img src="/icon-svgrepo/message-rectangular-filled-speech-bubble-svgrepo-com.svg" class="x-wh16"> &nbsp;${ v.msg } at ${ nodex.getTinyTime( v.time )}</div>`
+
+      let newElem = document.createElement('div')
+      newElem.id = v.id
+      newElem.innerHTML = htmlCode
+      newElem.setAttribute('onclick',`${ v.onclick }; this.remove(); clearAlert(this)`)
+      alert_msg.prepend( newElem)
+
+    })
+    
+
+
+  } else {
+    //console.error('ERROR: ', serverReply)
+  }
+}
+
+
+//--------------------------------------------------------
+function clearAlert( ELEM ) {
+  /*
+  for: every click on alert will clear or remove that one off, until all gone. At every alert gone, the icon will hide and count is 0.
+  */
+
+  alert_count = Number( alert_count.textContent) - 1
+  if ( alert_msg.children.length == 0) {
+    alert_icon.hidden = true
+    alert_box.hidden  = true
+  } 
+
+  //now tell server that this is read
+  justPost( conf.nodexUrl + '/core/alert-is-read',
+    { id: ELEM.id },
+    { xwt: nodex.getXwt( 
+      sessionStorage.loginProfile, sessionStorage.jwt)}
+  )
+}
+
+
+
+
+//-----------------------------------------------------------
+async function getXcert() {
+  /*
+  for: we use xcert to avoid sending loginCert over internet so we send xcert instead. When browser goes to some pages like that are generating from node-x the xcert will allow the server to verify the user's log-in certification by checking with devProfile.
+  output: SHA-256 64 chars
+  rule:
+    - only gen the xcert if there're loginProfile and loginCert only, missing any of these will reject
+  */
+
+  const loginProfile = sessionStorage.getItem('loginProfile')
+  const loginCert = sessionStorage.getItem('loginCert')
+
+  if (loginProfile && loginCert) {
+    return await xb.hash( loginProfile + loginCert)
+  } else {
+    return false
+  }
+}
+
+
+//----------------------------------------------------------------
+function chatWith( WHOM ) {
+
+  /*
+  for: at user-home when user click Chat, it calls this func to run
+  input:
+    WHOM: can be both userName (@nex-era) or roomName (johnjane)
+  output: loads xchat page
+  test: ok
+  by: @devster
+  time: jul2/2025 12:26+7
+  */
+
+  if ( WHOM ) {
+    if ( WHOM.match(/^@[\w-]+$/) ) {
+      //this is chat with member
+      location.href = conf.nodexUrl + '/xchat/' + WHOM + '?xwt=' + nodex.getXwt( sessionStorage.loginProfile, sessionStorage.jwt)
+
+    } else if ( WHOM.match(/^[\w-]+$/)) {
+      //this is chat with a room
+      location.href = conf.nodexUrl + '/xchat/room/' + WHOM + '?xwt=' + nodex.getXwt( sessionStorage.loginProfile, sessionStorage.jwt)
+
+    } else {
+      //invalid input
+      console.error('chatWith/invalid', WHOM)
+    }
+  }
+}
+
+
+
+function newChatRoom() {
+  /*
+  for: create new chat room
+  */
+
+  const roomName = new_chat_room_name.value
+  const roomVisibility = xb.at('input[name="chat_visibility"]:checked').value
+
+  if ( roomName ) {
+
+    location.href = conf.nodexUrl + '/xchat/new-room?name=' + roomName + '&visibility=' + roomVisibility + '&xwt=' + nodex.getXwt( sessionStorage.loginProfile, sessionStorage.jwt)
+
+  }
+  //no value, no action
+
+}
+
+
+
+function seeGroupInvite( ROOM ) {
+  if (ROOM) {
+    location.href = conf.nodexUrl + '/xchat/see-group-invite?room=' + ROOM + '&xwt=' + nodex.getXwt( sessionStorage.loginProfile, sessionStorage.jwt)
+  }
+}
+
+
+
+
+async function getListOfMyChat() {
+  /*
+  for: get list of your chat rooms from server
+  input:
+    xwt: 
+  output: |
+    {
+      done: true,
+      msg: 'done, you got some chat rooms',
+      attach: [
+        { roomName: __, member: [ ] },
+         ...
+      ]
+    }
+  */
+
+  if (sessionStorage.jwt) {
+
+    const myList = await justPost( conf.nodexUrl + '/xchat/list-chat',
+      {}, 
+      { xwt: nodex.getXwt( 
+        sessionStorage.loginProfile, sessionStorage.jwt
+      )}
+    )
+
+    if (myList.done) {
+      //got data back
+      /*
+
+        {
+          done: true,
+          msg: sssssssssssssssssssssss,
+          attach: [ 
+            aaa, bbb, ccc, ....
+          ]
+        }    
+      
+      */
+
+      //keep it in case the browser refreshes, we take from here
+      sessionStorage.setItem('chatList', JSON.stringify( myList.attach))
+
+      myList.attach.forEach( room => {
+
+        showChatListItem( room)
+        /*if (room.match(/^[\w]+$/)) {
+
+          let htmlCode = `<a onclick="chatWith( '${ room }' )" style="text-decoration: none">${ room }</a>`
+
+          let newListItem = document.createElement('li')
+          newListItem.innerHTML = htmlCode
+          list_chat_box.append( newListItem)
+        }*/
+        //if invalid just pass it
+
+      })
+
+    } else {
+      alert('problem while requesting your chat list')
+    }
+  }
+  //no jwt, no action
+}
+
+
+function showChatListItem( CHAT_ROOM ) {
+  
+  if (CHAT_ROOM.match(/^[\w]+$/)) {
+
+    let htmlCode = `<a onclick="chatWith( '${ CHAT_ROOM }' )" style="text-decoration: none">${ CHAT_ROOM }</a>`
+
+    let newListItem = document.createElement('li')
+    newListItem.innerHTML = htmlCode
+    list_chat_box.append( newListItem)
+  }
+}
+
+
+
+
+
+
+
+
+
+//===================================================================
+// run after load but light weight not heavy------------------------
+
+/*
+for: handles query of the page. Right now work for act=log-in first, may add more in future
+*/
+const param = new URLSearchParams(window.location.search)
+if (param.has('act')) {
+  if (param.get('act') == 'log-in') {
+    showSpace([ login_space ])
+  }
+}
+
+
+
+//tab close handling------------------------------------------------
+/*
+this block works for close-tab but reload still send beacon so need to find other solution for close-tap to log-out.
+@devster jun24/2025 11:33+7
+
+window.addEventListener('beforeunload', (f) => {
+ 
+
+  if (sessionStorage.loginProfile && sessionStorage.loginCert) {
+    
+      const payload = {
+        loginProfile  : sessionStorage.loginProfile,
+        loginCert     : sessionStorage.loginCert
+      }
+
+      navigator.sendBeacon( conf.apiUrl + '/user-leave', JSON.stringify(payload))
+  }
+})
+*/
+
+
+
+const salt = new nodex.Secret 
 
 
 
