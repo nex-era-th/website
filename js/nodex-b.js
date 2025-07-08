@@ -865,13 +865,30 @@ nodex.getDataUrlimage = async (FILE_INPUT_ELEM, options = {}) => {
   for: get pic from file input and makes it dataUrl, also crop to 4:3 ratio
   useGuide: |
     <input type="file" onchange="nodex.getDataUrlimage( this, { crop: '4:3', outputWidth: 1000, text: 'Hello World' } ).then( durl => show_pic_elem.src = durl)">
-  note: the default crop is 4:3 and outputWidth is 1000.
-        If 'text' option is provided, it will stamp at top: 4px, left: 4px, font-size: 12px, semi-transparent white (fixed).
-  warning: the input file's width must be at least 1000 if we set output width 1000, otherwise quality may degrade.
+  note: 
+    - the default crop is 4:3 and outputWidth is 1000. If 'text' option is provided, it will stamp at top: 4px, left: 4px, font-size: 12px, semi-transparent white (fixed).
+    - now user can adjust the aspect freely, tested. jul8/2025
+  warning: the input file's width must be at least 1000 if we set output width 1000, otherwise quality may degrade. (if resolution of original width is less then 1000, the output will be set by the original.)
   test: ok
   by: @devster
   time: 21:03 jul6/2025 +7
+  update:
+    - date: jul8
+      note: now adjust the aspect/ratio freely but still, default is 4:3. We added the text to the pic metadata as well as at the tail of dataUrl, no problem of showing in browser.
+      by: @devster
+
   */
+
+
+/*
+
+    to make the image metadata stamping works, must put this line in the html file
+
+    <script src="https://cdn.jsdelivr.net/npm/piexifjs"></script>
+
+*/
+
+
 
   const file = FILE_INPUT_ELEM.files[0]; // Get the selected file Blob
 
@@ -885,9 +902,9 @@ nodex.getDataUrlimage = async (FILE_INPUT_ELEM, options = {}) => {
     // --- Destructure main image options ---
     const {
       crop = '4:3',
-      outputWidth = 1000,
+      outputWidth = 1000, //pixel width of the pic data
       outputHeight,
-      text = Date.now() + '-' + nodex.getRandomWord() 
+      userText = Date.now() + '-' + nodex.getRandomWord() 
     } = options;
 
     const processedDataUrl = await new Promise((resolve, reject) => {
@@ -904,21 +921,25 @@ nodex.getDataUrlimage = async (FILE_INPUT_ELEM, options = {}) => {
             sWidth = originalWidth,
             sHeight = originalHeight;
 
-          const targetAspectRatio = 4 / 3;
+          //ratio work
+          const [ w, h ] = crop.split(':')
+          const targetAspectRatio = w/h   //4 / 3;
 
-          if (crop === '4:3') {
+          //if (crop === '4:3') {
             if (originalWidth / originalHeight > targetAspectRatio) {
+              //if ratio > setRatio, base with h, adjust w
               sHeight = originalHeight;
               sWidth = originalHeight * targetAspectRatio;
               sx = (originalWidth - sWidth) / 2;
               sy = 0;
             } else {
+              //if ratio < setRatio, base with w, adjust h
               sWidth = originalWidth;
               sHeight = originalWidth / targetAspectRatio;
               sx = 0;
               sy = (originalHeight - sHeight) / 2;
             }
-          }
+          //}
 
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
@@ -945,10 +966,12 @@ nodex.getDataUrlimage = async (FILE_INPUT_ELEM, options = {}) => {
           }
 
           if (!finalOutputWidth && !finalOutputHeight) {
+            //if user not provided both width and height, takes the original which set aspect ratio already (eg 4:3)
               finalOutputWidth = sWidth;
               finalOutputHeight = sHeight;
           }
 
+          //this is very final w&h
           destWidth = finalOutputWidth;
           destHeight = finalOutputHeight;
 
@@ -959,25 +982,56 @@ nodex.getDataUrlimage = async (FILE_INPUT_ELEM, options = {}) => {
           ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, destWidth, destHeight);
 
           // 2. Stamp text if provided (using fixed defaults)
-          if (text) {
+          let finalText
+          if ( userText ) {
             // Hardcoded text properties
             const fixedFont = '30px monospace';
             const fixedColor = 'rgba(255, 255, 255, 0.5)'; // Semi-transparent white
             const fixedPositionX = 4; // 4px from left
             const fixedPositionY = 4; // 4px from top
 
-            ctx.font = fixedFont;
-            ctx.fillStyle = fixedColor;
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
+            ctx.font          = fixedFont;
+            ctx.fillStyle     = fixedColor;
+            ctx.textAlign     = 'left';
+            ctx.textBaseline  = 'top';
+
+            //this is where we set the text on the pic
+            finalText = `xzell-${destWidth}x${destHeight}-` + userText
 
             ctx.fillText(
-              `xzell/${destWidth}x${destHeight}/` + text, 
+              finalText, 
               fixedPositionX, fixedPositionY
             );
           }
 
-          resolve(canvas.toDataURL(file.type));
+          //resolve(canvas.toDataURL(file.type));
+
+          
+          //add embed info into image
+          const dataUrl = canvas.toDataURL('image/jpeg')
+          let finalDataUrl = dataUrl
+
+          if (typeof window.piexif !== 'undefined') {
+
+            //inject EXF metadata
+            const exifObj = {
+              "0th"       : {},
+              "Exif"      : {},
+              "1st"       : {},
+              "thumbnail" : null
+            }
+
+            //put text nto metadata
+            exifObj["0th"][piexif.ImageIFD.ImageDescription] = 'This image is regenerated by xzell.'
+            exifObj["Exif"][piexif.ExifIFD.UserComment] = 'xzellPicId=' + finalText
+            
+            const exifBytes = piexif.dump(exifObj)
+            finalDataUrl = piexif.insert(exifBytes, dataUrl)
+          }
+
+          //finished
+          resolve( finalDataUrl + '#xzellPicId=' + finalText )
+
         };
 
         img.onerror = () => {
@@ -1024,6 +1078,28 @@ nodex.getRandomWords = (length) => {
     return result;
 }
 */
+
+
+
+
+/*
+this is how to read image file metadata
+
+
+const exif = piexif.load(dataUrl);
+const code = exif["0th"][piexif.ImageIFD.ImageDescription] || exif["Exif"][piexif.ExifIFD.UserComment];
+console.log('Extracted code:', code);
+
+
+
+
+
+*/
+
+
+
+
+
 
 
 //------------------------------------------------------------------
@@ -1101,3 +1177,134 @@ nodex.getCleanString = ( inputString ) => {
 
   return cleanedString;
 }
+
+
+//----------------------------------------------------------------
+
+
+/**
+ * Performs a basic, non-exhaustive check for potentially dangerous HTML/JavaScript patterns in a string.
+ * This function is for client-side heuristic detection only and MUST NOT be relied upon for security.
+ * Server-side validation and proper output encoding are essential for preventing XSS and other attacks.
+ *
+ * @param {string} inputString The string to check.
+ * @returns {boolean} True if potentially dangerous patterns are found, false otherwise.
+ */
+nodex.isDanger = nodex.isDangerString = (inputString) => {
+
+  /*
+  for: checking input if it is danger or suspecting to be malicious thing
+  input: string
+  output: true if danger | false if safe
+  */
+
+    if (typeof inputString !== 'string') {
+        console.warn("isDangerBasic received non-string input:", inputString);
+        return false; // Or throw an error, depending on desired behavior
+    }
+
+    // Convert to lowercase to simplify regex matching
+    const lowerInput = inputString.toLowerCase();
+
+    // Regex patterns for common malicious constructs:
+
+    // 1. Script tags (even disguised)
+    // <script>, <noscript>, <svg/onload=...>, <body/onload=...>, etc.
+    // This is very broad for any opening angle bracket followed by 's' and potentially more,
+    // then 'c', 'r', 'i', 'p', 't'. Also catches variations.
+    const scriptTagRegex = /<\s*(script|noscript|svg|img|body|iframe|link|style|object|embed|form|input|textarea|button)\b[^>]*>/i;
+    if (scriptTagRegex.test(lowerInput)) {
+        console.warn("isDangerBasic: Detected potential script/dangerous tag.", lowerInput.match(scriptTagRegex)[0]);
+        return true;
+    }
+
+    // 2. Event handlers (e.g., onerror, onload, onclick, onmouseover)
+    // Looking for 'on' followed by word characters and an equals sign
+    const eventHandlerRegex = /\bon[a-z]+\s*=/i;
+    if (eventHandlerRegex.test(lowerInput)) {
+        console.warn("isDangerBasic: Detected potential event handler attribute.", lowerInput.match(eventHandlerRegex)[0]);
+        return true;
+    }
+
+    // 3. JavaScript URI schemes (e.g., javascript:alert(1))
+    // In href, src, or CSS url()
+    const jsUriRegex = /(href|src|background|url)\s*=\s*(['"]\s*)?javascript\s*:/i;
+    if (jsUriRegex.test(lowerInput)) {
+        console.warn("isDangerBasic: Detected potential JavaScript URI.", lowerInput.match(jsUriRegex)[0]);
+        return true;
+    }
+
+    // 4. Data URI schemes that could execute code (e.g., data:text/html, <svg onload=...>)
+    const dataUriRegex = /data:(text\/html|application\/xml|image\/svg\+xml)\s*;/i;
+    if (dataUriRegex.test(lowerInput)) {
+        console.warn("isDangerBasic: Detected potential Data URI.", lowerInput.match(dataUriRegex)[0]);
+        return true;
+    }
+
+    // 5. HTML entities that could represent dangerous characters (e.g., &#x3C; for <)
+    // This is more complex to catch all, but common ones are enough for basic.
+    // &lt;, &gt;, &#60;, &#62;, &#x3c;, &#x3e;
+    const htmlEntityRegex = /(&#x?[0-9a-f]+;|<|>)/i;
+    if (htmlEntityRegex.test(lowerInput)) {
+        // This is a common indicator, but not necessarily malicious on its own.
+        // It simply indicates the presence of encoded characters.
+        // For basic detection, it might be a flag.
+        // console.warn("isDangerBasic: Detected HTML entities.", lowerInput.match(htmlEntityRegex)[0]);
+        // return true; // You might choose to return true here or not, depending on strictness.
+    }
+
+    // 6. CSS expressions (IE only, but good to catch for broad compatibility)
+    const cssExpressionRegex = /expression\s*\(.*\)/i;
+    if (cssExpressionRegex.test(lowerInput)) {
+        console.warn("isDangerBasic: Detected potential CSS expression.", lowerInput.match(cssExpressionRegex)[0]);
+        return true;
+    }
+
+    // If no suspicious patterns are found
+    return false;
+}
+
+// --- Examples ---
+/*
+let input1 = "This is a safe string.";
+console.log(`Input: "${input1}" -> isDangerBasic: ${isDangerBasic(input1)}`); // Expected: false
+
+let input2 = "Hello <script>alert('XSS');</script> World";
+console.log(`Input: "${input2}" -> isDangerBasic: ${isDangerBasic(input2)}`); // Expected: true (script tag)
+
+let input3 = "<img src='x' onerror='alert(1)'>";
+console.log(`Input: "${input3}" -> isDangerBasic: ${isDangerBasic(input3)}`); // Expected: true (onerror attribute)
+
+let input4 = "<a href=\"javascript:void(0)\">Click Me</a>";
+console.log(`Input: "${input4}" -> isDangerBasic: ${isDangerBasic(input4)}`); // Expected: true (javascript: URI)
+
+let input5 = "Some benign text with no special characters.";
+console.log(`Input: "${input5}" -> isDangerBasic: ${isDangerBasic(input5)}`); // Expected: false
+
+let input6 = "<svg/onload=alert(document.domain)>";
+console.log(`Input: "${input6}" -> isDangerBasic: ${isDangerBasic(input6)}`); // Expected: true (svg tag + onload)
+
+let input7 = "background-image: url('javascript:alert(1)');";
+console.log(`Input: "${input7}" -> isDangerBasic: ${isDangerBasic(input7)}`); // Expected: true (javascript: URI in url())
+
+let input8 = "<div style=\"width: expression(alert('XSS'))\"></div>";
+console.log(`Input: "${input8}" -> isDangerBasic: ${isDangerBasic(input8)}`); // Expected: true (CSS expression)
+
+let input9 = "Looks innocent but could be dangerous when decoded: &lt;script&gt;alert(1)&lt;/script&gt;";
+console.log(`Input: "${input9}" -> isDangerBasic: ${isDangerBasic(input9)}`); // Expected: false (due to strict entity check - but this is the point of client-side limits)
+
+let input10 = "Just normal HTML: <span>Hello</span>";
+console.log(`Input: "${input10}" -> isDangerBasic: ${isDangerBasic(input10)}`); // Expected: false
+
+*/
+
+
+
+nodex.isSafe = nodex.isSafeString = ( SUSPECTING_STR ) => {
+  return !nodex.isDanger( SUSPECTING_STR )
+}
+
+
+/*
+    all right, we can use nodex.isSafe, nodex.isSafteString, nodex.isDanger, nodex.isDangerString to basically check the suspecting string. Tested=ok.
+*/

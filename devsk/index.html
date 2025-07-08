@@ -250,7 +250,7 @@ class="mat-amber5 x-round-34 w3-card" hidden>
 
     <div style="display: grid; grid-template-columns: auto; align-items: center;" class="x-mt32">
       <label class="x-condensed mat-text-indigo">PROFILE NAME *</label>
-      <input id="signup_profileName" type="text" class="w3-input w3-border x-fz135" placeholder="a-zA-Z0-9_- only">
+      <input id="signup_profileName" type="text" class="w3-input w3-border x-fz135" placeholder="a-z0-9_- only">
       <label class="x-mt x-condensed mat-text-indigo">PASSWORD * (min 8 chars)</label>
       <input id="signup_password" type="password" class="w3-input w3-border x-fz135">
       <label class="x-mt x-condensed mat-text-indigo">CONFIRM PASSWORD *</label>
@@ -728,7 +728,7 @@ async function signupConfirm() {
 
   if ( badProfile( signup_profileName.value )) {
     //profileName invalid
-    alert('Fail. The Profile Name allows for: a-zA-Z0-9_- only.')
+    alert('Fail. The Profile Name allows for: a-z0-9_- only.')
     return
   }
 
@@ -866,7 +866,7 @@ async function logIn() {
     logout_button.disabled      = false
 
     //check alert
-    checkAlert()
+    checkAlert( { getFetch: true })
 
   } else {
     alert( 'ERROR: ' + loginApproval.msg)
@@ -1426,12 +1426,22 @@ function hasTag( STRING ) {
   return /<[^>]+>/.test( STRING )
 }
 
+function hasNoTag( STR ) {
+  return !hasTag( STR)
+}
+
 
 //badProfile
 function badProfile( PROFILE_NAME ) {
-  return !/^[\w-]{3,}$/.test( PROFILE_NAME )
+  return !/^[a-z0-9_-]{3,}$/.test( PROFILE_NAME )
+  // ^ so allows only a-z and 0-9 and _ and -
 }
 
+const isBadUserName = badProfile
+
+function isValidUserName( USER_NAME ) {
+  return !badProfile( USER_NAME)
+}
 
 
 //badUuid
@@ -1439,6 +1449,11 @@ function badUuid( UUID_STRING ) {
   return !/\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b/i.test( UUID_STRING)
 }
 
+const isInvalidUuid = badUuid
+
+function isValidUuid( UUID_STR ) {
+  return !badUuid( UUID_STR)
+}
 
 
 //-------------------------------------------------------------------
@@ -1605,7 +1620,7 @@ function toggleUserHomeActChat() {
 
 
 //check alert--------------------------------------------------
-async function checkAlert() {
+async function checkAlert( OPT = { getFetch: false }) {
   
   //const proFile = sessionStorage.getItem('loginProfile')
   //const cerT    = sessionStorage.getItem('loginCert')
@@ -1615,13 +1630,22 @@ async function checkAlert() {
     //cerT = ''
   //}
 
+  if (!sessionStorage.jwt || !sessionStorage.loginProfile || typeof OPT != 'object' || !OPT.getFetch ) return
+
+
+
+  //                       main logic
+
+
+
   const myXwt = nodex.getXwt( 
     sessionStorage.loginProfile, sessionStorage.getItem('jwt') 
   )
 
+
   let serverReply = await justPost( 
     conf.apiUrl + '/core/check-alert',
-    { checkAlert: true },
+    OPT,
     { xwt: myXwt }
   )
 
