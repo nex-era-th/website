@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>xzell ซื้อ-ขายออนไลน์ได้อย่างปลอดภัย</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="/js/w3.css" rel="stylesheet" type="text/css">
+<link href="/js/projex.css" rel="stylesheet" type="text/css">
+<link href="/js/material-x.css" rel="stylesheet" type="text/css">
+<script src="/js/nodex-b.js"></script>
+<script src="/js/projex.js"></script>
+<style>
+
+  /* layout */
+  body { background-color: /*var(--grey-200);*/ }
+  .mother { 
+    max-width: 600px; 
+    display: grid; 
+    grid-template-columns: 100%;
+    margin: 0 auto;
+  }
+  .left-part { display: none; height: 100vh; }
+  .right-part { display: none; height: 100vh; }
+  .center-part {
+    width: 100%;
+    height: 100vh;
+    padding: 0 16px;
+  }
+
+  /* font */
+  html { font-size: 16px }
+  p, li, span, input, option { font-size: 1.1rem }
+  label { font-size: 0.9rem;}
+  button { font-size: 0.8rem }
+  label { font-family: Ubuntu Condensed; color: var(--indigo-400)}
+  h1 { font-size: 2rem; font-family: Ubuntu Condensed; color: darkred; }
+  h2 { font-size: 1.75rem; font-family: Ubuntu Condensed; }
+  h3 { font-size: 1.5rem; font-family: Ubuntu Condensed; }
+  h4 { font-size: 1.25rem; font-family: Ubuntu Condensed; }
+  a { color: #0000ff; text-decoration: underline;}
+  a:link { color: #0000ff }
+  a:visited { color: #0000ff }
+  a:hover { color: #0000cc; text-decoration: none; }
+  a:active { color: #000099 }
+
+  .product-menu > div { 
+    aspect-ratio: 1 / 1; cursor: pointer; position: relative; 
+  }
+  .text-on-pic { font-size: 1.3rem; position: absolute; left: 0; bottom: 0; padding: 0; margin: 0; background-color: rgba(255,255,255,0.3); line-height: 1.0; padding-right: 4px;}
+</style>
+</head>
+<body>
+
+<!-- userName -- >
+<span id="user_name" style="position: fixed; top: 0; right: 4px; font-size: 1rem; color: var(--indigo-400); font-family: monospace;">@john</span-->
+
+<div class="mother">
+  <div class="left-part"></div>
+
+
+  <!--main part-->
+  <div class="center-part" >
+
+    <!-- xzell home -->
+    <div style="font-size: 1rem; display: inline-block; padding: 0 4px; line-height: 1.0; margin-top: 6px" class="x-round x-border"><a href="/xzell/index.html" style="text-decoration: none; color: black">xzell</a></div>
+
+    <!-- screen name -->
+    <h1 style="text-align: center;" class="gloria">join xzell</h1>
+
+    <p style="text-align: center; font-size: 0.9rem; color: grey">ซื้อ-ขายออนไลน์ได้อย่างปลอดภัย เพราะจ่ายเมื่อได้รับและพอใจในสินค้าแล้วเท่านั้น</p>
+
+
+    <!-- form -->
+    <div style="display: grid; grid-template-columns: auto; gap: 16px; margin-top: 32px">
+      <div>
+        <label>YOUR NEW USER NAME *</label>
+        <input id="user_name" type="text" class="w3-input" placeholder="a-z0-9_- only and 3 chars min.">
+      </div>
+      <div>
+        <label>YOUR NEW PASSWORD *</label>
+        <input id="pass_word" type="password" class="w3-input" placeholder="8 chars min.">
+      </div>
+      <div>
+        <label>CONFIRM PASSWORD AGAIN *</label>
+        <input id="confirm_pass" type="text" class="w3-input">
+      </div>
+      <div>
+        <label>PASSWORD HINT *</label>
+        <div class="x-08rem">คำใบ้ ช่วยให้คุณจำ password ได้</div>
+        <input id="pass_hint" type="text" class="w3-input">
+      </div>
+    </div>
+
+    <!-- action -->
+    <div class="x-mt32">
+      <button class="w3-button w3-blue" onclick="join()">JOIN</button>
+      <button class="w3-button" onclick="clear()">CLEAR</button>
+    </div>
+
+
+    <!-- info -->
+    <div class="x-mt40">
+      <div class="x-pointer mat-text-orange8" style="display: inline-block"><img src="/icon/info-o.svg" class="x-wh16"> quick guide</div>
+    </div>
+
+    <!-- space at the bottom -->
+    <div style="height: 40px;"></div>
+
+
+    <!-- feature stuff -->
+    <div id="show_full_pic" style="width: 100vw; height: 100vh; background-color: black; display: none; justify-content: center; align-items: center; position: fixed; left: 0; top: 0">
+      <div style="position: relative;">
+        <img id="pic_to_show" src="" style="width: 100%; max-height: 100%; object-fit: contain;">
+        <div style="display: inline-block; padding: 8px; cursor: pointer;" onclick="document.querySelector('#show_full_pic').style.display = 'none';">
+          <img src="/icon/x-grey.svg" class="x-wh32">
+        </div>
+        <!--span style="position: absolute; top: 8px; left: 8px; background-color: rgba(255,255,255,0.5);" class="x-round">@foods4you #444</span-->
+      </div>
+    </div>
+
+
+
+  </div>
+
+
+  <div class="right-part"></div>
+</div>
+
+
+<!-- u turn -->
+<div class="x-uturn" onclick="history.back()">
+  <img src="/icon/u-turn.svg" class="x-wh32">
+</div>
+
+
+
+<script>
+//////////////////////////////////////////////////////////////////////
+
+
+async function join() {
+
+  let userName    = user_name.value
+  let passWord    = pass_word.value
+  let confirmPass = confirm_pass.value
+  let passHint    = pass_hint.value
+
+  if (!userName || !passWord || !confirmPass || !passHint || !userName.match(/^[a-z0-9_-]{3,}$/) || !(passWord.length < 8) ) {
+    alert('Invalid, please carefully check each of your inputs. Or read the quick guide below.')
+    return
+  }
+
+  if ( passWord != confirmPass ) {
+    alert('Your Confirm Password mismatched please try again.')
+    return
+  }
+
+  const reply = await nodex.post( conf.nodexUrl + '/xzell/join',
+    {
+      userName: userName,
+      passHash: await px.hash256( passWord ),
+      passHint: passHint
+    }
+  )
+
+  if (reply.done) {
+    alert('Your joining is done. Well come to xzell, the online trade never been easiest before. Enjoy!')
+  } else {
+    alert('Problem: ' + reply.msg )
+  }
+}
+
+
+function clear() {
+
+}
+
+
+</script>
+</body>
+</html>

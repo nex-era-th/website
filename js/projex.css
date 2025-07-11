@@ -1,13 +1,12 @@
 /* 
-
-file      = projex.css
-version   = 2.0.12
-last note = changed in x-round....
-time      = 09:53 Feb23/2025 +7
-brief     = for all styles using in projex
-by        = @devster/nex-era
-
-----------------------------------------------------------------------*/
+for     : setting classes to use in projex or any project
+file    : projex.css
+version : 2.1.1
+lastNote: adjuste x-level & x-layer
+time    : jul9/2025 15:28+7
+by      : @devster/nex-era
+license : none
+*/
 
 
 
@@ -685,6 +684,28 @@ changed to below line to import all 3 famlies at once
 .x-fz195  { font-size: 195% }
 .x-fz200  { font-size: 200% }
 .x-small  { font-size: 12px}
+
+
+.x-1rem   { font-size: 1rem }
+.x-05rem  { font-size: 0.5rem }
+.x-06rem  { font-size: 0.6rem }
+.x-07rem  { font-size: 0.7rem }
+.x-08rem  { font-size: 0.8rem }
+.x-09rem  { font-size: 0.9rem }
+.x-11rem  { font-size: 1.1rem }
+.x-12rem  { font-size: 1.2rem }
+.x-13rem  { font-size: 1.3rem }
+.x-14rem  { font-size: 1.4rem }
+.x-15rem  { font-size: 1.5rem }
+.x-16rem  { font-size: 1.6rem }
+.x-17rem  { font-size: 1.7rem }
+.x-18rem  { font-size: 1.8rem }
+.x-19rem  { font-size: 1.9rem }
+.x-2rem   { font-size: 2rem }
+.x-225rem { font-size: 2.25rem }
+.x-25rem  { font-size: 2.5rem }
+.x-275rem { font-size: 2.75rem }
+.x-3rem   { font-size: 3rem }
 
 
 /* font style -------------------------------------------------------*/
@@ -1605,12 +1626,12 @@ ol.thai li:nth-child(n+10)::before {
 
 
 /* level is layer of elements, or z-index ------------------------*/
-.x-level0, .x-layer0, .x-layer-bottom, .xlayer-ground { z-index: 0 }
-.x-level1, .x-layer1                                  { z-index: 25 }
-.x-level2, .x-layer2, .x-layer-mid                    { z-index: 50 }
-.x-level3, .x-layer3                                  { z-index: 75 }
-.x-level4, .x-layer4, .x-level-top, .x-layer-top      { z-index: 100 }
-.x-level-auto, .x-layer-auto                          { z-index: auto }
+.x-level0, .x-layer0, .x-level-bottom, .x-layer-bottom, .xlayer-ground { z-index: 0 }
+.x-level1, .x-layer1, .x-level-premid, .x-layer-premid { z-index: 25 }
+.x-level2, .x-layer2, .x-level-mid, .x-layer-mid { z-index: 50 }
+.x-level3, .x-layer3, .x-level-pretop, .x-layer-pretop { z-index: 75 }
+.x-level4, .x-layer4, .x-level-top, .x-layer-top { z-index: 100 }
+.x-level-auto, .x-layer-auto { z-index: auto }
 
 
 
@@ -1714,6 +1735,18 @@ ol.thai li:nth-child(n+10)::before {
   border-right-color: #f2f2f2; /* background color */
   z-index: 2;
 }
+
+
+
+
+
+
+
+/* some elements */
+
+.x-uturn { position: fixed; left: 0; bottom: 0; display: inline-block; padding: 4px; cursor: pointer; }
+
+
 
 
 

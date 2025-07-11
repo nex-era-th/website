@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>xzell -- ซื้อ-ขาย online อย่างมั่นใจ</title>
+<title>xzell ซื้อ-ขายออนไลน์ได้อย่างปลอดภัย</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="/js/w3.css" rel="stylesheet" type="text/css">
 <link href="/js/projex.css" rel="stylesheet" type="text/css">
@@ -46,26 +46,34 @@
 </head>
 <body>
 
+<!-- userName -->
+<span style="position: fixed; top: 0; right: 4px; font-size: 1rem; color: var(--indigo-400); font-family: monospace;" class="x-level-top">@john</span>
+
 <div class="mother">
   <div class="left-part"></div>
 
 
   <!--main part-->
   <div class="center-part" >
+
+    <!-- xzell home -->
+    <div style="font-size: 1rem; display: inline-block; padding: 0 4px; line-height: 1.0; margin-top: 6px" class="x-round x-border"><a href="/xzell/index.html" style="text-decoration: none; color: black">xzell</a></div>
+
+    <!-- screen name -->
     <h1 style="text-align: center;">Order #22333</h1>
 
-    <p style="text-align: center; font-size: 0.8rem; color: grey">ซื้ออย่างมั่นใจด้วย <a href="#">xzell</a> เพราะคืนเงินเต็มจำนวนหากมีปัญหา</p>
+    <p style="text-align: center; font-size: 0.8rem; color: grey">ซื้อ-ขายออนไลน์ได้อย่างปลอดภัย เพราะจ่ายเมื่อได้รับและพอใจในสินค้าแล้วเท่านั้น</p>
 
     <!--show off-->
     <div style="display: grid; grid-template-columns: 50% 50%; margin: 32px 0">
       
-      <img src="/xzell/pic/pad-gaprao1.jpeg" style="width:100%; height: 100%; object-fit: cover; cursor: pointer;" onclick="show_full_pic.style.display='flex';">
+      <img src="/xzell/pic/pad-gaprao1.jpeg" style="width:100%; height: 100%; object-fit: cover; cursor: pointer; aspect-ratio: 4/3;" onclick="show_full_pic.style.display='flex';">
 
       <div style="padding: 0 8px; ">
         <div><img src="/icon-x/Star-black.svg" class="x-wh16"><img src="/icon-x/Star-black.svg" class="x-wh16"></div>
         <div><u>ผัดกะเพรา หมูสับ ไข่ดาว</u></div>
         <div>#444</div>
-        <div><a href="#">@foods4you</a></div>
+        <div><a href="#">@foods4u</a></div>
       </div>
     </div>
 
@@ -77,7 +85,7 @@
       </div>
       <div>
         <label>PRODUCT / สินค้า</label>
-        <input id="product_input" type="text" class="w3-input" value="ผัดกะเพรา หมูสับ ไข่ดาว (#444)">
+        <input id="product_input" type="text" class="w3-input" value="ผัดกะเพรา หมูสับ ไข่ดาว ราดข้าว">
       </div>
       <div>
         <label>PRICE / ราคา (THB/บาท)</label>
@@ -109,38 +117,50 @@
         <label>NET PRICE / ราคาสุทธิ (THB/บาท)</label>
         <input id="net_input" type="text" class="w3-input">
       </div>
+
+
+      <!-- switch -->
       <div>
-        <label style="color: darkred">2. DELIVER BY / ส่งของโดย</label>
-        <select class="w3-select">
-          <option>Faster than Fastest</option>
-          <optio>Send to the World</optio>
-          <option>Just send it</option>
-          <option>Same Day Delivered</option>
-        </select>
+        <img id="switch" src="/icon/off.svg" class="x-wh32 x-pointer" onclick="switchToggle(this)"> See More Detail
       </div>
-      <div>
-        <label style="color: darkred">3. MY PAYMENT</label>
-        <select class="w3-select">
-          <option>nex-pay</option>
-          <option>Credit Card #12345</option>
-          <option>Debit Card #45612</option>
-          <option>Cash on Delivery</option>
-        </select>
-      </div>
-      <div>
-        <label style="color: darkred">4. TRADE GUARANTEED BY / รับประกันการซื้อ-ขาย โดย</label>
-        <select class="w3-select">
-          <option>nex-trade</option>
-          <option>a bank that doing this</option>
-        </select>
-      </div>
-      <div>
-        <label>TERMS / เงื่อนไข</label>
-        <textarea style="width: 100%" rows="4">ท่านได้รับการประกันการซื้อ-ขาย จาก nex-trade ซึ่งหากมีปัญหาในการซื้อขาย ผู้เสียหายจะได้รับเงินคืน เต็มมูลค่าของสินค้านั้น</textarea>
+
+
+      <!-- section 2 -->
+      <div id="section2" hidden>
+        <div>
+          <label style="color: darkred">2. DELIVER BY / ส่งของโดย</label>
+          <select class="w3-select">
+            <option>Faster than Fastest</option>
+            <optio>Send to the World</optio>
+            <option>Just send it</option>
+            <option>Same Day Delivered</option>
+          </select>
+        </div>
+        <div style="margin-top: 16px">
+          <label style="color: darkred">3. MY PAYMENT</label>
+          <select class="w3-select">
+            <option>nex-pay</option>
+            <option>Credit Card #12345</option>
+            <option>Debit Card #45612</option>
+            <option>Cash on Delivery</option>
+          </select>
+        </div>
+        <div style="margin-top: 16px">
+          <label style="color: darkred">4. TRADE GUARANTEED BY / รับประกันการซื้อ-ขาย โดย</label>
+          <select class="w3-select">
+            <option>nex-trade</option>
+            <option>a bank that doing this</option>
+          </select>
+        </div>
+        <div style="margin-top: 16px">
+          <label>TERMS / เงื่อนไข</label>
+          <textarea style="width: 100%" rows="4">ท่านได้รับการประกันการซื้อ-ขาย จาก nex-trade ซึ่งหากมีปัญหาในการซื้อขาย ผู้เสียหายจะได้รับเงินคืน เต็มมูลค่าของสินค้านั้น</textarea>
+        </div>
       </div>
     </div>
 
-    <p style="font-size: 0.9rem;"><img src="/icon-x/Info.svg" class="x-wh20"> <a href="#">ศึกษารายละเอียดการซื้อ-ขาย ผ่าน xzell ได้ โดยกดข้อความนี้</a></p>
+
+    <p style="font-size: 0.9rem; margin-top: 32px"><img src="/icon-x/Info.svg" class="x-wh20"> <a href="#">ศึกษารายละเอียดการซื้อ-ขาย ผ่าน xzell ได้ โดยกดข้อความนี้</a></p>
 
     <!--action-->
     <div class="x-mt32">
@@ -254,6 +274,23 @@ function getRawNumber(formattedValue) {
 
   return rawNumber;
 }
+
+
+
+
+function switchToggle( ELEM ) {
+  if (ELEM.src.includes('off.svg')) {
+    //from off > on
+    ELEM.src = '/icon/switch-on.svg'
+    section2.hidden = false
+  } else {
+    //from on > off
+    ELEM.src = '/icon/off.svg'
+    section2.hidden = true
+  }
+}
+
+
 
 
 

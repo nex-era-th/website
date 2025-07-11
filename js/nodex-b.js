@@ -1308,3 +1308,63 @@ nodex.isSafe = nodex.isSafeString = ( SUSPECTING_STR ) => {
 /*
     all right, we can use nodex.isSafe, nodex.isSafteString, nodex.isDanger, nodex.isDangerString to basically check the suspecting string. Tested=ok.
 */
+
+
+
+//-----------------------------------------------------------------
+
+
+
+nodex.post = async ( ur_l, dat_a, headerField) => {
+  /*
+  for: send data to server via POST method
+  input:
+    ur_l: << of the server >>
+    dat_a: << object >>
+    headerField: << object like { xwt: sssssss }
+  output:
+    - this is response from server, for node-x we'll try most of response in SimpleMsg, this format: |
+      {
+        done: true | false,
+        msg: 'done, sssssssssssssssssss',
+        from: 'node-x/sssssss'
+      }
+    - so you can just check response.done to see success or fail
+  guide: const serverResponse = await nodex.post( URL, DATA, HEADER)
+  */
+
+  let setHeaders = {
+    'Content-Type':'application/json'
+  }
+
+  if (headerField) {
+    for (key in headerField) {
+      setHeaders[ key.toLowerCase() ] = headerField[ key] 
+    } 
+  } 
+
+  try {
+    const resp = await fetch( ur_l, {
+      method  : 'POST',
+      headers : setHeaders,
+      body    : JSON.stringify( dat_a)
+    })
+
+    if (!resp.ok) {
+      const errorText = await resp.text()
+      throw new Error(`fail, network error, ${resp.status}: ${errorText}`)
+    }
+
+    return await resp.json() //this is from where we fetched.
+  
+  } catch( error) {
+    console.error( 'justPost', error )
+    return {
+      done  : false, 
+      msg   : 'fail, fetch from server (3000)',
+      attach: error, 
+      from  : 'justPost'}
+  }
+
+  // tested=ok, @devster
+}
