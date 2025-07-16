@@ -1368,3 +1368,46 @@ nodex.post = async ( ur_l, dat_a, headerField) => {
 
   // tested=ok, @devster
 }
+
+
+//--------------------------------------------------------------
+
+
+nodex.uploadPic = async ( FILE_INPUT_ELEM, API_URL = conf.nodexUrl + '/upload-jpg' ) => {
+  
+  // upload pic file to api
+  // file saves in nodex/public/jpg and in nexdb.picMaster
+  // guide: <button onclick="nodex.uploadPic( file_input_elem )" ...
+
+  const file = FILE_INPUT_ELEM.files[0];
+  // ^ take only first file by default
+
+  if (!file) {
+    alert("No file selected");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const reply = await fetch( API_URL, {
+    method: 'POST',
+    body  : formData
+  });
+
+  return await reply.json();
+
+  /*
+      reply is in StdMsg format:
+      {
+        done: true,
+        msg: 'done, sssssssssssssssssssssss',
+        attach: {
+          md5: ssssssssssssssssss,
+          id: << object id of mongo >>
+        }
+      }
+
+
+  */
+}

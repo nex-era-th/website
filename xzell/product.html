@@ -10,7 +10,6 @@
 <script src="/devsk/config.js"></script>
 <script src="/js/projex.js"></script>
 <script src="/js/nodex-b.js"></script>
-<script src="/js/xdev-b.js"></script>
 <style>
 
   /* layout */
@@ -45,6 +44,11 @@
   a:hover { color: #0000cc; text-decoration: none; }
   a:active { color: #000099 }
 
+  /* bread crumb */
+  .bread-crumb, .bread-crumb:link, .bread-crumb:visited, .bread-crumb:active { text-decoration: none; color: darkred; }
+  .bread-crumb:hover { text-decoration: underline; cursor: pointer; color: blue; }
+
+  /* show products or pictures */
   .product-show { display: grid; grid-template-columns: auto auto; gap: 6px; margin-top: 16px }
   .product-show > div { 
     aspect-ratio: 1/1; cursor: pointer; position: relative;
@@ -100,16 +104,16 @@
   <div class="left-part"></div>
 
 
-  <!--main part-->
+  <!--========================= main part ===========================-->
   <div class="center-part" >
 
     <!-- xzell home --
     <div style="font-size: 1rem"><a href="/xzell/index.html" style="text-decoration: none; color: black">xzell</a></div-->
 
     <!-- screen name -->
-    <h1 style="text-align: center;" class="gloria">xzell</h1>
+    <h1><a href="/xzell/index.html" class="bread-crumb">xzell</a>/product</a></h1>
 
-    <p style="text-align: center; font-size: 0.9rem; color: grey">ซื้อ-ขายออนไลน์ได้อย่างสบายใจ เพราะจ่ายเงินเมื่อได้รับและพอใจในสินค้าแล้วเท่านั้น <span class="x-round x-border x-plr8 x-black x-pointer mat-grey3" style="font-size: 1rem; border: 1px lightgrey solid;" onclick="location.href='join.html';">join</span></p>
+    <!--p style="text-align: center; font-size: 0.9rem; color: grey">ซื้อ-ขายออนไลน์ได้อย่างปลอดภัย เพราะจ่ายเมื่อได้รับและพอใจในสินค้าแล้วเท่านั้น <span class="x-round x-border x-plr8 x-black x-pointer mat-grey3" style="font-size: 1rem; border: 1px lightgrey solid;" onclick="location.href='join.html';">join</span></p-->
 
 
     <!-- search -->
@@ -168,6 +172,40 @@
 
     <!-- show interesting items here -->
     <div class="product-show">
+      <div>
+        <img src="/xzell/pic/food1.jpeg">
+        <span class="text-on-pic x-condensed">sandwich</span>
+      </div>
+      <div>
+        <img src="/xzell/pic/pad-gaprao1.jpeg">
+        <span class="w3-tag xz-tag">NEW</span>
+      </div>
+      <div>
+        <img src="/xzell/pic/food3.jpeg">
+        <img src="/icon-x/Star-black.svg" style="position: absolute; top: 0; right: 0; width: 24px; height: 24px;">
+      </div>
+      <div>
+        <img src="/xzell/pic/food4.jpeg">
+      </div>
+      <div style="position: relative">
+        <img src="/xzell/pic/food5.jpeg">
+        <span class="w3-tag xz-tag">NEW</span>
+      </div>
+      <div>
+        <img src="/xzell/pic/food6.jpeg">
+      </div>
+      <div>
+        <img src="/xzell/pic/food7.jpeg">
+      </div>
+      <div>
+        <img src="/xzell/pic/food8.jpeg">
+      </div>
+      <div>
+        <img src="/xzell/pic/food9.jpeg">
+      </div>
+      <div>
+        <img src="/xzell/pic/food10.jpeg">
+      </div>
     </div>
 
 
@@ -217,17 +255,17 @@
         style="display: flex; flex-direction: column; flex-grow: 1; font-size: 1.35rem; align-items: center; flex-grow: 1; overflow-y: auto; justify-content: left;">
     <div onclick="location.href = 'join.html'; nav_box.style.display = 'none';"><img src="/icon-x/Profile.svg" class="x-wh40"> &nbsp; Join</div>
     <div onclick="location.href = 'log-in.html'; nav_box.style.display = 'none';"><img src="/icon-x/SignIn.svg" class="x-wh40"> &nbsp; Log-in</div>
-    <div><img src="/icon-x/TicketPrice.svg" class="x-wh40"> &nbsp; My Selling</div>
-    <div><img src="/icon-x/Basket.svg" class="x-wh40"> &nbsp; My Buying</div>
-    <div onclick="location.href = conf.nodexUrl + '/xzell/my-product';"><img src="/icon-x/Bike.svg" class="x-wh40"> &nbsp; My Products</div>
+    <div><img src="/icon-x/TicketPrice.svg" class="x-wh40"> &nbsp; Sell</div>
+    <div><img src="/icon-x/Basket.svg" class="x-wh40"> &nbsp; Buy</div>
+    <div onclick="location.href = '/xzell/product.html';"><img src="/icon-x/Bike.svg" class="x-wh40"> &nbsp; Products</div>
     <div><img src="/icon-x/Windows.svg" class="x-wh40"> &nbsp; More ...</div>
-    <div><img src="/icon-x/Settings.svg" class="x-wh40"> &nbsp; My Setting</div>
+    <div><img src="/icon-x/Settings.svg" class="x-wh40"> &nbsp; Setting</div>
     <div onclick="logoutXzell(); nav_box.style.display = 'none';"><img src="/icon-x/SignOut.svg" class="x-wh40"> &nbsp; Log-out</div>
   </div>
 
   <!-- close nav -->
-  <div style="margin-top: 16px; cursor: pointer;" onclick="nav_box.style.display = 'none';" class="x-condensed">
-    <img src="/icon-x/X.svg" class="x-wh40"> CLOSE
+  <div style="margin-top: 16px; cursor: pointer;" onclick="nav_box.style.display = 'none';">
+    <img src="/icon-x/X.svg" class="x-wh40"> Close Menu
   </div>
 
 </div>
@@ -245,32 +283,6 @@ if (sessionStorage.userName && sessionStorage.userName != 'guest') {
   user_name.textContent = '@' + sessionStorage.userName
 }
 
-
-loadProduct()
-
-function loadProduct() {
-  //load product info and show pic on screen
-
-  nodex.post( conf.nodexUrl + '/xzell/get-product', {})
-  .then( productInfo => {
-    productInfo.attach.allPicFileName.forEach( fileName => {
-
-      //show each pic
-      let newDiv = document.createElement('div')
-      newDiv.innerHTML = `<img src="${ conf.nodexUrl }/jpg/${ fileName }">`
-      xb.at('.product-show').append( newDiv)
-
-    })
-  })
-}
-
-
-
-
-
-
-
-//---------------------------------------------------------------
 
 function qtyCal( SIGN ) {
   // SIGN: - | +

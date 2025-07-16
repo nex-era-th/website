@@ -66,7 +66,7 @@
     <div style="font-size: 1rem; display: inline-block; padding: 0 4px; line-height: 1.0; margin-top: 6px" class="x-round x-border"><a href="/xzell/index.html" style="text-decoration: none; color: black">xzell</a></div>
 
     <!-- screen name -->
-    <h1 style="text-align: center;" class="gloria">join xzell</h1>
+    <h1 style="text-align: center;" class="gloria">log-in to xzell</h1>
 
     <p style="text-align: center; font-size: 0.9rem; color: grey">ซื้อ-ขายออนไลน์ได้อย่างปลอดภัย เพราะจ่ายเมื่อได้รับและพอใจในสินค้าแล้วเท่านั้น</p>
 
@@ -74,29 +74,21 @@
     <!-- form -->
     <div style="display: grid; grid-template-columns: auto; gap: 16px; margin-top: 32px">
       <div>
-        <label>YOUR NEW USER NAME *</label>
-        <input id="user_name" type="text" class="w3-input" placeholder="a-z0-9_- only and 3 chars min.">
+        <label>USER NAME *</label>
+        <input id="user_name" type="text" class="w3-input" placeholder="">
       </div>
       <div>
-        <label>YOUR NEW PASSWORD *</label>
-        <input id="pass_word" type="password" class="w3-input" placeholder="8 chars min.">
+        <label>YOUR PASSWORD *</label>
+        <input id="pass_word" type="password" class="w3-input" placeholder="">
       </div>
-      <div>
-        <label>CONFIRM PASSWORD AGAIN *</label>
-        <input id="confirm_pass" type="password" class="w3-input">
-      </div>
-      <div>
-        <label>PASSWORD HINT *</label>
-        <div class="x-08rem">คำใบ้ ช่วยให้คุณจำ password ได้</div>
-        <input id="pass_hint" type="text" class="w3-input">
-      </div>
+      
     </div>
 
 
     <!-- action -->
     <div class="x-mt32">
-      <button class="w3-button w3-blue" onclick="joinXzell()">JOIN</button>
-      <button class="w3-button" onclick="clearJoinForm()">CLEAR</button>
+      <button class="w3-button w3-blue" onclick="loginXzell()">LOG-IN</button>
+      <button class="w3-button" onclick="clearLoginForm()">CLEAR</button>
     </div>
 
 
@@ -132,49 +124,48 @@
 //////////////////////////////////////////////////////////////////////
 
 
-async function joinXzell() {
+async function loginXzell() {
 
-  if (sessionStorage.getItem('userName') && sessionStorage.getItem('jwt')) {
-    alert('You already joined.')
+  if (sessionStorage.userName && sessionStorage.jwt) {
+    alert('You already log-in.')
     return
   }
 
-  let userName    = document.getElementById('user_name')?.value
-  let passWord    = document.getElementById('pass_word')?.value
-  let confirmPass = document.getElementById('confirm_pass')?.value
-  let passHint    = document.getElementById('pass_hint')?.value
+  let userName    = user_name.value
+  let passWord    = pass_word.value
+  
 
-  if (!userName || !passWord || !confirmPass || !passHint || !userName.match(/^[a-z0-9_-]{3,}$/) || passWord.length < 8 ) {
+  if (!userName || !passWord || !userName.match(/^[a-z0-9_-]{3,}$/) || passWord.length < 8 ) {
     alert('Invalid, please carefully check each of your inputs. Or read the quick guide below.')
     return
   }
 
-  if ( passWord != confirmPass ) {
-    alert('Your Confirm Password mismatched please try again.')
-    return
-  }
 
-  const reply = await nodex.post( conf.nodexUrl + '/xzell/join',
+  const reply = await nodex.post( conf.nodexUrl + '/xzell/log-in',
     {
       userName: userName,
       passHash: await px.hash256( passWord ),
-      passHint: passHint
     }
   )
 
   if (reply.done) {
-    alert('Done. You now joined the xzell. Happy buying or selling now')
+    //console.log(reply)
+    //alert('Done. You have log-in now.')
+
+    sessionStorage.setItem('userName', userName)
+    sessionStorage.setItem('jwt', reply.attach.jwt)
+    location.href = 'index.html'
+
   } else {
     alert('Problem: ' + reply.msg )
   }
 }
 
 
-function clearJoinForm() {
+function clearLoginForm() {
   document.querySelector('#user_name').value = '' 
   pass_word.value = ''
-  confirm_pass.value = '' 
-  pass_hint.value = ''
+  
 }
 
 

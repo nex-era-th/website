@@ -1,0 +1,52 @@
+<h2>test upload jpg file to node-x/upload-jpg</h2>
+<p>we also do crop in aspect 4:3 from center in the server.</p>
+
+<input type="file" id="fileInput" accept="image/jpeg"><br>
+<img id="preview" style="max-width: 100%;"><br>
+<button onclick="upload()">Upload</button>
+
+<script>
+const fileInput = document.getElementById('fileInput');
+const preview = document.getElementById('preview');
+
+// Show preview when file selected
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  if (!file) {
+    //preview.style.display = 'none';
+    return;
+  }
+  if (!file.type.startsWith('image/jpeg')) {
+    alert('Please select a JPEG file.');
+    //preview.style.display = 'none';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    preview.src = e.target.result;
+    //preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+});
+
+async function upload() {
+  const file = fileInput.files[0];
+  if (!file) {
+    alert("No file selected");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch('http://localhost:10000/upload-jpg', {
+    method: 'POST',
+    body: formData
+  });
+
+  const result = await res.json();
+  console.log(result);
+  alert("DONE: " + JSON.stringify(result));
+}
+</script>
