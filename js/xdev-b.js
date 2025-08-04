@@ -3,12 +3,12 @@
  * 
  * There're 2 files (a) xdev.js for xserver, (b) xdev_b.js for the xbrowser.
  * 
- * version:   0.2
+ * version:   0.5
  * license:   none
  * doc:       xdev-guid.html (not created yet)
  * web:       ''
  * createdDate: 20230613
- * lastUpdated: 20231212.1139
+ * lastUpdate: jul21/2025 20:04 +7
  * staff:     M 
  * 
  * #use
@@ -23,7 +23,8 @@
  * 
  * #log
  *  20231212  changed from XB to xb
- * 
+ *  
+ *  2025-7-17 added xb.getBase64FromStr, xb.getStrFromBase64
  */
 
 
@@ -751,6 +752,14 @@ xb.base64 = function (inputt, mode='encode') {
   */
 }
 
+
+xb.getBase64FromStr = (STR) => {
+  return xb.base64( STR)
+}
+
+xb.getStrFromBase64 = (BASE64) => {
+  return xb.base64( BASE64, 'de')
+}
 
 xb.help.base64 = {
   about :'conversion utf8 to base64 and vise versa',

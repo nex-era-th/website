@@ -177,6 +177,28 @@ nodex.getMd5 = (STRING) => {
 
 
 
+nodex.getSha256 = async ( STR ) => {
+  const data = new TextEncoder().encode( STR);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 nodex.getXwt = ( USER_NAME, JWT) => {
   /*
   for: gen a simple one time token (OTT) to avoid passing jwt on the url query. Protecting security and make the url not too long.
