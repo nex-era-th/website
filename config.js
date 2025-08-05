@@ -1,5 +1,6 @@
 // config.js
 
 window.nexWeb = {
-  nodeXurl: 'https://node-x-qd6s.onrender.com'
+  nodeXurl: 'https://node-x-qd6s.onrender.com',
+  nodexUrl: 'https://node-x-qd6s.onrender.com'
 }

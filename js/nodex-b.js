@@ -7,15 +7,17 @@ for: provide functions that work in browser supporting node-x project
 const nodex = {
   about: {
     brief: 'programs to help working in browser for project node-x',
-    version: '0.1',
+    version: '1.0',
     by: '@devster',
-    date: 'jun27/2025 11:13+7' 
+    date: 'aug5/2025' 
   },
   help: {},
   note: {},
   secure: {
-    masterKey: 'd299927fdea2d5a7e994a5c8d4ff3bee85c5c770be1a4f7fa3b9b81bc216bd90',
-    salt: '*tLa4T51@-^H'
+    //masterKey: 'd299927fdea2d5a7e994a5c8d4ff3bee85c5c770be1a4f7fa3b9b81bc216bd90',
+    salt: '*tLa4T51@-^H',
+    masterKey : 'a79f4aa06eec8269902426672df57201d90b664e2632e0b423af59d616b347ac',
+    masterSalt: 'EdReiW^V8!Lz'
   } 
 }
 
@@ -177,28 +179,6 @@ nodex.getMd5 = (STRING) => {
 
 
 
-nodex.getSha256 = async ( STR ) => {
-  const data = new TextEncoder().encode( STR);
-  const hash = await crypto.subtle.digest("SHA-256", data);
-  return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, "0")).join("");
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 nodex.getXwt = ( USER_NAME, JWT) => {
   /*
   for: gen a simple one time token (OTT) to avoid passing jwt on the url query. Protecting security and make the url not too long.
@@ -217,6 +197,20 @@ nodex.getXwt = ( USER_NAME, JWT) => {
   const milisec = Date.now()
   const ott = nodex.getMd5( USER_NAME + JWT + milisec)
   return ott + '.' + nodex.getBase64Url(USER_NAME) + '.' + nodex.getBase64Url(milisec)
+}
+
+
+
+nodex.getXwtAuto = () => {
+  
+  let userName = sessionStorage.getItem('userName')
+  let jwt = sessionStorage.getItem('jwt')
+
+  if (userName && jwt) {
+    return nodex.getXwt( userName, jwt)
+  } else {
+    alert('ERROR: cannot get xwt as no userName and jwt in sessionStorage /nodex.getXwtAuto')
+  }
 }
 
 
@@ -1405,7 +1399,7 @@ nodex.uploadPic = async ( FILE_INPUT_ELEM, API_URL = conf.nodexUrl + '/upload-jp
   // ^ take only first file by default
 
   if (!file) {
-    alert("No file selected");
+    alert("fail, invalide input");
     return;
   }
 
@@ -1433,3 +1427,200 @@ nodex.uploadPic = async ( FILE_INPUT_ELEM, API_URL = conf.nodexUrl + '/upload-jp
 
   */
 }
+
+
+
+
+
+//-----------------------------------------------------
+
+nodex.getCamelCase = ( STR ) => {
+  return STR.replace(/[^a-zA-Z0-9]+(.)/g, (_, char) => char.toUpperCase())
+}
+
+
+//------------------------------------------------------
+
+
+nodex.makeHtmlElement = () => {
+  
+  //make html element, right now working on the uturn only. When requesting to make element you do this: <div x-make="uturn"></div> that's it. And don't forget to put nodex.makeHtmlElement() in the bottom <script>
+
+  let allRequestDiv = document.querySelectorAll('div[x-make]')
+  allRequestDiv.forEach( requestDiv => {
+    
+    if (requestDiv.getAttribute('x-make') == 'uturn') {
+      
+      requestDiv.setAttribute('style','position: fixed; left: 0; bottom: 0; display: inline-block')
+      
+      requestDiv.innerHTML = `<img src="/icon-svgrepo/rounded-square-arrow-indicator-left-svgrepo-com.svg" style="width: 32px; height: 32px; cursor: pointer;">`
+
+    } 
+  })
+}
+
+
+// number util =====================================================
+
+
+
+nodex.getTradeValue = (value) => {
+  // Ensure the input is a number
+  if (typeof value !== 'number') {
+    // You might want to throw an error, return a default, or convert the value
+    console.warn("getTradeValue expects a number. Received:", value);
+    return String(value); // Return original value as string for non-numeric input
+  }
+
+  // Create a NumberFormat instance
+  // 'en-US' locale for comma thousands separator and dot decimal
+  // minimumFractionDigits and maximumFractionDigits ensure exactly two decimal places
+  const formatter = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    useGrouping: true // Ensures thousands separators are used
+  });
+
+  return formatter.format(value);
+}
+
+
+
+
+nodex.getRawNumber = (formattedValue) => {
+  // Ensure the input is a string
+  if (typeof formattedValue !== 'string') {
+    // If it's already a number, just return it.
+    // If it's null/undefined/etc., return null or throw an error.
+    if (typeof formattedValue === 'number') {
+      return formattedValue;
+    }
+    console.warn("getRawNumber expects a string or number. Received:", formattedValue);
+    return null; // Or throw new TypeError("Input must be a string or number");
+  }
+
+  // 1. Remove thousands separators (commas in this case)
+  // The g flag ensures ALL commas are replaced, not just the first one.
+  const stringWithoutCommas = formattedValue.replace(/,/g, '');
+
+  // 2. Parse the string into a floating-point number
+  const rawNumber = parseFloat(stringWithoutCommas);
+
+  // 3. Check if the parsing was successful (i.e., not NaN - Not a Number)
+  if (isNaN(rawNumber)) {
+    console.warn(`Failed to parse "${formattedValue}" into a number.`);
+    return null; // Or return 0, or throw an error
+  }
+
+  return rawNumber;
+}
+
+
+
+
+
+///////////////////////////////////////////////////////////////////
+//                         secruity stuff                        //
+///////////////////////////////////////////////////////////////////
+
+//following 2 funcs rely on CryptoJS module which now included in the master-view
+
+nodex.encrypt = ( IMPORTANT_TEXT, KEY ) => {
+  //this module relies on <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js"></script>
+
+  return CryptoJS.AES.encrypt( IMPORTANT_TEXT, KEY).toString()
+  //test=ok, @devster, aug4/2025
+}
+
+nodex.decrypt = ( SEC_TEXT, KEY ) => {
+  return CryptoJS.AES.decrypt( SEC_TEXT, KEY).toString( CryptoJS.enc.Utf8)
+  //test=ok, @devster, aug4/2025
+}
+
+
+nodex.getJwt5 = () => {
+  //auto encrypt jwt and return base64url
+
+  if (!sessionStorage.getItem('jwt')) return false
+
+  let output1 = nodex.encrypt( 
+    sessionStorage.getItem('jwt'), nodex.secure.masterKey
+  )
+  
+  return nodex.getBase64Url( output1)
+  //test=ok, @devster, aug4/2025
+}
+
+nodex.readJwt5 = ( JWT5 ) => {
+  //decrypt the jwt5 and return pure jwt
+
+  if (!JWT5) return false
+  let getNormalBase64 = nodex.getStringFromBase64url( JWT5)
+  return nodex.decrypt( getNormalBase64, nodex.secure.masterKey)
+  //test=ok, @devster, aug4/2025
+}
+
+
+nodex.readJwtPayload = ( JWT ) => {
+  //simply read the payload in jwt, not verify
+  return JSON.parse( atob(JWT.split('.')[1]) )
+  //test=ok, @devster, aug4/2025
+}
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////
+//                    browser handling                       //
+///////////////////////////////////////////////////////////////
+
+nodex.clearUrlBar = ( ONLY_THESE_PARAMS ) => {
+  // clear all query from the browser bar
+
+  const url = new URL(window.location)
+
+  if (ONLY_THESE_PARAMS) {
+
+    //there's setting which params to clear
+    //set by nodex.clearUrlBar('aaa,bbb,ccc') <<--so this clears 3 params
+
+    let allParam = ONLY_THESE_PARAMS.split(',')
+    allParam.forEach( item => url.searchParams.delete(item))
+
+  } else {
+    //if not specify, we clear all
+    url.search = ''
+  }
+
+  history.replaceState(null, '', url)
+
+  //test=ok, @devster aug4/2025
+}
+
+
+
+nodex.checkJwt5 = () => {
+
+  //check if there's jwt5 in query, read and save it
+  //it will replace userName and jwt in the sessionStorage if there exists
+
+  if (window.location.search.length > 0) {
+    const params = new URLSearchParams(window.location.search)
+
+    if (params.has('jwt5')) {
+      let jwt = nodex.readJwt5( params.get('jwt5'))
+      let userName = nodex.readJwtPayload(jwt).userName
+      sessionStorage.setItem('jwt',jwt)
+      sessionStorage.setItem('userName', userName)
+      nodex.clearUrlBar('jwt5')
+    }
+  }
+
+  //test=ok @devster aug5/2025
+}
+

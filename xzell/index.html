@@ -271,10 +271,31 @@
 <script>
 ////////////////////////////////////////////////////////////////////
 
+
+
+
+nodex.checkJwt5()
+//check query
+/*if (window.location.search.length > 0) {
+  const params = new URLSearchParams(window.location.search)
+
+  if (params.has('jwt5')) {
+    let jwt = nodex.readJwt5( params.get('jwt5'))
+    let userName = nodex.readJwtPayload(jwt).userName
+    sessionStorage.setItem('jwt',jwt)
+    sessionStorage.setItem('userName', userName)
+    nodex.clearUrlBar('jwt5')
+  }
+}
+*/
+
 //check userName and display it
 if (sessionStorage.userName && sessionStorage.userName != 'guest') {
   user_name.textContent = '@' + sessionStorage.userName
 }
+
+
+
 
 const xzellHome = {}
 findProduct('*')
@@ -545,8 +566,9 @@ async function logoutXzell() {
   )
 
   if (reply.done) {
-    alert('Done. You are now log-out. See you soon.')
+    //alert('Done. You are now log-out. See you soon.')
     sessionStorage.clear()
+    nodex.clearUrlBar()
     location.reload()
   } else {
     alert('Problem: ' + reply.msg)
