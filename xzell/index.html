@@ -612,27 +612,29 @@ async function sendOrder() {
     return
   }
 
-  let price = Number( xzellHome.fullPicProduct.price).toFixed(2)
-  let qty = Number( full_pic_qty.value)
-  let total = (Number(price) * qty).toFixed(2)
-  let taxRate = 0.07
-  let totalTax = (Number(total) * taxRate).toFixed(2)
-  let netPrice = (Number(total) + Number(totalTax)).toFixed(2)
+  //all money values are in cent level so the last 2 digits are the cents or สตางค์
+  let price     = xzellHome.fullPicProduct.price
+  let qty       = Number( full_pic_qty.value)
+  let totalPrice = price * qty
+  let taxRate   = 0.07
+  let totalTax  = Math.round(totalPrice * taxRate)
+  let netPrice  = totalPrice + totalTax
 
   let serverReply = await nodex.post( conf.nodexUrl + '/xzell/order',
     {
       productName     : xzellHome.fullPicProduct.name,
       productCodeFull : xzellHome.fullPicProduct.code + '@' + xzellHome.fullPicProduct.sellBy,
-      price   : price,
-      qty     : qty,
-      total   : total,
-      taxCode : xzellHome.fullPicProduct.tax,
-      taxRate : taxRate,
-      totalTax: totalTax,
-      netPrice: netPrice,
-      currency: xzellHome.fullPicProduct.baseCurrency,
-      uom     : xzellHome.fullPicProduct.uom,
-      customer: sessionStorage.getItem('userName')
+      price           : price,
+      qty             : qty,
+      totalPrice      : totalPrice,
+      taxCode         : xzellHome.fullPicProduct.tax,
+      taxRate         : taxRate,
+      totalTax        : totalTax,
+      netPrice        : netPrice,
+      currency        : xzellHome.fullPicProduct.baseCurrency,
+      uom             : xzellHome.fullPicProduct.uom,
+      productPic      : xzellHome.fullPicProduct.pic,
+      customer        : sessionStorage.getItem('userName')
     }
   )
 
