@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/js/w3.css" rel="stylesheet">
+  <link href="/js/projex.css" rel="stylesheet">
+  <link href="/js/material-x.css" rel="stylesheet">
+
+<style>
+  html { font-size: 16px }
+  h1, h2 { text-align: center;}
+  label { font-family: Ubuntu Condensed; color: var(--indigo-400)}
+  #data_table { }
+  #data_table > * { background-color: var(--grey-200); padding: 8px}
+  #kitchen_control > * { padding: }
+  button { min-height: 50px }
+  .little-grey { background-color: var(--grey-300);}
+  .clamp2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+</head>
+<body>
+
+<div class="w3-container" style="max-width: 600px; margin: 0 auto">
+
+  <h6 class="x-condensed mat-text-indigo">COOKING</h6>
+  <h2>ก๋วยเตี๋ยวน้ำ เส้นเล็ก ลูกชิ้น หมูสด (#12345) </h2>
+
+
+  <div id="data_table" style="display: grid; grid-template-columns: 1fr 2fr; background-color: white; gap: 1px">
+    <label>STATUS</label>
+    <div style="display: flex; align-items: center;">
+      <span id="order_status" class="w3-tag x-small x-round">ORDER ACCEPTED</span>
+    </div>
+    <label>QTY</label><div>5</div>
+    <label>ORDER#</label><div>5463121</div>
+    <label>ORDER TIME</label><div id="order_time"></div>
+    <label>WAIT TIME</label><div id="wait_time">0</div>
+  </div>
+
+
+  <div>
+    <h4 class="x-center x-red">KITCHEN</h4>
+
+    <div id="kitchen_control" style="display: grid; grid-template-columns: 1fr 2fr; align-items: center; column-gap: 16px;">
+
+      <button id="start_btn" onclick="startWork()" 
+      class="w3-button w3-blue x-round x-border">START</button>
+      <span id="start_time" class="clamp2"></span>
+
+      <button id="pause_btn" 
+      class="w3-button w3-border x-round little-grey x-condensed" 
+      onclick="pauseWork()" disabled>PAUSE</button>
+      <div>Work Long = <span id="work_time"></span></div>
+
+      
+
+
+      <button id="done_btn" 
+      class="w3-button w3-border x-round little-grey"
+      onclick="doneWork()" disabled>DONE</button>
+      <div>
+        <div style="">
+          <span>Set Done Qty = </span> 
+          <input id="set_done_qty" type="number" value="1" style="width: 60px">
+        </div>
+        <div>Done Qty = <span id="done_qty">0</span>/5</div>        
+        <div><span id="complete_time" class="clamp2"></span></div>
+      </div>
+    </div>
+  </div>
+  <!--div style="display: grid; grid-template-columns: 1fr 2fr;">
+    <div>Start Time:</div>
+    <div>Work Long:</div>
+    <div>Complete Time:</div>
+  </div-->
+
+
+  <div style="height: 60px;"></div>
+
+</div>
+
+
+
+<script>
+const task = {
+  countInverval: 1000, //1 min
+  targetQty: 5,
+  doneQty: 0
+}
+task.orderTime = new Date(1754647536206)
+
+order_time.textContent = task.orderTime
+
+//start count the order wait
+task.int = setInterval(f => {
+  wait_time.textContent = getTimeLength(
+    Math.floor( (new Date - task.orderTime)/*/task.countInverval*/ )
+  )
+}, task.countInverval)
+
+
+function startWork() {
+  start_time.textContent = new Date
+  task.count = 0
+  
+  task.workCounter = setInterval( countWork, task.countInverval);
+
+  start_btn.classList.add('little-grey'); start_btn.classList.remove('w3-blue')
+  pause_btn.classList.add('w3-grey'); pause_btn.classList.remove('little-grey')
+  done_btn.classList.add('w3-blue'); done_btn.classList.remove('little-grey')
+  order_status.textContent = 'STARTED COOKING'
+  start_btn.disabled = true
+  pause_btn.disabled = done_btn.disabled = false
+}
+
+function countWork() {
+  task.count++
+  work_time.textContent = getTimeLength( task.count*1000 )
+}
+
+
+function doneWork() {
+
+  task.doneQty += Number(set_done_qty.value)
+
+  if ( task.doneQty < task.targetQty) {
+    done_qty.textContent = task.doneQty
+  } else {
+    done_qty.textContent = task.doneQty
+    complete_time.textContent = new Date
+    clearInterval(task.workCounter)
+
+    pause_btn.classList.remove('w3-grey'); pause_btn.classList.add('little-grey')
+    done_btn.classList.remove('w3-blue'); done_btn.classList.add('little-grey')
+    order_status.textContent = 'DONE COOKING'
+    start_btn.disabled = pause_btn.disabled = done_btn.disabled = true
+  }
+
+  
+}
+
+
+function pauseWork() {
+  if (pause_btn.textContent == 'PAUSE') {
+    pause_btn.textContent = 'CONTINUE'
+    clearInterval( task.workCounter)
+    pause_btn.classList.remove('w3-grey'); pause_btn.classList.add('w3-yellow')
+    done_btn.disabled = true
+  } else if (pause_btn.textContent == 'CONTINUE') {
+    pause_btn.textContent = 'PAUSE'
+    task.workCounter = setInterval( countWork, task.countInverval);
+    pause_btn.classList.remove('w3-yellow'); pause_btn.classList.add('w3-grey')
+    done_btn.disabled = false
+  }
+}
+
+
+
+
+
+function getTimeLength(millisec) {
+  let totalSeconds = Math.floor(millisec / 1000);
+
+  const years   = Math.floor(totalSeconds / (365 * 24 * 3600));
+  totalSeconds %= (365 * 24 * 3600);
+
+  const months  = Math.floor(totalSeconds / (30 * 24 * 3600)); // approx 30d/month
+  totalSeconds %= (30 * 24 * 3600);
+
+  const days    = Math.floor(totalSeconds / (24 * 3600));
+  totalSeconds %= (24 * 3600);
+
+  const hours   = Math.floor(totalSeconds / 3600);
+  totalSeconds %= 3600;
+
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  // build array dynamically, only include higher units if needed
+  let parts = [];
+  if (years)   parts.push(String(years) + 'y');
+  if (months || parts.length) parts.push(String(months) + 'm');
+  if (days   || parts.length) parts.push(String(days) + 'd');
+  if (hours  || parts.length) parts.push(String(hours));
+  if (minutes|| parts.length) parts.push(String(minutes));
+  parts.push(String(seconds));
+
+  return parts.join(':');
+}
+
+
+
+
+
+
+</script>
+</body>
+</html>
