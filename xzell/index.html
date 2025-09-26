@@ -254,22 +254,60 @@
 
 
 <!--indicators / basket-->
-<div hidden 
-    id="top_indicator" 
-    class=""
-    style="position: fixed; top: 0; left: 4px; padding: 0">
-  <div
-    class="x-round x-pointer" 
-    style="display: flex; gap: 4px; align-items: center; background-color: rgba(255,255,255,0.5); padding: 0 4px">
+<div id="top_indicator" 
+  class=""
+  style="position: fixed; top: 4px; left: 4px; padding: 0">
+  
+  <!-- full screen / exit -->
+  <img src="/icon-x/Square-lg.svg" style="width: 24px" onclick="fullScreen()">
+
+  
+  <!--div hidden
+  class="x-round x-pointer" 
+  style="display: flex; gap: 4px; align-items: center; background-color: rgba(255,255,255,0.5); padding: 0 4px; ">
     <img src="/icon-svgrepo/creadit-card-debit-hand-svgrepo-com.svg" width="24px">
     <span style="font-size: 0.8rem">4</span>
-  </div>
+  </div-->
 </div>
 
 
 
 <script>
 ////////////////////////////////////////////////////////////////////
+
+// if mobile screen, makes full screen
+function fullScreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen()
+  } else {
+    document.exitFullscreen()
+  }
+}
+
+/*
+if (window.matchMedia('(max-width: 768px)').matches) {
+  const el = document.documentElement;
+
+  function enterFullscreen(e) {
+    // Only respond if the event target is actually interactable
+    if (!(e.target instanceof HTMLElement)) return;
+
+    // Try fullscreen
+    el.requestFullscreen?.()
+      .then(() => console.log('Fullscreen entered'))
+      .catch(err => console.warn('Fullscreen failed:', err));
+  }
+
+  // Attach to the document body, not document
+  document.body.addEventListener('click', enterFullscreen, { once: true, passive: true });
+}
+*/
+
+
+
+
+
+
 
 
 
