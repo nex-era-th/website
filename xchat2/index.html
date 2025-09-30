@@ -379,7 +379,7 @@
 
                 const inputElement = document.getElementById('chat-input');
                 autoResize(inputElement); 
-                inputElement.focus();
+                //inputElement.focus();
                 
                 const time = formatTimestamp(new Date());
                 printMessage(`${time}> Connected to room #${roomName} as ${userName}. Type /who to see users.`, true);
@@ -532,7 +532,8 @@
             
             inputElement.value = '';
             autoResize(inputElement); 
-            inputElement.focus();
+            //inputElement.focus();
+            inputElement.blur()
         };
 
         /** Handles pressing Enter in the textarea to send the message. */
