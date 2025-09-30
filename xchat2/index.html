@@ -195,46 +195,48 @@
                 let isSystem = false;
                 let isUserMessage = false;
 
-                // Helper to format text with local time
-                const getTimedText = (prefix, content, timeISO) => {
+                // Helper to format text with local time (now returns an object)
+                const getTimedText = (content, timeISO) => {
                     // 1. Convert ISO timestamp from server to a Date object
                     const serverTime = new Date(timeISO);
                     
                     // 2. Format the Date object using the client's local timezone
                     const localTimeStr = formatTimestamp(serverTime); 
                     
-                    // 3. Reconstruct the message
-                    return `${prefix} ${localTimeStr}] ${content}`;
+                    // 3. Return time string and content
+                    return { timeStr: localTimeStr, content: content };
                 };
 
                 switch (incoming.type) {
                     case 'message':
-                        // Structured chat message from another user or the sender's echo
+                        // Structured chat message (now includes system messages with user: '@xchat')
                         if (incoming.user && incoming.time && incoming.msg) {
-                            displayText = getTimedText(`[${incoming.user}`, incoming.msg, incoming.time);
-                            // Check if this is the message we sent (echoed back)
+                            const { timeStr, content } = getTimedText(incoming.msg, incoming.time);
+
                             isUserMessage = incoming.user === userName; 
+                            isSystem = incoming.user === '@xchat';
+
+                            if (isSystem) {
+                                // NEW CONCISE FORMAT FOR SYSTEM: [HH:MM] message
+                                displayText = `[${timeStr}] ${content}`;
+                            } else {
+                                // USER MESSAGE FORMAT: [@user HH:MM] message
+                                displayText = `[${incoming.user} ${timeStr}] ${content}`;
+                            }
                         }
                         break;
                     
-                    case 'system-timed':
-                        // Structured system message (welcome, join/leave, /who response)
-                        if (incoming.time && incoming.text) {
-                            displayText = getTimedText('[@xchat', incoming.text, incoming.time);
-                            isSystem = true;
-                        }
-                        break;
-
                     case 'error-timed':
-                        // Structured error message
+                        // Errors still use the distinct format/type
                         if (incoming.time && incoming.text) {
-                            displayText = getTimedText('[@error', incoming.text, incoming.time);
+                            const timeStr = formatTimestamp(new Date(incoming.time));
+                            displayText = `[@error ${timeStr}] ${incoming.text}`;
                             isSystem = true;
                         }
                         break;
                     
                     case 'system':
-                        // Simple system message (e.g., pre-connection errors from the server)
+                        // Simple untimed system message (e.g., initial connection error)
                         displayText = incoming.text;
                         isSystem = true;
                         break;
