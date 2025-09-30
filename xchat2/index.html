@@ -75,13 +75,21 @@
                 handleAuth();
             }
         }
+
+        /** Helper function to handle Enter key press in the change password fields */
+        function handleCPAuthEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent default browser action
+                handleChangePasswordAuth();
+            }
+        }
     </script>
 </head>
 <body class="bg-gray-100 text-gray-900 font-sans h-screen">
 
     <div id="app-container" class="w-full h-full relative">
 
-        <!-- Authentication View -->
+        <!-- Authentication View (Login/Sign-up) -->
         <div id="join-view" class="w-[90%] max-w-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div class="bg-gray-700 p-8 rounded-xl shadow-2xl">
                 <div class="text-center mb-6 text-white font-mono text-xl">xchat 2.0</div>
@@ -126,6 +134,15 @@
                         Don't have user? Sign-up
                     </span>
                 </div>
+                
+                <!-- NEW: Change Password Link -->
+                <div class="mt-4 text-center">
+                    <a href="#" onclick="showView('changePassword'); return false;" 
+                        class="text-sm font-mono text-blue-300 hover:text-blue-200 transition-colors duration-200">
+                        Want to change password? Click here.
+                    </a>
+                </div>
+
 
                 <!-- ALERT STRUCTURE: Wrapper always occupies space (min-h-[2.5rem]) to prevent button shift. -->
                 <div id="error-message-wrapper" class="mt-3 min-h-[2.5rem]"> 
@@ -137,6 +154,49 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password View -->
+        <div id="change-password-view" class="hidden w-[90%] max-w-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="bg-gray-700 p-8 rounded-xl shadow-2xl">
+                <div class="text-center mb-6 text-white font-mono text-xl">Change Password</div>
+                
+                <div class="space-y-4">
+                    <input id="cp-user-input" type="text" placeholder="your username (eg, @jane)" value=""
+                        class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
+                        onkeydown="handleCPAuthEnter(event)">
+                    
+                    <input id="cp-current-password-input" type="password" placeholder="your current password" value=""
+                        class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
+                        onkeydown="handleCPAuthEnter(event)">
+
+                    <input id="cp-new-password-input" type="password" placeholder="your new password" value=""
+                        class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
+                        onkeydown="handleCPAuthEnter(event)">
+                </div>
+
+                <button id="cp-auth-button" onclick="handleChangePasswordAuth()"
+                        class="w-full mt-6 p-3 bg-indigo-600 hover:bg-indigo-500 text-white font-mono shadow-md transition duration-150 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500/50 flex items-center justify-center">
+                    Change
+                </button>
+                
+                <!-- Back Link -->
+                <div class="mt-4 text-center">
+                    <a href="#" onclick="showView('auth'); return false;" 
+                        class="text-sm font-mono text-blue-300 hover:text-blue-200 transition-colors duration-200">
+                        Back to Login
+                    </a>
+                </div>
+            </div>
+            <!-- Alert structure for Change Password view -->
+            <div id="cp-error-message-wrapper" class="mt-3 min-h-[2.5rem]"> 
+                <div id="cp-error-message" class="flex justify-between items-center text-sm px-4 py-2 rounded-lg border w-full hidden">
+                    <span id="cp-error-text" class="flex-grow text-center"></span>
+                    <button id="cp-error-close-button" class="flex-shrink-0 text-current hover:text-white ml-3 focus:outline-none" onclick="hideCPLoginError()">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -173,7 +233,7 @@
             userName: null,
             roomName: null,
             token: null,
-            signupSuccessMessage: null, // Used for the one-time transition message after signup
+            signupSuccessMessage: null, // Used for the one-time transition message after signup or password change
             
             // New state to persist the currently displayed alert
             currentAlert: {
@@ -184,9 +244,7 @@
         };
         
         // IMPORTANT: Change this to match the IP/port where your backend server is running.
-        // Use 'localhost:30000' if running on the same machine.
-        // Use '192.168.x.x:30000' if running on a separate machine.
-        const serverIp = 'localhost:30000'; // Target server location
+        const serverIp = '192.168.1.111:30000'; // Target server location
         const httpUrl = `http://${serverIp}`;
         const wsProtocol = `ws://${serverIp}`;
 
@@ -227,39 +285,31 @@
             display.scrollTop = 0;
         };
         
-        /** Clears the entire chat history from the display area. (NEW FUNCTION) */
+        /** Clears the entire chat history from the display area. */
         const clearMessages = () => {
             const display = document.getElementById('message-display');
             display.innerHTML = '';
         };
 
-        /** * Displays the alert message and updates the persistence state.
-         * isError = true for errors (red), false for success/info (green).
-         */
+        // --- Alert Handling for Main Login View (join-view) ---
+
+        /** * Displays the alert message and updates the persistence state. */
         const displayLoginError = (msg, isError = true) => {
             const messageBox = document.getElementById('error-message');
             const textElement = document.getElementById('error-text');
             
-            // Set message content
             textElement.textContent = msg;
-            
-            // Show the INNER element by REMOVING the 'hidden' class
             messageBox.classList.remove('hidden');
 
-            // --- Toggle color for visual feedback on the message box ---
-            // Remove all existing color classes first to ensure a clean switch
             messageBox.classList.remove('bg-red-800/20', 'text-red-400', 'border-red-700');
             messageBox.classList.remove('bg-green-800/20', 'text-green-400', 'border-green-700');
             
             if (isError) {
-                // Red for error
                 messageBox.classList.add('bg-red-800/20', 'text-red-400', 'border-red-700');
             } else {
-                // Green for success/info
                 messageBox.classList.add('bg-green-800/20', 'text-green-400', 'border-green-700');
             }
 
-            // Update the global state for persistence
             appState.currentAlert = {
                 message: msg,
                 isError: isError,
@@ -269,19 +319,60 @@
 
         /** Hides the alert message and clears the persistence state. */
         const hideLoginError = () => {
-            // Hide the INNER element by ADDING the 'hidden' class
             document.getElementById('error-message').classList.add('hidden');
-            
-            // Clear the global state
             appState.currentAlert.isVisible = false;
             appState.currentAlert.message = null;
+        };
+
+        // --- Alert Handling for Change Password View (change-password-view) ---
+        
+        /** * Displays the alert message for the Change Password view. */
+        const displayCPLoginError = (msg, isError = true) => {
+            const messageBox = document.getElementById('cp-error-message');
+            const textElement = document.getElementById('cp-error-text');
+            
+            textElement.textContent = msg;
+            messageBox.classList.remove('hidden');
+
+            messageBox.classList.remove('bg-red-800/20', 'text-red-400', 'border-red-700');
+            messageBox.classList.remove('bg-green-800/20', 'text-green-400', 'border-green-700');
+            
+            if (isError) {
+                messageBox.classList.add('bg-red-800/20', 'text-red-400', 'border-red-700');
+            } else {
+                messageBox.classList.add('bg-green-800/20', 'text-green-400', 'border-green-700');
+            }
+        };
+
+        /** Hides the alert message for the Change Password view. */
+        const hideCPLoginError = () => {
+            document.getElementById('cp-error-message').classList.add('hidden');
         };
 
         // --- UI/Auth Flow Logic ---
         
         /**
+         * Manages which primary view is visible.
+         */
+        const showView = (viewName) => {
+            document.getElementById('join-view').classList.add('hidden');
+            document.getElementById('chat-view').classList.add('hidden');
+            document.getElementById('change-password-view').classList.add('hidden');
+
+            if (viewName === 'auth') {
+                document.getElementById('join-view').classList.remove('hidden');
+                updateUI(appState.mode); // Re-initialize auth view state
+            } else if (viewName === 'changePassword') {
+                document.getElementById('change-password-view').classList.remove('hidden');
+                hideCPLoginError(); // Clear error state when opening
+                document.getElementById('cp-user-input').focus();
+            } else if (viewName === 'chat') {
+                document.getElementById('chat-view').classList.remove('hidden');
+            }
+        }
+        
+        /**
          * Sets the visual state of the Auth button (Join/Sign-up).
-         * @param {boolean} isLoading If true, disables the button and shows a loading text.
          */
         const setAuthButtonState = (isLoading) => {
             const authButton = document.getElementById('auth-button');
@@ -290,18 +381,35 @@
             authButton.disabled = isLoading;
             
             if (isLoading) {
-                // Temporarily show connecting text and disable
                 authButton.textContent = 'Connecting...';
                 authButton.classList.add('opacity-70', 'cursor-not-allowed');
                 authButton.classList.remove('transform', 'hover:scale-[1.01]');
-                // The error is already hidden by handleAuth() 
             } else {
-                // Re-enable and reset text/styles
                 authButton.textContent = modeText;
                 authButton.classList.remove('opacity-70', 'cursor-not-allowed');
                 authButton.classList.add('transform', 'hover:scale-[1.01]');
             }
         };
+
+        /**
+         * Sets the visual state of the Change Password button.
+         */
+        const setCPAuthButtonState = (isLoading) => {
+            const authButton = document.getElementById('cp-auth-button');
+            
+            authButton.disabled = isLoading;
+            
+            if (isLoading) {
+                authButton.textContent = 'Changing...';
+                authButton.classList.add('opacity-70', 'cursor-not-allowed');
+                authButton.classList.remove('transform', 'hover:scale-[1.01]');
+            } else {
+                authButton.textContent = 'Change'; // Updated to "Change"
+                authButton.classList.remove('opacity-70', 'cursor-not-allowed');
+                authButton.classList.add('transform', 'hover:scale-[1.01]');
+            }
+        };
+
 
         /**
          * Updates the UI elements based on the current mode ('login' or 'signup').
@@ -313,25 +421,16 @@
             const inputUsername = document.getElementById('user-input');
             const authButton = document.getElementById('auth-button');
             
-            // Switch elements
             const switchThumb = document.getElementById('switch-thumb');
             const switchLabel = document.getElementById('switch-label');
             
             // === ALERT PERSISTENCE LOGIC ===
-            
-            // 1. Check for the special one-time success message (only after signup)
             if (appState.signupSuccessMessage) {
-                // Display the stored success message (green), this will also update currentAlert state.
                 displayLoginError(appState.signupSuccessMessage, false); 
-                appState.signupSuccessMessage = null; // Clear the transient message
-            } 
-            // 2. Check for a persistent error/alert (if it hasn't been manually closed)
-            else if (appState.currentAlert.isVisible) {
-                // Re-display the persistent alert. This ensures it stays visible across mode toggles.
+                appState.signupSuccessMessage = null; 
+            } else if (appState.currentAlert.isVisible) {
                 displayLoginError(appState.currentAlert.message, appState.currentAlert.isError);
-            } 
-            // 3. Otherwise, ensure it's hidden 
-            else {
+            } else {
                 hideLoginError();
             }
 
@@ -340,10 +439,9 @@
             inputRoom.style.display = isLogin ? 'block' : 'none';
             inputRoom.required = isLogin;
 
-            // Set Login defaults
             inputRoom.placeholder = 'roomName';
-            inputUsername.placeholder = isLogin ? 'userName (e.g., jane)' : 'userName, eg, @jane';
-            
+            inputUsername.placeholder = isLogin ? 'userName (e.g., jane)' : 'userName, eg, alice'; // Note: signup raw name
+
             // Button Label
             authButton.textContent = isLogin ? 'Join' : 'Sign-up';
             authButton.classList.toggle('bg-blue-500', isLogin);
@@ -353,18 +451,13 @@
 
             // === SWITCH UI UPDATE ===
             if (isLogin) {
-                // Login Mode: Switch is for SIGN-UP
                 switchLabel.textContent = 'Sign-up';
-                // Thumb position: left (default: left-0.5, no translate)
                 switchThumb.classList.remove('translate-x-6'); 
             } else {
-                // Sign-up Mode: Switch is for LOGIN
                 switchLabel.textContent = 'Log-in';
-                // Thumb position: right (translate-x-6, based on w-12 track / w-5 thumb)
                 switchThumb.classList.add('translate-x-6'); 
             }
 
-            // Auto Focus based on mode
             if (isLogin) {
                 inputRoom.focus();
             } else {
@@ -380,7 +473,7 @@
             appState.mode = appState.mode === 'login' ? 'signup' : 'login';
             updateUI(appState.mode);
         };
-
+        
         /**
          * Handles form submission: either login or sign-up via HTTP POST.
          */
@@ -395,29 +488,29 @@
             let password = inputPassword.value.trim();
 
             if (initialMode === 'login' && !room) {
-                // Validation Error: will be persisted by currentAlert logic
                 return displayLoginError("Room name is required for login.");
             }
             if (!user || !password) {
-                // Validation Error: will be persisted by currentAlert logic
                 return displayLoginError("Username and password are required.");
             }
             
-            // --- CRITICAL FIX: Hide the previous error *immediately* upon submission 
-            // so it doesn't try to clear itself during the pending network request.
             hideLoginError();
 
             const endpoint = initialMode === 'login' ? `${httpUrl}/login` : `${httpUrl}/sign-up`;
             
-            // Normalize username for API call (login requires @, signup should not provide @)
-            const apiUserName = initialMode === 'login' && !user.startsWith('@') ? `@${user}` : user;
+            // Normalize username: login requires @ prefix, signup needs raw name.
+            let apiUserName;
+            if (initialMode === 'login') {
+                apiUserName = !user.startsWith('@') ? `@${user}` : user;
+            } else { 
+                apiUserName = user.startsWith('@') ? user.substring(1) : user; // Remove @ for signup
+            }
             
             // Set App State early
             appState.roomName = room;
 
             const payload = { userName: apiUserName, password: password };
             
-            // Set loading state on button: This prevents re-clicks
             setAuthButtonState(true); 
 
             try {
@@ -430,33 +523,99 @@
                 const data = await response.json();
 
                 if (!response.ok || data.error) {
-                    // Failure: Display new error, re-enable button
                     displayLoginError(data.error || data.message || `Failed to ${initialMode}.`);
                     setAuthButtonState(false);
                     return;
                 }
                 
-                // Success: Update state with normalized username from server
                 appState.userName = data.userName; 
 
                 if (initialMode === 'signup') {
-                    // Sign-up success: Store message for one-time display, clear fields, switch mode 
                     appState.signupSuccessMessage = `Success! ${data.message}. Please log in now.`;
                     inputPassword.value = '';
-                    updateUI('login'); 
+                    showView('auth'); // Show login view
                 } else {
-                    // Login success: Get the token and proceed to WebSocket
                     appState.token = data.token;
                     connectWebSocket();
                 }
 
             } catch (e) {
-                // Network error: Display error (user must click 'X' to close), re-enable button
                 displayLoginError(`Network error: Could not reach the server at ${httpUrl}`);
                 console.error("Auth Error:", e);
                 setAuthButtonState(false);
             }
         };
+
+        /**
+         * Handles the change password API call.
+         */
+        const handleChangePasswordAuth = async () => {
+            const userInput = document.getElementById('cp-user-input');
+            const currentPassInput = document.getElementById('cp-current-password-input');
+            const newPassInput = document.getElementById('cp-new-password-input');
+
+            let user = userInput.value.trim();
+            let currentPassword = currentPassInput.value.trim();
+            let newPassword = newPassInput.value.trim();
+
+            if (!user || !currentPassword || !newPassword) {
+                return displayCPLoginError("All fields are required.");
+            }
+            
+            hideCPLoginError();
+            setCPAuthButtonState(true); 
+
+            // CRITICAL: Normalize username for API call (must include @)
+            const apiUserName = !user.startsWith('@') ? `@${user}` : user;
+            
+            // Enforce the single @ rule for security consistency
+            const atCount = (apiUserName.match(/@/g) || []).length;
+            if (atCount !== 1) {
+                setCPAuthButtonState(false);
+                return displayCPLoginError("Username must be a simple name, or prefixed with exactly one '@', e.g., @jane.");
+            }
+
+            const endpoint = `${httpUrl}/change-password`;
+            const payload = { 
+                userName: apiUserName, 
+                password: currentPassword, 
+                newPassword: newPassword 
+            };
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || data.error) {
+                    // Failure
+                    const errorMsg = data.error || data.message || "Fail, please try again.";
+                    displayCPLoginError(`Failure: ${errorMsg}`);
+                    setCPAuthButtonState(false);
+                    return;
+                }
+                
+                // Success: clear fields, show success message, return to login view
+                userInput.value = '';
+                currentPassInput.value = '';
+                newPassInput.value = '';
+                
+                // Set success alert in the login view
+                appState.signupSuccessMessage = "Your new password is saved. Please log in with your new credentials.";
+                showView('auth'); // Returns to login/signup view
+                
+            } catch (e) {
+                // Network error
+                displayCPLoginError(`Network error: Could not reach the server.`);
+                console.error("Change Password Error:", e);
+                setCPAuthButtonState(false);
+            }
+        };
+
 
         /**
          * Initiates the WebSocket connection using the token obtained from login.
@@ -468,9 +627,8 @@
             const rawUserName = userName.substring(1); 
             const serverUrl = `${wsProtocol}/${roomName}@${rawUserName}?token=${token}`;
             
-            // Successfully connecting, so hide any previous errors
             hideLoginError();
-            setAuthButtonState(false); // Reset button state if we were still in "Connecting..."
+            setAuthButtonState(false); 
 
             try {
                 ws = new WebSocket(serverUrl);
@@ -480,22 +638,16 @@
             }
 
             ws.onopen = () => {
-                document.getElementById('join-view').classList.add('hidden');
-                document.getElementById('chat-view').classList.remove('hidden');
+                showView('chat');
                 
-                // --- FIX: Clear chat display before showing connection message ---
                 clearMessages(); 
                 
-                // Update chat header info
                 document.getElementById('room-info').textContent = `#${appState.roomName}`;
                 document.getElementById('user-info').textContent = `${appState.userName}`;
 
                 const inputElement = document.getElementById('chat-input');
                 autoResize(inputElement); 
                 inputElement.focus();
-                
-                //const time = formatTimestamp(new Date());
-                //printMessage(`${time}> Connected to room #${roomName} as ${userName}. Type /who to see users.`, true);
             };
 
             ws.onmessage = handleWsMessage;
@@ -505,30 +657,21 @@
                 const reason = e.reason || 'server closed connection';
                 printMessage(`[@xchat ${time}] connection closed. Reason: ${reason}`, true);
                 
-                document.getElementById('chat-view').classList.add('hidden');
-                document.getElementById('join-view').classList.remove('hidden');
                 ws = null;
                 
-                // --- FIX: Check for specific server-sent close reasons (like duplicate username)
-                // If the reason is not generic (code 1000) and contains text, treat it as an error to display.
+                // If the server provides a specific reason (not generic code 1000), display it as an error.
                 if (e.code !== 1000 && reason && reason !== 'server closed connection') {
-                    // Display the server's reason in the login view error box
                     displayLoginError(`Connection Failed: ${reason}`);
                 }
                 
-                updateUI('login'); // Reset UI to login mode, which will now show the error if set above.
+                showView('auth'); // Return to login/signup view
             };
 
             ws.onerror = (err) => {
                 const time = formatTimestamp(new Date());
                 printMessage(`[@xchat ${time}] WebSocket Error. See console for details.`, true);
                 
-                document.getElementById('chat-view').classList.add('hidden');
-                document.getElementById('join-view').classList.remove('hidden'); 
-                
                 console.error(`WebSocket Error: ${err.message}. Ensure the server is running at ${wsProtocol}`);
-                // Since this error often precedes onclose, let onclose handle the view switch if it follows.
-                // If onclose doesn't fire, we show a generic connection error.
                 displayLoginError(`Could not establish connection to chat server.`);
 
                 if (ws && ws.readyState !== WebSocket.CLOSED) {
@@ -580,7 +723,6 @@
                         }
                         break;
 
-                    // Handle user-list response from /who command
                     case 'user-list':
                         if (Array.isArray(incoming.users)) {
                             const userList = incoming.users.join(', ');
@@ -656,20 +798,20 @@
             
             inputElement.value = '';
             autoResize(inputElement); 
-            inputElement.blur(); // Blur the input after sending the message
+            inputElement.blur(); 
         };
 
         /** Handles pressing Enter in the textarea to send the message. */
         const handleKey = (event) => {
             if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault(); // Prevent default new line behavior
+                event.preventDefault(); 
                 sendMessage();
             }
         };
 
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
-            updateUI(appState.mode); // Initialize UI state and set initial focus
+            showView('auth'); // Initialize by showing the main auth/login view
         });
     </script>
 </body>
