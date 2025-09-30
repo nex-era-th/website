@@ -18,14 +18,12 @@
             display: flex;
             flex-direction: column-reverse;
             overflow-y: auto;
-            /* p-4 is controlled by Tailwind class for alignment */
             background-color: #1f2937; /* Dark background for terminal look */
             color: #d1d5db; /* Light text color (default for others) */
             font-family: 'Roboto Condensed', sans-serif;
             font-weight: 300;
-            /* letter-spacing: -0.01em; */
             border-radius: 0.5rem 0.5rem 0 0;
-            flex-grow: 1; /* This ensures it fills the available space */
+            flex-grow: 1; /* Ensures it fills the available space */
             min-height: 0; /* Critical for flex items with overflow */
         }
 
@@ -42,7 +40,7 @@
         
         /* Color for messages sent by the current user */
         .user-message {
-            color: #90caf9 /* slateblue; */ 
+            color: #90caf9;
         }
 
         /* Customize scrollbar for a cleaner look */
@@ -70,7 +68,7 @@
             }
         }
 
-        /** Helper function to handle Enter key press */
+        /** Helper function to handle Enter key press in the login fields */
         function handleLoginEnter(event) {
             if (event.key === 'Enter') {
                 event.preventDefault(); // Prevent default browser action (like form submission)
@@ -112,10 +110,10 @@
                 
                 <textarea id="chat-input" 
                         placeholder="type msg & hit enter..."
-                        rows="2"
-                        style="font-size: 1.1rem;" 
-                        class="w-full p-3 bg-gray-700 text-gray-100 border border-gray-600 rounded-t-lg  focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400"
-                        onkeydown="handleKey(event)"></textarea>
+                        style="font-size: 1.1rem; min-height: 50px;" 
+                        class="w-full p-3 bg-gray-700 text-gray-100 border border-gray-600 rounded-t-lg  focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 resize-none overflow-hidden"
+                        onkeydown="handleKey(event)"
+                        oninput="autoResize(this)"></textarea>
             </div>
         </div>
     </div>
@@ -127,15 +125,27 @@
         let userName = '';
         // NOTE: Make sure to update this IP address if your server changes location
         const serverHost = '192.168.1.111:30000'; // Target server location
-        let currentUsers = ''; // Stores the last known list of users
 
         // --- Utility Functions ---
 
-        /** Formats a Date object into HH:MM string. */
+        /** Formats a Date object into HH:MM string using the user's local timezone. */
         const formatTimestamp = (date) => {
-            const h = String(date.getHours()).padStart(2, '0');
-            const m = String(date.getMinutes()).padStart(2, '0');
-            return `${h}:${m}`;
+            // Using toLocaleTimeString with options ensures the time is formatted 
+            // accurately for the user's current locale and timezone.
+            return date.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false // Use 24-hour format
+            });
+        };
+        
+        /** Adjusts the height of the textarea based on its content. */
+        const autoResize = (element) => {
+            // 1. Reset the height to its base (or smallest size)
+            element.style.height = 'auto';
+            
+            // 2. Set the height based on the scroll height.
+            element.style.height = (element.scrollHeight) + 'px';
         };
 
         /** Appends a message to the display area and scrolls to the bottom. */
@@ -154,12 +164,10 @@
 
             msgElement.textContent = message;
             
-            // Because we use flex-direction: column-reverse, appending (prepend in UI) 
-            // naturally places the new message at the visual bottom.
+            // Using prepend() with flex-direction: column-reverse shows the newest message at the bottom.
             display.prepend(msgElement); 
 
-            // Scroll to the logical top (scrollTop = 0), which displays the newest message 
-            // inserted via prepend() when using flex-direction: column-reverse.
+            // Scroll to the logical top (scrollTop = 0) to ensure the newest message is visible.
             display.scrollTop = 0;
         };
 
@@ -182,34 +190,39 @@
             try {
                 const incoming = JSON.parse(event.data);
                 
-                // Assumption: The server sends a fully pre-formatted message string in the 'text' field.
                 if (incoming.text) {
-                    const text = incoming.text.trim();
+                    let text = incoming.text.trim();
                     const isSystem = text.startsWith('[@xchat');
                     
-                    // Check if the message starts with the current user's name (preceded by '[')
-                    // Example: check if text starts with '[@jane'
+                    // --- TIMESTAMP PARSING AND REPLACEMENT LOGIC ---
+                    // Regex to find a pattern like "[@username 04:03]" and capture the parts
+                    const timeMatch = text.match(/(\[\@[a-zA-Z0-9]+)\s(\d{2}:\d{2})(\])/);
+
+                    if (timeMatch) {
+                        const prefix = timeMatch[1]; // e.g., '[@xchat' or '[@username'
+                        // Get the rest of the message content after the server's timestamp
+                        const suffix = text.substring(timeMatch.index + timeMatch[0].length).trim();
+                        
+                        // Generate the current time in the user's local timezone
+                        const localTime = formatTimestamp(new Date());
+
+                        // Reconstruct the message with the local time
+                        text = `${prefix} ${localTime}${timeMatch[3]} ${suffix}`;
+                        incoming.text = text; // Update the object for printing below
+                    }
+                    // --- END LOGIC ---
+
+                    // Check if the message starts with the current user's name
                     const isUserMessage = !isSystem && text.startsWith(`[${userName}`);
 
-                    // 1. Check for and update the user list from the /who response
-                    if (isSystem) {
-                        const whoIndex = text.indexOf('who =');
-                        if (whoIndex !== -1) {
-                            // +6 to skip "who = "
-                            const usersList = text.substring(whoIndex + 6).trim();
-                            // You can update the header here if you uncommented it
-                        }
-                    }
+                    // Logic to check for /who list output would go here if needed.
 
-                    // 2. Print the message
                     printMessage(incoming.text, isSystem, isUserMessage); 
                 } else {
-                    // Fallback for truly unknown or malformed messages
                     const time = formatTimestamp(new Date());
                     printMessage(`[@xchat ${time}] unknown message format received: ${event.data}`, true);
                 }
             } catch (e) {
-                // This catches non-JSON data or parsing errors.
                 printMessage(`[@xchat ${formatTimestamp(new Date())}] error parsing message`, true);
             }
         };
@@ -219,7 +232,6 @@
             if (ws && ws.readyState !== WebSocket.CLOSED) {
                 ws.close(1000, 'User requested exit');
             }
-            // Switch back to login view (handled by ws.onclose)
         };
         
         // --- Core Application Logic ---
@@ -229,7 +241,7 @@
             hideLoginError();
             
             const roomInput = document.getElementById('room-input').value.trim();
-            let userInput = document.getElementById('user-input').value.trim(); // Use 'let' to modify
+            let userInput = document.getElementById('user-input').value.trim(); 
 
             if (!roomInput || !userInput) {
                 displayLoginError("Room and User names are required.");
@@ -262,7 +274,7 @@
             // The user's local, displayed name is always prefixed with '@'
             userName = `@${userInput}`; 
 
-            // Build the WebSocket URL: The server expects 'roomName@userName' (no leading '@' on the name field)
+            // Build the WebSocket URL: Server expects 'roomName@userName' (no leading '@' on the name field)
             const serverUrl = `ws://${serverHost}/${roomName}@${userInput}`;
             
             try {
@@ -274,11 +286,13 @@
 
             ws.onopen = () => {
                 // Successful connection, switch views
-                document.getElementById('join-view').classList.add('hidden'); // Hide Join View
-                document.getElementById('chat-view').classList.remove('hidden'); // Show Chat View
+                document.getElementById('join-view').classList.add('hidden');
+                document.getElementById('chat-view').classList.remove('hidden');
 
-                // Optionally focus on the input field
-                document.getElementById('chat-input').focus();
+                const inputElement = document.getElementById('chat-input');
+                
+                // Set initial height based on content (which is empty)
+                autoResize(inputElement); 
             };
 
             ws.onmessage = handleWsMessage;
@@ -288,24 +302,21 @@
                 
                 // Switch back to login view after closing
                 document.getElementById('chat-view').classList.add('hidden');
-                document.getElementById('join-view').classList.remove('hidden'); // Show Join View
+                document.getElementById('join-view').classList.remove('hidden');
                 ws = null;
             };
 
             ws.onerror = (err) => {
                 const errorMessage = `Connection Failed. Ensure the WebSocket server is running at ws://${serverHost}`;
                 
-                // Display error in the login view's error message area
                 displayLoginError(errorMessage); 
 
-                // Immediately revert the view to prevent the blank screen flash
+                // Immediately revert the view 
                 document.getElementById('chat-view').classList.add('hidden');
                 document.getElementById('join-view').classList.remove('hidden'); 
                 
-                // Also print to the console for detailed debugging
                 console.error(`WebSocket Error: ${err.message}. ${errorMessage}`);
 
-                // Important: Close the connection on error (if still open)
                 if (ws && ws.readyState !== WebSocket.CLOSED) {
                     ws.close();
                 }
@@ -336,14 +347,12 @@
                             ws.send(JSON.stringify({ type: 'command', command: 'who' }));
                             break;
                         default:
-                            // The client is formatting this system message before sending it.
                             printMessage(`[@xchat ${formatTimestamp(new Date())}] unknown command: ${command}`, true);
                     }
                 } else {
                     // Send chat message
                     ws.send(JSON.stringify({
                         type: 'chat',
-                        user: userName, // Note: This is not strictly needed by the server, but good practice
                         text: line,
                         timestamp: new Date().toISOString()
                     }));
@@ -352,7 +361,12 @@
             
             // Clear input after sending/command
             inputElement.value = '';
-            inputElement.focus();
+            
+            // Resize back to minimum height after clearing the text
+            autoResize(inputElement); 
+            
+            // Force the element to lose focus, preventing the mobile keyboard from reappearing.
+            inputElement.blur(); 
         };
 
         /** Handles pressing Enter in the textarea to send the message. */
@@ -364,7 +378,7 @@
             }
         };
 
-        // --- Initialization ---
+        // --- Initialization, showing the join-view ---
         document.addEventListener('DOMContentLoaded', () => {
             // Optional: Set up focus on the first input on load
             document.getElementById('room-input').focus();

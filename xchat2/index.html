@@ -29,8 +29,9 @@
 
         /* Message item styling */
         .chat-message, .system-message, .user-message {
-            padding: 0.2rem 0;
+            padding: 0.2rem 0.5rem; /* Added padding here */
             white-space: pre-wrap; /* Preserve formatting and wrap text */
+            word-break: break-word; /* Ensure long words break */
             font-size: 1.1rem;
         }
 
@@ -77,7 +78,7 @@
         }
     </script>
 </head>
-<body class="bg-white text-gray-900 font-sans h-screen p-2">
+<body class="bg-gray-100 text-gray-900 font-sans h-screen p-2">
 
     <div id="app-container" class="w-full h-full mx-auto md:max-w-[600px] relative">
 
@@ -111,7 +112,7 @@
                 <textarea id="chat-input" 
                         placeholder="type msg & hit enter..."
                         style="font-size: 1.1rem; min-height: 50px;" 
-                        class="w-full p-3 bg-gray-700 text-gray-100 border border-gray-600 rounded-t-lg  focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 resize-none overflow-hidden"
+                        class="w-full p-3 bg-gray-700 text-gray-100 border border-gray-600 rounded-lg  focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 resize-none overflow-hidden"
                         onkeydown="handleKey(event)"
                         oninput="autoResize(this)"></textarea>
             </div>
@@ -128,20 +129,24 @@
 
         // --- Utility Functions ---
 
-        /** Formats a Date object into HH:MM string. */
+        /** Formats a Date object into HH:MM string using the user's local timezone. */
         const formatTimestamp = (date) => {
-            const h = String(date.getHours()).padStart(2, '0');
-            const m = String(date.getMinutes()).padStart(2, '0');
-            return `${h}:${m}`;
+            // Using toLocaleTimeString with options ensures the time is formatted 
+            // accurately for the user's current locale and timezone.
+            return date.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false // Use 24-hour format
+            });
         };
         
         /** Adjusts the height of the textarea based on its content. */
         const autoResize = (element) => {
             // 1. Reset the height to its base (or smallest size)
-            element.style.height = 'auto';
+            element.style.height = '50px'; // Set minimum height to 50px
             
-            // 2. Set the height based on the scroll height.
-            element.style.height = (element.scrollHeight) + 'px';
+            // 2. Set the height based on the scroll height, clamped at 50px minimum
+            element.style.height = Math.max(50, element.scrollHeight) + 'px';
         };
 
         /** Appends a message to the display area and scrolls to the bottom. */
@@ -186,28 +191,75 @@
             try {
                 const incoming = JSON.parse(event.data);
                 
-                if (incoming.text) {
-                    const text = incoming.text.trim();
-                    const isSystem = text.startsWith('[@xchat');
+                let displayText = '';
+                let isSystem = false;
+                let isUserMessage = false;
+
+                // Helper to format text with local time
+                const getTimedText = (prefix, content, timeISO) => {
+                    // 1. Convert ISO timestamp from server to a Date object
+                    const serverTime = new Date(timeISO);
                     
-                    // Check if the message starts with the current user's name
-                    const isUserMessage = !isSystem && text.startsWith(`[${userName}`);
+                    // 2. Format the Date object using the client's local timezone
+                    const localTimeStr = formatTimestamp(serverTime); 
+                    
+                    // 3. Reconstruct the message
+                    return `${prefix} ${localTimeStr}] ${content}`;
+                };
 
-                    // Logic to check for /who list output would go here if needed.
+                switch (incoming.type) {
+                    case 'message':
+                        // Structured chat message from another user or the sender's echo
+                        if (incoming.user && incoming.time && incoming.msg) {
+                            displayText = getTimedText(`[${incoming.user}`, incoming.msg, incoming.time);
+                            // Check if this is the message we sent (echoed back)
+                            isUserMessage = incoming.user === userName; 
+                        }
+                        break;
+                    
+                    case 'system-timed':
+                        // Structured system message (welcome, join/leave, /who response)
+                        if (incoming.time && incoming.text) {
+                            displayText = getTimedText('[@xchat', incoming.text, incoming.time);
+                            isSystem = true;
+                        }
+                        break;
 
-                    printMessage(incoming.text, isSystem, isUserMessage); 
-                } else {
-                    const time = formatTimestamp(new Date());
-                    printMessage(`[@xchat ${time}] unknown message format received: ${event.data}`, true);
+                    case 'error-timed':
+                        // Structured error message
+                        if (incoming.time && incoming.text) {
+                            displayText = getTimedText('[@error', incoming.text, incoming.time);
+                            isSystem = true;
+                        }
+                        break;
+                    
+                    case 'system':
+                        // Simple system message (e.g., pre-connection errors from the server)
+                        displayText = incoming.text;
+                        isSystem = true;
+                        break;
+                        
+                    default:
+                        // Fallback for unknown payload
+                        const time = formatTimestamp(new Date());
+                        displayText = `[@xchat ${time}] Unrecognized message payload received.`;
+                        isSystem = true;
+                        break;
                 }
+
+                if (displayText) {
+                    printMessage(displayText, isSystem, isUserMessage); 
+                }
+
             } catch (e) {
-                printMessage(`[@xchat ${formatTimestamp(new Date())}] error parsing message`, true);
+                const time = formatTimestamp(new Date());
+                printMessage(`[@xchat ${time}] Error parsing incoming message: ${e.message}`, true);
             }
         };
 
         /** Handles closing the connection. */
         const handleBye = () => {
-            if (ws && ws.readyState !== WebSocket.CLOSED) {
+            if (ws && ws.readyState === WebSocket.OPEN) {
                 ws.close(1000, 'User requested exit');
             }
         };
@@ -228,24 +280,19 @@
             
             // --- USERNAME VALIDATION LOGIC ---
             
-            // 1. Check for multiple '@' symbols
-            const atCount = (userInput.match(/@/g) || []).length;
-            
-            if (atCount > 1) {
-                displayLoginError("Wrong userName, please try again. Cannot contain multiple '@' symbols.");
-                return;
-            }
-            
-            // 2. Clean the input: Remove ONE leading '@' if present
+            // 1. Clean the input: Remove ONE leading '@' if present
             if (userInput.startsWith('@')) {
                 userInput = userInput.substring(1);
             }
 
-            // 3. Final check: Ensure the clean name is not empty
+            // 2. Final check: Ensure the clean name is not empty
             if (userInput.length === 0) {
                  displayLoginError("Wrong userName, please try again. The name cannot be just '@' or empty.");
                 return;
             }
+            // The server will handle checks for reserved names, duplicate names, and multiple '@'s 
+            // after connection is attempted, which will result in an onerror/onclose event.
+            
             // --- END VALIDATION LOGIC ---
 
             roomName = roomInput;
@@ -268,16 +315,18 @@
                 document.getElementById('chat-view').classList.remove('hidden');
 
                 const inputElement = document.getElementById('chat-input');
-                inputElement.focus();
                 
-                // Set initial height based on content (which is empty)
+                // Set initial height based on content
                 autoResize(inputElement); 
+                //inputElement.focus();
             };
 
             ws.onmessage = handleWsMessage;
 
-            ws.onclose = () => {
-                printMessage(`[@xchat ${formatTimestamp(new Date())}] connection closed.`, true);
+            ws.onclose = (e) => {
+                const time = formatTimestamp(new Date());
+                const reason = e.reason || 'server closed connection';
+                printMessage(`[@xchat ${time}] connection closed. Reason: ${reason}`, true);
                 
                 // Switch back to login view after closing
                 document.getElementById('chat-view').classList.add('hidden');
@@ -305,7 +354,8 @@
         /** Sends the message in the input box. */
         const sendMessage = () => {
             if (!ws || ws.readyState !== WebSocket.OPEN) {
-                printMessage(`[@xchat ${formatTimestamp(new Date())}] not connected. Please re-join.`, true);
+                const time = formatTimestamp(new Date());
+                printMessage(`[@xchat ${time}] not connected. Please re-join.`, true);
                 return;
             }
 
@@ -320,20 +370,24 @@
                     
                     switch (command) {
                         case '/bye':
-                            handleBye();
+                            ws.send(JSON.stringify{
+                                type: 'bye',
+                                text: 'good bye :-)'
+                            })
+                            //handleBye();
                             break;
                         case '/who':
                             ws.send(JSON.stringify({ type: 'command', command: 'who' }));
                             break;
                         default:
-                            printMessage(`[@xchat ${formatTimestamp(new Date())}] unknown command: ${command}`, true);
+                            const time = formatTimestamp(new Date());
+                            printMessage(`[@xchat ${time}] unknown command: ${command}`, true);
                     }
                 } else {
-                    // Send chat message
+                    // Send simplified chat message payload
                     ws.send(JSON.stringify({
                         type: 'chat',
-                        text: line,
-                        timestamp: new Date().toISOString()
+                        text: line
                     }));
                 }
             }
@@ -344,7 +398,8 @@
             // Resize back to minimum height after clearing the text
             autoResize(inputElement); 
             
-            inputElement.focus();
+            // Keep focus on the input for quick typing
+            inputElement.blur(); 
         };
 
         /** Handles pressing Enter in the textarea to send the message. */
@@ -356,7 +411,7 @@
             }
         };
 
-        // --- Initialization ---
+        // --- Initialization, showing the join-view ---
         document.addEventListener('DOMContentLoaded', () => {
             // Optional: Set up focus on the first input on load
             document.getElementById('room-input').focus();
