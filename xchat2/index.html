@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xchat 2.0</title>
+    <title>xchat 2.0 - Secure Chat</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,16 +22,15 @@
             color: #d1d5db; /* Light text color (default for others) */
             font-family: 'Roboto Condensed', sans-serif;
             font-weight: 300;
-            /* REMOVED: border-radius: 0.5rem 0.5rem 0 0; for full-screen look */
             flex-grow: 1; /* Ensures it fills the available space */
             min-height: 0; /* Critical for flex items with overflow */
         }
 
         /* Message item styling */
         .chat-message, .system-message, .user-message {
-            padding: 0.2rem 0; /* Added padding here */
-            white-space: pre-wrap; /* Preserve formatting and wrap text */
-            word-break: break-word; /* Ensure long words break */
+            padding: 0.2rem 0; 
+            white-space: pre-wrap; 
+            word-break: break-word; 
             font-size: 1.1rem;
         }
 
@@ -70,10 +69,10 @@
         }
 
         /** Helper function to handle Enter key press in the login fields */
-        function handleLoginEnter(event) {
+        function handleAuthEnter(event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent default browser action (like form submission)
-                joinChat();
+                event.preventDefault(); // Prevent default browser action
+                handleAuth();
             }
         }
     </script>
@@ -82,27 +81,64 @@
 
     <div id="app-container" class="w-full h-full relative">
 
+        <!-- Authentication View -->
         <div id="join-view" class="w-[90%] max-w-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div class="bg-gray-700 p-8 rounded-xl shadow-2xl">
                 <div class="text-center mb-6 text-white font-mono text-xl">xchat 2.0</div>
+                
                 <div class="space-y-4">
+                    <!-- INPUT 1: Room -->
                     <input id="room-input" type="text" placeholder="roomName" value=""
                         class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
-                        onkeydown="handleLoginEnter(event)">
+                        onkeydown="handleAuthEnter(event)">
                     
-                    <input id="user-input" type="text" placeholder="@jane, for example" value=""
+                    <!-- INPUT 2: Username -->
+                    <input id="user-input" type="text" placeholder="userName (e.g., jane)" value=""
                         class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
-                        onkeydown="handleLoginEnter(event)">
+                        onkeydown="handleAuthEnter(event)">
+                    
+                    <!-- INPUT 3: Password -->
+                    <input id="password-input" type="password" placeholder="password" value=""
+                        class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
+                        onkeydown="handleAuthEnter(event)">
                 </div>
-                <button id="join-button" onclick="joinChat()"
-                        class="w-full mt-6 mb-6 py-3 bg-blue-500 hover:bg-indigo-500 text-white font-mono shadow-md transition duration-150 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500/50">
+
+                <!-- BUTTON: Auth Button. Uses flex and justify-center to center the button text. -->
+                <button id="auth-button" onclick="handleAuth()"
+                        class="w-full mt-6 p-3 bg-blue-500 hover:bg-indigo-500 text-white font-mono shadow-md transition duration-150 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500/50 flex items-center justify-center">
                     Join
                 </button>
+                
+                <!-- SWITCH: Mode Toggle (Sign-up / Log-in) -->
+                <div class="mt-4 flex items-center justify-start pl-3">
+                    <!-- Switch Track -->
+                    <div id="switch-track" onclick="handleToggleMode(event)" 
+                        class="relative w-12 h-6 bg-gray-600 rounded-full cursor-pointer p-0.5 transition-colors duration-300 flex-shrink-0" 
+                        title="Toggle Login/Sign-up Mode">
+                        <!-- Switch Thumb -->
+                        <div id="switch-thumb" 
+                            class="absolute w-5 h-5 bg-white rounded-full shadow-lg transition-transform duration-300 ease-in-out top-0.5 left-0.5">
+                        </div>
+                    </div>
+                    <!-- Switch Label -->
+                    <span id="switch-label" onclick="handleToggleMode(event)" 
+                        class="ml-3 text-sm font-mono cursor-pointer text-blue-300 hover:text-blue-200 transition-colors duration-200">
+                        Don't have user? Sign-up
+                    </span>
+                </div>
+
                 <p id="error-message" class="text-red-400 text-sm mt-3 text-center hidden"></p>
             </div>
         </div>
 
+        <!-- Chat View -->
         <div id="chat-view" class="hidden w-full h-full flex flex-col bg-gray-900 overflow-hidden p-2">
+            
+            <!-- Header for Room/User Info -->
+            <div id="chat-header" class="text-xs text-green-400 p-2 border-b border-gray-700 flex justify-between">
+                <span id="room-info" class="font-mono">#room</span>
+                <span id="user-info" class="font-mono">@user</span>
+            </div>
             
             <div id="message-display" class="flex-grow p-4">
                 </div>
@@ -122,9 +158,19 @@
     <script>
         // --- Globals ---
         let ws = null;
-        let roomName = '';
-        let userName = '';
-        const serverHost = '192.168.1.111:30000'; // Target server location
+        let appState = {
+            mode: 'login', // 'login' or 'signup'
+            userName: null,
+            roomName: null,
+            token: null
+        };
+        
+        // IMPORTANT: Change this to match the IP/port where your backend server is running.
+        // Use 'localhost:30000' if running on the same machine.
+        // Use '192.168.x.x:30000' if running on a separate machine.
+        const serverIp = '192.168.1.111:30000'; // Target server location
+        const httpUrl = `http://${serverIp}`;
+        const wsProtocol = `ws://${serverIp}`;
 
         // --- Utility Functions ---
 
@@ -139,7 +185,6 @@
         
         /** Adjusts the height of the textarea based on its content. */
         const autoResize = (element) => {
-            // Min height set to 50px for 2 lines
             element.style.height = '50px'; 
             element.style.height = Math.max(50, element.scrollHeight) + 'px';
         };
@@ -175,7 +220,201 @@
             document.getElementById('error-message').classList.add('hidden');
         };
 
-        // --- WebSocket Handlers ---
+        // --- UI/Auth Flow Logic ---
+        
+        /**
+         * Updates the UI elements based on the current mode ('login' or 'signup').
+         */
+        const updateUI = (mode) => {
+            const isLogin = mode === 'login';
+            
+            const inputRoom = document.getElementById('room-input');
+            const inputUsername = document.getElementById('user-input');
+            const authButton = document.getElementById('auth-button');
+            
+            // Switch elements
+            const switchThumb = document.getElementById('switch-thumb');
+            const switchLabel = document.getElementById('switch-label');
+            
+            hideLoginError();
+            
+            // Toggle visibility and properties
+            inputRoom.style.display = isLogin ? 'block' : 'none';
+            inputRoom.required = isLogin;
+
+            // Set Login defaults
+            inputRoom.placeholder = 'roomName';
+            inputUsername.placeholder = isLogin ? 'userName (e.g., jane)' : 'userName, eg, @jane';
+            
+            // Button Label
+            authButton.textContent = isLogin ? 'Join' : 'Sign-up';
+            authButton.classList.toggle('bg-blue-500', isLogin);
+            authButton.classList.toggle('bg-green-500', !isLogin);
+            authButton.classList.toggle('hover:bg-indigo-500', isLogin);
+            authButton.classList.toggle('hover:bg-green-600', !isLogin);
+
+            // === SWITCH UI UPDATE ===
+            if (isLogin) {
+                // Login Mode: Switch is for SIGN-UP
+                switchLabel.textContent = 'Sign-up';
+                // Thumb position: left (default: left-0.5, no translate)
+                switchThumb.classList.remove('translate-x-6'); 
+            } else {
+                // Sign-up Mode: Switch is for LOGIN
+                switchLabel.textContent = 'Log-in';
+                // Thumb position: right (translate-x-6, based on w-12 track / w-5 thumb)
+                switchThumb.classList.add('translate-x-6'); 
+            }
+
+            // Auto Focus based on mode
+            if (isLogin) {
+                inputRoom.focus();
+            } else {
+                inputUsername.focus();
+            }
+        };
+
+        /**
+         * Toggles the UI state between Login and Sign-up mode.
+         */
+        const handleToggleMode = (e) => {
+            e.preventDefault();
+            appState.mode = appState.mode === 'login' ? 'signup' : 'login';
+            updateUI(appState.mode);
+        };
+
+        /**
+         * Handles form submission: either login or sign-up via HTTP POST.
+         */
+        const handleAuth = async () => {
+            const inputRoom = document.getElementById('room-input');
+            const inputUsername = document.getElementById('user-input');
+            const inputPassword = document.getElementById('password-input');
+
+            let room = inputRoom.value.trim();
+            let user = inputUsername.value.trim();
+            let password = inputPassword.value.trim();
+
+            if (appState.mode === 'login' && !room) {
+                return displayLoginError("Room name is required for login.");
+            }
+            if (!user || !password) {
+                return displayLoginError("Username and password are required.");
+            }
+
+            const endpoint = appState.mode === 'login' ? `${httpUrl}/login` : `${httpUrl}/sign-up`;
+            
+            // Normalize username for API call (login requires @, signup should not provide @)
+            const apiUserName = appState.mode === 'login' && !user.startsWith('@') ? `@${user}` : user;
+            
+            // Set App State early
+            appState.roomName = room;
+
+            const payload = { userName: apiUserName, password: password };
+            
+            // Show loading message
+            displayLoginError(`Connecting to server for ${appState.mode}...`);
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || data.error) {
+                    displayLoginError(data.error || data.message || `Failed to ${appState.mode}.`);
+                    return;
+                }
+                
+                // Success: Update state with normalized username from server
+                appState.userName = data.userName; 
+
+                if (appState.mode === 'signup') {
+                    // Sign-up success: Display message and switch to login mode
+                    displayLoginError(`Success! ${data.message}. Please log in now.`);
+                    // Clear fields and switch mode
+                    inputPassword.value = '';
+                    updateUI('login'); 
+                } else {
+                    // Login success: Get the token and proceed to WebSocket
+                    appState.token = data.token;
+                    connectWebSocket();
+                }
+
+            } catch (e) {
+                displayLoginError(`Network error: Could not reach the server at ${httpUrl}`);
+                console.error("Auth Error:", e);
+            }
+        };
+
+        /**
+         * Initiates the WebSocket connection using the token obtained from login.
+         */
+        const connectWebSocket = () => {
+            const { roomName, userName, token } = appState;
+            
+            // The WS path must use the username *without* the '@' prefix
+            const rawUserName = userName.substring(1); 
+            const serverUrl = `${wsProtocol}/${roomName}@${rawUserName}?token=${token}`;
+            
+            hideLoginError();
+
+            try {
+                ws = new WebSocket(serverUrl);
+            } catch (error) {
+                displayLoginError(`Failed to create WebSocket: ${error.message}`);
+                return;
+            }
+
+            ws.onopen = () => {
+                document.getElementById('join-view').classList.add('hidden');
+                document.getElementById('chat-view').classList.remove('hidden');
+                
+                // Update chat header info
+                document.getElementById('room-info').textContent = `#${appState.roomName}`;
+                document.getElementById('user-info').textContent = `${appState.userName}`;
+
+                const inputElement = document.getElementById('chat-input');
+                autoResize(inputElement); 
+                inputElement.focus();
+                
+                const time = formatTimestamp(new Date());
+                printMessage(`${time}> Connected to room #${roomName} as ${userName}. Type /who to see users.`, true);
+            };
+
+            ws.onmessage = handleWsMessage;
+
+            ws.onclose = (e) => {
+                const time = formatTimestamp(new Date());
+                const reason = e.reason || 'server closed connection';
+                printMessage(`[@xchat ${time}] connection closed. Reason: ${reason}`, true);
+                
+                document.getElementById('chat-view').classList.add('hidden');
+                document.getElementById('join-view').classList.remove('hidden');
+                ws = null;
+                updateUI('login'); // Reset UI to login mode
+            };
+
+            ws.onerror = (err) => {
+                const time = formatTimestamp(new Date());
+                printMessage(`[@xchat ${time}] WebSocket Error. See console for details.`, true);
+                
+                document.getElementById('chat-view').classList.add('hidden');
+                document.getElementById('join-view').classList.remove('hidden'); 
+                
+                console.error(`WebSocket Error: ${err.message}. Ensure the server is running at ${wsProtocol}`);
+
+                if (ws && ws.readyState !== WebSocket.CLOSED) {
+                    ws.close();
+                }
+            };
+        };
+
+
+        // --- WebSocket Handlers (Used after connection) ---
 
         /** Processes incoming messages from the server. */
         const handleWsMessage = (event) => {
@@ -195,18 +434,15 @@
 
                 switch (incoming.type) {
                     case 'message':
-                        // **FIXED LOGIC**: Differentiates between system and user messages for formatting
                         if (incoming.user && incoming.time && incoming.msg) {
                             const { timeStr, content } = getTimedText(incoming.msg, incoming.time);
 
-                            isUserMessage = incoming.user === userName; 
+                            isUserMessage = incoming.user === appState.userName; 
                             isSystem = incoming.user === '@xchat';
 
                             if (isSystem) {
-                                // SYSTEM MESSAGE FORMAT: 10:30> msg here..........
                                 displayText = `${timeStr}> ${content}`;
                             } else {
-                                // USER MESSAGE FORMAT: @jane 10:30> msg here..........
                                 displayText = `${incoming.user} ${timeStr}> ${content}`;
                             }
                         }
@@ -215,14 +451,24 @@
                     case 'error-timed':
                         if (incoming.time && incoming.text) {
                             const timeStr = formatTimestamp(new Date(incoming.time));
-                            // ERROR MESSAGE FORMAT (Using System Style): 10:30> Error msg
                             displayText = `${timeStr}> Error: ${incoming.text}`;
                             isSystem = true;
                         }
                         break;
-                    
+
+                    // Handle user-list response from /who command
+                    case 'user-list':
+                        if (Array.isArray(incoming.users)) {
+                            const userList = incoming.users.join(', ');
+                            displayText = `Online users in #${appState.roomName}: ${userList} (${incoming.users.length} total)`;
+                            isSystem = true;
+                        } else {
+                            displayText = `SYSTEM> Received empty or invalid user list.`;
+                            isSystem = true;
+                        }
+                        break;
+                        
                     case 'system':
-                        // Fallback system message format (without time, if time is missing)
                         displayText = `SYSTEM> ${incoming.text}`;
                         isSystem = true;
                         break;
@@ -242,75 +488,6 @@
                 const time = formatTimestamp(new Date());
                 printMessage(`${time}> Error parsing incoming message: ${e.message}`, true);
             }
-        };
-
-        // --- Core Application Logic ---
-
-        /** Initiates the chat connection. */
-        const joinChat = () => {
-            hideLoginError();
-            
-            const roomInput = document.getElementById('room-input').value.trim();
-            let userInput = document.getElementById('user-input').value.trim(); 
-
-            if (!roomInput || !userInput) {
-                displayLoginError("Room and User names are required.");
-                return;
-            }
-            
-            // Validation logic
-            if (userInput.startsWith('@')) {
-                userInput = userInput.substring(1);
-            }
-            if (userInput.length === 0) {
-                 displayLoginError("Wrong userName, please try again. The name cannot be just '@' or empty.");
-                return;
-            }
-            
-            roomName = roomInput;
-            userName = `@${userInput}`; 
-
-            const serverUrl = `ws://${serverHost}/${roomName}@${userInput}`;
-            
-            try {
-                ws = new WebSocket(serverUrl);
-            } catch (error) {
-                displayLoginError(`Failed to create WebSocket: ${error.message}`);
-                return;
-            }
-
-            ws.onopen = () => {
-                document.getElementById('join-view').classList.add('hidden');
-                document.getElementById('chat-view').classList.remove('hidden');
-
-                const inputElement = document.getElementById('chat-input');
-                autoResize(inputElement); 
-            };
-
-            ws.onmessage = handleWsMessage;
-
-            ws.onclose = (e) => {
-                const time = formatTimestamp(new Date());
-                const reason = e.reason || 'server closed connection';
-                printMessage(`[@xchat ${time}] connection closed. Reason: ${reason}`, true);
-                
-                document.getElementById('chat-view').classList.add('hidden');
-                document.getElementById('join-view').classList.remove('hidden');
-                ws = null;
-            };
-
-            ws.onerror = (err) => {
-                const errorMessage = `Connection Failed. Ensure the WebSocket server is running at ws://${serverHost}`;
-                displayLoginError(errorMessage); 
-                document.getElementById('chat-view').classList.add('hidden');
-                document.getElementById('join-view').classList.remove('hidden'); 
-                
-                console.error(`WebSocket Error: ${err.message}. ${errorMessage}`);
-
-                if (ws && ws.readyState !== WebSocket.CLOSED) {
-                    ws.close();
-                }
-            };
         };
 
         /** Sends the message in the input box. */
@@ -355,9 +532,7 @@
             
             inputElement.value = '';
             autoResize(inputElement); 
-            
-            // FIX: Remove focus to prevent mobile keyboard from reappearing.
-            inputElement.blur(); 
+            inputElement.focus();
         };
 
         /** Handles pressing Enter in the textarea to send the message. */
@@ -370,7 +545,7 @@
 
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('room-input').focus();
+            updateUI(appState.mode); // Initialize UI state and set initial focus
         });
     </script>
 </body>
