@@ -162,13 +162,14 @@
             mode: 'login', // 'login' or 'signup'
             userName: null,
             roomName: null,
-            token: null
+            token: null,
+            signupSuccessMessage: null // Added to hold success message through mode switch
         };
         
         // IMPORTANT: Change this to match the IP/port where your backend server is running.
         // Use 'localhost:30000' if running on the same machine.
         // Use '192.168.x.x:30000' if running on a separate machine.
-        const serverIp = '192.168.1.111:30000'; // Target server location
+        const serverIp = 'localhost:30000'; // Target server location
         const httpUrl = `http://${serverIp}`;
         const wsProtocol = `ws://${serverIp}`;
 
@@ -209,11 +210,16 @@
             display.scrollTop = 0;
         };
 
-        /** Displays/Hides an error in the login view. */
-        const displayLoginError = (msg) => {
+        /** * Displays/Hides an error/info message in the login view. 
+         * isError = true for errors (red), false for success/info (green).
+         */
+        const displayLoginError = (msg, isError = true) => {
             const errorElement = document.getElementById('error-message');
             errorElement.textContent = msg;
             errorElement.classList.remove('hidden');
+            // Toggle color for visual feedback
+            errorElement.classList.toggle('text-red-400', isError);
+            errorElement.classList.toggle('text-green-400', !isError);
         };
 
         const hideLoginError = () => {
@@ -236,7 +242,15 @@
             const switchThumb = document.getElementById('switch-thumb');
             const switchLabel = document.getElementById('switch-label');
             
-            hideLoginError();
+            // CHECK FOR PERSISTENT SUCCESS MESSAGE AFTER MODE TOGGLE
+            if (appState.signupSuccessMessage) {
+                // Display the stored success message before updating UI parts
+                displayLoginError(appState.signupSuccessMessage, false); // false = Green color
+                appState.signupSuccessMessage = null; // Clear it after display
+            } else {
+                // If no persistent message, hide the element
+                hideLoginError();
+            }
             
             // Toggle visibility and properties
             inputRoom.style.display = isLogin ? 'block' : 'none';
@@ -312,8 +326,8 @@
 
             const payload = { userName: apiUserName, password: password };
             
-            // Show loading message
-            displayLoginError(`Connecting to server for ${appState.mode}...`);
+            // Show loading message (using false for green/info color)
+            displayLoginError(`Connecting to server for ${appState.mode}...`, false);
 
             try {
                 const response = await fetch(endpoint, {
@@ -325,6 +339,7 @@
                 const data = await response.json();
 
                 if (!response.ok || data.error) {
+                    // This error message will now persist until the user tries again
                     displayLoginError(data.error || data.message || `Failed to ${appState.mode}.`);
                     return;
                 }
@@ -333,9 +348,9 @@
                 appState.userName = data.userName; 
 
                 if (appState.mode === 'signup') {
-                    // Sign-up success: Display message and switch to login mode
-                    displayLoginError(`Success! ${data.message}. Please log in now.`);
-                    // Clear fields and switch mode
+                    // Sign-up success: Store message to prevent it from flashing away, 
+                    // then clear fields and switch mode.
+                    appState.signupSuccessMessage = `Success! ${data.message}. Please log in now.`;
                     inputPassword.value = '';
                     updateUI('login'); 
                 } else {
@@ -379,7 +394,7 @@
 
                 const inputElement = document.getElementById('chat-input');
                 autoResize(inputElement); 
-                //inputElement.focus();
+                inputElement.focus();
                 
                 const time = formatTimestamp(new Date());
                 printMessage(`${time}> Connected to room #${roomName} as ${userName}. Type /who to see users.`, true);
@@ -532,8 +547,7 @@
             
             inputElement.value = '';
             autoResize(inputElement); 
-            //inputElement.focus();
-            inputElement.blur()
+            inputElement.blur(); // Blur the input after sending the message
         };
 
         /** Handles pressing Enter in the textarea to send the message. */
