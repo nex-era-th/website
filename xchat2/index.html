@@ -203,11 +203,11 @@
                             isSystem = incoming.user === '@xchat';
 
                             if (isSystem) {
-                                // SYSTEM MESSAGE FORMAT: [HH:MM] message (Concise)
-                                displayText = `[${timeStr}] ${content}`;
+                                // SYSTEM MESSAGE FORMAT: 10:30> msg here..........
+                                displayText = `${timeStr}> ${content}`;
                             } else {
-                                // USER MESSAGE FORMAT: [@user HH:MM] message (Full prefix)
-                                displayText = `[${incoming.user} ${timeStr}] ${content}`;
+                                // USER MESSAGE FORMAT: @jane 10:30> msg here..........
+                                displayText = `${incoming.user} ${timeStr}> ${content}`;
                             }
                         }
                         break;
@@ -215,19 +215,21 @@
                     case 'error-timed':
                         if (incoming.time && incoming.text) {
                             const timeStr = formatTimestamp(new Date(incoming.time));
-                            displayText = `[@error ${timeStr}] ${incoming.text}`;
+                            // ERROR MESSAGE FORMAT (Using System Style): 10:30> Error msg
+                            displayText = `${timeStr}> Error: ${incoming.text}`;
                             isSystem = true;
                         }
                         break;
                     
                     case 'system':
-                        displayText = incoming.text;
+                        // Fallback system message format (without time, if time is missing)
+                        displayText = `SYSTEM> ${incoming.text}`;
                         isSystem = true;
                         break;
                         
                     default:
                         const time = formatTimestamp(new Date());
-                        displayText = `[@xchat ${time}] Unrecognized message payload received.`;
+                        displayText = `${time}> Unrecognized message payload received.`;
                         isSystem = true;
                         break;
                 }
@@ -238,7 +240,7 @@
 
             } catch (e) {
                 const time = formatTimestamp(new Date());
-                printMessage(`[@xchat ${time}] Error parsing incoming message: ${e.message}`, true);
+                printMessage(`${time}> Error parsing incoming message: ${e.message}`, true);
             }
         };
 
