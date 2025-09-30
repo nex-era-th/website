@@ -370,10 +370,12 @@
                     
                     switch (command) {
                         case '/bye':
-                            ws.send(JSON.stringify{
-                                type: 'bye',
-                                text: 'good bye :-)'
-                            })
+                            ws.send(JSON.stringify(
+                                {
+                                    type: 'bye',
+                                    text: 'good bye :-)'
+                                }
+                            ))
                             //handleBye();
                             break;
                         case '/who':
