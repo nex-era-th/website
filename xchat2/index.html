@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xchat 2.0 - Secure Chat</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the terminal-like message flow */
+        #message-display {
+            /* Use flex-col-reverse to make new messages appear at the bottom */
+            display: flex;
+            flex-direction: column-reverse;
+            overflow-y: auto;
+            background-color: #1f2937; /* Dark background for terminal look */
+            color: #d1d5db; /* Light text color (default for others) */
+            font-family: 'Roboto Condensed', sans-serif;
+            font-weight: 300;
+            flex-grow: 1; /* Ensures it fills the available space */
+            min-height: 0; /* Critical for flex items with overflow */
+        }
+
+        /* Message item styling */
+        .chat-message, .system-message, .user-message {
+            padding: 0.2rem 0; 
+            white-space: pre-wrap; 
+            word-break: break-word; 
+            font-size: 1.1rem;
+        }
+
+        .system-message {
+            color: #fca5a5; /* Red for system messages */
+        }
+        
+        /* Color for messages sent by the current user */
+        .user-message {
+            color: #90caf9;
+        }
+
+        /* Customize scrollbar for a cleaner look */
+        #message-display::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #message-display::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 4px;
+        }
+
+        #message-display::-webkit-scrollbar-track {
+            background-color: #1f2937;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+
+        /** Helper function to handle Enter key press in the login fields */
+        function handleAuthEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent default browser action
+                handleAuth();
+            }
+        }
+
+        /** Helper function to handle Enter key press in the change password fields */
+        function handleCPAuthEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent default browser action
+                handleChangePasswordAuth();
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans h-screen">
+
+    <div id="app-container" class="w-full h-full relative">
+
+        <!-- Authentication View (Login/Sign-up) -->
+        <div id="join-view" class="w-[90%] max-w-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="bg-gray-700 p-8 rounded-xl shadow-2xl">
+                <div class="text-center mb-6 text-white font-mono text-xl">xchat 2.0</div>
+                
+                <div class="space-y-4">
+                    <!-- INPUT 1: Room -->
+                    <input id="room-input" type="text" placeholder="roomName" value=""
+                        class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
+                        onkeydown="handleAuthEnter(event)">
+                    
+                    <!-- INPUT 2: Username -->
+                    <input id="user-input" type="text" placeholder="userName (e.g., jane)" value=""
+                        class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
+                        onkeydown="handleAuthEnter(event)">
+                    
+                    <!-- INPUT 3: Password -->
+                    <input id="password-input" type="password" placeholder="password" value=""
+                        class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
+                        onkeydown="handleAuthEnter(event)">
+                </div>
+
+                <!-- BUTTON: Auth Button. Uses flex and justify-center to center the button text. -->
+                <button id="auth-button" onclick="handleAuth()"
+                        class="w-full mt-6 p-3 bg-blue-500 hover:bg-indigo-500 text-white font-mono shadow-md transition duration-150 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500/50 flex items-center justify-center">
+                    Join
+                </button>
+                
+                <!-- SWITCH: Mode Toggle (Sign-up / Log-in) -->
+                <div class="mt-4 flex items-center justify-start pl-3">
+                    <!-- Switch Track -->
+                    <div id="switch-track" onclick="handleToggleMode(event)" 
+                        class="relative w-12 h-6 bg-gray-600 rounded-full cursor-pointer p-0.5 transition-colors duration-300 flex-shrink-0" 
+                        title="Toggle Login/Sign-up Mode">
+                        <!-- Switch Thumb -->
+                        <div id="switch-thumb" 
+                            class="absolute w-5 h-5 bg-white rounded-full shadow-lg transition-transform duration-300 ease-in-out top-0.5 left-0.5">
+                        </div>
+                    </div>
+                    <!-- Switch Label -->
+                    <span id="switch-label" onclick="handleToggleMode(event)" 
+                        class="ml-3 text-sm font-mono cursor-pointer text-blue-300 hover:text-blue-200 transition-colors duration-200">
+                        Don't have user? Sign-up
+                    </span>
+                </div>
+                
+                <!-- NEW: Change Password Link -->
+                <div class="mt-4 text-center">
+                    <a href="#" onclick="showView('changePassword'); return false;" 
+                        class="text-sm font-mono text-blue-300 hover:text-blue-200 transition-colors duration-200">
+                        Want to change password? Click here.
+                    </a>
+                </div>
+
+
+                <!-- ALERT STRUCTURE: Wrapper always occupies space (min-h-[2.5rem]) to prevent button shift. -->
+                <div id="error-message-wrapper" class="mt-3 min-h-[2.5rem]"> 
+                    <!-- Inner box for styling, text, and close button. This is the element we hide/show. -->
+                    <div id="error-message" class="flex justify-between items-center text-sm px-4 py-2 rounded-lg border w-full hidden">
+                        <span id="error-text" class="flex-grow text-center"></span>
+                        <button id="error-close-button" class="flex-shrink-0 text-current hover:text-white ml-3 focus:outline-none" onclick="hideLoginError()">
+                            <!-- Simple SVG for 'X' icon -->
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password View -->
+        <div id="change-password-view" class="hidden w-[90%] max-w-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="bg-gray-700 p-8 rounded-xl shadow-2xl">
+                <div class="text-center mb-6 text-white font-mono text-xl">Change Password</div>
+                
+                <div class="space-y-4">
+                    <input id="cp-user-input" type="text" placeholder="your username (eg, @jane)" value=""
+                        class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
+                        onkeydown="handleCPAuthEnter(event)">
+                    
+                    <input id="cp-current-password-input" type="password" placeholder="your current password" value=""
+                        class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
+                        onkeydown="handleCPAuthEnter(event)">
+
+                    <input id="cp-new-password-input" type="password" placeholder="your new password" value=""
+                        class="w-full p-3 bg-gray-600 text-gray-100 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 transition duration-150"
+                        onkeydown="handleCPAuthEnter(event)">
+                </div>
+
+                <button id="cp-auth-button" onclick="handleChangePasswordAuth()"
+                        class="w-full mt-6 p-3 bg-indigo-600 hover:bg-indigo-500 text-white font-mono shadow-md transition duration-150 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500/50 flex items-center justify-center">
+                    Change
+                </button>
+                
+                <!-- Back Link -->
+                <div class="mt-4 text-center">
+                    <a href="#" onclick="showView('auth'); return false;" 
+                        class="text-sm font-mono text-blue-300 hover:text-blue-200 transition-colors duration-200">
+                        Back to Login
+                    </a>
+                </div>
+            </div>
+            <!-- Alert structure for Change Password view -->
+            <div id="cp-error-message-wrapper" class="mt-3 min-h-[2.5rem]"> 
+                <div id="cp-error-message" class="flex justify-between items-center text-sm px-4 py-2 rounded-lg border w-full hidden">
+                    <span id="cp-error-text" class="flex-grow text-center"></span>
+                    <button id="cp-error-close-button" class="flex-shrink-0 text-current hover:text-white ml-3 focus:outline-none" onclick="hideCPLoginError()">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat View -->
+        <div id="chat-view" class="hidden w-full h-full flex flex-col bg-gray-900 overflow-hidden p-2">
+            
+            <!-- Header for Room/User Info -->
+            <div id="chat-header" class="text-xs text-green-400 p-2 border-b border-gray-700 flex justify-between">
+                <span id="room-info" class="font-mono">#room</span>
+                <span id="user-info" class="font-mono">@user</span>
+            </div>
+            
+            <div id="message-display" class="flex-grow p-4">
+                </div>
+
+            <div class="p-2 bg-gray-800 flex-shrink-0"> 
+                
+                <textarea id="chat-input" 
+                        placeholder="type msg & hit enter..."
+                        style="font-size: 1.1rem; min-height: 50px;" 
+                        class="w-full p-3 bg-gray-700 text-gray-100 border border-gray-600 rounded-lg  focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 resize-none overflow-hidden"
+                        onkeydown="handleKey(event)"
+                        oninput="autoResize(this)"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Globals ---
+        let ws = null;
+        let appState = {
+            mode: 'login', // 'login' or 'signup'
+            userName: null,
+            roomName: null,
+            token: null,
+            signupSuccessMessage: null, // Used for the one-time transition message after signup or password change
+            
+            // New state to persist the currently displayed alert
+            currentAlert: {
+                message: null,
+                isError: true, // true for red/error, false for green/success
+                isVisible: false
+            }
+        };
+        
+        // IMPORTANT: Change this to match the IP/port where your backend server is running.
+        const serverIp = '192.168.1.111:30000'; // Target server location
+        const httpUrl = `http://${serverIp}`;
+        const wsProtocol = `ws://${serverIp}`;
+
+        // --- Utility Functions ---
+
+        /** Formats a Date object into HH:MM string using the user's local timezone. */
+        const formatTimestamp = (date) => {
+            return date.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false // Use 24-hour format
+            });
+        };
+        
+        /** Adjusts the height of the textarea based on its content. */
+        const autoResize = (element) => {
+            element.style.height = '50px'; 
+            element.style.height = Math.max(50, element.scrollHeight) + 'px';
+        };
+
+        /** Appends a message to the display area and scrolls to the bottom. */
+        const printMessage = (message, isSystem = false, isUserMessage = false) => {
+            const display = document.getElementById('message-display');
+            
+            const msgElement = document.createElement('div');
+            
+            if (isSystem) {
+                msgElement.className = 'system-message';
+            } else if (isUserMessage) {
+                msgElement.className = 'user-message';
+            } else {
+                msgElement.className = 'chat-message';
+            }
+
+            msgElement.textContent = message;
+            
+            display.prepend(msgElement); 
+            display.scrollTop = 0;
+        };
+        
+        /** Clears the entire chat history from the display area. */
+        const clearMessages = () => {
+            const display = document.getElementById('message-display');
+            display.innerHTML = '';
+        };
+
+        // --- Alert Handling for Main Login View (join-view) ---
+
+        /** * Displays the alert message and updates the persistence state. */
+        const displayLoginError = (msg, isError = true) => {
+            const messageBox = document.getElementById('error-message');
+            const textElement = document.getElementById('error-text');
+            
+            textElement.textContent = msg;
+            messageBox.classList.remove('hidden');
+
+            messageBox.classList.remove('bg-red-800/20', 'text-red-400', 'border-red-700');
+            messageBox.classList.remove('bg-green-800/20', 'text-green-400', 'border-green-700');
+            
+            if (isError) {
+                messageBox.classList.add('bg-red-800/20', 'text-red-400', 'border-red-700');
+            } else {
+                messageBox.classList.add('bg-green-800/20', 'text-green-400', 'border-green-700');
+            }
+
+            appState.currentAlert = {
+                message: msg,
+                isError: isError,
+                isVisible: true
+            };
+        };
+
+        /** Hides the alert message and clears the persistence state. */
+        const hideLoginError = () => {
+            document.getElementById('error-message').classList.add('hidden');
+            appState.currentAlert.isVisible = false;
+            appState.currentAlert.message = null;
+        };
+
+        // --- Alert Handling for Change Password View (change-password-view) ---
+        
+        /** * Displays the alert message for the Change Password view. */
+        const displayCPLoginError = (msg, isError = true) => {
+            const messageBox = document.getElementById('cp-error-message');
+            const textElement = document.getElementById('cp-error-text');
+            
+            textElement.textContent = msg;
+            messageBox.classList.remove('hidden');
+
+            messageBox.classList.remove('bg-red-800/20', 'text-red-400', 'border-red-700');
+            messageBox.classList.remove('bg-green-800/20', 'text-green-400', 'border-green-700');
+            
+            if (isError) {
+                messageBox.classList.add('bg-red-800/20', 'text-red-400', 'border-red-700');
+            } else {
+                messageBox.classList.add('bg-green-800/20', 'text-green-400', 'border-green-700');
+            }
+        };
+
+        /** Hides the alert message for the Change Password view. */
+        const hideCPLoginError = () => {
+            document.getElementById('cp-error-message').classList.add('hidden');
+        };
+
+        // --- UI/Auth Flow Logic ---
+        
+        /**
+         * Manages which primary view is visible.
+         */
+        const showView = (viewName) => {
+            document.getElementById('join-view').classList.add('hidden');
+            document.getElementById('chat-view').classList.add('hidden');
+            document.getElementById('change-password-view').classList.add('hidden');
+
+            if (viewName === 'auth') {
+                document.getElementById('join-view').classList.remove('hidden');
+                updateUI(appState.mode); // Re-initialize auth view state
+            } else if (viewName === 'changePassword') {
+                document.getElementById('change-password-view').classList.remove('hidden');
+                hideCPLoginError(); // Clear error state when opening
+                document.getElementById('cp-user-input').focus();
+            } else if (viewName === 'chat') {
+                document.getElementById('chat-view').classList.remove('hidden');
+            }
+        }
+        
+        /**
+         * Sets the visual state of the Auth button (Join/Sign-up).
+         */
+        const setAuthButtonState = (isLoading) => {
+            const authButton = document.getElementById('auth-button');
+            const modeText = appState.mode === 'login' ? 'Join' : 'Sign-up';
+            
+            authButton.disabled = isLoading;
+            
+            if (isLoading) {
+                authButton.textContent = 'Connecting...';
+                authButton.classList.add('opacity-70', 'cursor-not-allowed');
+                authButton.classList.remove('transform', 'hover:scale-[1.01]');
+            } else {
+                authButton.textContent = modeText;
+                authButton.classList.remove('opacity-70', 'cursor-not-allowed');
+                authButton.classList.add('transform', 'hover:scale-[1.01]');
+            }
+        };
+
+        /**
+         * Sets the visual state of the Change Password button.
+         */
+        const setCPAuthButtonState = (isLoading) => {
+            const authButton = document.getElementById('cp-auth-button');
+            
+            authButton.disabled = isLoading;
+            
+            if (isLoading) {
+                authButton.textContent = 'Changing...';
+                authButton.classList.add('opacity-70', 'cursor-not-allowed');
+                authButton.classList.remove('transform', 'hover:scale-[1.01]');
+            } else {
+                authButton.textContent = 'Change'; // Updated to "Change"
+                authButton.classList.remove('opacity-70', 'cursor-not-allowed');
+                authButton.classList.add('transform', 'hover:scale-[1.01]');
+            }
+        };
+
+
+        /**
+         * Updates the UI elements based on the current mode ('login' or 'signup').
+         */
+        const updateUI = (mode) => {
+            const isLogin = mode === 'login';
+            
+            const inputRoom = document.getElementById('room-input');
+            const inputUsername = document.getElementById('user-input');
+            const authButton = document.getElementById('auth-button');
+            
+            const switchThumb = document.getElementById('switch-thumb');
+            const switchLabel = document.getElementById('switch-label');
+            
+            // === ALERT PERSISTENCE LOGIC ===
+            if (appState.signupSuccessMessage) {
+                displayLoginError(appState.signupSuccessMessage, false); 
+                appState.signupSuccessMessage = null; 
+            } else if (appState.currentAlert.isVisible) {
+                displayLoginError(appState.currentAlert.message, appState.currentAlert.isError);
+            } else {
+                hideLoginError();
+            }
+
+
+            // Toggle visibility and properties
+            inputRoom.style.display = isLogin ? 'block' : 'none';
+            inputRoom.required = isLogin;
+
+            inputRoom.placeholder = 'roomName';
+            inputUsername.placeholder = isLogin ? 'userName (e.g., jane)' : 'userName, eg, alice'; // Note: signup raw name
+
+            // Button Label
+            authButton.textContent = isLogin ? 'Join' : 'Sign-up';
+            authButton.classList.toggle('bg-blue-500', isLogin);
+            authButton.classList.toggle('bg-green-500', !isLogin);
+            authButton.classList.toggle('hover:bg-indigo-500', isLogin);
+            authButton.classList.toggle('hover:bg-green-600', !isLogin);
+
+            // === SWITCH UI UPDATE ===
+            if (isLogin) {
+                switchLabel.textContent = 'Sign-up';
+                switchThumb.classList.remove('translate-x-6'); 
+            } else {
+                switchLabel.textContent = 'Log-in';
+                switchThumb.classList.add('translate-x-6'); 
+            }
+
+            if (isLogin) {
+                inputRoom.focus();
+            } else {
+                inputUsername.focus();
+            }
+        };
+
+        /**
+         * Toggles the UI state between Login and Sign-up mode.
+         */
+        const handleToggleMode = (e) => {
+            e.preventDefault();
+            appState.mode = appState.mode === 'login' ? 'signup' : 'login';
+            updateUI(appState.mode);
+        };
+        
+        /**
+         * Handles form submission: either login or sign-up via HTTP POST.
+         */
+        const handleAuth = async () => {
+            const inputRoom = document.getElementById('room-input');
+            const inputUsername = document.getElementById('user-input');
+            const inputPassword = document.getElementById('password-input');
+            const initialMode = appState.mode;
+
+            let room = inputRoom.value.trim();
+            let user = inputUsername.value.trim();
+            let password = inputPassword.value.trim();
+
+            if (initialMode === 'login' && !room) {
+                return displayLoginError("Room name is required for login.");
+            }
+            if (!user || !password) {
+                return displayLoginError("Username and password are required.");
+            }
+            
+            hideLoginError();
+
+            const endpoint = initialMode === 'login' ? `${httpUrl}/login` : `${httpUrl}/sign-up`;
+            
+            // Normalize username: login requires @ prefix, signup needs raw name.
+            let apiUserName;
+            if (initialMode === 'login') {
+                apiUserName = !user.startsWith('@') ? `@${user}` : user;
+            } else { 
+                apiUserName = user.startsWith('@') ? user.substring(1) : user; // Remove @ for signup
+            }
+            
+            // Set App State early
+            appState.roomName = room;
+
+            const payload = { userName: apiUserName, password: password };
+            
+            setAuthButtonState(true); 
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || data.error) {
+                    displayLoginError(data.error || data.message || `Failed to ${initialMode}.`);
+                    setAuthButtonState(false);
+                    return;
+                }
+                
+                appState.userName = data.userName; 
+
+                if (initialMode === 'signup') {
+                    appState.signupSuccessMessage = `Success! ${data.message}. Please log in now.`;
+                    inputPassword.value = '';
+                    showView('auth'); // Show login view
+                } else {
+                    appState.token = data.token;
+                    connectWebSocket();
+                }
+
+            } catch (e) {
+                displayLoginError(`Network error: Could not reach the server at ${httpUrl}`);
+                console.error("Auth Error:", e);
+                setAuthButtonState(false);
+            }
+        };
+
+        /**
+         * Handles the change password API call.
+         */
+        const handleChangePasswordAuth = async () => {
+            const userInput = document.getElementById('cp-user-input');
+            const currentPassInput = document.getElementById('cp-current-password-input');
+            const newPassInput = document.getElementById('cp-new-password-input');
+
+            let user = userInput.value.trim();
+            let currentPassword = currentPassInput.value.trim();
+            let newPassword = newPassInput.value.trim();
+
+            if (!user || !currentPassword || !newPassword) {
+                return displayCPLoginError("All fields are required.");
+            }
+            
+            hideCPLoginError();
+            setCPAuthButtonState(true); 
+
+            // CRITICAL: Normalize username for API call (must include @)
+            const apiUserName = !user.startsWith('@') ? `@${user}` : user;
+            
+            // Enforce the single @ rule for security consistency
+            const atCount = (apiUserName.match(/@/g) || []).length;
+            if (atCount !== 1) {
+                setCPAuthButtonState(false);
+                return displayCPLoginError("Username must be a simple name, or prefixed with exactly one '@', e.g., @jane.");
+            }
+
+            const endpoint = `${httpUrl}/change-password`;
+            const payload = { 
+                userName: apiUserName, 
+                password: currentPassword, 
+                newPassword: newPassword 
+            };
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || data.error) {
+                    // Failure
+                    const errorMsg = data.error || data.message || "Fail, please try again.";
+                    displayCPLoginError(`Failure: ${errorMsg}`);
+                    setCPAuthButtonState(false);
+                    return;
+                }
+                
+                // Success: clear fields, show success message, return to login view
+                userInput.value = '';
+                currentPassInput.value = '';
+                newPassInput.value = '';
+                
+                // Set success alert in the login view
+                appState.signupSuccessMessage = "Your new password is saved. Please log in with your new credentials.";
+                showView('auth'); // Returns to login/signup view
+                
+            } catch (e) {
+                // Network error
+                displayCPLoginError(`Network error: Could not reach the server.`);
+                console.error("Change Password Error:", e);
+                setCPAuthButtonState(false);
+            }
+        };
+
+
+        /**
+         * Initiates the WebSocket connection using the token obtained from login.
+         */
+        const connectWebSocket = () => {
+            const { roomName, userName, token } = appState;
+            
+            // The WS path must use the username *without* the '@' prefix
+            const rawUserName = userName.substring(1); 
+            const serverUrl = `${wsProtocol}/${roomName}@${rawUserName}?token=${token}`;
+            
+            hideLoginError();
+            setAuthButtonState(false); 
+
+            try {
+                ws = new WebSocket(serverUrl);
+            } catch (error) {
+                displayLoginError(`Failed to create WebSocket: ${error.message}`);
+                return;
+            }
+
+            ws.onopen = () => {
+                showView('chat');
+                
+                clearMessages(); 
+                
+                document.getElementById('room-info').textContent = `#${appState.roomName}`;
+                document.getElementById('user-info').textContent = `${appState.userName}`;
+
+                const inputElement = document.getElementById('chat-input');
+                autoResize(inputElement); 
+                //inputElement.focus();
+            };
+
+            ws.onmessage = handleWsMessage;
+
+            ws.onclose = (e) => {
+                const time = formatTimestamp(new Date());
+                const reason = e.reason || 'server closed connection';
+                printMessage(`[@xchat ${time}] connection closed. Reason: ${reason}`, true);
+                
+                ws = null;
+                
+                // If the server provides a specific reason (not generic code 1000), display it as an error.
+                if (e.code !== 1000 && reason && reason !== 'server closed connection') {
+                    displayLoginError(`Connection Failed: ${reason}`);
+                }
+                
+                showView('auth'); // Return to login/signup view
+            };
+
+            ws.onerror = (err) => {
+                const time = formatTimestamp(new Date());
+                printMessage(`[@xchat ${time}] WebSocket Error. See console for details.`, true);
+                
+                console.error(`WebSocket Error: ${err.message}. Ensure the server is running at ${wsProtocol}`);
+                displayLoginError(`Could not establish connection to chat server.`);
+
+                if (ws && ws.readyState !== WebSocket.CLOSED) {
+                    ws.close();
+                }
+            };
+        };
+
+
+        // --- WebSocket Handlers (Used after connection) ---
+
+        /** Processes incoming messages from the server. */
+        const handleWsMessage = (event) => {
+            try {
+                const incoming = JSON.parse(event.data);
+                
+                let displayText = '';
+                let isSystem = false;
+                let isUserMessage = false;
+
+                // Helper to format text with local time (now returns an object)
+                const getTimedText = (content, timeISO) => {
+                    const serverTime = new Date(timeISO);
+                    const localTimeStr = formatTimestamp(serverTime); 
+                    return { timeStr: localTimeStr, content: content };
+                };
+
+                switch (incoming.type) {
+                    case 'message':
+                        if (incoming.user && incoming.time && incoming.msg) {
+                            const { timeStr, content } = getTimedText(incoming.msg, incoming.time);
+
+                            isUserMessage = incoming.user === appState.userName; 
+                            isSystem = incoming.user === '@xchat';
+
+                            if (isSystem) {
+                                displayText = `${timeStr}> ${content}`;
+                            } else {
+                                displayText = `${incoming.user} ${timeStr}> ${content}`;
+                            }
+                        }
+                        break;
+                    
+                    case 'error-timed':
+                        if (incoming.time && incoming.text) {
+                            const timeStr = formatTimestamp(new Date(incoming.time));
+                            displayText = `${timeStr}> Error: ${incoming.text}`;
+                            isSystem = true;
+                        }
+                        break;
+
+                    case 'user-list':
+                        if (Array.isArray(incoming.users)) {
+                            const userList = incoming.users.join(', ');
+                            displayText = `Online users in #${appState.roomName}: ${userList} (${incoming.users.length} total)`;
+                            isSystem = true;
+                        } else {
+                            displayText = `SYSTEM> Received empty or invalid user list.`;
+                            isSystem = true;
+                        }
+                        break;
+                        
+                    case 'system':
+                        displayText = `SYSTEM> ${incoming.text}`;
+                        isSystem = true;
+                        break;
+                        
+                    default:
+                        const time = formatTimestamp(new Date());
+                        displayText = `${time}> Unrecognized message payload received.`;
+                        isSystem = true;
+                        break;
+                }
+
+                if (displayText) {
+                    printMessage(displayText, isSystem, isUserMessage); 
+                }
+
+            } catch (e) {
+                const time = formatTimestamp(new Date());
+                printMessage(`${time}> Error parsing incoming message: ${e.message}`, true);
+            }
+        };
+
+        /** Sends the message in the input box. */
+        const sendMessage = () => {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                const time = formatTimestamp(new Date());
+                printMessage(`[@xchat ${time}] not connected. Please re-join.`, true);
+                return;
+            }
+
+            const inputElement = document.getElementById('chat-input');
+            const line = inputElement.value.trim();
+
+            if (line.length > 0) {
+                if (line.startsWith('/')) {
+                    const parts = line.split(' ');
+                    const command = parts[0].toLowerCase();
+                    
+                    switch (command) {
+                        case '/bye':
+                            ws.send(JSON.stringify(
+                                {
+                                    type: 'bye',
+                                    text: 'good bye :-)'
+                                }
+                            ))
+                            break;
+                        case '/who':
+                            ws.send(JSON.stringify({ type: 'command', command: 'who' }));
+                            break;
+                        default:
+                            const time = formatTimestamp(new Date());
+                            printMessage(`[@xchat ${time}] unknown command: ${command}`, true);
+                    }
+                } else {
+                    ws.send(JSON.stringify({
+                        type: 'chat',
+                        text: line
+                    }));
+                }
+            }
+            
+            inputElement.value = '';
+            autoResize(inputElement); 
+            inputElement.blur(); 
+        };
+
+        /** Handles pressing Enter in the textarea to send the message. */
+        const handleKey = (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); 
+                sendMessage();
+            }
+        };
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            showView('auth'); // Initialize by showing the main auth/login view
+        });
+    </script>
+</body>
+</html>

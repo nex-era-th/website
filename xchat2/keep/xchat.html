@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xchat Browser</title>
+<style>
+  body { font-family: sans-serif; margin: 20px; }
+  #login { margin-bottom: 20px; }
+  #chat { border: 1px solid #ccc; height: 300px; overflow-y: auto; padding: 10px; margin-bottom: 10px; display: none; white-space: pre-wrap; }
+  #msg { width: 70%; }
+  #send { width: 28%; }
+</style>
+</head>
+<body>
+
+<h2>xchat Browser</h2>
+
+<div id="login">
+  <input type="text" id="roomName" placeholder="Room name" />
+  <input type="text" id="userName" placeholder="Your name" />
+  <button id="joinBtn">Join</button>
+</div>
+
+<div id="chat"></div>
+<input type="text" id="msg" placeholder="Type a message..." style="display:none;" />
+<button id="send" style="display:none;">Send</button>
+
+<script>
+  const loginDiv = document.getElementById('login');
+  const chatDiv = document.getElementById('chat');
+  const msgInput = document.getElementById('msg');
+  const sendBtn = document.getElementById('send');
+
+  let ws;
+  let room;
+  let userId;
+
+  const formatTimestamp = (date) => {
+    const d = new Date(date);
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
+  };
+
+  const printMessage = (text) => {
+    chatDiv.innerHTML += text + '\n';
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+  };
+
+  document.getElementById('joinBtn').onclick = () => {
+    room = document.getElementById('roomName').value.trim();
+    const name = document.getElementById('userName').value.trim();
+    if (!room || !name) return alert("Enter room and user name");
+
+    userId = '@' + name;
+    loginDiv.style.display = 'none';
+    chatDiv.style.display = 'block';
+    msgInput.style.display = 'inline-block';
+    sendBtn.style.display = 'inline-block';
+
+    const wsUrl = `ws://localhost:30000/xchat/${room}/${name}`;
+    ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      printMessage(`[@xchat ${formatTimestamp(new Date())}] ${userId} connected to #${room}`);
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const incoming = JSON.parse(event.data);
+        const ts = formatTimestamp(incoming.timestamp || Date.now());
+        let output;
+        switch (incoming.type) {
+          case 'chat':
+          case 'message':
+            if (incoming.user !== userId)
+              output = `[${incoming.user} ${ts}] ${incoming.text}`;
+            break;
+          case 'system':
+            output = `[@xchat ${ts}] ${incoming.text}`;
+            break;
+          case 'error':
+            output = `[@xchat ${ts}] ERROR: ${incoming.text}`;
+            break;
+        }
+        if (output) printMessage(output);
+      } catch (e) {
+        printMessage(`[System Error ${formatTimestamp(new Date())}] Failed to parse message`);
+      }
+    };
+
+    ws.onclose = () => {
+      printMessage(`[@xchat ${formatTimestamp(new Date())}] Connection lost.`);
+    };
+
+    ws.onerror = (err) => {
+      printMessage(`[@xchat ${formatTimestamp(new Date())}] WebSocket Error: ${err.message}`);
+    };
+  };
+
+  sendBtn.onclick = () => {
+    const text = msgInput.value.trim();
+    if (!text) return;
+
+    if (text.startsWith('/')) {
+      const cmd = text.split(' ')[0].toLowerCase();
+      if (cmd === '/out') ws.close(1000, 'User requested exit');
+      else if (cmd === '/who') ws.send(JSON.stringify({ type: 'command', command: 'who' }));
+      else printMessage(`[@xchat ${formatTimestamp(new Date())}] Unknown command: ${cmd}`);
+    } else {
+      const ts = new Date().toISOString();
+      ws.send(JSON.stringify({ type: 'chat', user: userId, text, timestamp: ts }));
+      printMessage(`[${userId} ${formatTimestamp(ts)}] ${text}`);
+    }
+    msgInput.value = '';
+  };
+
+  msgInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendBtn.click();
+  });
+</script>
+
+</body>
+</html>

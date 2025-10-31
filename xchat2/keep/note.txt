@@ -1,0 +1,4 @@
+sep30/2025
+adjust index.html on styling/tailwind stuff
+add thinner font, change color of the own msg
+@devster
