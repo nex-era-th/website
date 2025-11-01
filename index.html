@@ -6,10 +6,13 @@
   <title>@nex-era / advisory, software & beyond</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="advisory software tech dev รับออกแบบและพัฒนาซอฟท์แวร์ ที่ปรึกษา ความเป็นผู้นำ บริหาร ธุรกิจ">
+
   <script src="./config.js"></script>
   <script src="js/xdev-b.js"></script>
   <script src="js/projex.js"></script>
   <!--script src="./page-profile.js"></script-->
+
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="js/w3.css" rel="stylesheet" type="text/css">
   <link href="js/projex.css" rel="stylesheet" type="text/css">
   <link href="js/material-design-var.css" rel="stylesheet" type="text/css">
@@ -56,7 +59,7 @@
       <div style="height: 16px;"></div>
 
       <!-- x-ubuntu-mono -->
-      <h2 id="brand_name" class="gluten" style="color: var(--pink-900)">nex-era</h2>
+      <h2 id="brand_name" class="gluten text-2xl" style="color: var(--pink-900)">nex-era</h2>
       <div style="height: 32px;"></div>
 
 
@@ -72,9 +75,10 @@
         <p>เทคโนโลยีกำลัง disrupt โลก ในแทบทุกด้าน เช่นพวก <code style="font-size: 0.9rem">AI, Robot, Quantum Computing, Social Media, Apps, Drone, EV, Hyperloop</code> ต่างๆ &nbsp; <code style="color: slateblue; background-color: initial;">@nex-era</code> ให้บริการด้านเทคโนโลยี โดยรับ design & dev software (หรือระบบซอฟท์แวร์เพื่อธุรกิจ) เพื่อให้ธุรกิจของคุณหมุนตามความเปลี่ยนแปลงของสภาพแวดล้อมใหม่ ทางธุรกิจ ได้อย่างทันท่วงที ในขณะที่ระบบ software ธุรกิจแบบเดิมๆ ล้าสมัย ไม่สามารถตอบสนองธุรกิจยุคใหม่ได้อีกต่อไปแล้ว</p>
       </div>
 
-      <div id="contact_city" style="margin-top: 32px">
-        <p>ติดต่อ<br>
-          <a href="htttp://x.com/nex__era" style="font-family: monospace; color: slateblue; text-decoration: none;">x.com/nex__era</a></p>
+      <div id="contact_city" style="margin-top: 32px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+        <small>x.com/nex__era</small>
+        <button class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:bg-blue-600 focus:outline-none focus:ring-blue-400 focus:ring-opacity-75 transition duration-150 ease-in-out"
+        onclick="location.href='http://x.com/nex__era';">nex__era</button>
       </div>
 
       <div style="height: 40px;"></div>
