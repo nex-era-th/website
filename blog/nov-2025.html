@@ -33,7 +33,8 @@
   
   <div style="padding: 0 16px">
     <!--story starts-->
-    <p class="smaller grey">11 พย 2568</p>
+    <p class="smaller grey">11 พย 2568 (v1.1 15:27)</p>
+
     <p>เปลี่ยนรัฐบาลใหม่มาได้เดือน 2 เดือน แรกๆทำท่าจะดี ก็เหมือนๆเดิม ผู้นำใหม่ก็ไม่ต่างผู้นำที่ผ่านๆมา คือเหมือนอยู่ไปงั้นๆ แถมมีชื่ออยู่ใน 7 รายชื่อนักการเมืองไทยที่เอี่ยวกับ scammer ด้วยนะ (รายชื่อจากเกาหลีใต้) ดูมันยังไง ๆ แล้วบรรดาผู้บริหารทั้งหลายก็ดูจะสีไม่ค่อยขาวกันเท่าไหร่ แต่ละคนก็นักการเมืองเก่าเก๋าเกม ทั้งนั้น ประวัติโชกโชน</p>
 
     <p>สถานการณ์ต่างๆวุ่นวาย แต่ผู้นำก็ไปเรื่อยๆ เหมือนเฉยๆ ไม่สื่อสาร ไม่อะไร เป็นสไตล์ผู้นำไทยดั้งเดิม งานสภาแรกๆดูดี เข้าประชุมพรึ่บพรั่บ ผ่านไปไม่เท่าไหร่ ชักมีคนบ่นว่า ไม่เข้าประชุมอีกละ ตอนนี้ไทยเผชิญปัญหาเยอะ scammer ข้ามชาติจากเขมร ตัวบงการใหญ่ๆ ก็อยู่ในไทย พวกจีนเทา แล้วมาเจอน้ำท่วม มีพายุเข้าซ้ำเติมเรื่อยๆ บางพื้นที่บอก น้ำท่วมมาหลายเดือน ไม่ได้รับการช่วยเหลือใดๆ รองนายกๆเป็นตัวการใหญ่ scammer นี่ก็สำคัญ ดังนั้น ผู้นำเหมือนเป๋ๆ ทำไรไม่ถูก</p>
@@ -48,121 +49,30 @@
     <p>ยังไม่ได้เล่าอีกหลายเรื่อง เช่นเรื่องตำรวจ เรื่องอินฟลูดังรับบริจาค เรื่องฟุตบอลเยาวชน เดี๋ยวจะยาวไป เอาเท่านี้ก่อน เรื่องเยอะ ประเทศ</p>
   </div>
   
-  
-
 
   <!-- copyright -->
-  <p style="font-size: 0.7rem; color: grey; text-align: center; margin: 60px 0">Copyright &copy; 2025 @nex-era. <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a></p>
+  <p style="font-size: 0.7rem; color: grey; text-align: center;">Copyright &copy; 2025 @nex-era. <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a></p>
 
 
+  <div style="display: flex; align-items: center; justify-content: center; padding: 40px 0; flex-direction: column;">
+    <img src="/logo-o.png" width="45" class="w3-spin">
+  </div>
 
-
-
-
-
-
-
+  
 
 
   <!-- page act ---------------------------------------------------->
   <img src="/icon/u-turn.svg" style="width: 32px; position: fixed; left: 0; bottom: 0; cursor: pointer" onclick="location.href = '/update.html';">
 
-
-  <!-- page alert -->
-  <div id="page_alert" hidden
-  class="w3-card-4 x-center-screen x-round x-osans" 
-  style="width: 95%; min-height:; padding: 16px; background-color: var(--blue-400); z-index: 100">
-
-    <h3 id="alert_subject"></h3>
-    <div id="alert_msg" class="x-fz150 x-serif" style="text-align: center;"></div>
-
-    <div style="height: 16px;"></div>
-
-    <!--button class="w3-btn x-p8 x-round-4 x-mt" style="position: absolute; left: 0; bottom: 0;" style="display: none" onclick="page_alert.hidden=true"><img src="icon/x.svg" class="x-wh32"></button-->
-  </div>
-
-
-
-
-
-
-
-
 <script>
-  xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
-    { page: location.pathname, lastVisit: Date.now() }
-  )
+
+xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
+  { page: location.pathname, lastVisit: Date.now() }
+)
 
 
-  function sharePage() {
-    const currentUrl = window.location.href;
-    const doneMsg = 'Done. Copied link to clipboard.'
-    const failMsg = 'Fail. Cannot copy link to clipboard.'
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(currentUrl)
-        .then(() => {
-          //alert('Done, copy page link to clipboard');
-          showAlert( doneMsg )
-        })
-        .catch(err => {
-          console.error('Fail, copy page link', err);
-          showAlert( failMsg,'bad')
-          fallbackCopy(currentUrl);
-        });
-    } else {
-      fallbackCopy(currentUrl);
-    }
-
-    function fallbackCopy(text) {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      textArea.style.position = "fixed";  // avoid scrolling
-      textArea.style.top = 0;
-      textArea.style.left = 0;
-      textArea.style.width = "1px";
-      textArea.style.height = "1px";
-      textArea.style.padding = 0;
-      textArea.style.border = "none";
-      textArea.style.outline = "none";
-      textArea.style.boxShadow = "none";
-      textArea.style.background = "transparent";
-
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-
-      try {
-        document.execCommand('copy');
-        //alert('Done, copy page link to clipboard');
-        showAlert( doneMsg)
-      } catch (err) {
-        console.error('Fail, copy page link', err);
-        showAlert( failMsg,'bad')
-      }
-
-      document.body.removeChild( textArea);
-    }
-  }
 
 
-  function showAlert( messa_ge, mode="good" ) {
-
-    //normally the alert mode should be 'good' or 'bad', so if you set 'bad' we'll change the background-color to red tone. But we accept everything that's not 'good' = 'bad'
-
-    alert_msg.innerHTML = messa_ge? messa_ge : 'this is example message'
-
-    if ( mode != 'good') {
-      page_alert.style.backgroundColor = 'var(--red-300)'
-    }
-
-    page_alert.hidden = false
-    setTimeout(f => page_alert.hidden = true, 1500)
-
-    //tested=ok ; both good & bad msg done ; @devster
-  }
-
-
-  </script>
+</script>
 </body>
 </html>
