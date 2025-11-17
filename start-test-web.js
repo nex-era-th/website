@@ -28,7 +28,54 @@ http.createServer((req, res) => {
 
 
 
-  const parsedUrl = url.parse(req.url)
+  const parsedUrl = url.parse(req.url, true)
+  const pathname = parsedUrl.pathname
+  const method = req.method
+
+
+
+
+  // ROUTE WORK -----------------------------------
+
+  if (pathname === '/api/test' && method === 'GET') {
+    res.writeHead(200,{'Content-Type':'text/html'})
+    res.end('<h1>this is response from nex-web</h1>')
+    console.log('got api/test')
+    return
+    // test=ok
+
+  } else if (pathname === '/api/new-post' && method === 'POST') {
+    
+    let body = ''
+    req.on('data', chunk => {
+      body += chunk.toString()
+    })
+
+    req.on('end', () => {
+      try {
+        const data = JSON.parse(body)
+        console.log('/api/new-post gets POST data =', data)
+        res.writeHead(201,{'Content-Type':'application/json'})
+        res.end( JSON.stringify({
+          msg:'this is response from nex-web/api/new-post',
+          attach: data
+        }))
+
+      } catch (error) {
+        res.writeHead(400,{'Content-Type':'text/plain'})
+        res.end('error: invalid json format')
+      }
+    })
+
+    return
+    // test=ok
+  }
+
+
+
+
+  // STATIC WORK ---------------------------------
+
   let filePath = path.join(
     __dirname, parsedUrl === '/' ? 'index.html' : parsedUrl.pathname
   );

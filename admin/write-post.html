@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="/js/material-x.css" rel="stylesheet" type="text/css">
+<script src="/js/xdev-b.js"></script>
+<style>
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+
+  html { font-size: 16px; }
+  body { margin: 0; padding: 0 }
+  p, span, input, textarea, button, option, select { font-size: 1.3rem }
+  button { padding: 8px 16px; border-radius: 10px; cursor: pointer}
+  button:hover { background-color: cyan;}
+
+  .input-pair { display: grid; grid-template-columns: 30% 70% }
+</style>
+</head>
+<body>
+<div id="space" style="display: flex; flex-direction: column; height: 100vh; padding: 0 16px 16px 16px">
+  <h1>write your story here</h1>
+
+  <div class="input-pair">
+    <span>Title</span>
+    <input id="titleHere" type="text" placeholder="Title of this story">
+  </div>
+  <div class="input-pair">
+    <span>File Name</span>
+    <input id="fileName" type="text" placeholder="xyz.html">
+  </div>
+  <div class="input-pair">
+    <span>Publish where?</span>
+    <select>
+      <option>Blog</option>
+    </select>
+  </div>
+  <div class="input-pair">
+    <span>Picture</span>
+    <input type="file" id="picFile">
+  </div>
+
+  <img id="showPicHere" width="100%">
+
+  <div style="display: flex; flex-direction: column; height: 100dvh; margin-top: 8px">
+    <span>Your sotry below:</span>
+    <textarea id="storyHere" 
+    placeholder="put story here..."
+    style="flex-grow: 1;"></textarea>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; margin-top: 8px">
+    <button id="postButt" style="background-color: deepskyblue;">Post</button>
+    <button id="clearButt" style="background-color: yellow;">Clear</button>
+  </div>
+
+</div>
+
+
+
+<script>
+const storyHere = document.querySelector('#storyHere')
+const postButt = document.querySelector('#postButt')
+const clearButt = document.querySelector('#clearButt')
+
+
+postButt.addEventListener('click', event => {
+  const allLine = storyHere.value.split('\n')
+  const allHtmlLine = [] 
+  allLine.map(l => {
+    if (l.trim() != '') {
+      allHtmlLine.push('<p>' + l + '</p>') 
+    }
+  })
+  alert( allHtmlLine)
+})
+
+clearButt.addEventListener('click', event => {
+  storyHere.value = ''
+  storyHere.focus()
+})
+
+
+</script>
+</body>
+</html>
