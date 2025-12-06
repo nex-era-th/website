@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>List All Staff</title>
+  <script src="conf.js"></script>
   <script src="fetch-this.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
   <link href="/js/material-x.css" rel="stylesheet" type="text/css">
@@ -21,7 +22,7 @@
   th, td {
     border: 1px solid gray; padding: 8px; text-align: left;
   }
-  
+  tr:hover { background-color: aqua;}
 
 </style>
 <body>
@@ -55,12 +56,15 @@
 /////////////////////////////////////////////////////////////////
 
 function listAllStaff() {
-  fetch('http://192.168.1.111:4000/list-all-staff')
+  fetch( PUMP_DOMAIN + '/list-all-staff' /*'http://192.168.1.111:4000/list-all-staff'*/ )
     .then( resp => resp.json() )
     .then( data => {
       let table = document.getElementById('listTable')
       data.forEach( staff => {
+        
         let tr = document.createElement('tr')
+        tr.setAttribute('x-id', staff._id)
+
         tr.innerHTML = `<td>${staff.nickName}</td>
                         <td>${staff.firstName} ${staff.lastName}</td>
                         <td>${staff.position}</td>
@@ -71,6 +75,15 @@ function listAllStaff() {
 } 
 
 listAllStaff()
+
+
+document.querySelector('#listTable').addEventListener('click', event => {
+  let rowElem = event.target.closest('tr')
+  //alert(rowElem.getAttribute('x-id'))
+
+  location.href = PUMP_DOMAIN + '/get-staff-info?staffId=' + rowElem.getAttribute('x-id')
+  
+})
 
 </script>
 </body>

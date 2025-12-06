@@ -74,7 +74,7 @@
     <span style="font-size: 0.8rem; color: #5c6bc0">FINANCE</span>
     <div class="section-box" id="staff_section" style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 8px; ;">
       <div style="color: blue" onclick="location.href='record-payment.html';">ป้อนรายการค่าใช้จ่าย</div>
-      <div onclick="location.href='list-all-staff.html';">List All Payment</div>
+      <div onclick="location.href='all-payout.html';" style="color: blue">รายการทั้งหมด</div>
       <div>Edit Payment</div>
       <div>Payment Report</div>
       <div>Payroll</div>
@@ -120,6 +120,23 @@
 
 <script>
   ////////////////////////////////////////////////////////////
+
+  let closed = true;
+  let alreadyPassed = sessionStorage.getItem('passed')
+
+  if (alreadyPassed) {
+    closed = false
+  }
+
+  while (closed) {
+    const passw = prompt('password:')
+    if (passw == 'Tavaravadee73') {
+      closed = false
+    }
+  }
+
+  sessionStorage.setItem('passed', true)
+
 
   // count page visit
   xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 

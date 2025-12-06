@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get Payout Info</title>
+  <script src="conf.js"></script>
+  <script src="fetch-this.js"></script>
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/material-x.css" rel="stylesheet" type="text/css">
+
+<style>
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  th { text-align: center; }
+  table {
+    width: 100%; border-collapse: collapse; margin-top: 0px;
+    border: 1px solid gray;
+  }
+  th, td {
+    border: 1px solid gray; padding: 8px; text-align: left;
+  }
+  tr:hover { background-color: aqua; }
+
+  .world-space { max-width: 800px; margin: auto; }
+
+
+
+
+
+</style>
+<body>
+  <h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0">รายการจ่ายทั้งหมด</h3>
+
+  <div class="world-space">
+
+    <div id="showHere"></div>
+
+
+
+
+  </div>
+
+
+  <img src="/icon/u-turn.svg" style="padding: 0px; position: fixed; left: 0; bottom: 0; cursor: pointer; width: 32px; height: 32px;" onclick="location.href='/pump/index.html';">
+
+
+
+
+
+
+
+
+  <script>
+  /////////////////////////////////////////////////////////////////
+
+    (async function main() {
+
+      let docNum = getUrlParameter('docNum')      
+
+    })();
+
+
+ 
+
+    function getUrlParameter(name) {
+      // Escape special characters in the parameter name for regex
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      
+      // Create a regular expression to find the parameter
+      const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      
+      // Find the match in the URL's query string (window.location.search)
+      const results = regex.exec(location.search);
+      
+      // If a match is found, return the decoded value (Group 1 of the regex)
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+
+  </script>
+</body>
+</html>

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Record Payment</title>
+  <script src="conf.js"></script>
   <script src="/js/xdev-b.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
   <link href="/js/material-x.css" rel="stylesheet" type="text/css">
@@ -61,10 +62,10 @@
 
     <label>ประเภท*</label>
     <div>
-      <input id="receiptType" type="checkbox" class="w3-check" id="receipt"> ใบเสร็จรับเงิน<br>
-      <input id="taxInvoice" type="checkbox" class="w3-check"> ใบกำกับภาษี<br>
-      <input id="shortTaxInvoice" type="checkbox" class="w3-check" > ใบกำกับภาษีอย่างย่อ<br>
-      <input id="otherTypeDoc" type="text" style="width: 100%; margin-top: 8px" placeholder="อื่นๆใส่ตรงนี้">
+      <input name="docType" type="checkbox" class="w3-check" value="receipt"> ใบเสร็จรับเงิน<br>
+      <input name="docType" type="checkbox" class="w3-check" value="taxInvoice"> ใบกำกับภาษี<br>
+      <input name="docType" type="checkbox" class="w3-check" value="taxInvoiceShort"> ใบกำกับภาษีอย่างย่อ<br>
+      <input id="docTypeOther" type="text" style="width: 100%; margin-top: 8px" placeholder="อื่นๆใส่ตรงนี้">
 
     </div>
     
@@ -83,7 +84,7 @@
     <input type="number" id="taxValue">
 
     <label>ชื่อภาษี</label>
-    <select id="taxType" class="w3-select">
+    <select id="taxName" class="w3-select">
       <option>-----</option>
       <option value="vat7%">VAT 7%</option>
       <option value="wht1%">WHT 1% (ดอกเบี้ย)</option>
@@ -118,7 +119,7 @@
 
       <div style="margin-top: 16px">
         <span id="showPartnerInfo"></span>
-        <span id="PartnerId"></span>
+        <input hidden id="keepPartnerIdHere" type="text">
       </div>      
       
       <div style="margin-top: 16px; cursor: pointer;" 
@@ -190,7 +191,7 @@
     
 
 
-    <!---------------------------------------------------------->
+    <!----------------------- product items -------------------->
     <hr class="line-in-form">
 
     <span style="grid-column: span 2; color: #5c6bc0; font-style: italic;">รายการสินค้า</span>
@@ -217,8 +218,8 @@
         <input type="number" name="totalPrice" placeholder="ราคารวม" style="width: 95%">
         <small></small>
         <div>
-          <input type="radio" name="taxState" class="w3-radio" value="included"> รวมภาษีแล้ว<br>
-          <input type="radio" name="taxState" class="w3-radio" value="excluded"> ยังไม่รวมภาษี<br>
+          <input type="radio" name="taxStatus" class="w3-radio" value="included"> รวมภาษีแล้ว<br>
+          <input type="radio" name="taxStatus" class="w3-radio" value="excluded"> ยังไม่รวมภาษี<br>
         </div>
       </div>
 
@@ -226,7 +227,7 @@
 
 
     
-      <!-- add / delete icons -->
+      <!------------- action  add / delete icons --------------->
 
 
       <div id="productItemHouseAct" style="margin-top: 32px; display: flex; align-items: center; justify-content: space-around;">
@@ -249,12 +250,12 @@
     <!---------------------------------------------------------->
     <hr class="line-in-form">
 
-    <label>สถานะ*</label>
-    <select id="status" class="w3-select">
-      <option>-----</option>
-      <option>จ่ายแล้ว</option>
-      <option>ยังไม่ได้จ่าย</option>
-    </select>
+    <label>จ่ายแล้ว?</label>
+    <div>
+      <input type="radio" name="payStatus" value="paid" class="w3-radio"> <span>Yes</span> &nbsp;&nbsp;&nbsp;
+      <input type="radio" name="payStatus" value="unpaid" class="w3-radio" checked> <span>No</span>
+    </div>
+
 
 
     <!---------------------------------------------------------->
@@ -272,8 +273,10 @@
 
 
   <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 50px;">
-    <button class="w3-button w3-blue" onclick="sendData()">Save</button>
-    <button class="w3-button w3-light-grey" onclick="location.reload()">Cancel / Clear</button>
+    <button class="w3-button w3-blue" 
+    onclick="savePaymentRecord()">Save</button>
+    <button class="w3-button w3-light-grey" 
+    onclick="location.reload()">Cancel / Clear</button>
   </div>
 
 
@@ -334,7 +337,7 @@ style="width: 100%; height: 100%; background-color: black; position: fixed; top:
 
 
 
-
+<!-------------------------- page action ----------------------->
 
 
 <img src="/icon/u-turn.svg" style="padding: 0px; position: fixed; left: 0; bottom: 0; cursor: pointer; width: 32px; height: 32px;" onclick="location.href='/pump/index.html';">
@@ -343,9 +346,20 @@ style="width: 100%; height: 100%; background-color: black; position: fixed; top:
 <script>
 ///////////////////////////////////////////////////////////////////
 
+
+// this code scroll page to top after reload
+window.onload = () => {
+  setTimeout( () => {
+    window.scrollTo(0,0)
+  }, 10)
+}
+
+
+
+
 // DEFINITION
 
-const domain = 'http://192.168.1.111:4000';
+const domain = PUMP_DOMAIN  //'http://192.168.1.111:4000';
 const pumpUrl = domain
 let productItemCount = 1;
 
@@ -379,57 +393,118 @@ async function fetchThis( data, api, method = 'POST' ) {
 }
 
 
-async function saveData() {
-  try {
-    let data = {
-      nickName: document.getElementById('nickName').value,
-      firstName: document.getElementById('firstName').value,
-      lastName: document.getElementById('lastName').value,
-      position: document.getElementById('position').value,
-      department: document.getElementById('department').value,
-      role: document.getElementById('role').value,
-      staffCode: document.getElementById('staffCode').value,
-      start: document.getElementById('start').value,
-      tel: document.getElementById('tel').value,  
-      lineId: document.getElementById('lineId').value,
-      facebookMessenger: document.getElementById('facebookMessenger').value,
-      address: document.getElementById('address').value,
+async function savePaymentRecord() {
+  /*
+      save partner data to db
+  */
 
-      nationality: document.getElementById('nationality').value,
-      citizenId: document.getElementById('citizenId').value,
-      sex: document.getElementById('sex').value,
-      age: document.getElementById('age').value,
-      skills: Array.from( document.querySelectorAll('input[name="skill"]:checked') ).map( el => el.value ),
-      pumpStation: document.getElementById('workPlace').value,
+  let data = {
+    docNum: document.querySelector('#docNum').value,
 
-      wages: document.getElementById('wages').value,
-      hiringType: document.getElementById('hiringType').value,
-      benefits: Array.from( document.querySelectorAll('input[name="benefit"]:checked') ).map( el => el.value ),
-      note: document.getElementById('note').value,
-      enterBy: document.getElementById('enterBy').value,
-    }
+    docType: ( () => {
+      let arr = []
+      let allCheck = document.querySelectorAll('input[name="docType"]:checked')
+      
+      if (allCheck.length) {
+        allCheck.forEach(elem => arr.push(elem.value))
+      }
 
+      let typeOther = document.querySelector('#docTypeOther')
+      
+      if (typeOther.value) {
+        arr.push( typeOther.value)
+      }
 
-    // validate
-    if( !data.nickName || !data.firstName || !data.lastName || !data.tel || !data.enterBy ) {
-      alert('กรุณากรอกข้อมูลให้ครบถ้วนในช่องที่มีเครื่องหมาย *')
-      return
-    }
+      return arr
 
+    })(),
 
-    // pass - basic validation
+    ref: document.querySelector('#ref').value,
+    payDate: document.querySelector('#paymentDate').value,
+    netValue: document.querySelector('#netValue').value,
+    taxValue: document.querySelector('#taxValue').value,
+    taxName: document.querySelector('#taxName').value,
+    otherTax: document.querySelector('#otherTaxNote').value,
 
+    totalPriceBeforeTax: document.querySelector('#totalPriceBeforeTax').value,
 
-    let resp = await fetchThis( data, '/add-staff' )
-    //alert( JSON.stringify( resp ) )
-    alert('เรียบร้อย')
-    location.reload()
-    document.getElementById('nickName').focus()
+    paytoPartner: document.querySelector('#keepPartnerIdHere') ? document.querySelector('#keepPartnerIdHere').value : '' ,
 
-  
-  } catch( error ) {
-    console.error( error )
+    category: document.querySelector('#paymentCategory').value,
+    otherCategory: document.querySelector('#otherCategory').value,
+
+    products: ( () => {
+      let arr = []
+      let allProdElem = document.querySelectorAll('.product-item-box')
+      
+      if (allProdElem.length) {
+        allProdElem.forEach( elem => {
+          let oj = {
+            sequence: elem.querySelector('[name="sequence"]').textContent.slice(1),
+
+            code: elem.querySelector('[name="productCode"]').value,
+            
+            description: elem.querySelector('[name="description"]').value,
+
+            qty: elem.querySelector('[name="qty"]').value,
+            uom: elem.querySelector('[name="uom"]').value,
+            unitPrice: elem.querySelector('[name="unitPrice"]').value,
+            totalPrice: elem.querySelector('[name="totalPrice"]').value,
+
+            taxStatus: elem.querySelector('[name="taxStatus"]:checked') ? elem.querySelector('[name="taxStatus"]:checked').value : ''
+          }  
+          arr.push( oj)            
+        })
+
+      }
+      return arr
+
+    })(),
+
+    payStatus: document.querySelector('[name="payStatus"]:checked') ? document.querySelector('[name="payStatus"]:checked').value : '',
+
+    note: document.querySelector('#note').value,
+    enterBy: document.querySelector('#enterBy').value
+    
   }
+
+  if (!data.docNum || !data.docType || !data.ref || !data.payDate || !data.netValue || !data.paytoPartner || !data.category || !data.enterBy) {
+
+    alert('ต้องกรอกช่องที่มี * ให้ครบค่ะ ขอบคุณค่ะ')
+    return
+  }
+
+  //alert(JSON.stringify( data))
+
+  try {
+
+    let reply = await fetchThis( data, '/save-payment-record')
+    /*
+        reply format
+        {
+          done: true | false,
+          msg: 'done - recored this payment',
+          recordId: [_id]
+        }
+    */
+
+    if (reply.done) {
+      alert(`Done - เก็บข้อมูลเรียบร้อยแล้ว \nid = ${reply.recordId }`)
+      location.reload()
+      
+
+
+    } else {
+      alert('Fail - มีปัญหาในการเก็บข้อมูลนี้ ลองดูอีกที หากยังมีปัญหาให้ติดต่อ @admin')
+    }
+
+
+  } catch(er) {
+    alert('Error - มีปัญหาสื่อสารกับ Server')
+  }
+
+
+ 
 }
 
 
@@ -438,7 +513,7 @@ function addProductItem() {
   /*
     - add new product item line in the product item section
   */
-  let template = `<span style="grid-column: span 2;">{{item#}}</span>
+  let template = `<span name="sequence" style="grid-column: span 2;">{{item#}}</span> 
         <small>รหัสสินค้า</small>
         <input name="productCode" type="text" style="width: 95%">
         <div style="grid-column: span 2;">
@@ -452,12 +527,12 @@ function addProductItem() {
         <small>ราคา/หน่วย</small>
         <input type="number" name="unitPrice" placeholder="ราคา/หน่วย" style="width: 95%"
         onchange="calculateTotal(this)">
-        <small>ราคารวม</small>
+        <small>ราคารวม*</small>
         <input type="number" name="totalPrice" placeholder="ราคารวม" style="width: 95%">
         <small></small>
         <div>
-          <input type="radio" name="taxState" class="w3-radio" value="included"> รวมภาษีแล้ว<br>
-          <input type="radio" name="taxState" class="w3-radio" value="excluded"> ยังไม่รวมภาษี<br>
+          <input type="radio" name="taxStatus" class="w3-radio" value="included"> รวมภาษีแล้ว<br>
+          <input type="radio" name="taxStatus" class="w3-radio" value="excluded"> ยังไม่รวมภาษี<br>
         </div>`
       
   productItemCount++
@@ -515,6 +590,7 @@ function calculateTotal( elem ) {
 
 
 async function addPartner() {
+
   let data = new Partner
   data.name = document.querySelector('#partnerName').value
   data.code = document.querySelector('#partnerCode').value
@@ -533,6 +609,7 @@ async function addPartner() {
   if (reply.done) {
     alert('Save ข้อมูล Partner เรียบร้อย')
     clearAddPartnerBox()
+    data._id = reply.partnerId
     showPartnerInfoFromData( data)
 
   } else {
@@ -578,12 +655,17 @@ async function findPartner( keyword ) {
     let gotData = await reply.json()
     
     if (gotData) {
-      
+      /*  
       document.querySelector('#showPartnerInfo').innerHTML = `${gotData.name}<br>
       ${gotData.address}<br>
       tel# ${gotData.tel}<br>
       code: ${gotData.code}<br>
-      taxId: ${gotData.taxId}`
+      taxId: ${gotData.taxId}<br>
+      partnerId: ${gotData._id.slice(0,8)}`
+      */ 
+
+      showPartnerInfoFromData( gotData)
+
 
     } else {
       alert('ไม่มีข้อมูล Partner รายนี้ กรณีเป็นรายใหม่เราสามารถป้อนเข้าไปได้โดยกด [+ เพิ่ม Partner] ได้')
@@ -605,9 +687,12 @@ function showPartnerInfoFromData( data) {
 
   document.querySelector('#showPartnerInfo').innerHTML = `${data.name}<br>
     ${data.address}<br>
-    tel# ${data.tel}<br>
-    code: ${data.code}<br>
-    taxId: ${data.taxId}`
+    tel=${data.tel}<br>
+    code=${data.code}<br>
+    taxId=${data.taxId}<br>
+    partnerId=${data._id.slice(0,8)}...`
+
+  document.querySelector('#keepPartnerIdHere').value = data._id
 
 }
 

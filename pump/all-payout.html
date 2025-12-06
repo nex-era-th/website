@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>List All Staff</title>
+  <script src="conf.js"></script>
+  <script src="fetch-this.js"></script>
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/material-x.css" rel="stylesheet" type="text/css">
+
+<style>
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  th { text-align: center; }
+  table {
+    width: 100%; border-collapse: collapse; margin-top: 0px;
+    border: 1px solid gray;
+  }
+  th, td {
+    border: 1px solid gray; padding: 8px; text-align: left;
+  }
+  tr:hover { background-color: aqua; }
+
+  .world-space { max-width: 800px; margin: auto; }
+
+
+
+
+
+</style>
+<body>
+  <h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0">รายการจ่ายทั้งหมด</h3>
+
+  <div class="world-space">
+
+    <div style="display: grid; grid-template-columns: 80% 20%; align-items: center; padding: 0 16px">
+      <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นหารายการ ...">
+      <button class="w3-button w3-blue" 
+      style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
+    </div>
+
+
+
+    <div style="padding: 0 16px; margin-top: 16px; margin-bottom: 60px;">
+      <table id="listHere">
+        <tr><th>เลขที่เอกสาร</th><th>Partner</th><th>ยอดสุทธิ</th><th>วันที่</th></tr>
+        <!-- Data rows will be inserted here dynamically -->
+      </table>  
+    </div>
+
+
+
+
+  </div>
+
+
+  <img src="/icon/u-turn.svg" style="padding: 0px; position: fixed; left: 0; bottom: 0; cursor: pointer; width: 32px; height: 32px;" onclick="location.href='/pump/index.html';">
+
+
+
+
+
+
+
+
+  <script>
+  /////////////////////////////////////////////////////////////////
+
+    (async function main() {
+
+      let allPayout = await fetchThis( null, '/get-all-payout', 'get')
+      if (allPayout.length) {
+        
+        allPayout.forEach( rec => {
+
+          let newRow = document.createElement('tr')
+          newRow.setAttribute('x-id', rec._id)
+          let innerCode = `<td>${rec.docNum}</td><td>${rec.partnerName}</td><td>${rec.netValue}</td><td>${rec.payDate}</td>`
+          newRow.innerHTML = innerCode
+
+          document.querySelector('#listHere').append( newRow)
+        });
+      } else {
+        alert('ไม่มีข้อมูล')
+      }
+
+    })();
+
+
+    // if user clicks on table bring her that payment info
+    document.querySelector('#listHere').addEventListener('click', event => {
+
+      const rowElem = event.target.closest('tr')
+      
+      if (rowElem && rowElem.getAttribute('x-id')) {
+
+        location.href = PUMP_DOMAIN + '/get-payout-info?payoutId=' + rowElem.getAttribute('x-id')
+
+      }
+      // call this api and it will return an html info
+
+    })
+
+
+  </script>
+</body>
+</html>
