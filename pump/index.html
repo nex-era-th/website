@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Pump Operation</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="advisory software tech dev รับออกแบบและพัฒนาซอฟท์แวร์ ที่ปรึกษา ความเป็นผู้นำ บริหาร ธุรกิจ">
+
+  <script src="./config.js"></script>
+  <script src="js/xdev-b.js"></script>
+  <script src="js/projex.js"></script>
+  <!--script src="./page-profile.js"></script-->
+
+  <!--script src="https://cdn.tailwindcss.com"></script-->
+  <link href="js/w3.css" rel="stylesheet" type="text/css">
+  <link href="js/projex.css" rel="stylesheet" type="text/css">
+  <!--link href="js/material-design-var.css" rel="stylesheet" type="text/css"-->
+  <link href="js/material-x.css" rel="stylesheet" type="text/css">
+  <style>
+    html { font-size: 16px;}
+    p { font-size: 1.1rem; text-align: center; }
+    p, div, span, a {font-family: "Open Sans", sans-serif;}
+    /*a {background-color: lightgray; color: black; border-radius: 10px; padding: 4px 8px; font-family: 'Times New Roman', Times, serif;}*/
+    /*code {background-color: #efebe9;}*/
+
+    #slide_set > div {
+      padding: 0 4px; border-right:; 
+      width: calc(100%/3); height: 120px; overflow: hidden
+    }
+/*    #slide_set > div:last-child { border: none}
+    #slide_set > div:nth-child(even) { color: steelblue }
+*/    
+    #gallery > div { width: calc(100%/3); height: 100px;}
+    #gallery img { width: 100%; height: 100%; object-fit: cover;}
+
+    #search_result a { background-color: initial; display: none; margin-bottom: 16px;}
+
+    .section-box div {
+      height: 80px; font-size: 1.35rem;
+      background-color: lightgray; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; padding: 0 8px; text-align: center;
+      overflow: hidden;
+    }
+
+    .section-box div:hover {
+      background-color: #b2ebf2;
+    }
+
+  </style>
+</head>
+<body>
+
+<p style="margin-top: 0; padding-top: 0; color: #e57373; font-size: 2rem; background-color: white; position: sticky; top: 0">pump operation</p>
+
+
+<div style="padding: 0 16px 16px 16px; max-width: 800px; margin: auto;">
+
+
+  <div style="margin-top: 16px">
+    <span style="font-size: 0.8rem; color: #5c6bc0">STAFF</span>
+    <div class="section-box" id="staff_section" style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 8px; ;">
+      <div onclick="location.href='add-new-staff.html';" style="color: blue">ป้อนข้อมูลพนักงาน</div>
+      <div style="color: blue" onclick="location.href='list-all-staff.html';">รายชื่อทั้งหมด</div>
+      <div>Edit Staff Data</div>
+      <div>Staff Performance</div>
+      <div>Work Shift</div>
+      <div>Attendance</div>
+    </div>
+  </div>
+  
+  <div style="margin-top: 16px">
+    <span style="font-size: 0.8rem; color: #5c6bc0">FINANCE</span>
+    <div class="section-box" id="staff_section" style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 8px; ;">
+      <div style="color: blue" onclick="location.href='record-payment.html';">ป้อนรายการค่าใช้จ่าย</div>
+      <div onclick="location.href='list-all-staff.html';">List All Payment</div>
+      <div>Edit Payment</div>
+      <div>Payment Report</div>
+      <div>Payroll</div>
+      <div>Analysis</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 16px">
+    <span style="font-size: 0.8rem; color: #5c6bc0">SALES</span>
+    <div class="section-box" id="staff_section" style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 8px; ;">
+      <div>Daily Sales</div>
+      <div>Sales / Shift</div>
+      <div>Sales / Month</div>
+      <div>Sales / Product</div>
+      <div>Analysis</div>
+    </div>
+  </div>
+
+
+  <div style="margin-top: 16px">
+    <span style="font-size: 0.8rem; color: #5c6bc0">INVENTORY</span>
+    <div class="section-box" id="staff_section" style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 8px; ;">
+      <div>Fuel Inventory</div>
+      <div>Byproduct Inventory</div>
+      <div>Product Info</div>
+      <div>In / Out</div>
+      <div>Analysis</div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+<script>
+  ////////////////////////////////////////////////////////////
+
+  // count page visit
+  xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
+    { page: location.pathname, lastVisit: Date.now() }
+  ).then(/* msg => console.log( msg) */)
+
+
+
+  function xMoveAroundFreely(_elem,_x=0,_y=0,_time=2,_distance=45) {
+    /*
+      - move element around randomly & easily
+      - this is simple method moving the el linearly and in straight direction
+    */
+
+    let newX = Math.random() < 0.5 ? _x - _distance : _x + _distance
+    let newY = Math.random() < 0.5 ? _y - _distance : _y + _distance
+    if (newX > innerWidth) newX = innerWidth
+    if (newX < -_elem.offsetWidth) newX = -_elem.offsetWidth
+    if (newY > innerHeight) newY = innerHeight
+    if (newY < -_elem.offsetHeight) newY = _elem.offsetHeight
+
+    _elem.style.transition = 'all ' + _time + 's linear'
+    _elem.style.left = newX + 'px'
+    _elem.style.top = newY + 'px'
+    setTimeout(f => xMoveAroundFreely(_elem,newX,newY,_time,_distance), _time * 1000)
+
+    // tested=ok, @devster, 2025-01-09T01:46+0700
+  }
+
+  xMoveAroundFreely(bug)
+
+
+
+  //-----------------------------------------------------------------
+  
+  
+  function ifScroll(_x) {
+
+    /*
+      - set rule if scroll > the set % of page length, do something
+      - we may have only 1 condition which is 'moreThan' and the input value is the %
+
+      GUIDE
+
+        ifScroll({ moreThan: 50,
+          do: {show: _elem, hide: _elem, run: _func},
+          else: {show: _elem, hide: _elem, run: _func}
+        })
+
+        the show/hide uses x-hide class so have to put this class on the elem you trying to handle
+
+      INFO
+
+        version = 1.0
+        license = none
+        by = @devster
+        released = 2025-01-10T17:13+0700
+    */
+
+    // validate & default
+    if (!_x) return
+    if (!_x.do) return
+    if (!_x.moreThan) _x.moreThan = 50
+
+    addEventListener('scroll', f => {
+      if (pageYOffset > document.documentElement.scrollHeight * (_x.moreThan/100) ) {
+        if (_x.do.show) _x.do.show.classList.remove('x-hide')
+        if (_x.do.hide) _x.do.hide.classList.add('x-hide')
+        if (_x.do.run) eval(_x.do.run)
+      } else {
+        if (_x.else.show) _x.else.show.classList.remove('x-hide')
+        if (_x.else.hide) _x.else.hide.classList.add('x-hide')
+        if (_x.else.run) eval(_x.else.run)
+      }
+    })
+
+    // first test=ok, @devster
+    // v1.0 test=ok
+    // thinking about how to remove this listener -- idea
+  }
+
+  
+
+
+
+  ifScroll({ moreThan: 50, 
+    do: {show: act_scroll_top}, 
+    else: {hide: act_scroll_top}
+  })
+
+
+
+  function searchSite(_keyword) {
+
+    if (_keyword == '') hideAllSearchResult()
+    else {
+      for (elem of search_result.children) {
+        if (elem.textContent.toLowerCase().includes(_keyword.toLowerCase())) elem.style.display = 'block'
+        else elem.style.display = 'none'
+      }
+    }
+  }
+
+  function hideAllSearchResult() {
+    for (elem of search_result.children) elem.style.display = 'none'
+  }
+
+
+
+
+</script>
+
+
+</body>
+</html>

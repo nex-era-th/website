@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Record Payment</title>
+  <script src="/js/xdev-b.js"></script>
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/material-x.css" rel="stylesheet" type="text/css">
+
+<style>
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  .world-space { max-width: 800px; margin: auto; }
+  .my-form > input {
+    width: 100%; padding: 4px;
+  }
+  .my-form p, 
+  .my-form span, 
+  .my-form div, 
+  .my-form input,
+  .my-form textarea {
+    font-size: 1.25rem;
+  }
+
+  .line-in-form {
+   grid-column: span 2; width: 100%; border-top: 1px solid gray; margin: 16px 0;
+  }
+
+  .product-item-box { 
+    display: grid; 
+    grid-template-columns: 30% 70%; 
+    align-items: center; 
+    width: 95%; 
+    background-color: #eeeeee; 
+    padding: 8px; 
+    gap: 8px; 
+    margin-left: auto;
+  }
+
+
+
+</style>
+<body>
+
+<h3 style="padding: 16px; color: blue; position: sticky; top: 0; background-color: white; z-index: 50">ป้อนรายการค่าใช้จ่าย</h3>
+
+<div class="world-space" style="padding: 0 16px">
+  
+
+  <div class="my-form" id="recordPaymentForm" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
+
+    
+
+    <label>เลขที่เอกสาร*</label>
+    <input type="text" id="docNum">
+
+    <hr class="line-in-form">
+
+    <label>ประเภท*</label>
+    <div>
+      <input id="receiptType" type="checkbox" class="w3-check" id="receipt"> ใบเสร็จรับเงิน<br>
+      <input id="taxInvoice" type="checkbox" class="w3-check"> ใบกำกับภาษี<br>
+      <input id="shortTaxInvoice" type="checkbox" class="w3-check" > ใบกำกับภาษีอย่างย่อ<br>
+      <input id="otherTypeDoc" type="text" style="width: 100%; margin-top: 8px" placeholder="อื่นๆใส่ตรงนี้">
+
+    </div>
+    
+    <hr class="line-in-form">
+
+    <label>Ref*</label>
+    <input type="text" id="ref" placeholder="อ้างอิงเลข PO หรืออื่นๆ">
+
+    <label>วันที่*</label>
+    <input type="date" id="paymentDate">  
+
+    <label>ยอดสุทธิ*</label>
+    <input type="number" id="netValue">
+
+    <label>ยอดภาษี</label>
+    <input type="number" id="taxValue">
+
+    <label>ชื่อภาษี</label>
+    <select id="taxType" class="w3-select">
+      <option>-----</option>
+      <option value="vat7%">VAT 7%</option>
+      <option value="wht1%">WHT 1% (ดอกเบี้ย)</option>
+      <option value="wht2%">WHT 2% (ค่าโฆษณา)</option>
+      <option value="wht3%">WHT 3% (วิชาชีพอิสระ)</option>
+      <option value="wht5%">WHT 5% (ค่าเช่า รางวัล)</option>
+      <option value="none">ไม่มีภาษี</option>
+    </select>
+
+    <label></label>
+    <input type="text" id="otherTaxNote" placeholder="ภาษีอื่นระบุตรงนี้">
+    
+
+    <label>ยอดรวมก่อนภาษี</label>
+    <input type="number" id="totalPriceBeforeTax">
+
+
+
+    <!--------------------- partner --------------------------->
+    <hr class="line-in-form">
+
+
+    <label>จ่ายให้*</label>
+    <div style="width: 100%; display: flex; flex-direction: column;">
+      
+      <input type="search" id="searchVendor" placeholder="ค้นหา Partner ตรงนี้">
+      
+      <div style="width: 50px; padding: 4px; cursor: pointer; background-color: #9fa8da; display: flex; align-items: center; justify-content: center;" class="w3-blue"
+      onclick="findPartner( document.querySelector('#searchVendor').value)">
+        <img src="/icon-x/Search.svg" width="32">
+      </div>
+
+      <div style="margin-top: 16px">
+        <span id="showPartnerInfo"></span>
+        <span id="PartnerId"></span>
+      </div>      
+      
+      <div style="margin-top: 16px; cursor: pointer;" 
+      onclick="addVendorForm.style.display = 'flex';">
+        <img src="/icon-x/Plus.svg" style="width: 24px; border-radius: 50%; background-color: #9fa8da;">
+        <small style="font-size: 0.8rem; color: #9fa8da">เพิ่ม Partner ใหม่</small>
+      </div>
+    </div>
+
+
+
+    <!---------------- category------------------------->
+    <hr class="line-in-form">
+
+    <label>หมวดการจ่ายเงิน*</label>
+    <div>
+      <select class="w3-select" id="paymentCategory">
+        <option>-----</option>
+        <option>ซื้อสินค้า</option>
+        <option>ซื้อวัตถุดิบ</option>
+        <option>ค่าขนส่ง</option>
+        <option>ค่าใช้จ่ายสำนักงาน</option>
+        <option>ซื้ออุปกรณ์เครื่องใช้ทั่วไป</option>
+        <option>ซื้ออุปกรณ์คอมพิวเตอร์ หรือซอฟท์แวร์</option>
+        <option>ค่าบริการเทคโนโลยี</option>
+        <option>ซื้อของใช้สิ้นเปลือง</option>
+        <option>--------------</option>
+        <option>ค่าใช้จ่ายบริหาร</option>
+        <option>ค่าการตลาด</option>
+        <option>ค่าเลี้ยงรับรอง</option>
+        <option>ค่าจ้างสวัสดิการพนักงาน</option>
+        <option>ค่าจ้างทำงานล่วงเวลา</option>
+        <option>ค่าเบี้ยเลี้ยง</option>
+        <option>ค่าเดินทาง</option>
+        <option>ค่าที่โรงแรม ที่พัก</option>
+        <option>ค่าจ้างที่ปรึกษา ผู้เชี่ยวชาญ จากภายนอก</option>
+        <option>Commission</option>
+        <option>โบนัส</option>
+        <option>ให้รางวัลพนักงาน</option>
+        <option>--------------</option>
+
+        <option>ค่าบำรุงรักษาเครื่องจักร</option>
+        <option>ค่าบำรุงรักษายานยนต์</option>
+        <option>ค่าน้ำมัน</option>
+        <option>ค่าเช่า</option>
+        <option>--------------</option>
+
+        <option>ส่วนต่างราคาจากการทอนเงิน</option>
+        <option>ค่าส่วนต่างอัตราแลกเปลี่ยนเงิน</option>
+        <option>--------------</option>
+
+        <option>ภาษี</option>
+        <option>ค่าเจรจาธุรกิจ</option>
+        <option>--------------</option>
+
+        <option>ซื้อยานยนต์</option>
+        <option>ซื้ออสังหาริมทรัพย์</option>
+        <option>--------------</option>
+
+
+        <option>ค่าธรรมเนียมต่างๆ</option>
+        <option>อื่นๆ</option>
+
+
+      </select>
+      <input id="otherCategory" type="text" placeholder="กรณีอื่นๆ โปรดระบุ" style="width: 100%">
+    </div>
+
+    
+
+
+    <!---------------------------------------------------------->
+    <hr class="line-in-form">
+
+    <span style="grid-column: span 2; color: #5c6bc0; font-style: italic;">รายการสินค้า</span>
+
+    <div id="productItemHouse" style="grid-column: span 2; display: flex; flex-direction: column; gap: 8px">
+
+      <!-- first prduct item -->
+      <div class="product-item-box">
+        <span name="sequence" style="grid-column: span 2;">#1</span> 
+        <small>รหัสสินค้า</small>
+        <input name="productCode" type="text" style="width: 95%">
+        <div style="grid-column: span 2;">
+          <small>รายละเอียด</small><br>
+          <textarea name="description" placeholder="รายละเอียด" style="grid-column: span 2; width: 95%"></textarea>
+        </div>
+        <small>จำนวน</small>
+        <input type="number" name="qty" placeholder="จำนวน" value="1" style="width: 95%">
+        <small>หน่วยนับ</small>
+        <input type="text" name="uom" placeholder="หน่วยนับ" style="width: 95%"> 
+        <small>ราคา/หน่วย</small>
+        <input type="number" name="unitPrice" placeholder="ราคา/หน่วย" style="width: 95%"
+        onchange="calculateTotal(this)">
+        <small>ราคารวม*</small>
+        <input type="number" name="totalPrice" placeholder="ราคารวม" style="width: 95%">
+        <small></small>
+        <div>
+          <input type="radio" name="taxState" class="w3-radio" value="included"> รวมภาษีแล้ว<br>
+          <input type="radio" name="taxState" class="w3-radio" value="excluded"> ยังไม่รวมภาษี<br>
+        </div>
+      </div>
+
+
+
+
+    
+      <!-- add / delete icons -->
+
+
+      <div id="productItemHouseAct" style="margin-top: 32px; display: flex; align-items: center; justify-content: space-around;">
+        <div onclick="addProductItem()">
+          <img src="/icon-x/Plus.svg" style="width: 24px; cursor: pointer; border-radius: 50%; background-color: #9fa8da;" 
+          onclick=""> 
+          <small style="font-size: 0.8rem; color: #9fa8da">เพิ่มรายการ</small>
+        </div>
+        <div onclick="deleteProductItem()">
+          <img src="/icon-x/Minus.svg" style="width: 24px; cursor: pointer; border-radius: 50%; background-color: #ef9a9a;" 
+          onclick=""> 
+          <small style="font-size: 0.8rem; color: #9fa8da">ลบรายการหลังสุด</small>
+        </div>
+      </div>
+
+    </div>
+
+    
+
+    <!---------------------------------------------------------->
+    <hr class="line-in-form">
+
+    <label>สถานะ*</label>
+    <select id="status" class="w3-select">
+      <option>-----</option>
+      <option>จ่ายแล้ว</option>
+      <option>ยังไม่ได้จ่าย</option>
+    </select>
+
+
+    <!---------------------------------------------------------->
+    <hr class="line-in-form">
+
+    <label>บันทึก</label>
+    <textarea id="note" rows="4" placeholder="บันทึกของผู้ป้อนข้อมูล ..."></textarea>
+    
+    <label>ป้อนข้อมูลโดย*</label>
+    <input type="text" id="enterBy" placeholder="เช่น @sern, @john">
+
+
+
+  </div>
+
+
+  <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 50px;">
+    <button class="w3-button w3-blue" onclick="sendData()">Save</button>
+    <button class="w3-button w3-light-grey" onclick="location.reload()">Cancel / Clear</button>
+  </div>
+
+
+
+</div>
+
+
+
+
+
+<!------------------------ add partner form --------------------->
+
+
+<div id="addVendorForm" 
+style="width: 100%; height: 100%; background-color: black; position: fixed; top: 0; left: 0; z-index: 60; display: none; align-items: center; justify-content: center;">
+
+  <div style="background-color: white; width: 90%; border-radius: 10px; display: grid; grid-template-columns: 30% 70%; padding: 16px; align-items: center; gap: 8px;"
+  class="my-form">
+
+    <span style="grid-column: span 2; color: #5c6bc0">ป้อนข้อมูล Partner</span>
+
+    <label>ชื่อ*</label>
+    <input id="partnerName" type="text" style="width: 100%">
+    <label>รหัส</label>
+    <input type="text" id="partnerCode">
+    <label>ที่อยู่*</label>
+    <textarea id="partnerAddress" rows="2"></textarea>
+    <label>โทร</label>
+    <input id="partnerTel" type="number">
+    <label>เลขภาษี</label>
+    <input id="partnerTaxId" type="text">
+    <label>ประเภท</label>
+    <div>
+      <input type="radio" name="partnerRegisType" value="person" class="w3-radio"> <span>บุคคลธรรมดา</span><br>
+      <input type="radio" name="partnerRegisType" value="company" class="w3-radio"> <span>นิติบุคคล</span><br>
+      <input type="radio" name="partnerRegisType" value="group" class="w3-radio"> <span>กลุ่มบุคคล</span><br>
+      <input type="radio" name="partnerRegisType" value="other" class="w3-radio"> <span>อื่นๆ</span>
+    </div>
+
+
+    <div style="display: flex; align-items: center; justify-content: space-around; grid-column: span 2; margin-top: 32px">
+      <button class="w3-button w3-blue" style="font-size: 1rem"
+      onclick="addPartner()">Add</button>
+      <button class="w3-button w3-light-grey" style="font-size: 1rem"
+      onclick="clearAddPartnerBox()">Clear / Close</button>
+    </div>
+
+    <!--img src="/icon-x/X.svg" style="width: 32px; position: absolute; left: 0; bottom: 0; cursor: pointer"
+    onclick="addVendorForm.style.display = 'none';"-->
+  </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<img src="/icon/u-turn.svg" style="padding: 0px; position: fixed; left: 0; bottom: 0; cursor: pointer; width: 32px; height: 32px;" onclick="location.href='/pump/index.html';">
+
+
+<script>
+///////////////////////////////////////////////////////////////////
+
+// DEFINITION
+
+const domain = 'http://192.168.1.111:4000';
+const pumpUrl = domain
+let productItemCount = 1;
+
+
+
+
+
+async function fetchThis( data, api, method = 'POST' ) {
+  /*
+      works on GET, POST only
+  */ 
+
+  method = method.toUpperCase()
+
+  if (method == 'GET') {
+
+    let resp = await fetch( domain + api )
+    return await resp.json()
+
+  } else { // suppose to be POST
+
+    let resp = await fetch( domain + api, {
+      method  : method.toUpperCase(),
+      headers : {'Content-Type':'application/json'},
+      body    : JSON.stringify( data )
+    })
+
+    return await resp.json()
+  }
+
+}
+
+
+async function saveData() {
+  try {
+    let data = {
+      nickName: document.getElementById('nickName').value,
+      firstName: document.getElementById('firstName').value,
+      lastName: document.getElementById('lastName').value,
+      position: document.getElementById('position').value,
+      department: document.getElementById('department').value,
+      role: document.getElementById('role').value,
+      staffCode: document.getElementById('staffCode').value,
+      start: document.getElementById('start').value,
+      tel: document.getElementById('tel').value,  
+      lineId: document.getElementById('lineId').value,
+      facebookMessenger: document.getElementById('facebookMessenger').value,
+      address: document.getElementById('address').value,
+
+      nationality: document.getElementById('nationality').value,
+      citizenId: document.getElementById('citizenId').value,
+      sex: document.getElementById('sex').value,
+      age: document.getElementById('age').value,
+      skills: Array.from( document.querySelectorAll('input[name="skill"]:checked') ).map( el => el.value ),
+      pumpStation: document.getElementById('workPlace').value,
+
+      wages: document.getElementById('wages').value,
+      hiringType: document.getElementById('hiringType').value,
+      benefits: Array.from( document.querySelectorAll('input[name="benefit"]:checked') ).map( el => el.value ),
+      note: document.getElementById('note').value,
+      enterBy: document.getElementById('enterBy').value,
+    }
+
+
+    // validate
+    if( !data.nickName || !data.firstName || !data.lastName || !data.tel || !data.enterBy ) {
+      alert('กรุณากรอกข้อมูลให้ครบถ้วนในช่องที่มีเครื่องหมาย *')
+      return
+    }
+
+
+    // pass - basic validation
+
+
+    let resp = await fetchThis( data, '/add-staff' )
+    //alert( JSON.stringify( resp ) )
+    alert('เรียบร้อย')
+    location.reload()
+    document.getElementById('nickName').focus()
+
+  
+  } catch( error ) {
+    console.error( error )
+  }
+}
+
+
+
+function addProductItem() {
+  /*
+    - add new product item line in the product item section
+  */
+  let template = `<span style="grid-column: span 2;">{{item#}}</span>
+        <small>รหัสสินค้า</small>
+        <input name="productCode" type="text" style="width: 95%">
+        <div style="grid-column: span 2;">
+          <small>รายละเอียด</small><br>
+          <textarea name="description" placeholder="รายละเอียด" style="grid-column: span 2; width: 95%"></textarea>
+        </div>
+        <small>จำนวน</small>
+        <input type="number" name="qty" placeholder="จำนวน" value="1" style="width: 95%">
+        <small>หน่วยนับ</small>
+        <input type="text" name="uom" placeholder="หน่วยนับ" style="width: 95%"> 
+        <small>ราคา/หน่วย</small>
+        <input type="number" name="unitPrice" placeholder="ราคา/หน่วย" style="width: 95%"
+        onchange="calculateTotal(this)">
+        <small>ราคารวม</small>
+        <input type="number" name="totalPrice" placeholder="ราคารวม" style="width: 95%">
+        <small></small>
+        <div>
+          <input type="radio" name="taxState" class="w3-radio" value="included"> รวมภาษีแล้ว<br>
+          <input type="radio" name="taxState" class="w3-radio" value="excluded"> ยังไม่รวมภาษี<br>
+        </div>`
+      
+  productItemCount++
+  template = template.replace('{{item#}}', '#' + productItemCount)
+
+  let newProdItem = document.createElement('div')
+  newProdItem.classList.add('product-item-box')
+  newProdItem.innerHTML = template
+  
+  document.getElementById('productItemHouse').insertBefore( 
+    newProdItem, 
+    document.getElementById('productItemHouseAct')
+  )
+
+  // scroll to view at the last item
+  let house = document.getElementById('productItemHouse')
+  let child = house.children
+  house.children[ child.length - 2].scrollIntoView({ behavior: 'smooth'})
+
+}
+
+
+function deleteProductItem() {
+  /*
+    - delete last product item line in the product item section
+  */
+
+  const house = document.getElementById('productItemHouse')
+  const children = house.children
+  const leng = children.length
+
+  if( leng > 2 ) {
+    house.children[ leng - 2 ].remove()
+    
+    // scroll to the last product item box
+    let child = document.getElementById('productItemHouse').children
+    let len = child.length
+    house.children[ len - 2].scrollIntoView({ behavior:'smooth' });
+    productItemCount--
+
+  } else {
+    alert('Cannot delete first item')
+  }
+}
+
+
+
+function calculateTotal( elem ) {
+  let itemHouse = elem.closest('.product-item-box')
+  let qty = itemHouse.querySelector('[name="qty"]').value
+  let unitPrice = itemHouse.querySelector('[name="unitPrice"]').value
+  itemHouse.querySelector('[name="totalPrice"]').value = Number(qty) * Number(unitPrice)
+}
+
+
+
+async function addPartner() {
+  let data = new Partner
+  data.name = document.querySelector('#partnerName').value
+  data.code = document.querySelector('#partnerCode').value
+  data.address = document.querySelector('#partnerAddress').value
+  data.tel = document.querySelector('#partnerTel').value
+  data.taxId = document.querySelector('#partnerTaxId').value
+  data.registerType = document.querySelector('input[name="partnerRegisType"]:checked').value
+
+  if (!data.name || !data.address ) {
+    alert('โปรดป้อน ชื่อ และ ที่อยู่ด้วยค่ะ ขอบคุณค่ะ')
+    return
+  } 
+  
+  let reply = await fetchThis( data, '/add-partner')
+  
+  if (reply.done) {
+    alert('Save ข้อมูล Partner เรียบร้อย')
+    clearAddPartnerBox()
+    showPartnerInfoFromData( data)
+
+  } else {
+    alert('Error - มีปัญหา Save ข้อมูล Partner ลองดูอีกครั้ง')
+  }
+}
+
+
+
+function clearAddPartnerBox() {
+  const form = document.getElementById('addVendorForm')
+  form.style.display = 'none'
+  document.querySelector('#partnerName').value = ''
+  document.querySelector('#partnerCode').value = ''
+  document.querySelector('#partnerAddress').value = ''
+  document.querySelector('#partnerTaxId').value = ''
+
+  let allRadio = document.querySelectorAll('input[name="vendorPersonType"]')
+  allRadio.forEach( v => {
+    v.checked = false;
+  })
+
+}
+
+
+
+
+
+
+async function findPartner( keyword ) {
+  /*
+      pump/find-partner?name=...
+  */ 
+
+  if (!keyword) {
+    alert('โปรดใส่ ชื่อ Partner')
+    return
+  }
+
+  try {
+
+    let reply = await fetch( pumpUrl + '/find-partner?name=' + keyword)
+    let gotData = await reply.json()
+    
+    if (gotData) {
+      
+      document.querySelector('#showPartnerInfo').innerHTML = `${gotData.name}<br>
+      ${gotData.address}<br>
+      tel# ${gotData.tel}<br>
+      code: ${gotData.code}<br>
+      taxId: ${gotData.taxId}`
+
+    } else {
+      alert('ไม่มีข้อมูล Partner รายนี้ กรณีเป็นรายใหม่เราสามารถป้อนเข้าไปได้โดยกด [+ เพิ่ม Partner] ได้')
+    }
+  } catch(er) {
+    alert('Error - มีปัญหาการสื่อสารกับ Server')
+  }
+
+}
+
+
+
+
+function showPartnerInfoFromData( data) {
+
+  if (!data) {
+    return
+  }
+
+  document.querySelector('#showPartnerInfo').innerHTML = `${data.name}<br>
+    ${data.address}<br>
+    tel# ${data.tel}<br>
+    code: ${data.code}<br>
+    taxId: ${data.taxId}`
+
+}
+
+
+
+
+// class ---------------------------------------------------
+
+class Partner {
+  constructor( name, code, address, tel, lineId, email, web, facebook, facebookMessenger, whatsApp, registerId, registerType, taxId, baseCountry, status) {
+
+    this.name = name
+    this.code = code
+    this.address = address
+    this.tel = tel
+    this.lineId = lineId
+    this.email = email
+    this.web = web
+    this.facebook = facebook
+    this.facebookMessenger = facebookMessenger
+    this.whatsApp = whatsApp
+    this.registerId = registerId
+    this.registerType = registerType
+    this.taxId = taxId
+    this.baseCountry = baseCountry
+    this.status = status
+    this.start = Date.now()
+  }
+}
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

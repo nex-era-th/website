@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>List All Staff</title>
+  <script src="fetch-this.js"></script>
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/material-x.css" rel="stylesheet" type="text/css">
+
+<style>
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  th { text-align: center; }
+  table {
+    width: 100%; border-collapse: collapse; margin-top: 0px;
+    border: 1px solid gray;
+  }
+  th, td {
+    border: 1px solid gray; padding: 8px; text-align: left;
+  }
+  
+
+</style>
+<body>
+<h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0">รายชื่อพนักงานทั้งหมด</h3>
+
+<div style="display: grid; grid-template-columns: 80% 20%; align-items: center; padding: 0 16px">
+  <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นหาชื่อพนักงาน ...">
+  <button class="w3-button w3-blue" 
+  style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
+</div>
+
+
+
+<div style="padding: 0 16px; margin-top: 16px; margin-bottom: 60px;">
+  <table id="listTable">
+    <tr><th>ชื่อเล่น</th><th>ชื่อ</th><th>ตำแหน่ง</th><th>โทร</th></tr>
+    <!-- Data rows will be inserted here dynamically -->
+  </table>  
+</div>
+
+<img src="/icon/u-turn.svg" style="padding: 0px; position: fixed; left: 0; bottom: 0; cursor: pointer; width: 32px; height: 32px;" onclick="location.href='/pump/index.html';">
+
+
+
+
+
+
+
+
+<script>
+/////////////////////////////////////////////////////////////////
+
+function listAllStaff() {
+  fetch('http://192.168.1.111:4000/list-all-staff')
+    .then( resp => resp.json() )
+    .then( data => {
+      let table = document.getElementById('listTable')
+      data.forEach( staff => {
+        let tr = document.createElement('tr')
+        tr.innerHTML = `<td>${staff.nickName}</td>
+                        <td>${staff.firstName} ${staff.lastName}</td>
+                        <td>${staff.position}</td>
+                        <td>${staff.tel}</td>`
+        table.appendChild(tr)
+      })
+    })
+} 
+
+listAllStaff()
+
+</script>
+</body>
+</html>
