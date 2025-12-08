@@ -38,7 +38,7 @@
 
 <div style="padding: 0 16px; margin-top: 16px; margin-bottom: 60px;">
   <table id="listTable">
-    <tr><th>ชื่อเล่น</th><th>ชื่อ</th><th>ตำแหน่ง</th><th>โทร</th></tr>
+    <tr><th>ชื่อ</th><th>ตำแหน่ง</th><th>โทร</th></tr>
     <!-- Data rows will be inserted here dynamically -->
   </table>  
 </div>
@@ -65,10 +65,9 @@ function listAllStaff() {
         let tr = document.createElement('tr')
         tr.setAttribute('x-id', staff._id)
 
-        tr.innerHTML = `<td>${staff.nickName}</td>
-                        <td>${staff.firstName} ${staff.lastName}</td>
-                        <td>${staff.position}</td>
-                        <td>${staff.tel}</td>`
+        tr.innerHTML = `<td>${staff.firstName} ${staff.lastName} (${staff.nickName})</td>
+        <td>${staff.position}</td>
+        <td>${staff.tel}</td>`
         table.appendChild(tr)
       })
     })
