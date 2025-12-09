@@ -65,29 +65,29 @@
 
 
     <label>Code</label>
-    <input type="text" id="code">
+    <input type="text" id="code" placeholder="เช่น PTT">
     <label>ชื่อ*</label>
-    <input type="text" id="name">  
+    <input type="text" id="name" placeholder="ชื่อจดทะเบียน">  
     <label>งาน / ธุรกิจที่ทำ</label>
     <textarea id="business" rows="3" placeholder="เช่น ขนส่งน้ำมัน ..."></textarea>
 
     <hr class="line-in-form">
       
-    <label>โทร</label>
+    <label>โทร*</label>
     <input type="text" id="tel">  
 
     <label>Email</label>
-    <input type="text" id="email">
+    <input type="email" id="email">
     <label>Web</label>
     <input type="text" id="web">
     <label>Social App</label>
-    <input type="text" id="socialApp">
+    <input type="text" id="socialApp" placeholder="เช่น line:@john">
 
     <hr class="line-in-form">
 
 
 
-    <label>ประเภทองค์กร</label>
+    <label>ประเภทองค์กร*</label>
     <!--input type="text" id="department"-->
     <select id="registerType" class="w3-select">
       <option>-----</option>
@@ -98,12 +98,12 @@
     </select>  
 
     
-    <label>ที่อยู่</label>
-    <textarea id="address" rows="3"></textarea>
+    <label>ที่อยู่*</label>
+    <textarea id="address" rows="3" placeholder="ตามทะเบียน"></textarea>
     <label>เลขทะเบียน</label>
-    <input type="text" id="registerCode">
-    <label>เลขภาษี</label>
-    <input type="text" id="taxId">
+    <input type="text" id="registerCode" placeholder="หรือเลขบัตร ปชช.">
+    <label>เลขภาษี*</label>
+    <input type="text" id="taxId" placeholder="หรือเลขบัตร ปชช.">
 
     <hr class="line-in-form">
 
@@ -118,7 +118,7 @@
       <option>5 = ดีมาก</option>
     </select>
     <label></label>
-    <small>การจัดระดับความน่าเชื่อถือทางการเงิน จาก 0 ไม่มีเลย ไปถึง 5 ดีที่สุด</small>
+    <small>การจัดระดับความน่าเชื่อถือทางการเงิน จาก 0 ไม่มีเลย ไปถึง 5 ดีที่สุด (อันนี้อาจทำในอนาคต ต้องดูข้อมูลไประยะนึงก่อน)</small>
 
     <hr class="line-in-form">
 
@@ -152,7 +152,7 @@
 
   </div>
 
-  <!-- action -->
+  <!-- form action -->
   <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
     <button class="w3-button w3-blue" 
     onclick="addPartner()">Save</button>
@@ -175,6 +175,16 @@
 
 <script>
 ///////////////////////////////////////////////////////////////////
+
+
+// this code scroll page to top after reload
+window.onload = () => {
+  setTimeout( () => {
+    window.scrollTo(0,0)
+  }, 10)
+}
+
+
 
 // DEFINITION
 
@@ -203,41 +213,34 @@ async function fetchThis( data, api ) {
 }
 
 
-async function sendData() {
+async function addPartner() {
   try {
     let data = {
-      facePic: showFacePicHere.src,
-      nickName: document.getElementById('nickName').value,
-      firstName: document.getElementById('firstName').value,
-      lastName: document.getElementById('lastName').value,
-      position: document.getElementById('position').value,
-      department: document.getElementById('department').value,
-      role: document.getElementById('role').value,
-      staffCode: document.getElementById('staffCode').value,
-      start: document.getElementById('start').value,
-      tel: document.getElementById('tel').value,  
-      lineId: document.getElementById('lineId').value,
-      facebookMessenger: document.getElementById('facebookMessenger').value,
+      pic: showPicHere.src,
+      code: document.getElementById('code').value,
+      name: document.getElementById('name').value,
+      business: document.getElementById('business').value,
+
+      tel: document.getElementById('tel').value,
+      email: document.getElementById('email').value,
+      web: document.getElementById('web').value,
+      socialApp: document.getElementById('socialApp').value,
+
+      registerType: document.getElementById('registerType').value,
       address: document.getElementById('address').value,
+      registerCode: document.getElementById('registerCode').value,
+      taxId: document.getElementById('taxId').value,  
 
-      nationality: document.getElementById('nationality').value,
-      citizenId: document.getElementById('citizenId').value,
-      sex: document.getElementById('sex').value,
-      age: document.getElementById('age').value,
-      birthDate: document.getElementById('birthDate').value,
+      creditScore: document.getElementById('creditScore').value,
+      
+      bankAccount1: document.getElementById('bankAccount1').value,
+      bankAccount2: document.getElementById('bankAccount2').value,
 
+      financePerson: document.getElementById('financePerson').value,
+      salesPerson: document.getElementById('salesPerson').value,
+      servicesPerson: document.getElementById('servicesPerson').value,
+      otherPerson: document.getElementById('otherPerson').value,
 
-      skills: Array.from( document.querySelectorAll('input[name="skill"]:checked') ).map( el => el.value ),
-
-      workPlace: document.getElementById('workPlace').value,
-
-      wages: document.getElementById('wages').value,
-      hiringType: document.getElementById('hiringType').value,
-
-      benefits: Array.from( document.querySelectorAll('input[name="benefit"]:checked') ).map( el => el.value ),
-
-      status: document.getElementById('status').value,
-      ref: document.getElementById('ref').value,
       note: document.getElementById('note').value,
       enterBy: document.getElementById('enterBy').value,
       time: Date.now()
@@ -245,8 +248,8 @@ async function sendData() {
 
 
     // validate
-    if( !data.nickName || !data.firstName || !data.lastName || !data.tel || !data.enterBy ) {
-      alert('กรุณากรอกข้อมูลให้ครบถ้วนในช่องที่มีเครื่องหมาย *')
+    if( !data.name || !data.tel || !data.address || !data.taxId || !data.enterBy || data.registerType.startsWith('-')) {
+      alert('ช่องที่มีเครื่องหมาย * ต้องมีข้อมูล')
       return
     }
 
@@ -254,15 +257,20 @@ async function sendData() {
     // pass - basic validation
 
 
-    let resp = await fetchThis( data, '/add-staff' )
+    let reply = await fetchThis( data, '/add-partner' )
     //alert( JSON.stringify( resp ) )
-    alert('เรียบร้อย')
-    location.reload()
-    document.getElementById('nickName').focus()
+    if (reply.done) {
+      alert(`เรียบร้อย - Add Partner ชื่อ ${data.name} เรียบร้อยแล้ว`)
+      location.reload()
+    } else {
+      alert(`ไม่สามารถ Save ข้อมูลได้ โปรดลองอีกครั้ง`)
+    }
+    
 
   
   } catch( error ) {
     console.error( error )
+    alert('Error - มีปัญหาทางเทคนิค โปรดลองอีกครั้ง หรือหากยังมีปัญหา ติดต่อ @admin')
   }
 }
 

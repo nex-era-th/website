@@ -66,10 +66,12 @@
     <label>แผนก</label>
     <!--input type="text" id="department"-->
     <select id="department" class="w3-select">
-      <option value="ทีมเติมน้ำมัน">ทีมเติมน้ำมัน</option>
-      <option value="ทั่วไป">ทั่วไป</option>
-      <option value="บริหาร">บริหาร</option>
-      <option value="อื่นๆ">อื่นๆ</option>
+      <option>-----</option>
+      <option>ทีมเติมน้ำมัน</option>
+      <option>ร้านกาแฟอเมซอนคาเฟ่</option>
+      <option>ทั่วไป</option>
+      <option>บริหาร</option>
+      <option>อื่นๆ</option>
     </select>  
 
 
@@ -86,7 +88,7 @@
     <input type="text" id="lineId">
     <label>FB Messgr</label>
     <input type="text" id="facebookMessenger">
-    <label>ที่อยู่</label>
+    <label>ที่อยู่*</label>
     <textarea id="address" rows="4"></textarea>
 
 
@@ -95,12 +97,12 @@
 
     <label>สัญชาติ</label>
     <select id="nationality" class="w3-select">
-      <option value="ไทย">ไทย</option>
-      <option value="พม่า">พม่า</option>
-      <option value="เขมร">เขมร</option>
-      <option value="ลาว">ลาว</option>
-      <option value="ฝรั่ง">ฝรั่ง</option>
-      <option value="อื่นๆ">อื่นๆ</option>
+      <option>ไทย</option>
+      <option>พม่า</option>
+      <option>เขมร</option>
+      <option>ลาว</option>
+      <option>ฝรั่ง</option>
+      <option>อื่นๆ</option>
     </select>
 
     <label>บัตรประชาชน</label>
@@ -147,6 +149,7 @@
 
     <label>ประเภทจ้าง</label>
     <select id="hiringType" class="w3-select">
+      <option>-----</option>
       <option>รายเดือน</option>
       <option>รายวัน</option>
       <option>มีสัญญาเป็นระยะเวลา</option>
@@ -192,8 +195,8 @@
     <label>ป้อนข้อมูลโดย*</label>
     <input id="enterBy" type="text" placeholder="เช่น @sern, @john ...">
 
-    <label>วันแก้ไขหลังสุด</label>
-    <textarea id="lastEdit" disabled></textarea>
+    <!--label>วันแก้ไขหลังสุด</label>
+    <textarea id="lastEdit" disabled></textarea-->
 
   </div>
 
@@ -221,6 +224,19 @@
 
 <script>
 ///////////////////////////////////////////////////////////////////
+
+
+
+// this code scroll page to top after reload
+window.onload = () => {
+  setTimeout( () => {
+    window.scrollTo(0,0)
+  }, 10)
+}
+
+
+
+
 
 // DEFINITION
 
@@ -291,7 +307,7 @@ async function sendData() {
 
 
     // validate
-    if( !data.nickName || !data.firstName || !data.lastName || !data.tel || !data.enterBy ) {
+    if( !data.nickName || !data.firstName || !data.lastName || !data.tel || !data.enterBy || !data.address ) {
       alert('กรุณากรอกข้อมูลให้ครบถ้วนในช่องที่มีเครื่องหมาย *')
       return
     }
@@ -302,13 +318,20 @@ async function sendData() {
 
     let resp = await fetchThis( data, '/add-staff' )
     //alert( JSON.stringify( resp ) )
-    alert('เรียบร้อย')
-    location.reload()
-    document.getElementById('nickName').focus()
+
+    if (resp.done) {
+      alert(`เรียบร้อย -- Add Staff ชื่อ ${data.firstName} ${data.lastName} เรียบร้อยแล้ว`)
+      location.reload()
+      //document.getElementById('nickName').focus()
+    } else {
+      alert('ไม่สามารถ Save ข้อมูลนี้ได้ โปรดลองอีกครั้ง')
+    }
+    
 
   
   } catch( error ) {
     console.error( error )
+    alert('มีปัญหาทางเทคนิค ลองดูอีกครั้ง หากยังมีปัญหา โปรดติดต่อ @admin')
   }
 }
 
