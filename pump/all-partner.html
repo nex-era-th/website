@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>All Payout</title>
+  <title>All Partner</title>
   <script src="conf.js"></script>
   <script src="fetch-this.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
@@ -32,10 +32,11 @@
 
 </style>
 <body>
-  <h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0">รายการจ่ายทั้งหมด</h3>
+  <h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0">รายชื่อ Partner ทั้งหมด</h3>
 
   <div class="world-space">
 
+    <!-- find -->
     <div style="display: grid; grid-template-columns: 80% 20%; align-items: center; padding: 0 16px">
       <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นหารายการ ...">
       <button class="w3-button w3-blue" 
@@ -43,10 +44,10 @@
     </div>
 
 
-
+    <!-- table -->
     <div style="padding: 0 16px; margin-top: 16px; margin-bottom: 60px;">
       <table id="listHere">
-        <tr><th>วันที่</th><th>ยอดสุทธิ</th><th>เอกสาร</th></tr>
+        <tr><th>Partner</th><th>รหัส</th><th>โทร</th></tr>
         <!-- Data rows will be inserted here dynamically -->
       </table>  
     </div>
@@ -60,7 +61,7 @@
   <!-- page action -->
   <div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
     <img src="/icon/u-turn.svg" style="width: 32px; cursor: pointer;" 
-    onclick="history.back()">
+    onclick="location.href='/pump/index.html';">
   </div>
   
 
@@ -76,18 +77,20 @@
 
     (async function main() {
 
-      let allPayout = await fetchThis( null, '/get-all-payout', 'get')
-      if (allPayout.length) {
+      let allPartner = await fetchThis( null, '/get-all-partner', 'get')
+      if (allPartner.length) {
         
-        allPayout.forEach( rec => {
+        allPartner.forEach( partn => {
 
           let newRow = document.createElement('tr')
-          newRow.setAttribute('x-id', rec._id)
-          let innerCode = `<td>${rec.payDate}</td><td>${rec.netValue}</td><td>${rec.partnerName} #${rec.docNum}</td>`
-          newRow.innerHTML = innerCode
+          newRow.setAttribute('x-id', partn._id)
 
+          let innerCode = `<td>${partn.name}</td><td>${partn.code}</td><td>${partn.tel}</td>`
+    
+          newRow.innerHTML = innerCode
           document.querySelector('#listHere').append( newRow)
         });
+
       } else {
         alert('ไม่มีข้อมูล')
       }
@@ -102,8 +105,8 @@
       
       if (rowElem && rowElem.getAttribute('x-id')) {
 
-        location.href = PUMP_DOMAIN + '/get-payout-info?payoutId=' + rowElem.getAttribute('x-id')
-
+        location.href = PUMP_DOMAIN + '/get-partner-info?partnerId=' + rowElem.getAttribute('x-id')
+        //alert(rowElem.getAttribute('x-id'))
       }
       // call this api and it will return an html info
 

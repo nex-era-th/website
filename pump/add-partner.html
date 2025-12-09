@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Add New Staff</title>
+  <title>Add Partner</title>
   <script src="conf.js"></script>
   <script src="/js/xdev-b.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
@@ -16,7 +16,6 @@
   html { font-size: 16px; }
   small { font-size: 0.8rem }
   label { font-size: 1.0rem }
-  
   .medium { font-size: 1.0rem }
   .default { font-size: 1.25rem }
   .large { font-size: 1.5rem }
@@ -45,7 +44,7 @@
 <h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0; z-index: 50">ป้อนข้อมูล Partner</h3>
 
 
-<div class="world-space" style="padding: 0 16px 40px 16px">
+<div class="world-space" style="padding: 0 16px;">
   
 
   <div class="my-form" id="add_new_staff_form" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
@@ -65,11 +64,11 @@
     </div>
 
 
-    <label>ชื่อย่อ/รหัส</label>
-    <input type="text" id="name">
-    <label>ชื่อทางการ*</label>
-    <input type="text" id="officialName">  
-    <label>งาน/ธุรกิจที่ทำ</label>
+    <label>Code</label>
+    <input type="text" id="code">
+    <label>ชื่อ*</label>
+    <input type="text" id="name">  
+    <label>งาน / ธุรกิจที่ทำ</label>
     <textarea id="business" rows="3" placeholder="เช่น ขนส่งน้ำมัน ..."></textarea>
 
     <hr class="line-in-form">
@@ -91,6 +90,7 @@
     <label>ประเภทองค์กร</label>
     <!--input type="text" id="department"-->
     <select id="registerType" class="w3-select">
+      <option>-----</option>
       <option>นิติบุคคล</option>
       <option>บุคคลธรรมดา</option>
       <option>กลุ่มบุคคล</option>
@@ -153,7 +153,7 @@
   </div>
 
   <!-- action -->
-  <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 50px;">
+  <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
     <button class="w3-button w3-blue" 
     onclick="addPartner()">Save</button>
     <button class="w3-button w3-light-grey" 
@@ -166,8 +166,11 @@
 
 
 
-
-<img src="/icon/u-turn.svg" style="padding: 0px; position: fixed; left: 0; bottom: 0; cursor: pointer; width: 32px; height: 32px;" onclick="location.href='/pump/index.html';">
+<!-- page action -->
+<div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+  <img src="/icon/u-turn.svg" style="cursor: pointer; width: 32px;" 
+  onclick="location.href='/pump/index.html';">
+</div>
 
 
 <script>
