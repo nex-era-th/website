@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Add Partner</title>
+  <title>New Receipt</title>
   <script src="conf.js"></script>
   <script src="/js/xdev-b.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
@@ -38,18 +38,44 @@
 
   .hover-it:hover { background-color: #b2ebf2;}
 
+
+  .product-item-box { 
+    display: grid; 
+    grid-template-columns: 30% 70%; 
+    align-items: center; 
+    width: 95%; 
+    background-color: #eeeeee; 
+    padding: 8px; 
+    gap: 8px; 
+    margin-left: auto;
+  }
+
+
+  #productGrid { background-color: white; }
+  #productGrid > * { background-color: #eeeeee; width: 100%; height: 100%; padding: 8px } 
+
+  .tcenter { text-align: center; }
+
 </style>
 <body>
 
-<h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0; z-index: 50">ป้อนข้อมูล Partner</h3>
+<div style="padding: 0 16px; color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">ออกใบเสร็จรับเงิน/ใบกำกับภาษี</div>
 
 
-<div class="world-space" style="padding: 0 16px;">
-  
+<div class="world-space" style="padding: 0 16px; margin-top: 32px">
 
-  <div class="my-form" id="add_new_staff_form" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
+  <!-- search box -->
+  <div style="display: grid; grid-template-columns: 80% 20%; align-items: center; padding: 0 16px;">
+    <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นหา Partner/ลูกค้า ...">
+    <button class="w3-button w3-blue" 
+    style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
+  </div>
 
-    <label>ภาพ</label>
+
+  <!-- form -->
+  <div class="my-form" id="newReceiptForm" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px; margin-top: 32px">
+
+    <!--label>ภาพ</label>
     <div>
       <div style="cursor: pointer;" onclick="this.children[0].click()">
         <input type="file" id="picFile" hidden 
@@ -61,84 +87,103 @@
       </div>
       <img id="showPicHere" hidden
       style="width: 100%; object-fit: cover;">
+    </div-->
+
+
+    
+
+
+
+
+    <label>ลูกค้า</label>
+    <div class="medium">
+
+      <div id="showPartnerHere" class="medium">ชื่อลูกค้า..............<br>
+        address.................<br>
+        ............<br>
+        tel ..............<br>
+        tax# ....................
+      </div>
+
+      <!-- add partner -->
+      <div style="margin-top: 24px; cursor: pointer;" 
+      onclick="location.href = 'add-partner.html';">
+        <img src="/icon-x/Plus.svg" style="width: 24px; border-radius: 50%; background-color: #9fa8da;">
+        <small style="font-size: 0.8rem; color: #9fa8da">เพิ่ม Partner ใหม่</small>
+      </div>
+
+    </div>
+
+    
+    <hr class="line-in-form">
+
+
+    <label>ประเภทเอกสาร</label>
+    <div>
+      <input name="docType" type="checkbox" value="ใบเสร็จ" class="w3-check"> ใบเสร็จรับเงิน<br>
+      <input name="docType" type="checkbox" value="ใบกำกับภาษี" class="w3-check"> ใบกำกับภาษี<br>
+      <input name="docType" type="checkbox" value="ใบส่งของ" class="w3-check"> ใบส่งของ<br>
+    </div>
+
+    <hr class="line-in-form">
+
+    <!-- find product -->
+    <span style="grid-column: span 2; color: #5c6bc0; font-style: italic;">เลือกสินค้า</span>
+
+    <div id="chooseProduct" style="grid-column: span 2; display: flex; flex-direction: column; gap: 30px">
+
+      <div style="display: grid; grid-template-columns: 80% 20%; cursor: pointer;">
+        <input type="text" class="w3-input w3-border" placeholder="ค้นหาสินค้า ...">
+        <div style="display: flex; align-items: center; justify-content: center;"><img src="/icon-x/Search.svg" width="32"></div>
+      </div>
+
+      <div id="showProductHere">ชื่อสินค้า.............(รหัสสินค้า ....)<br>
+      ราคา = 500.00 บาท/ชิ้น<br>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+
+        <button class="w3-button w3-blue">เลือก</button>
+
+        <div style="cursor: pointer;" 
+        onclick="location.href = 'add-product.html';">
+          <img src="/icon-x/Plus.svg" style="width: 24px; border-radius: 50%; background-color: #9fa8da;">
+          <small style="font-size: 0.8rem; color: #9fa8da">เพิ่มสินค้าใหม่</small>
+        </div>
+      </div>
+
     </div>
 
 
-    <label>Code</label>
-    <input type="text" id="code" placeholder="เช่น PTT">
-    <label>ชื่อ*</label>
-    <input type="text" id="name" placeholder="ชื่อจดทะเบียน">  
-    <label>งาน / ธุรกิจที่ทำ</label>
-    <textarea id="business" rows="3" placeholder="เช่น ขนส่งน้ำมัน ..."></textarea>
-
-    <hr class="line-in-form">
-      
-    <label>โทร*</label>
-    <input type="text" id="tel">  
-
-    <label>Email</label>
-    <input type="email" id="email">
-    <label>Web</label>
-    <input type="text" id="web">
-    <label>Social App</label>
-    <input type="text" id="socialApp" placeholder="เช่น line:@john">
-
-    <hr class="line-in-form">
-
-
-
-    <label>ประเภทองค์กร*</label>
-    <!--input type="text" id="department"-->
-    <select id="registerType" class="w3-select">
-      <option>-----</option>
-      <option>นิติบุคคล</option>
-      <option>บุคคลธรรมดา</option>
-      <option>กลุ่มบุคคล</option>
-      <option>อื่นๆ</option>
-    </select>  
-
-    
-    <label>ที่อยู่*</label>
-    <textarea id="address" rows="3" placeholder="ตามทะเบียน"></textarea>
-    <label>เลขทะเบียน</label>
-    <input type="text" id="registerCode" placeholder="หรือเลขบัตร ปชช.">
-    <label>เลขภาษี*</label>
-    <input type="text" id="taxId" placeholder="หรือเลขบัตร ปชช.">
-
-    <hr class="line-in-form">
-
-    <label>Credit Score</label>
-    <select class="w3-select" id="creditScore">
-      <option>-----</option>
-      <option>0 = ไม่ดีเลย</option>
-      <option>1 = ไม่ค่อยดี</option>
-      <option>2 = พอใช้</option>
-      <option>3 = ทั่วไป</option>
-      <option>4 = ดี</option>
-      <option>5 = ดีมาก</option>
-    </select>
-    <label></label>
-    <small>การจัดระดับความน่าเชื่อถือทางการเงิน จาก 0 ไม่มีเลย ไปถึง 5 ดีที่สุด (อันนี้อาจทำในอนาคต ต้องดูข้อมูลไประยะนึงก่อน)</small>
-
-    <hr class="line-in-form">
-
-    <label>บัญชีธนาคาร 1</label>
-    <input type="text" id="bankAccount1" placeholder="เช่น กสิกร/123456">
-    <label>บัญชีธนาคาร 2</label>
-    <input type="text" id="bankAccount2">
-    
 
 
     <hr class="line-in-form">
 
-    <label>ผู้ติดต่อด้านการเงิน</label>
-    <input type="text" id="financePerson" placeholder="เช่น คุณ กขค/213456">
-    <label>ผู้ติดต่อด้านการขาย</label>
-    <input type="text" id="salesPerson">
-    <label>ผู้ติดต่อด้านการบริการ</label>
-    <input type="text" id="servicesPerson">
-    <label>ผู้ติดต่อด้านอื่นๆ</label>
-    <input type="text" id="otherPerson">
+
+    <span style="grid-column: span 2; color: #5c6bc0; font-style: italic;">รายการสินค้าที่เลือก</span>
+
+    <div id="productGrid" style="grid-column: span 2; display: grid; grid-template-columns: auto auto auto; align-items: center; gap: 1px;">
+
+      <span class="tcenter">ลำดับ</span><span class="tcenter">สินค้า</span><span class="tcenter">ราคา</span>
+
+      <span>1</span>
+      <div style="display: flex; flex-wrap: wrap; flex-direction: column;">
+        <span>Product XYZ sssssssssss (#2000)</span>
+        <span>ราคา = 100.00 บาท/ชิ้น<br>
+        <div>จำนวน <input type="number" style="width: 60px; font-size: 1.0rem; text-align: center;" value="1"> <span>ชิ้น</span></div>
+          
+      </div>
+      <span>500000</span>
+
+    </div>
+
+
+
+
+
+
+
+
 
     <hr class="line-in-form">
 
@@ -151,8 +196,6 @@
     <input id="enterBy" type="text" placeholder="เช่น @sern, @john ...">
 
   </div>
-
-
 
   <!-- form action -->
   <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">

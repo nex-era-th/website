@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Add Partner</title>
+  <title>Add Product</title>
   <script src="conf.js"></script>
   <script src="/js/xdev-b.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
@@ -41,10 +41,9 @@
 </style>
 <body>
 
-<h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0; z-index: 50">ป้อนข้อมูล Partner</h3>
+<div style="padding: 0 16px; color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">เพิ่มสินค้า</div>
 
-
-<div class="world-space" style="padding: 0 16px;">
+<div class="world-space" style="padding: 0 16px; margin-top: 32px">
   
 
   <div class="my-form" id="add_new_staff_form" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
@@ -64,88 +63,90 @@
     </div>
 
 
-    <label>Code</label>
-    <input type="text" id="code" placeholder="เช่น PTT">
-    <label>ชื่อ*</label>
-    <input type="text" id="name" placeholder="ชื่อจดทะเบียน">  
-    <label>งาน / ธุรกิจที่ทำ</label>
-    <textarea id="business" rows="3" placeholder="เช่น ขนส่งน้ำมัน ..."></textarea>
+    <label>Code*</label>
+    <input type="text" id="code" placeholder="รหัสสินค้า">
+    <label>ชื่อสินค้า*</label>
+    <input type="text" id="name" placeholder="">  
+    <label>Description*</label>
+    <textarea id="description" rows="3" placeholder=""></textarea>
+    <label>Brand</label>
+    <input id="brand" type="text">
+    <label>Bar Code</label>
+    <input id="barCode" type="text">
+    <label>Partner Code</label>
+    <input id="partnerCode" type="text" placeholder="code ของ partner">
+    <label>Other Code</label>
+    <input id="otherCode" type="text" placeholder="code อื่นๆ ถ้ามี">
+
 
     <hr class="line-in-form">
       
-    <label>โทร*</label>
-    <input type="text" id="tel">  
-
-    <label>Email</label>
-    <input type="email" id="email">
-    <label>Web</label>
-    <input type="text" id="web">
-    <label>Social App</label>
-    <input type="text" id="socialApp" placeholder="เช่น line:@john">
-
-    <hr class="line-in-form">
-
-
-
-    <label>ประเภทองค์กร*</label>
-    <!--input type="text" id="department"-->
-    <select id="registerType" class="w3-select">
+    <label>หมวดหมู่*</label>    
+    <select id="category" class="w3-select">
       <option>-----</option>
-      <option>นิติบุคคล</option>
-      <option>บุคคลธรรมดา</option>
-      <option>กลุ่มบุคคล</option>
-      <option>อื่นๆ</option>
-    </select>  
-
-    
-    <label>ที่อยู่*</label>
-    <textarea id="address" rows="3" placeholder="ตามทะเบียน"></textarea>
-    <label>เลขทะเบียน</label>
-    <input type="text" id="registerCode" placeholder="หรือเลขบัตร ปชช.">
-    <label>เลขภาษี*</label>
-    <input type="text" id="taxId" placeholder="หรือเลขบัตร ปชช.">
-
-    <hr class="line-in-form">
-
-    <label>Credit Score</label>
-    <select class="w3-select" id="creditScore">
-      <option>-----</option>
-      <option>0 = ไม่ดีเลย</option>
-      <option>1 = ไม่ค่อยดี</option>
-      <option>2 = พอใช้</option>
-      <option>3 = ทั่วไป</option>
-      <option>4 = ดี</option>
-      <option>5 = ดีมาก</option>
+      <option>น้ำมันใส</option>
+      <option>น้ำมันอื่นๆ</option>
+      <option>เครื่องดื่ม</option>
+      <option>อาหาร</option>
+      <option>บริการ</option>
+      <option>สินค้าอื่นๆ</option>
     </select>
-    <label></label>
-    <small>การจัดระดับความน่าเชื่อถือทางการเงิน จาก 0 ไม่มีเลย ไปถึง 5 ดีที่สุด (อันนี้อาจทำในอนาคต ต้องดูข้อมูลไประยะนึงก่อน)</small>
 
-    <hr class="line-in-form">
-
-    <label>บัญชีธนาคาร 1</label>
-    <input type="text" id="bankAccount1" placeholder="เช่น กสิกร/123456">
-    <label>บัญชีธนาคาร 2</label>
-    <input type="text" id="bankAccount2">
+    <label>หน่วยนับ*</label>
+    <input type="text" id="uom" placeholder="เช่น ชิ้น อัน กก. ลิตร">
+    <label>ราคา/หน่วย*</label>
+    <input type="number" id="unitPrice">
+    <label>Minimum Order</label>
+    <input type="number" id="minOrder" value="1" placeholder="จำนวนขั้นต่ำที่ขาย">
     
+    <label>ต้อง stock?</label>
+    <div class="default">
+      <input name="mustStock" type="radio" class="w3-radio"> Yes &nbsp;&nbsp;
+      <input name="mustStock" type="radio" class="w3-radio"> No
+    </div>
+    
+    <label>Minimum Stock</label>
+    <input type="number" id="minStock" placeholder="จำนวนขั้นต่ำที่ stock">
 
 
-    <hr class="line-in-form">
 
-    <label>ผู้ติดต่อด้านการเงิน</label>
-    <input type="text" id="financePerson" placeholder="เช่น คุณ กขค/213456">
-    <label>ผู้ติดต่อด้านการขาย</label>
-    <input type="text" id="salesPerson">
-    <label>ผู้ติดต่อด้านการบริการ</label>
-    <input type="text" id="servicesPerson">
-    <label>ผู้ติดต่อด้านอื่นๆ</label>
-    <input type="text" id="otherPerson">
+    <hr class="line-in-form"><!---------- supplier ------------>
 
-    <hr class="line-in-form">
+    <small style="grid-column: span 2;">กรณีสินค้านี้ต้องสั่งซื้อจาก Supplier/Partner ให้กำหนด Partner ในนี้ หาก Partner นี้ยังไม่มีใน software ให้เพิ่มใหม่</small>
+    <label>Supplier</label>
+    <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
+      <input type="search" class="w3-input w3-border" placeholder="ค้นหา">
+      <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; "><img src="/icon-x/Search.svg" width="24"></div>
+    </div>
+    <div></div>
+    <div d="supplier" class="default" style="margin-top: 8px">PTT Plc (#PTT)</div>
 
+    <div style="grid-column: span 2; display: flex; justify-content: space-around; margin-top: 24px">
+      <div style="cursor: pointer;" 
+      onclick="location.href = 'add-partner.html';">
+        <img src="/icon-x/Plus.svg" style="width: 24px; border-radius: 50%; background-color: #9fa8da;">
+        <small style="font-size: 0.8rem; color: #9fa8da">เพิ่ม Partner ใหม่</small>
+      </div>
+      <div onclick="" style="cursor: pointer;">
+        <img src="/icon-x/Minus.svg" style="width: 24px; border-radius: 50%; background-color: #ef9a9a;"> 
+        <small style="font-size: 0.8rem; color: #9fa8da">Clear</small>
+      </div>
+    </div>
+    
+    <hr class="line-in-form"><!------------------------------------>
 
+    <label>Status*</label>
+    <select class="w3-select" id="status"> 
+      <option>-----</option>
+      <option>ขายได้ / Available</option>
+      <option>หยุดขายชั่วคราว / Pause</option>
+      <option>เลิกขาย / Not Available</option>
+    </select>
+
+    <hr class="line-in-form"><!------------------------------------>
 
     <label>Note</label>
-    <textarea id="note" rows="4" placeholder="Note ที่เรามีต่อเขา ..."></textarea>
+    <textarea id="note" rows="4" placeholder=""></textarea>
     
     <label>ป้อนข้อมูลโดย*</label>
     <input id="enterBy" type="text" placeholder="เช่น @sern, @john ...">
@@ -157,7 +158,7 @@
   <!-- form action -->
   <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
     <button class="w3-button w3-blue" 
-    onclick="addPartner()">Save</button>
+    onclick="addProduct()">Save</button>
     <button class="w3-button w3-light-grey" 
     onclick="location.reload()">Cancel / Clear</button>
   </div>
@@ -215,7 +216,7 @@ async function fetchThis( data, api ) {
 }
 
 
-async function addPartner() {
+async function addProduct() {
   try {
     let data = {
       pic: showPicHere.src,
