@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>All Staff</title>
   <script src="conf.js"></script>
+  <script src="pump-b.js"></script>
   <script src="fetch-this.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
   <link href="/js/material-x.css" rel="stylesheet" type="text/css">
@@ -86,7 +87,10 @@ document.querySelector('#listTable').addEventListener('click', event => {
   let rowElem = event.target.closest('tr')
   //alert(rowElem.getAttribute('x-id'))
 
-  location.href = PUMP_DOMAIN + '/get-staff-info?staffId=' + rowElem.getAttribute('x-id')
+  //location.href = PUMP_DOMAIN + '/get-staff-info?staffId=' + rowElem.getAttribute('x-id')
+
+  location.href = 'add-new-staff.html?mode=view&staffId=' + rowElem.getAttribute('x-id')
+
   
 })
 

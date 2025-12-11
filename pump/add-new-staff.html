@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Add Staff</title>
   <script src="conf.js"></script>
+  <script src="pump-b.js"></script>
   <script src="/js/xdev-b.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
   <link href="/js/material-x.css" rel="stylesheet" type="text/css">
@@ -31,17 +32,24 @@
 </style>
 <body>
 
-<h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0; z-index: 50">ป้อนข้อมูลพนักงาน</h3>
+<h3 id="screenName" style="padding: 16px; color: blue; background-color: white; z-index: 50">ป้อนข้อมูลพนักงาน</h3>
+
+<!-- top action -->
+<div id="topActBox" style="display: none; align-items: center; justify-content: space-around; margin-bottom: 24px;">
+  <button class="w3-button" style="padding: 4px 8px; background-color: #fdd835;" 
+  onclick="editStaff()">Edit</button>
+  <button class="w3-button" style="padding: 4px 8px; background-color: #757575;" disabled>Delete</button>
+</div>
 
 
-<div class="world-space" style="padding: 0 16px">
+<div class="world-space" style="padding: 0 16px; margin-bottom: 60px;">
   
 
   <div class="my-form" id="add_new_staff_form" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
 
     <label>รูปถ่ายใบหน้า</label>
     <div>
-      <div style="cursor: pointer;" onclick="this.children[0].click()">
+      <div id="choosePicInputBox" style="cursor: pointer;" onclick="this.children[0].click()">
         <input type="file" id="facePicFile" hidden 
           onchange="xb.readPicFileAsDataUrl( this).then( durl => showFacePicHere.src = durl); showFacePicHere.hidden = false;">
         <div class="hover-it" style="display: inline-block; padding-right: 8px;">
@@ -190,7 +198,7 @@
     <input type="text" id="ref" placeholder="อ้างอิงเอกสาร">
 
     <label>บันทึก</label>
-    <textarea id="note" rows="4" placeholder="เช่น เป็นคนเก่า / มีประสบการณ์ตรงกี่ปี ..."></textarea>
+    <textarea id="note" rows="8" placeholder="เช่น เป็นคนเก่า / มีประสบการณ์ตรงกี่ปี ..."></textarea>
     
     <label>ป้อนข้อมูลโดย*</label>
     <input id="enterBy" type="text" placeholder="เช่น @sern, @john ...">
@@ -203,10 +211,10 @@
 
 
   <!-- action -->
-  <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
-    <button class="w3-button w3-blue" 
+  <div id="pageActBox" style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
+    <button id="saveButton" class="w3-button w3-blue" 
     onclick="sendData()">Save</button>
-    <button class="w3-button w3-light-grey" 
+    <button id="clearButton" class="w3-button w3-light-grey" 
     onclick="location.reload()">Cancel / Clear</button>
   </div>
 
@@ -237,9 +245,87 @@ window.onload = () => {
 
 
   // check mode: view|edit
-
   const urlParams = new URLSearchParams(window.location.search)
+  const staffId = urlParams.get('staffId')
+  const mode = urlParams.get('mode')
 
+  if (mode == 'view' && staffId) {
+    //alert('this is view mode for id=' + staffId)
+
+    try {
+
+      pumpb.fetchThis( null, '/find-staff?id=' + staffId, 'get').then( reply => {
+
+        if (reply.done) {
+          
+          let data = reply.data
+          document.querySelector('#screenName').textContent = 'ข้อมูลพนักงาน'
+          document.querySelector('#topActBox').style.display = 'flex'
+
+          // disable all fields, hide Actions
+          document.querySelector('#choosePicInputBox').hidden = true
+          document.querySelectorAll('input').forEach( el => {
+            el.disabled = true
+          })
+          document.querySelectorAll('textarea').forEach( el => {
+            el.disabled = true
+          })
+          document.querySelectorAll('select').forEach( el => {
+            el.disabled = true
+          })
+          document.querySelector('#pageActBox').style.display = 'none'
+
+
+          // fill all general fields
+          for (key in data) {
+            let elem = document.querySelector(`#${key}`)
+            if (elem) {
+              elem.value = data[key] 
+            }
+          }
+
+          if (data.skills.length) {
+            document.querySelectorAll('[name="skill"]').forEach( el => {
+              if (data.skills.includes(el.value)) {
+                el.checked = true
+              }
+            })
+          } 
+
+          if (data.benefits.length) {
+            document.querySelectorAll('[name="benefit"]').forEach( el => {
+              if (data.benefits.includes(el.value)) {
+                el.checked = true
+              }
+            })
+          }
+
+          if (data.facePic) {
+            document.querySelector('#showFacePicHere').src = data.facePic
+          }
+
+
+
+
+        } else {
+          alert('ไม่พบข้อมูลค่ะ โปรดลองอีกครั้ง')
+        }
+
+      })
+
+      
+
+    } catch(er) {
+      alert('error = ' + er.message)
+    }
+
+
+
+
+
+
+
+  }
 
 }
 
@@ -344,6 +430,31 @@ async function sendData() {
   }
 }
 
+
+
+
+function editStaff() {
+  // change from view mode to edit mode
+
+  // preparing the page
+  document.querySelector('#screenName').textContent = 'แก้ไขข้อมูลพนักงาน'
+  document.querySelector('#topActBox').style.display = 'none'
+  document.querySelector('#choosePicInputBox').hidden = false
+  document.querySelectorAll('input').forEach( el => {
+    el.disabled = false;
+  })
+  document.querySelectorAll('select').forEach( el => {
+    el.disabled = false;
+  })
+  document.querySelectorAll('textarea').forEach( el => {
+    el.disabled = false;
+  })
+  document.querySelector('#pageActBox').style.display = 'flex'
+
+  // clear browser query
+  window.history.replaceState( null,'', window.location.origin + window.location.pathname)
+
+}
 
 
 
