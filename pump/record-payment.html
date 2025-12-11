@@ -57,6 +57,13 @@
 
     <label>เลขที่เอกสาร*</label>
     <input type="text" id="docNum">
+    <label>เป็นของธุรกิจ*</label>
+    <select id="businessUnit" class="w3-select">
+      <option>-----</option>
+      <option>Gas Station 1</option>
+      <option>Amazon Cafe 1</option>
+      <option>ส่วนรวม</option>
+    </select>
 
     <hr class="line-in-form">
 
@@ -405,6 +412,7 @@ async function savePaymentRecord() {
 
   let data = {
     docNum: document.querySelector('#docNum').value,
+    businessUnit: document.querySelector('#businessUnit').value,
 
     docType: ( () => {
       let arr = []
@@ -473,7 +481,7 @@ async function savePaymentRecord() {
     
   }
 
-  if (!data.docNum || !data.docType || !data.ref || !data.payDate || !data.netValue || !data.paytoPartner || !data.category || !data.enterBy) {
+  if (!data.docNum || data.businessUnit.startsWith('--') || !data.docType || !data.ref || !data.payDate || !data.netValue || !data.paytoPartner || !data.category || !data.enterBy) {
 
     alert('ต้องกรอกช่องที่มี * ให้ครบค่ะ ขอบคุณค่ะ')
     return

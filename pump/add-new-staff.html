@@ -229,9 +229,18 @@
 
 // this code scroll page to top after reload
 window.onload = () => {
+
+  // scroll to top at first
   setTimeout( () => {
     window.scrollTo(0,0)
   }, 10)
+
+
+  // check mode: view|edit
+
+  const urlParams = new URLSearchParams(window.location.search)
+
+
 }
 
 
