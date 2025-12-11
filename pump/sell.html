@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Receipt</title>
+  <script src="conf.js"></script>
+  <script src="/js/xdev-b.js"></script>
+  <script src="/pump/pump-b.js"></script>
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/material-x.css" rel="stylesheet" type="text/css">
+
+<style>
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  p { padding: 0; margin: 0 }
+  small { font-size: 0.8rem }
+  label { font-size: 1.0rem }
+  .medium { font-size: 1.0rem }
+  .default { font-size: 1.25rem }
+  .large { font-size: 1.5rem }
+  .xlarge { font-size: 2.0rem }
+
+  .world-space { max-width: 800px; margin: auto; }
+  .my-form > input {
+    width: 100%; padding: 4px;
+  }
+  .my-form input,
+  .my-form textarea,
+  .my-form select,
+  .my-form option {
+    font-size: 1.25rem;
+  }
+
+  .line-in-form {
+   grid-column: span 2; width: 100%; border-top: 1px solid gray; margin: 16px 0;
+  }
+
+  .hover-it:hover { background-color: #b2ebf2;}
+
+
+  .product-item-box { 
+    display: grid; 
+    grid-template-columns: 30% 70%; 
+    align-items: center; 
+    width: 95%; 
+    background-color: #eeeeee; 
+    padding: 8px; 
+    gap: 8px; 
+    margin-left: auto;
+  }
+
+
+  #productGrid { background-color: white; }
+  #productGrid > * { background-color: #eeeeee; width: 100%; height: 100%; padding: 8px } 
+
+  .tcenter { text-align: center; }
+
+</style>
+<body>
+
+<div style="padding: 0 16px; color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">ขายสินค้า/บริการ</div>
+
+
+<div class="world-space" style="padding: 0 16px; margin-top: 32px">
+
+  <!-- search box / find customer/partner -->
+  <div style="display: grid; grid-template-columns: 80% 20%; align-items: center; padding: 0 16px;">
+    <input id="findCustInput" type="search" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นชื่อลูกค้า/Partner ...">
+    <button class="w3-button w3-blue" 
+    style="border-radius: 0 10px 10px 0; padding: 11px 0"
+    onclick="findCustomer()"><img src="/icon-x/Search.svg" width="24"></button>
+  </div>
+
+
+  <!-- form -->
+  <div class="my-form" id="newReceiptForm" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px; margin-top: 32px">
+
+    <!--label>ภาพ</label>
+    <div>
+      <div style="cursor: pointer;" onclick="this.children[0].click()">
+        <input type="file" id="picFile" hidden 
+          onchange="xb.readPicFileAsDataUrl( this).then( durl => showPicHere.src = durl); showPicHere.hidden = false;">
+        <div class="hover-it" style="display: inline-block; padding-right: 8px;">
+          <img src="/icon-x/Image.svg" width="32">
+          <small style="color: #5c6bc0">เลือกรูป</small>
+        </div>
+      </div>
+      <img id="showPicHere" hidden
+      style="width: 100%; object-fit: cover;">
+    </div-->
+
+
+    
+
+
+
+
+    <label>ลูกค้า</label>
+    <div class="medium">
+
+      <div id="showCustomerHere"></div>
+
+      <!-- add partner -->
+      <div style="margin-top: 24px; cursor: pointer;" 
+      onclick="location.href = 'add-partner.html';">
+        <img src="/icon-x/Plus.svg" style="width: 24px; border-radius: 50%; background-color: #9fa8da;">
+        <small style="font-size: 0.8rem; color: #9fa8da">เพิ่ม Partner ใหม่</small>
+      </div>
+
+    </div>
+
+    
+    <hr class="line-in-form">
+
+
+    <label>ประเภทเอกสาร</label>
+    <div>
+      <input name="docType" type="checkbox" value="ใบเสร็จ" class="w3-check" checked> ใบเสร็จรับเงิน<br>
+      <input name="docType" type="checkbox" value="ใบกำกับภาษี" class="w3-check" checked> ใบกำกับภาษี<br>
+      <input name="docType" type="checkbox" value="ใบส่งของ" class="w3-check"> ใบส่งของ<br>
+    </div>
+
+    <hr class="line-in-form">
+
+    <!-- find product -->
+    <span style="grid-column: span 2; color: #5c6bc0; font-style: italic;">เลือกสินค้า</span>
+
+    <div id="chooseProduct" style="grid-column: span 2; display: flex; flex-direction: column; gap: 24px">
+
+      <div style="display: grid; grid-template-columns: 80% 20%; cursor: pointer;">
+        <input id="findProdInput" type="search" class="w3-input w3-border" placeholder="ค้นชื่อสินค้า ...">
+        <div style="display: flex; align-items: center; justify-content: center;"
+        onclick="findProduct()"><img src="/icon-x/Search.svg" width="32"></div>
+      </div>
+
+      <div id="showProductHere" class="default" style="display: inline-block; text-decoration: underline;"></div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+
+        <button class="w3-button w3-blue">เพิ่มเข้ารายการ</button>
+
+        <div style="cursor: pointer;" 
+        onclick="location.href = 'add-product.html';">
+          <img src="/icon-x/Plus.svg" style="width: 24px; border-radius: 50%; background-color: #9fa8da;">
+          <small style="font-size: 0.8rem; color: #9fa8da">เพิ่มสินค้าใหม่</small>
+        </div>
+      </div>
+
+    </div>
+
+
+
+
+    <hr class="line-in-form">
+
+
+    <!-- products -->
+    <span style="grid-column: span 2; color: #5c6bc0; font-style: italic;">รายการสินค้าที่ขายครั้งนี้</span>
+
+    <div id="productGrid" style="grid-column: span 2; display: grid; grid-template-columns: auto auto auto; align-items: center; gap: 1px;">
+
+      <small class="tcenter">ลำดับ</small><small class="tcenter">สินค้า</small><small class="tcenter">ราคา</small>
+
+      <!-- first item -->
+      <span>1</span>
+      <div prod-block style="display: flex; flex-wrap: wrap; flex-direction: column;">
+        <p name="prodName" style="text-decoration: underline;">Product XYZ sssssssssss (<span name="prodCode">#2000</span>)</p>
+        <p>ราคา = <span name="unitPrice">100.50</span> <span name="currency">บาท</span>/<span name="uom">ชิ้น</span></p>
+        <p>จำนวน <input name="qty" type="number" style="width: 60px; font-size: 1.0rem; text-align: center;" onchange="calcTotal(this)"> <span name="uom">ชิ้น</span></p>
+      </div>
+      <span name="totalPrice"></span>
+
+
+
+
+
+    </div>
+
+    <!-- action for product items -->
+    <div style="grid-column: span 2; margin-top: 16px; display: flex; align-items: center; justify-content: center;">
+      <div onclick="" style="cursor: pointer;">
+        <img src="/icon-x/Minus.svg" style="width: 24px; border-radius: 50%; background-color: #ef9a9a;"> 
+        <small style="font-size: 0.8rem; color: #9fa8da">ลบรายการสุดท้าย</small>
+      </div>
+    </div>
+    
+
+
+
+
+
+
+
+    <hr class="line-in-form">
+
+
+
+    <label>Note</label>
+    <textarea id="note" rows="4" placeholder="Note ที่เรามีต่อเขา ..."></textarea>
+    
+    <label>ป้อนข้อมูลโดย*</label>
+    <input id="enterBy" type="text" placeholder="เช่น @sern, @john ...">
+
+  </div>
+
+  <!-- form action -->
+  <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
+    <button class="w3-button w3-blue" 
+    onclick="addPartner()">Save</button>
+    <button class="w3-button w3-light-grey" 
+    onclick="location.reload()">Cancel / Clear</button>
+  </div>
+
+
+
+</div>
+
+
+
+<!-- page action -->
+<div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+  <img src="/icon/u-turn.svg" style="cursor: pointer; width: 32px;" 
+  onclick="history.back()">
+</div>
+
+
+<script>
+///////////////////////////////////////////////////////////////////
+
+
+// ON LOAD
+window.onload = () => {
+  
+  // scroll this page to top
+  setTimeout( () => {
+    window.scrollTo(0,0)
+  }, 10)
+
+
+  //document.querySelector('[name="totalPrice"]').textContent = pumpb.getMoneyFormat(500000.25)
+
+
+
+}
+
+
+
+// DEFINITION
+
+const domain = PUMP_DOMAIN //'http://192.168.1.111:4000';
+const showPicHere = document.getElementById('showPicHere');
+
+
+//const lastEdit = new Date
+//document.getElementById('lastEdit').value = lastEdit
+
+
+
+
+// CALCULATION
+
+
+
+
+
+
+
+
+async function fetchThis( data, api ) {
+    
+  let response = await fetch( domain + api, {
+    method  : 'POST',
+    headers : {'Content-Type':'application/json'},
+    body    : JSON.stringify( data )
+
+  })
+  
+  return response.json()
+
+}
+
+
+async function addPartner() {
+  try {
+    let data = {
+      pic: showPicHere.src,
+      code: document.getElementById('code').value,
+      name: document.getElementById('name').value,
+      business: document.getElementById('business').value,
+
+      tel: document.getElementById('tel').value,
+      email: document.getElementById('email').value,
+      web: document.getElementById('web').value,
+      socialApp: document.getElementById('socialApp').value,
+
+      registerType: document.getElementById('registerType').value,
+      address: document.getElementById('address').value,
+      registerCode: document.getElementById('registerCode').value,
+      taxId: document.getElementById('taxId').value,  
+
+      creditScore: document.getElementById('creditScore').value,
+      
+      bankAccount1: document.getElementById('bankAccount1').value,
+      bankAccount2: document.getElementById('bankAccount2').value,
+
+      financePerson: document.getElementById('financePerson').value,
+      salesPerson: document.getElementById('salesPerson').value,
+      servicesPerson: document.getElementById('servicesPerson').value,
+      otherPerson: document.getElementById('otherPerson').value,
+
+      note: document.getElementById('note').value,
+      enterBy: document.getElementById('enterBy').value,
+      time: Date.now()
+    }
+
+
+    // validate
+    if( !data.name || !data.tel || !data.address || !data.taxId || !data.enterBy || data.registerType.startsWith('-')) {
+      alert('ช่องที่มีเครื่องหมาย * ต้องมีข้อมูล')
+      return
+    }
+
+
+    // pass - basic validation
+
+
+    let reply = await fetchThis( data, '/add-partner' )
+    //alert( JSON.stringify( resp ) )
+    if (reply.done) {
+      alert(`เรียบร้อย - Add Partner ชื่อ ${data.name} เรียบร้อยแล้ว`)
+      location.reload()
+    } else {
+      alert(`ไม่สามารถ Save ข้อมูลได้ โปรดลองอีกครั้ง`)
+    }
+    
+
+  
+  } catch( error ) {
+    console.error( error )
+    alert('Error - มีปัญหาทางเทคนิค โปรดลองอีกครั้ง หรือหากยังมีปัญหา ติดต่อ @admin')
+  }
+}
+
+
+
+
+
+function getMoneyFormat(value, reverse = false) {
+    // 1. Convert back to a pure number (reverse = true)
+    if (reverse === true) {
+        if (typeof value !== 'string') {
+            value = String(value); 
+        }
+
+        // Remove all thousand separators (commas)
+        let cleanedString = value.replace(/,/g, '');
+
+        // Convert the cleaned string into a float/number
+        const pureNumber = parseFloat(cleanedString);
+
+        if (isNaN(pureNumber)) {
+            return 0; // Return 0 if the input was not a valid number string
+        }
+        return pureNumber;
+    } 
+    
+    // 2. Format to money string (reverse = false - default behavior)
+    else {
+        // Convert input to a number and handle invalid inputs
+        const numberValue = Number(value);
+        if (isNaN(numberValue)) {
+            return '0.00'; 
+        }
+
+        // Use Intl.NumberFormat for robust formatting (adding comma and fixed .00)
+        const formatter = new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2, 
+            maximumFractionDigits: 2, 
+            useGrouping: true       
+        });
+
+        return formatter.format(numberValue);
+    }
+}
+
+
+
+
+function calcTotal( callingElem ) {
+  // calc total price for name=totalPrice for next sibling of this prod-block <div>
+  // the caller is <input>
+
+  let qty = Number(callingElem.value)
+  let prodBlockElem = callingElem.closest('[prod-block]')
+  let unitPrice = Number(prodBlockElem.querySelector('[name=unitPrice]').textContent)
+  prodBlockElem.nextElementSibling.textContent = pumpb.getMoneyFormat( 
+    qty * unitPrice
+  )
+
+}
+
+
+
+async function findProduct() {
+  // find product to sell
+
+  const inputEl = document.querySelector('#findProdInput')
+  
+  if (!inputEl.value) {
+    alert('โปรดใส่ชื่อสินค้าด้วยค่ะ')
+    return
+  }
+
+  try {
+
+    let found = await pumpb.fetchThis(null,'/find-product?name=' + inputEl.value, 'get')
+
+    if (found.done) {
+      let showEl = document.querySelector('#showProductHere')
+      showEl.innerHTML = `${found.data.name}<br>
+      ราคา = ${found.data.unitPrice} บาท/${found.data.uom}`
+
+    } else {
+      alert('ไม่พบสินค้านี้ค่ะ โปรดลองชื่ออื่น')
+    }
+  } catch(er) {
+    alert('Error - มีปัญหาทางเทคนิคค่ะ โปรดลองใหม่')
+  }
+}
+
+
+
+async function findCustomer() {
+  // find customer/partner
+
+  const inputEl = document.querySelector('#findCustInput')
+
+  if (!inputEl.value) {
+    alert('โปรดใส่ชื่อลูกค้าด้วยค่ะ')
+    return
+  }
+
+  try {
+
+    let found = await pumpb.fetchThis(null,'/find-partner?name=' + inputEl.value, 'get')
+
+    if (found) {
+      const showEl = document.querySelector('#showCustomerHere')
+      showEl.innerHTML = `<u>${found.name}</u><br>
+      ${found.address}<br>
+      tel = ${found.tel}<br>
+      taxId = ${found.taxId}`
+    } else {
+      alert('ไม่พบลูกค้ารายนี้ค่ะ โปรดลองชื่ออื่น')
+    }
+
+  } catch(er) {
+    console.error(er)
+    alert('Error - มีปัญหาทางเทคนิค โปรดลองอีกครั้ง')
+  }
+
+}
+
+
+
+</script>
+</body>
+</html>

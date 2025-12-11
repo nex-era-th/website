@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Product</title>
+  <script src="conf.js"></script>
+  <script src="pump-b.js"></script>
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/material-x.css" rel="stylesheet" type="text/css">
+
+<style>
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  th { text-align: center; }
+  table {
+    width: 100%; border-collapse: collapse; margin-top: 0px;
+    border: 1px solid gray;
+  }
+  th, td {
+    border: 1px solid gray; padding: 8px; text-align: left;
+  }
+  tr:hover { background-color: aqua; }
+
+  .world-space { max-width: 800px; margin: auto; }
+  .product-grid {
+    background-color: white;
+  }
+  .product-grid > * { 
+    background-color: #eeeeee; padding: 12px 8px; height: 100%;
+  }
+  .tcenter { text-align: center; }
+
+
+
+</style>
+<body>
+  <div style="padding: 0 16px; color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">สินค้าทั้งหมด</div>
+
+
+  <div class="world-space" style="padding: 0 16px; margin-top: 32px; margin-bottom: 60px;">
+
+    <!-- find -->
+    <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
+      <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นชื่อสินค้า ...">
+      <button class="w3-button w3-blue" 
+      style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
+    </div>
+
+
+    <!-- grid -->
+    <div id="showProductGrid" class="product-grid" style="margin-top: 32px; display: grid; grid-template-columns: auto auto auto; align-items: center; gap: 1px">
+
+      <span class="tcenter">สินค้า</span><span class="tcenter">ราคา/หน่วย</span><span class="tcenter">Code</span>
+      
+
+
+    </div>
+
+
+
+
+  </div>
+
+
+  <!-- page action -->
+  <div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+    <img src="/icon/u-turn.svg" style="width: 32px; cursor: pointer;" 
+    onclick="location.href='/pump/index.html';">
+  </div>
+  
+
+
+
+
+
+
+
+
+<script>
+/////////////////////////////////////////////////////////////////
+
+window.onload = async () => {
+  // get all product here
+
+  try {
+
+    let reply = await pumpb.fetchThis( null,'/get-all-product','get')
+
+    if (reply.done) {
+      reply.data.forEach( prod => {
+        
+        let htmlCode = `<div prod-id="${prod._id}">${prod.name}</div><div prod-id="${prod._id}">${prod.unitPrice}</div><div prod-id="${prod._id}">${prod.code}</div>`
+
+        let gridEl = document.querySelector('#showProductGrid')
+        gridEl.innerHTML = gridEl.innerHTML + htmlCode
+        
+      })
+    } else {
+      alert('ไม่พบข้อมูลสินค้าใดๆเลยค่า')
+    }
+
+  } catch(er) {
+    alert('Error - มีปัญหาทางเทคนิคค่ะ ลองกด refresh ที่ browser อีกครั้งค่ะ')
+  }
+
+}
+
+
+  // if user clicks on table bring her that payment info
+  document.querySelector('#showProductGrid').addEventListener('click', event => {
+
+    alert( event.target.getAttribute('prod-id'))
+    return
+
+
+    const rowElem = event.target.closest('tr')
+    
+    if (rowElem && rowElem.getAttribute('x-id')) {
+
+      location.href = PUMP_DOMAIN + '/get-partner-info?partnerId=' + rowElem.getAttribute('x-id')
+      //alert(rowElem.getAttribute('x-id'))
+    }
+    // call this api and it will return an html info
+
+  })
+
+
+</script>
+</body>
+</html>

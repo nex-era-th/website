@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Add Product</title>
   <script src="conf.js"></script>
+  <script src="pump-b.js"></script>
   <script src="/js/xdev-b.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
   <link href="/js/material-x.css" rel="stylesheet" type="text/css">
@@ -46,7 +47,7 @@
 <div class="world-space" style="padding: 0 16px; margin-top: 32px">
   
 
-  <div class="my-form" id="add_new_staff_form" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
+  <div class="my-form" id="addProductForm" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
 
     <label>ภาพ</label>
     <div>
@@ -84,29 +85,54 @@
     <label>หมวดหมู่*</label>    
     <select id="category" class="w3-select">
       <option>-----</option>
-      <option>น้ำมันใส</option>
-      <option>น้ำมันอื่นๆ</option>
       <option>เครื่องดื่ม</option>
       <option>อาหาร</option>
+      <option>เสื้อผ้า</option>
       <option>บริการ</option>
-      <option>สินค้าอื่นๆ</option>
+      <option>อื่นๆ</option>
     </select>
+
+    
 
     <label>หน่วยนับ*</label>
     <input type="text" id="uom" placeholder="เช่น ชิ้น อัน กก. ลิตร">
     <label>ราคา/หน่วย*</label>
     <input type="number" id="unitPrice">
+
+    <label>สกุลเงิน</label>
+    <select id="currency" class="w3-select" disabled>
+      <option>บาท</option>
+      <option>USD</option>
+    </select>
+
     <label>Minimum Order</label>
     <input type="number" id="minOrder" value="1" placeholder="จำนวนขั้นต่ำที่ขาย">
     
-    <label>ต้อง stock?</label>
-    <div class="default">
-      <input name="mustStock" type="radio" class="w3-radio"> Yes &nbsp;&nbsp;
-      <input name="mustStock" type="radio" class="w3-radio"> No
-    </div>
     
+    <label>ต้อง stock?</label>
+    <div><input id="mustStock" type="checkbox" class="w3-check"></div>    
     <label>Minimum Stock</label>
-    <input type="number" id="minStock" placeholder="จำนวนขั้นต่ำที่ stock">
+    <input type="number" id="minStock" placeholder="ขั้นต่ำที่ต้องสั่งเพิ่ม">
+
+
+    <hr class="line-in-form">
+
+
+    <small>รับประกันกี่ปี</small>
+    <select id="warranty" class="w3-select">
+      <option>-----</option>
+      <option>1 ปี</option>
+      <option>2 ปี</option>
+    </select>
+
+    <small>คืนได้ภายใน</small>
+    <select id="returnBy" class="w3-select">
+      <option>-----</option>
+      <option>7 วันนับจากวันซื้อ/รับของ</option>
+      <option>1 เดือนนับจากวันซื้อ/รับของ</option>
+    </select>
+
+
 
 
 
@@ -115,19 +141,21 @@
     <small style="grid-column: span 2;">กรณีสินค้านี้ต้องสั่งซื้อจาก Supplier/Partner ให้กำหนด Partner ในนี้ หาก Partner นี้ยังไม่มีใน software ให้เพิ่มใหม่</small>
     <label>Supplier</label>
     <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
-      <input type="search" class="w3-input w3-border" placeholder="ค้นหา">
-      <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; "><img src="/icon-x/Search.svg" width="24"></div>
+      <input id="findSupplierInput" type="search" class="w3-input w3-border" placeholder="ค้นชื่อ">
+      <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; "
+      onclick="findSupplier()"><img src="/icon-x/Search.svg" width="24"></div>
     </div>
     <div></div>
-    <div d="supplier" class="default" style="margin-top: 8px">PTT Plc (#PTT)</div>
+    <div id="supplier" supplier-id style="margin-top: 8px; text-decoration: underline;" class="default"></div>
 
+    <!-- action -->
     <div style="grid-column: span 2; display: flex; justify-content: space-around; margin-top: 24px">
       <div style="cursor: pointer;" 
       onclick="location.href = 'add-partner.html';">
         <img src="/icon-x/Plus.svg" style="width: 24px; border-radius: 50%; background-color: #9fa8da;">
         <small style="font-size: 0.8rem; color: #9fa8da">เพิ่ม Partner ใหม่</small>
       </div>
-      <div onclick="" style="cursor: pointer;">
+      <div onclick="clearSupplier()" style="cursor: pointer;">
         <img src="/icon-x/Minus.svg" style="width: 24px; border-radius: 50%; background-color: #ef9a9a;"> 
         <small style="font-size: 0.8rem; color: #9fa8da">Clear</small>
       </div>
@@ -135,13 +163,16 @@
     
     <hr class="line-in-form"><!------------------------------------>
 
-    <label>Status*</label>
+    <label>Status</label>
     <select class="w3-select" id="status"> 
       <option>-----</option>
       <option>ขายได้ / Available</option>
       <option>หยุดขายชั่วคราว / Pause</option>
       <option>เลิกขาย / Not Available</option>
     </select>
+
+    <label>เริ่มขายตั้งแต่</label>
+    <input type="date" id="start" class="w3-input">
 
     <hr class="line-in-form"><!------------------------------------>
 
@@ -201,7 +232,7 @@ const showPicHere = document.getElementById('showPicHere');
 
 
 
-
+/*
 async function fetchThis( data, api ) {
     
   let response = await fetch( domain + api, {
@@ -214,72 +245,104 @@ async function fetchThis( data, api ) {
   return response.json()
 
 }
-
+*/
 
 async function addProduct() {
+  /*
+      send data to /add-product
+      get { done: true|false, msg: ... ,data: [_id] }
+  */
+
+  let data = {
+    pic: document.querySelector('#showPicHere').src,
+    code: document.querySelector('#code').value,
+    name: document.querySelector('#name').value,
+    description: document.querySelector('#description').value,
+    brand: document.querySelector('#brand').value,
+    barCode: document.querySelector('#barCode').value,
+    partnerCode: document.querySelector('#partnerCode').value,
+    otherCode: document.querySelector('#otherCode').value,
+    category: document.querySelector('#category').value,
+    uom: document.querySelector('#uom').value,
+    unitPrice: document.querySelector('#unitPrice').value,
+    currency: document.querySelector('#currency').value,
+    minOrder: document.querySelector('#minOrder').value,
+    mustStock: document.querySelector('#mustStock').checked,
+    minStock: document.querySelector('#minStock').value,
+    warranty: document.querySelector('#warranty').value,
+    returnBy: document.querySelector('#returnBy').value,
+    supplierId: document.querySelector('#supplier').getAttribute('supplier-id'),
+    status: document.querySelector('#status').value,
+    start: document.querySelector('#start').value,
+    note: document.querySelector('#note').value,
+    enterBy: document.querySelector('#enterBy').value
+  }
+
+  if (!data.code || !data.name || !data.description || !data.category || !data.uom || !data.unitPrice || !data.enterBy ) {
+    alert('โปรดป้อนข้อมูลทุกช่องที่มีเครื่องหมาย * ขอบคุณค่ะ')
+    return
+  }
+
+  // pass - basic validation
+
   try {
-    let data = {
-      pic: showPicHere.src,
-      code: document.getElementById('code').value,
-      name: document.getElementById('name').value,
-      business: document.getElementById('business').value,
 
-      tel: document.getElementById('tel').value,
-      email: document.getElementById('email').value,
-      web: document.getElementById('web').value,
-      socialApp: document.getElementById('socialApp').value,
+    let reply = await pumpb.fetchThis( data, '/add-product')
 
-      registerType: document.getElementById('registerType').value,
-      address: document.getElementById('address').value,
-      registerCode: document.getElementById('registerCode').value,
-      taxId: document.getElementById('taxId').value,  
-
-      creditScore: document.getElementById('creditScore').value,
-      
-      bankAccount1: document.getElementById('bankAccount1').value,
-      bankAccount2: document.getElementById('bankAccount2').value,
-
-      financePerson: document.getElementById('financePerson').value,
-      salesPerson: document.getElementById('salesPerson').value,
-      servicesPerson: document.getElementById('servicesPerson').value,
-      otherPerson: document.getElementById('otherPerson').value,
-
-      note: document.getElementById('note').value,
-      enterBy: document.getElementById('enterBy').value,
-      time: Date.now()
-    }
-
-
-    // validate
-    if( !data.name || !data.tel || !data.address || !data.taxId || !data.enterBy || data.registerType.startsWith('-')) {
-      alert('ช่องที่มีเครื่องหมาย * ต้องมีข้อมูล')
-      return
-    }
-
-
-    // pass - basic validation
-
-
-    let reply = await fetchThis( data, '/add-partner' )
-    //alert( JSON.stringify( resp ) )
     if (reply.done) {
-      alert(`เรียบร้อย - Add Partner ชื่อ ${data.name} เรียบร้อยแล้ว`)
+      alert(`เรียบร้อย - เพิ่มสินค้าชื่อ ${data.name} เรียบร้อยแล้วค่ะ`)
       location.reload()
     } else {
       alert(`ไม่สามารถ Save ข้อมูลได้ โปรดลองอีกครั้ง`)
     }
-    
 
-  
-  } catch( error ) {
-    console.error( error )
-    alert('Error - มีปัญหาทางเทคนิค โปรดลองอีกครั้ง หรือหากยังมีปัญหา ติดต่อ @admin')
+  } catch(er) {
+    alert('Error - มีปัญหาทางเทคนิคค่ะ โปรดลองอีกครั้ง')
   }
+  
 }
 
 
 
+async function findSupplier() {
+  // find and show it on #supplier
 
+  let inputEl = document.querySelector('#findSupplierInput')
+
+  if (!inputEl.value) {
+    alert('รบกวนใส่ชื่อ Supplier ด้วยค่ะ')
+    return
+  }
+
+  try {
+
+    let reply = await pumpb.fetchThis(null, '/find-partner?name=' + inputEl.value, 'get')
+
+    if (reply.done) {
+
+      let supEl = document.querySelector('#supplier')
+      supEl.textContent = `${reply.data.name}`
+      supEl.setAttribute('supplier-id', reply.data._id)
+
+    } else {
+      alert('ไม่พบข้อมูลค่ะ โปรดลองชื่ออื่นดูอีกครั้ง')
+      document.querySelector('#findSupplierInput').value = ''
+      document.querySelector('#findSupplierInput').focus()
+    }
+
+  } catch(er) {
+    alert('Error - มีปัญหาทางเทคนิคค่ะ โปรดลองอีกครั้ง')
+  }
+
+}
+
+
+function clearSupplier() {
+  // clear supplier selection from search box
+  document.querySelector('#findSupplierInput').value = ''
+  document.querySelector('#supplier').textContent = ''
+  document.querySelector('#supplier').setAttribute('supplier-id','')
+}
 
 
 </script>

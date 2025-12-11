@@ -64,9 +64,9 @@
     <div>
       <input name="docType" type="checkbox" class="w3-check" value="receipt"> ใบเสร็จรับเงิน<br>
       <input name="docType" type="checkbox" class="w3-check" value="taxInvoice"> ใบกำกับภาษี<br>
+      <input name="docType" type="checkbox" class="w3-check" value="deliveryOrder"> ใบส่งของ<br>
       <input name="docType" type="checkbox" class="w3-check" value="taxInvoiceShort"> ใบกำกับภาษีอย่างย่อ<br>
       <input id="docTypeOther" type="text" style="width: 100%; margin-top: 8px" placeholder="อื่นๆใส่ตรงนี้">
-
     </div>
     
     <hr class="line-in-form">
@@ -659,7 +659,7 @@ async function findPartner( keyword ) {
     let reply = await fetch( pumpUrl + '/find-partner?name=' + keyword)
     let gotData = await reply.json()
     
-    if (gotData) {
+    if (gotData.done) {
       /*  
       document.querySelector('#showPartnerInfo').innerHTML = `${gotData.name}<br>
       ${gotData.address}<br>
@@ -669,7 +669,7 @@ async function findPartner( keyword ) {
       partnerId: ${gotData._id.slice(0,8)}`
       */ 
 
-      showPartnerInfoFromData( gotData)
+      showPartnerInfoFromData( gotData.data)
 
 
     } else {
@@ -692,10 +692,10 @@ function showPartnerInfoFromData( data) {
 
   document.querySelector('#showPartnerInfo').innerHTML = `${data.name}<br>
     ${data.address}<br>
-    tel=${data.tel}<br>
-    code=${data.code}<br>
-    taxId=${data.taxId}<br>
-    partnerId=${data._id.slice(0,8)}...`
+    tel = ${data.tel}<br>
+    code = ${data.code}<br>
+    taxId = ${data.taxId}<br>
+    partnerId = ${data._id.slice(0,8)}...`
 
   document.querySelector('#keepPartnerIdHere').value = data._id
 
