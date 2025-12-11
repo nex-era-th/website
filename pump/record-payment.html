@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Record Payment</title>
   <script src="conf.js"></script>
+  <script src="pump-b.js"></script>
   <script src="/js/xdev-b.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
   <link href="/js/material-x.css" rel="stylesheet" type="text/css">
@@ -46,10 +47,21 @@
 </style>
 <body>
 
-<h3 style="padding: 16px; color: blue; position: sticky; top: 0; background-color: white; z-index: 50">ป้อนรายการค่าใช้จ่าย</h3>
+<h3 id="screenName" style="padding: 16px; color: blue; z-index: 50">ป้อนรายการค่าใช้จ่าย</h3>
 
-<div class="world-space" style="padding: 0 16px">
-  
+
+<!-- top action -->
+<div id="topActBox" style="display: none; align-items: center; justify-content: space-around; margin-bottom: 24px;">
+  <button class="w3-button" style="padding: 4px 8px; background-color: #fdd835;" 
+  onclick="editPayout()">Edit</button>
+  <button class="w3-button" style="padding: 4px 8px; background-color: #757575;" disabled>Delete</button>
+</div>
+
+
+
+
+
+<div class="world-space" style="padding: 0 16px; margin-bottom: 60px;">
 
   <div class="my-form" id="recordPaymentForm" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px;">
 
@@ -119,7 +131,7 @@
       
       <input type="search" id="searchVendor" placeholder="ค้นหา Partner ตรงนี้">
       
-      <div style="width: 50px; padding: 4px; cursor: pointer; background-color: #9fa8da; display: flex; align-items: center; justify-content: center;" class="w3-blue"
+      <div id="findPartnerAct" style="width: 50px; padding: 4px; cursor: pointer; background-color: #9fa8da; display: flex; align-items: center; justify-content: center;" class="w3-blue"
       onclick="findPartner( document.querySelector('#searchVendor').value)">
         <img src="/icon-x/Search.svg" width="32">
       </div>
@@ -130,7 +142,7 @@
       </div>      
       
       <!-- add partner -->
-      <div style="margin-top: 16px; cursor: pointer;" 
+      <div id="addPartnerAct" style="margin-top: 16px; cursor: pointer;" 
       onclick="addVendorForm.style.display = 'flex';">
         <img src="/icon-x/Plus.svg" style="width: 24px; border-radius: 50%; background-color: #9fa8da;">
         <small style="font-size: 0.8rem; color: #9fa8da">เพิ่ม Partner ใหม่</small>
@@ -208,7 +220,7 @@
 
     <div id="productItemHouse" style="grid-column: span 2; display: flex; flex-direction: column; gap: 8px">
 
-      <!-- first prduct item -->
+      <!-- first product item -->
       <div class="product-item-box">
         <span name="sequence" style="grid-column: span 2;">#1</span> 
         <small>รหัสสินค้า</small>
@@ -281,8 +293,8 @@
 
   </div>
 
-
-  <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
+  <!-- form action -->
+  <div id="formAct" style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
     <button class="w3-button w3-blue" 
     onclick="savePaymentRecord()">Save</button>
     <button class="w3-button w3-light-grey" 
@@ -361,9 +373,121 @@ style="width: 100%; height: 100%; background-color: black; position: fixed; top:
 
 // this code scroll page to top after reload
 window.onload = () => {
+
+  // scroll to top on reload
   setTimeout( () => {
     window.scrollTo(0,0)
   }, 10)
+
+
+  // check mode
+  // check mode: view|edit
+  const urlParams = new URLSearchParams(window.location.search)
+  const id = urlParams.get('id')
+  const mode = urlParams.get('mode')
+
+  //alert('mode=' + mode + ',id=' + id)
+
+  if (mode == 'view' && id) {
+    try {
+
+      pumpb.fetchThis( null, '/find-payout?id=' + id, 'get').then( reply => {
+
+        if (reply.done) {
+
+          document.querySelector('#screenName').textContent = 'รายการค่าใช้จ่าย'
+          document.querySelector('#topActBox').style.display = 'flex'
+
+          
+          const data = reply.data
+          document.querySelectorAll('input').forEach( el => {
+            if (el.id in data) {
+              el.value = data[el.id]
+            }
+          })
+          document.querySelectorAll('select').forEach( el => {
+            if (el.id in data) {
+              el.value = data[el.id]
+            }
+          })
+          document.querySelectorAll('textarea').forEach( el => {
+            if (el.id in data) {
+              el.value = data[el.id]
+            }
+          })
+
+          document.querySelectorAll('[name="docType"]').forEach( el => {
+            if (data.docType.includes( el.value)) {
+              el.checked = true
+            }
+          })
+
+          document.querySelector('#keepPartnerIdHere').value = data.paytoPartner
+          document.querySelector('#paymentDate').value = data.payDate
+          document.querySelector('#showPartnerInfo').textContent = data.partnerName
+
+          document.querySelector('#paymentCategory').value = data.category
+          document.querySelector(`[name="payStatus"][value=${data.payStatus}]`).checked = true
+
+          // fill product item
+          if (data.products.length) {
+
+            let firstEl = document.querySelector('#productItemHouse').children[0]
+            firstEl.querySelector('[name="productCode"]').value = data.products[0].code;
+            firstEl.querySelector('[name="description"]').value = data.products[0].description;
+            firstEl.querySelector('[name="qty"]').value = data.products[0].qty;
+            firstEl.querySelector('[name="uom"]').value = data.products[0].uom;
+            firstEl.querySelector('[name="unitPrice"]').value = data.products[0].unitPrice;
+            firstEl.querySelector('[name="totalPrice"]').value = data.products[0].totalPrice;
+
+            if (data.products[0].taxStatus) {
+              firstEl.querySelector(`[name="taxStatus"][value=${data.products[0].taxStatus}]`).checked = true;
+            }
+          }
+
+          if (data.products.length > 1) {
+            data.products.slice(1).forEach( (prod, i) => {
+
+              addProductItem()
+
+              let elem = document.querySelector('#productItemHouse').children[i+1]
+              elem.querySelector('[name="productCode"]').value = prod.code;
+              elem.querySelector('[name="description"]').value = prod.description;
+              elem.querySelector('[name="qty"]').value = prod.qty;
+              elem.querySelector('[name="uom"]').value = prod.uom;
+              elem.querySelector('[name="unitPrice"]').value = prod.unitPrice;
+              elem.querySelector('[name="totalPrice"]').value = prod.totalPrice;
+
+              if (prod.taxStatus) {
+                elem.querySelector(`[name="taxStatus"][value=${prod.taxStatus}]`).checked = true;
+              }
+
+            })
+            
+          }
+
+          // disable everything
+          document.querySelectorAll('input').forEach( el => el.disabled = true)
+          document.querySelectorAll('select').forEach( el => el.disabled = true)
+          document.querySelectorAll('textarea').forEach( el => el.disabled = true)
+          document.querySelector('#searchVendor').hidden = true;
+          document.querySelector('#findPartnerAct').style.display = 'none'
+          document.querySelector('#addPartnerAct').hidden = true
+          document.querySelector('#productItemHouseAct').style.display = 'none'
+          document.querySelector('#formAct').style.display = 'none'
+
+        } else {
+          alert( reply.msg)
+        }
+
+      })
+
+    } catch(er) {
+      alert('Error - ขัดข้องทางเทคนิคจากการค้นหาข้อมูลจาก server')
+    }
+  }
+
+
 }
 
 
@@ -708,6 +832,34 @@ function showPartnerInfoFromData( data) {
   document.querySelector('#keepPartnerIdHere').value = data._id
 
 }
+
+
+
+
+function editPayout() {
+
+  // enable everything
+  document.querySelector('#screenName').textContent = 'แก้ไขรายการค่าใช้จ่าย'
+  document.querySelector('#topActBox').style.display = 'none'
+  document.querySelectorAll('input').forEach( el => el.disabled = false)
+  document.querySelectorAll('select').forEach( el => el.disabled = false)
+  document.querySelectorAll('textarea').forEach( el => el.disabled = false)
+  document.querySelector('#searchVendor').hidden = false;
+  document.querySelector('#findPartnerAct').style.display = 'flex'
+  document.querySelector('#addPartnerAct').hidden = false
+  document.querySelector('#productItemHouseAct').style.display = 'flex'
+  document.querySelector('#formAct').style.display = 'flex'
+
+  // clear browser bar
+  window.history.replaceState( null,'', window.location.origin + window.location.pathname)
+
+}
+
+
+
+
+
+
 
 
 

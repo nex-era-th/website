@@ -103,7 +103,8 @@
       
       if (rowElem && rowElem.getAttribute('x-id')) {
 
-        location.href = PUMP_DOMAIN + '/get-payout-info?payoutId=' + rowElem.getAttribute('x-id')
+        //location.href = PUMP_DOMAIN + '/get-payout-info?payoutId=' + rowElem.getAttribute('x-id')
+        location.href = 'record-payment.html?mode=view&id=' + rowElem.getAttribute('x-id')
 
       }
       // call this api and it will return an html info
