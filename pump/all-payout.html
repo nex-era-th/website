@@ -95,7 +95,7 @@
 
       let newRow = document.createElement('tr')
       newRow.setAttribute('x-id', rec._id)
-      let innerCode = `<td>${rec.payDate}</td><td>${rec.netValue}</td><td>${rec.partnerName} #${rec.docNum}</td>`
+      let innerCode = `<td>${rec.payDate}</td><td>${pumpb.getMoneyFormat( rec.netValue )}</td><td>${rec.partnerName} #${rec.docNum}</td>`
       newRow.innerHTML = innerCode
 
       document.querySelector('#listHere').append( newRow)
