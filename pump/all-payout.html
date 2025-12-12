@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>All Payout</title>
   <script src="conf.js"></script>
+  <script src="pump-b.js"></script>
   <script src="fetch-this.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
   <link href="/js/material-x.css" rel="stylesheet" type="text/css">
@@ -24,7 +25,7 @@
   }
   tr:hover { background-color: aqua; }
 
-  .world-space { max-width: 800px; margin: auto; }
+  .world-space { max-width: 800px; margin-left: auto; margin-right: auto; margin-bottom: 60px;}
 
 
 
@@ -32,9 +33,10 @@
 
 </style>
 <body>
+
   <h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0">รายการจ่ายทั้งหมด</h3>
 
-  <div class="world-space">
+  <div class="world-space" style>
 
     <!-- search box -->
     <div style="display: grid; grid-template-columns: 80% 20%; align-items: center; padding: 0 16px">
@@ -43,9 +45,18 @@
       style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
     </div>
 
+    <!-- sum -->
+    <div style="display: grid; grid-template-columns: auto auto; align-items: center; padding: 0 16px; margin-top: 24px; font-size: 1.1rem; background-color: cyan;">
+      <label>ยอดสุทธิ รวม</label>
+      <div id="netValueSum"></div>
+      <label>ยอดภาษี รวม</label>
+      <div id="taxSum"></div>
+      <label>ยอดก่อนภาษี รวม</label>
+      <div id="beforeTaxSum"></div>
+    </div>
 
-
-    <div style="padding: 0 16px; margin-top: 16px; margin-bottom: 60px;">
+    <!-- list of docs -->
+    <div style="padding: 0 16px; margin-top: 24px;">
       <table id="listHere">
         <tr><th>วันที่</th><th>ยอดสุทธิ</th><th>เอกสาร</th></tr>
         <!-- Data rows will be inserted here dynamically -->
@@ -72,46 +83,55 @@
 
 
 
-  <script>
-  /////////////////////////////////////////////////////////////////
+<script>
+/////////////////////////////////////////////////////////////////
 
-    (async function main() {
+(async function main() {
 
-      let allPayout = await fetchThis( null, '/get-all-payout', 'get')
-      if (allPayout.length) {
-        
-        allPayout.forEach( rec => {
+  let allPayout = await fetchThis( null, '/get-all-payout', 'get')
+  if (allPayout.length) {
+    
+    allPayout.forEach( rec => {
 
-          let newRow = document.createElement('tr')
-          newRow.setAttribute('x-id', rec._id)
-          let innerCode = `<td>${rec.payDate}</td><td>${rec.netValue}</td><td>${rec.partnerName} #${rec.docNum}</td>`
-          newRow.innerHTML = innerCode
+      let newRow = document.createElement('tr')
+      newRow.setAttribute('x-id', rec._id)
+      let innerCode = `<td>${rec.payDate}</td><td>${rec.netValue}</td><td>${rec.partnerName} #${rec.docNum}</td>`
+      newRow.innerHTML = innerCode
 
-          document.querySelector('#listHere').append( newRow)
-        });
-      } else {
-        alert('ไม่มีข้อมูล')
-      }
+      document.querySelector('#listHere').append( newRow)
+    });
 
-    })();
+    // calculate
+    let calc = pumpb.getSumOf( allPayout, ['netValue','taxValue','totalPriceBeforeTax'])
 
-
-    // if user clicks on table bring her that payment info
-    document.querySelector('#listHere').addEventListener('click', event => {
-
-      const rowElem = event.target.closest('tr')
-      
-      if (rowElem && rowElem.getAttribute('x-id')) {
-
-        //location.href = PUMP_DOMAIN + '/get-payout-info?payoutId=' + rowElem.getAttribute('x-id')
-        location.href = 'record-payment.html?mode=view&id=' + rowElem.getAttribute('x-id')
-
-      }
-      // call this api and it will return an html info
-
-    })
+    document.querySelector('#netValueSum').textContent = pumpb.getMoneyFormat( calc.netValue);
+    document.querySelector('#taxSum').textContent = pumpb.getMoneyFormat( calc.taxValue);
+    document.querySelector('#beforeTaxSum').textContent = pumpb.getMoneyFormat( calc.totalPriceBeforeTax);
 
 
-  </script>
+  } else {
+    alert('ไม่มีข้อมูลเลยค่ะ หรือจะลอง refresh หน้าจออีกที เผื่อมีปัญหาอะไรรึเปล่า')
+  }
+
+})();
+
+
+// if user clicks on table bring her that payment info
+document.querySelector('#listHere').addEventListener('click', event => {
+
+  const rowElem = event.target.closest('tr')
+  
+  if (rowElem && rowElem.getAttribute('x-id')) {
+
+    //location.href = PUMP_DOMAIN + '/get-payout-info?payoutId=' + rowElem.getAttribute('x-id')
+    location.href = 'record-payment.html?mode=view&id=' + rowElem.getAttribute('x-id')
+
+  }
+  // call this api and it will return an html info
+
+})
+
+
+</script>
 </body>
 </html>

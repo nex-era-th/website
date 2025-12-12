@@ -5,6 +5,8 @@
 
 const pumpb = {}
 
+// fetchThis ----------------------------------------------------
+
 pumpb.fetchThis = async function ( data, api, method = 'POST' ) {
   /*
       works on GET, POST only
@@ -30,6 +32,8 @@ pumpb.fetchThis = async function ( data, api, method = 'POST' ) {
 
 }
 
+
+// getMoneyFormat -------------------------------------------
 
 pumpb.getMoneyFormat = (value, reverse = false) => {
     // 1. Convert back to a pure number (reverse = true)
@@ -69,3 +73,57 @@ pumpb.getMoneyFormat = (value, reverse = false) => {
     }
 }
 
+
+
+// getSumOf ------------------------------------------------------
+/*
+    let output = getSumOf( ARRAY, ['fieldName1, 'field2', ... ])
+    output like { field1: --,field2: --, ... }
+
+*/
+
+pumpb.getSumOf = (documents, fieldNames) => {
+    // 1. Initialize the result object with keys set to 0
+    const initialAccumulator = {};
+    
+    // Ensure fieldNames is an array before proceeding
+    if (!Array.isArray(fieldNames) || fieldNames.length === 0) {
+        console.warn("Field names array is invalid or empty. Returning empty object.");
+        return {};
+    }
+
+    fieldNames.forEach(field => {
+        initialAccumulator[field] = 0;
+    });
+
+    // 2. Use reduce() to iterate over the documents and accumulate for ALL fields
+    const totalSums = documents.reduce((accumulator, currentDoc) => {
+        
+        // Inner loop iterates over the provided fieldNames array
+        fieldNames.forEach(fieldName => {
+            const fieldValue = currentDoc[fieldName];
+
+            // --- Robust Cleaning and Conversion Logic ---
+            let numericValue = 0;
+
+            if (typeof fieldValue === 'string') {
+                // Clean and convert string (removes symbols/commas for clean parsing)
+                const cleanedValue = fieldValue.replace(/[,$,]/g, '');
+                numericValue = parseFloat(cleanedValue);
+            } else if (typeof fieldValue === 'number') {
+                // Already a number, use directly
+                numericValue = fieldValue;
+            }
+
+            // Add to the accumulator only if the result is a valid number
+            if (!isNaN(numericValue)) {
+                accumulator[fieldName] += numericValue;
+            }
+        });
+        
+        return accumulator;
+
+    }, initialAccumulator);
+
+    return totalSums;
+}
