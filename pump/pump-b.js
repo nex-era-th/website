@@ -1,6 +1,11 @@
-// pump-b.js
-// some codes using in browser side
-// every func will reside in the object pumpb
+/*
+
+file: NEX-WEB/pump/pump-b.js
+for: put some funcs here to help all browser codes
+by: @devster
+project: pump
+
+*/
 
 
 const pumpb = {}
@@ -34,6 +39,9 @@ pumpb.fetchThis = async function ( data, api, method = 'POST' ) {
 
 
 // getMoneyFormat -------------------------------------------
+/*
+    get output like 1,125,456.25
+*/
 
 pumpb.getMoneyFormat = (value, reverse = false) => {
     // 1. Convert back to a pure number (reverse = true)
@@ -126,4 +134,69 @@ pumpb.getSumOf = (documents, fieldNames) => {
     }, initialAccumulator);
 
     return totalSums;
+} //ok
+
+
+// simpleSum --------------------------------------------------
+/*
+    get the sum of a simple array.
+    so you have all numbers in array and put into this func and get their sum.
+    CAUTION: make sure all value is num
+*/
+
+pumpb.simpleSum = ( yourArray ) => {
+  yourArray.reduce( (z,i) => i += z, 0)
+} //ok
+
+
+
+
+// simpleDate ------------------------------------------------------
+/*
+    get simple date format like 31/12
+*/
+pumpb.simpleDate = ( yourDateStr ) => {
+  // input -> '2025-12-11'
+  // output -> '11/12'
+
+  let part = yourDateStr.split('-')
+  return part[2] + '/' + part[1]
+} //ok
+
+
+// sortArray --------------------------------------------------------
+/*
+    get the array sorted in ascending or desending, for both str & num
+*/
+pumpb.sortArray = (array, fieldName, type = 'ascending') => {
+    // Return a shallow copy of the array to avoid modifying the original array (best practice)
+    const sortedArray = [...array]; 
+
+    sortedArray.sort((a, b) => {
+        // 1. Get the values from the two objects being compared
+        const valA = a[fieldName];
+        const valB = b[fieldName];
+
+        // 2. Determine the comparison result (1, -1, or 0)
+        let comparison = 0;
+
+        // Note: This logic assumes numerical or standard string comparison.
+        // For case-insensitive strings or specific locale sorting, use .localeCompare().
+        if (valA > valB) {
+            comparison = 1; // a comes after b
+        } else if (valA < valB) {
+            comparison = -1; // a comes before b
+        }
+        
+        // 3. Apply the direction logic
+        if (type.toLowerCase() === 'descending') {
+            // If descending, reverse the comparison result
+            return comparison * -1;
+        }
+
+        // Default is ascending
+        return comparison;
+    });
+
+    return sortedArray;
 }

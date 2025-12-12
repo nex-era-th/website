@@ -34,7 +34,7 @@
 </style>
 <body>
 
-  <h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0">รายการจ่ายทั้งหมด</h3>
+  <h3 style="padding: 16px; color: blue;">รายการจ่ายทั้งหมด</h3>
 
   <div class="world-space" style>
 
@@ -46,7 +46,7 @@
     </div>
 
     <!-- sum -->
-    <div style="display: grid; grid-template-columns: auto auto; align-items: center; padding: 0 16px; margin-top: 24px; font-size: 1.1rem; background-color: cyan;">
+    <div style="display: grid; grid-template-columns: auto auto; align-items: center; margin: 24px 16px 0 16px; font-size: 1.1rem; background-color: cyan; padding: 4px">
       <label>ยอดสุทธิ รวม</label>
       <div id="netValueSum"></div>
       <label>ยอดภาษี รวม</label>
@@ -89,13 +89,16 @@
 (async function main() {
 
   let allPayout = await fetchThis( null, '/get-all-payout', 'get')
+
   if (allPayout.length) {
-    
+  
+    allPayout = pumpb.sortArray( allPayout, 'payDate')
+
     allPayout.forEach( rec => {
 
       let newRow = document.createElement('tr')
       newRow.setAttribute('x-id', rec._id)
-      let innerCode = `<td>${rec.payDate}</td><td>${pumpb.getMoneyFormat( rec.netValue )}</td><td>${rec.partnerName} #${rec.docNum}</td>`
+      let innerCode = `<td>${pumpb.simpleDate( rec.payDate) }</td><td>${pumpb.getMoneyFormat( rec.netValue )}</td><td>${rec.partnerName} #${rec.docNum}</td>`
       newRow.innerHTML = innerCode
 
       document.querySelector('#listHere').append( newRow)
