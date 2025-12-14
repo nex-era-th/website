@@ -16,7 +16,8 @@
   *::after { box-sizing: border-box; }
   html { font-size: 16px; }
   small { font-size: 0.8rem }
-  label { font-size: 1.0rem }
+  label { font-size: 0.8rem }
+  .small { font-size: 0.8rem }
   .medium { font-size: 1.0rem }
   .default { font-size: 1.25rem }
   .large { font-size: 1.5rem }
@@ -38,144 +39,52 @@
   }
 
   .hover-it:hover { background-color: #b2ebf2;}
+  .indigo { color: #5c6bc0 }
 
 </style>
 </head>
 <body>
 
-<div style="padding: 0 16px; color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">เพิ่มสินค้า</div>
+<div style="padding: 0 16px; color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">จ่ายค่าจ้างพนักงาน</div>
 
 <div class="world-space" style="padding: 0 16px; margin-top: 32px">
   
-
-  <div class="my-form" id="addProductForm" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
-
-    <label>ภาพ</label>
-    <div>
-      <div style="cursor: pointer;" onclick="this.children[0].click()">
-        <input type="file" id="picFile" hidden 
-          onchange="xb.readPicFileAsDataUrl( this).then( durl => showPicHere.src = durl); showPicHere.hidden = false;">
-        <div class="hover-it" style="display: inline-block; padding-right: 8px;">
-          <img src="/icon-x/Image.svg" width="32">
-          <small style="color: #5c6bc0">เลือกรูป</small>
-        </div>
-      </div>
-      <img id="showPicHere" hidden
-      style="width: 100%; object-fit: cover;">
+  <div id="setting">
+    <p class="indigo">Set up Variables</p>
+    <div style="display: grid; grid-template-columns: auto auto; align-items: center; gap: 4px">
+      <label>เวลาทำงานมาตรฐานของช่วงเวลาที่คำนวนนี้ กี่ชั่วโมง?</label>
+      <input id="setStdTotalWorkHour" type="text" class="w3-input w3-border" placeholder="เช่น 01:30" value="40:00:00">
+      <label>เวลาที่ + เพิ่มให้พนักงานทุกคน ในช่วงทำงานนี้ กี่ชั่วโมง</label>
+      <input id="setStdAdjustHour" type="text" class="w3-input w3-border" placeholder="เช่น 01:30" value="0:0:0">
     </div>
 
-
-    <label>Code*</label>
-    <input type="text" id="code" placeholder="รหัสสินค้า">
-    <label>ชื่อสินค้า*</label>
-    <input type="text" id="name" placeholder="">  
-    <label>Description*</label>
-    <textarea id="description" rows="3" placeholder=""></textarea>
-    <label>Brand</label>
-    <input id="brand" type="text">
-    <label>Bar Code</label>
-    <input id="barCode" type="text">
-    <label>Partner Code</label>
-    <input id="partnerCode" type="text" placeholder="code ของ partner">
-    <label>Other Code</label>
-    <input id="otherCode" type="text" placeholder="code อื่นๆ ถ้ามี">
+  </div>
+  <hr>
+  <div id="dataSource">
+    <p class="indigo">Upload Attendance Data</p>
+    <p class="small">ใช้ไฟล์ csv ที่ได้จากเครื่อง Finger Scan โดยเลือกข้อมูลของเดือนที่ต้องการ</p>
+  
+    <input id="csvFile" type="file" onchange="readCsvFile(this)">
+  </div>
 
 
+  <hr>
+
+  <div id="calculation">
+    <p class="indigo">Calculation</p>
+    <div id="showDataHere"></div>
+
+
+
+  </div>
+  
+    
+
+
+    
+
+    <!----------------------------------------------------------
     <hr class="line-in-form">
-      
-    <label>หมวดหมู่*</label>    
-    <select id="category" class="w3-select">
-      <option>-----</option>
-      <option>เครื่องดื่ม</option>
-      <option>อาหาร</option>
-      <option>เสื้อผ้า</option>
-      <option>บริการ</option>
-      <option>อื่นๆ</option>
-    </select>
-
-    
-
-    <label>หน่วยนับ*</label>
-    <input type="text" id="uom" placeholder="เช่น ชิ้น อัน กก. ลิตร">
-    <label>ราคา/หน่วย*</label>
-    <input type="number" id="unitPrice">
-
-    <label>สกุลเงิน</label>
-    <select id="currency" class="w3-select" disabled>
-      <option>บาท</option>
-      <option>USD</option>
-    </select>
-
-    <label>Minimum Order</label>
-    <input type="number" id="minOrder" value="1" placeholder="จำนวนขั้นต่ำที่ขาย">
-    
-    
-    <label>ต้อง stock?</label>
-    <div><input id="mustStock" type="checkbox" class="w3-check"></div>    
-    <label>Minimum Stock</label>
-    <input type="number" id="minStock" placeholder="ขั้นต่ำที่ต้องสั่งเพิ่ม">
-
-
-    <hr class="line-in-form">
-
-
-    <small>รับประกันกี่ปี</small>
-    <select id="warranty" class="w3-select">
-      <option>-----</option>
-      <option>1 ปี</option>
-      <option>2 ปี</option>
-    </select>
-
-    <small>คืนได้ภายใน</small>
-    <select id="returnBy" class="w3-select">
-      <option>-----</option>
-      <option>7 วันนับจากวันซื้อ/รับของ</option>
-      <option>1 เดือนนับจากวันซื้อ/รับของ</option>
-    </select>
-
-
-
-
-
-    <hr class="line-in-form"><!---------- supplier ------------>
-
-    <small style="grid-column: span 2;">กรณีสินค้านี้ต้องสั่งซื้อจาก Supplier/Partner ให้กำหนด Partner ในนี้ หาก Partner นี้ยังไม่มีใน software ให้เพิ่มใหม่</small>
-    <label>Supplier</label>
-    <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
-      <input id="findSupplierInput" type="search" class="w3-input w3-border" placeholder="ค้นชื่อ">
-      <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; "
-      onclick="findSupplier()"><img src="/icon-x/Search.svg" width="24"></div>
-    </div>
-    <div></div>
-    <div id="supplier" supplier-id style="margin-top: 8px; text-decoration: underline;" class="default"></div>
-
-    <!-- action -->
-    <div style="grid-column: span 2; display: flex; justify-content: space-around; margin-top: 24px">
-      <div style="cursor: pointer;" 
-      onclick="location.href = 'add-partner.html';">
-        <img src="/icon-x/Plus.svg" style="width: 24px; border-radius: 50%; background-color: #9fa8da;">
-        <small style="font-size: 0.8rem; color: #9fa8da">เพิ่ม Partner ใหม่</small>
-      </div>
-      <div onclick="clearSupplier()" style="cursor: pointer;">
-        <img src="/icon-x/Minus.svg" style="width: 24px; border-radius: 50%; background-color: #ef9a9a;"> 
-        <small style="font-size: 0.8rem; color: #9fa8da">Clear</small>
-      </div>
-    </div>
-    
-    <hr class="line-in-form"><!------------------------------------>
-
-    <label>Status</label>
-    <select class="w3-select" id="status"> 
-      <option>-----</option>
-      <option>ขายได้ / Available</option>
-      <option>หยุดขายชั่วคราว / Pause</option>
-      <option>เลิกขาย / Not Available</option>
-    </select>
-
-    <label>เริ่มขายตั้งแต่</label>
-    <input type="date" id="start" class="w3-input">
-
-    <hr class="line-in-form"><!------------------------------------>
 
     <label>Note</label>
     <textarea id="note" rows="4" placeholder=""></textarea>
@@ -183,17 +92,18 @@
     <label>ป้อนข้อมูลโดย*</label>
     <input id="enterBy" type="text" placeholder="เช่น @sern, @john ...">
 
-  </div>
+    -->
 
 
 
-  <!-- form action -->
+
+  <!-- form action -- >
   <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
     <button class="w3-button w3-blue" 
     onclick="addProduct()">Save</button>
     <button class="w3-button w3-light-grey" 
     onclick="location.reload()">Cancel / Clear</button>
-  </div>
+  </div-->
 
 
 
@@ -210,6 +120,9 @@
 
 <script>
 ///////////////////////////////////////////////////////////////////
+
+let CSV, OJ, OJ2;
+
 
 
 // this code scroll page to top after reload
@@ -344,6 +257,125 @@ function clearSupplier() {
   document.querySelector('#supplier').textContent = ''
   document.querySelector('#supplier').setAttribute('supplier-id','')
 }
+
+
+
+
+async function readCsvFile( inputElem ) {
+  
+  CSV = await xb.readTextFile( inputElem)
+  OJ = xb.csvObj( CSV)
+  
+  OJ2 = []
+
+  OJ.forEach( v => {
+    if (v.time) {
+      
+      v.jsTime = new Date( v.time).getTime()
+      v.isoDate = pumpb.getLocalIsoDate( new Date( v.time)).split('T')[0]
+
+      OJ2.push({ 
+        fingerCode: v.code, 
+        staffName : v.name.split(' ')[0],
+        date      : v.isoDate, 
+        time      : pumpb.getSimpleTime( new Date(v.jsTime) ),
+        timeStamp : v.jsTime 
+      })
+
+    }
+  })
+
+  const dateList = Array.from(
+    new Set(
+      OJ2.map(v => v.date)
+    )
+  )
+  //console.log( dateList)
+
+  const fingerList = Array.from(
+    new Set(
+      OJ2.map(v => v.fingerCode)
+    )
+  )  
+  //console.log( fingerList)
+  
+
+  const show = document.querySelector('#showDataHere')
+
+  fingerList.forEach( finger => {
+    let staffInfo = OJ2.find(v => v.fingerCode == finger)
+    let staffName = staffInfo.staffName
+    show.innerHTML += '<div><u>' + finger + ` (${staffName})</u></div>`
+    
+    let sumStay = 0
+    dateList.forEach( date => {
+      
+      let pair = OJ2.filter(v => v.fingerCode == finger && v.date == date)
+      if (pair.length != 2) {
+        
+        show.innerHTML += `<div>${date} -- no data pair --</div>`
+      
+      } else {
+        
+        let stay = pair[1].timeStamp - pair[0].timeStamp
+        sumStay += stay
+
+        show.innerHTML += `<div>${date} in=${pair[0].time} out=${pair[1].time} stay=${pumpb.getDuration( stay )}</div>`
+      }
+
+    })
+
+    let diff = pumpb.getDuration( 
+      sumStay - pumpb.getMilli( document.querySelector('#setStdTotalWorkHour').value )
+    )
+
+    show.innerHTML += `<div id="box${finger}">
+    <div>Sum stay = <span id="sum${finger}" style="text-decoration: underline">${ pumpb.getDuration( sumStay)}</span></div>
+    <div>ปรับ เพิ่ม/ลด = <input id="adjust${finger}" value="00:00" type="text" style="width: 100px" oninput="calcFinalStay(this)"> (รูปแบบ 00:00:00)</div>
+    <div>Final Stay = <span id="final${finger}">${ pumpb.getDuration( sumStay )}</span></div>
+    <div>Diff from Standard Work Hour = <span id="diff${finger}">${ diff }</span></div>
+    <button id="confirm${finger}" onclick="confirmAttendance(this)">Confirm</button>
+    </div>
+    <hr class="line-in-form">`
+
+  })
+
+
+}
+
+
+function calcFinalStay( adjustElem ) {
+  // adjustElem.id will be like 'adjust6801' so we take value from sum6801 + adjust6801 and put to final6801
+
+  if (adjustElem.value == 0) return
+
+  let fingerCode = adjustElem.id.replace('adjust','')
+  let sumElem = document.querySelector(`#${adjustElem.id.replace('adjust','sum')}`)
+  let finalElem = document.querySelector(`#${adjustElem.id.replace('adjust','final')}`) 
+
+  let stdWorkHour = pumpb.getMilli( 
+    document.querySelector('#setStdTotalWorkHour').value )
+  
+  let stdAdjustHour = pumpb.getMilli(
+    document.querySelector('#setStdAdjustHour').value )
+  
+  let sumHour = pumpb.getMilli( sumElem.textContent)
+  let adjustHour = pumpb.getMilli( adjustElem.value)
+  let finalHour = sumHour + adjustHour + stdAdjustHour
+  let diffHour = finalHour - stdWorkHour
+  finalElem.textContent = pumpb.getDuration( finalHour)
+  document.querySelector(`#diff${fingerCode}`).textContent = pumpb.getDuration( diffHour)
+}
+
+
+
+function confirmAttendance( confirmButtonElem ) {
+  // disable all change and save this staff attendance to db
+  document.querySelector(`#adjust${ confirmButtonElem.id.replace('confirm','')}`).disabled = true;
+  confirmButtonElem.disabled = true
+}
+
+
 
 
 </script>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Product</title>
+  <script src="conf.js"></script>
+  <script src="pump-b.js"></script>
+  <script src="/js/xdev-b.js"></script>
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/material-x.css" rel="stylesheet" type="text/css">
+
+<style>
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  small { font-size: 0.8rem }
+  label { font-size: 0.8rem }
+
+
+  #calendarBox > * { background-color: #eeeeee; height: 100%; padding: 4px; margin: 0}
+  #calendarBox p { margin: 0; padding: 0}
+
+
+
+  .tiny { font-size: 0.7rem }
+  .small { font-size: 0.8rem }
+  .medium { font-size: 1.0rem }
+  .default { font-size: 1.25rem }
+  .large { font-size: 1.5rem }
+  .xlarge { font-size: 2.0rem }
+  .bold { font-weight: bold; }
+
+  .world-space { 
+    max-width: 800px; margin: 0 auto 60px auto; 
+    padding: 0 16px;   
+  }
+  .my-form > input {
+    width: 100%; padding: 4px;
+  }
+  .my-form input,
+  .my-form textarea,
+  .my-form select,
+  .my-form option {
+    font-size: 1.25rem;
+  }
+
+  .line-in-form {
+   grid-column: span 2; width: 100%; border-top: 1px solid gray; margin: 16px 0;
+  }
+
+  .hover-it:hover { background-color: #b2ebf2;}
+  .indigo { color: #5c6bc0 }
+  .grey { color: #616161 }
+  .little-grey-bg { background-color: #eeeeee; }
+  .staff-room { margin-top: 8px; min-height: 80px; }
+  .staff-room > * { margin: 1px 0 }
+  .tcenter, .tc { text-align: center; }
+
+  .day-house > *:first-child { text-align: center; }
+  
+  .drag { cursor: move; display: inline-block } 
+
+
+</style>
+</head>
+<body>
+
+
+<div class="world-space">
+  <div style="margin-bottom: 24px;">
+    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Work Planning</div>
+  
+    <p class="tiny grey">เมื่อวางแผนเสร็จแล้ว กด [ Confirm ] ถือเป็นการอนุมัติ และข้อมูลจะเก็บเข้า database พร้อมกับการ publish แผนนี้ ใน web site ของบริษัท โดยอัตโนมัติ ทุกคนจะได้รู้ว่าใครทำงานอะไร วันไหน</p>
+  </div>
+  
+
+
+  <!-- conf -->
+  <div style="display: grid; grid-template-columns: auto auto; align-items: center;">
+    <label>Load Work Plan</label>
+    <select class="w3-select">
+    </select>
+    <label>เลือกวันเริ่มต้น</label>
+    <input id="startDate" type="date" onchange="setStartDateTo(this.value)">
+  </div>
+
+  <!-- staff house -->
+  <hr>
+  <div class="small bold indigo">Assignment</div>
+  <p class="tiny grey">drag คนที่เราต้องการให้ทำงานวันไหน ไปลงวันนั้น ถือเป็นการ Assign (มอบหมาย) หรือ drag ออกจากวันนั้น ก็ถือเป็นการ Unassign (ยกเลิก) ก่อน Confirm ก็ควรจะตกลงกับพนักงานให้เรียบร้อยเสียก่อน</p>
+
+  <div id="resourceHouse" style="font-size: 0.7rem; padding: 8px">
+    <span data-name="ball" draggable="true" class="drag w3-tag w3-round-large">ball</span>
+    <span data-name="best" draggable="true" class="drag w3-tag w3-round-large">best</span>
+    <span data-name="john" draggable="true" class="drag w3-tag w3-round-large">john</span>
+    <span data-name="may" draggable="true" class="drag w3-tag w3-round-large">may</span>
+    <span data-name="nut" draggable="true" class="drag w3-tag w3-round-large">nut</span>
+    <span data-name="or" draggable="true" class="drag w3-tag w3-round-large">or</span>
+    <span data-name="pat" draggable="true" class="drag w3-tag w3-round-large">pat</span>
+    <span data-name="ron" draggable="true" class="drag w3-tag w3-round-large">ron</span>
+    <span data-name="voon" draggable="true" class="drag w3-tag w3-round-large">voon</span>
+  </div>
+
+  <!-- calendar box -->
+  <div id="calendarBox" style="display: grid; grid-template-columns: repeat(7, 1fr); align-items: center; gap: 1px; font-size: 0.7rem; margin-top: 8px">
+
+    <div class="day-house" id="day1">
+      <p day-num>Day 1</p>
+      <p day-value class="tc"></p>
+    </div>
+    <div id="day2" class="day-house">
+      <p day-num>Day 2</p>
+      <p day-value class="tc"></p>
+    </div>
+    <div id="day3" class="day-house">
+      <p day-num>Day 3</p>
+      <p day-value class="tc"></p>
+    </div>
+    <div id="day4" class="day-house">
+      <p>Day 4</p>
+      <p day-value class="tc"></p>
+    </div>
+    <div id="day5" class="day-house">
+      <p>Day 5</p>
+      <p day-value class="tc"></p>
+    </div>
+    <div id="day6" class="day-house">
+      <p>Day 6</p>
+      <p day-value class="tc"></p>
+    </div>
+    <div id="day7" class="day-house">
+      <p>Day 7</p>
+      <p day-value class="tc"></p>
+    </div>
+
+    <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
+      <div class="staff-room"></div>
+    </div>
+
+    <div><p style="font-size: 0.5rem; color: lightgrey; padding: 0; margin: 0">B</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
+      <div class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
+      <div class="staff-room"></div>
+    </div>
+    
+
+
+  </div>
+
+  <!-- action -->
+  <div style="margin-top: 24px; display: flex; align-items: center; justify-content: space-around;">
+    <button class="w3-button w3-blue">Confirm</button>
+    <button class="w3-button w3-grey">Clear</button>
+  </div>
+
+
+
+  <!-- u turn -->
+  <div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+    <img src="/icon/u-turn.svg" style="cursor: pointer; width: 32px;" 
+    onclick="history.back()">
+  </div>
+
+
+
+
+</div>
+<script>
+//////////////////////////////////////////////////////////////
+
+const TODAY = new Date
+let DAY = []
+let START_DAY;
+let dragElem = null;
+
+
+window.onload = () => {
+
+  document.querySelector('#startDate').value = getToday( TODAY)
+  setStartDateTo( getToday( TODAY))
+  
+  /*setTimeout( () => {
+    window.scrollTo(0,0)
+  }, 10)*/
+}
+
+
+
+
+// drag & drop the staff --------------------------------
+
+document.addEventListener('dragstart', (event) => {
+
+  const item = event.target;
+
+  if (event.target.classList.contains('drag')) {
+    dragElem = item
+    const isFromTargetBox = item.closest('.staff-room') !== null
+    const isFromSourceBox = item.closest('#resourceHouse') !== null
+    event.dataTransfer.setData('text/plain', item.dataset.name)
+
+    if (isFromTargetBox) {
+      event.dataTransfer.setData('text/origin','target')
+      event.dataTransfer.effectAllowed = 'move'
+
+    } else if (isFromSourceBox) {
+      event.dataTransfer.setData('text/origin','source')
+      event.dataTransfer.effectAllowed = 'copy'
+
+    } else {
+      event.preventDefault()
+      return
+    }
+
+  } else {
+    event.preventDefault()
+  }
+})
+
+
+
+
+
+
+document.addEventListener('dragover', (event) => {
+  const targetBox = event.target.closest('.staff-room')
+  const isDragFromTarget = dragElem && dragElem.closest('.staff-room') !== null;
+
+  if (targetBox) {
+    event.preventDefault()
+  } else if (isDragFromTarget) {
+    event.preventDefault()
+  }
+})
+
+
+document.addEventListener('drop', (event) => {
+  
+  event.preventDefault()
+  const targetBox = event.target.closest('.staff-room')
+  const itemOrigin = event.dataTransfer.getData('text/origin')
+
+  if (targetBox) {
+
+    if (itemOrigin === 'source') {
+
+      const dragName = event.dataTransfer.getData('text/plain')
+      const isAlreadyAssigned = targetBox.querySelector(`span[data-name="${dragName}"]`)
+
+      if (isAlreadyAssigned) {
+        return
+      }
+    
+      const originalElem = document.querySelector('#resourceHouse').querySelector(`[data-name="${dragName}"]`)
+
+      if (originalElem) {
+        const copiedElem = originalElem.cloneNode(true)
+        targetBox.appendChild( copiedElem)
+      }
+
+    }
+
+  } else {
+
+    if (itemOrigin === 'target' && dragElem) {
+      dragElem.remove()
+    }
+  }
+  
+})
+
+
+
+// unassign staff by drag off that day -----------------------
+
+
+
+
+
+
+
+
+//----------------------------------------------------------
+
+
+function getShortDateValue( dateOj, output = 'day' ) {
+
+  if (output === 'month') {
+    formatOptions = { month: 'short' }
+  } else {
+    formatOptions = { weekday: 'short' }
+  }
+
+  const formatter = new Intl.DateTimeFormat('en-US', formatOptions)
+  return formatter.format( dateOj )
+}
+
+
+function getShortMonth( num ) {
+  let month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  return month[ num ]
+}
+
+
+function getToday() {
+  let datee = new Date
+  return `${ datee.getFullYear() }-${ datee.getMonth() + 1}-${ datee.getDate()}`
+}
+
+
+function setStartDateTo( simpleIsoDate ) {
+  // input like 2025-12-13
+
+  DAY = []
+  START_DAY = new Date( simpleIsoDate)
+  DAY.push( simpleIsoDate )
+
+  // make days for the whole week
+  for (i=1; i < 7; i++) {
+    let prevs = DAY[i - 1].split('-')
+    prevs[2] = Number(prevs[2]) + 1
+    DAY.push( prevs.join('-') )
+  }
+
+  // show dates on the calendar
+  for (j=1; j < 8; j++) {
+    let thisDate = new Date( DAY[j-1] )
+    document.querySelector(`#day${j}`).children[1].textContent = 
+      getShortDateValue(
+        thisDate
+      ) + ' ' + thisDate.getDate() + '/' + (thisDate.getMonth() + 1
+    )
+  }  
+}
+
+
+
+
+
+</script>
+</body>
+</html>

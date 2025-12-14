@@ -200,3 +200,91 @@ pumpb.sortArray = (array, fieldName, type = 'ascending') => {
 
     return sortedArray;
 }
+
+
+
+/*
+    output as 'hh:mm:ss' like '23:59:59'
+*/
+pumpb.getDuration = ( millisec ) => {
+
+  let sign = '';
+  millisec = Number(millisec)
+  if (millisec < 0) {
+    sign = '-'
+  }
+
+  const totalSeconds = Math.abs( Math.floor( millisec / 1000));
+  const hour = Math.floor(totalSeconds / 3600); 
+  const min = Math.floor((totalSeconds % 3600) / 60);
+  const sec = totalSeconds % 60;
+
+  return sign + `${String(hour).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+
+} //ok
+
+
+/*
+    getDailyAttendance
+    output
+*/
+pumpb.getSimpleTime = (jsDateObject) => {
+  // 1. Validation: Ensure the input is a valid Date object
+  if (!(jsDateObject instanceof Date) || isNaN(jsDateObject.getTime())) {
+      console.error("Invalid input: Please provide a valid JavaScript Date object.");
+      return "00:00:00"; 
+  }
+
+  // 2. Extract components using local time (getTimezoneOffset applied)
+  const hours = jsDateObject.getHours();
+  const minutes = jsDateObject.getMinutes();
+  const seconds = jsDateObject.getSeconds();
+
+  // 3. Format the components with leading zeros (HH:MM:SS)
+  // String(n).padStart(2, '0') ensures '9' becomes '09'
+  const h = String(hours).padStart(2, '0');
+  const m = String(minutes).padStart(2, '0');
+  const s = String(seconds).padStart(2, '0');
+
+  // 4. Return the combined string
+  return `${h}:${m}:${s}`;
+} //ok
+
+
+
+
+pumpb.getLocalIsoDate = ( dateObject ) => {
+
+  const pad = (n) => String(n).padStart(2, '0');
+  const year = dateObject.getFullYear();
+  const month = pad(dateObject.getMonth() + 1);
+  const day = pad(dateObject.getDate());
+
+  const hours = pad(dateObject.getHours());
+  const minutes = pad(dateObject.getMinutes());
+  const seconds = pad(dateObject.getSeconds());
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+} //ok
+
+
+
+
+
+pumpb.getMilli = ( humanTime ) => {
+  // convert hh:mm:ss to 136546545132...millisec
+
+  let sign;
+  let part = humanTime.toString().split(':')
+  if (part[0].startsWith('-')) { // take out the sign first
+    part[0] = part[0].slice(1)
+    sign = -1
+  }
+
+  let hh = Number(part[0] || 0) * (1000*60*60)
+  let mm = Number(part[1] || 0) * (1000*60) 
+  let ss = Number(part[2] || 0) * (1000)
+
+  return sign == -1 ? sign*(hh+mm+ss) : hh+mm+ss
+} //ok

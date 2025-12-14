@@ -3093,8 +3093,10 @@ xb.help.readPicFileAsDataUrl = {
     tested: ok, m20230830   */
 xb.readTextFile = async function (inputEl) {
   return new Promise((resolve,reject) => {
+    
     let getFile = inputEl.files[0]
     let FR = new FileReader()
+
     FR.readAsText(getFile)
 
     FR.onload = () => {

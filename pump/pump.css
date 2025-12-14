@@ -1,0 +1,61 @@
+/* styles for pump project */
+
+
+/* general */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+html { font-size: 16px; }
+small { font-size: 0.8rem }
+label { font-size: 0.8rem }
+
+
+
+/* font, text */
+.micro { font-size: 0.5rem; }
+.tiny { font-size: 0.7rem }
+.small { font-size: 0.8rem }
+.medium { font-size: 1.0rem }
+.default { font-size: 1.25rem }
+.large { font-size: 1.5rem }
+.xlarge { font-size: 2.0rem }
+.bold { font-weight: bold; }
+.italic { font-style: italic }
+.tcenter, .tc { text-align: center; }
+.tleft, .tl { text-align: left; }
+.tright, .tr { text-align: right; }
+
+
+
+/* color */
+.indigo { color: #5c6bc0 }
+.grey { color: #616161 }
+.grey-bg { background-color: #eeeeee; }
+
+
+
+
+/* space */
+.world-space { 
+  max-width: 800px; margin: 0 auto 60px auto; 
+  padding: 0 16px;   
+}
+
+
+
+/* form */
+.form-space > input { width: 100%; padding: 4px; }
+.form-space input,
+.form-space textarea,
+.form-space select,
+.form-space option { font-size: 1.25rem; }
+.form-space p { padding: 0; margin: 0 }
+
+.line-in-form {
+  grid-column: span 2; width: 100%; border-top: 1px solid gray; margin: 16px 0;
+}
+
+
+
+/* action */
+.hover-it:hover { background-color: #b2ebf2;}
