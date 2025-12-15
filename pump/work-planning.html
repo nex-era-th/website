@@ -18,7 +18,7 @@
   small { font-size: 0.8rem }
   label { font-size: 0.8rem }
 
-
+  #staffHouse > * { margin: 1px }
   #calendarBox > * { background-color: #eeeeee; height: 100%; padding: 4px; margin: 0}
   #calendarBox p { margin: 0; padding: 0}
 
@@ -54,8 +54,8 @@
   .indigo { color: #5c6bc0 }
   .grey { color: #616161 }
   .little-grey-bg { background-color: #eeeeee; }
-  .staff-room { margin-top: 8px; min-height: 80px; }
-  .staff-room > * { margin: 1px 0 }
+  .staff-room { margin-top: 8px; min-height: 60px; }
+  .staff-room > * { margin: 1px }
   .tcenter, .tc { text-align: center; }
 
   .day-house > *:first-child { text-align: center; }
@@ -70,7 +70,7 @@
 
 <div class="world-space">
   <div style="margin-bottom: 24px;">
-    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Work Planning</div>
+    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Work Planning*</div>
   
     <p class="tiny grey">เมื่อวางแผนเสร็จแล้ว กด [ Confirm ] ถือเป็นการอนุมัติ และข้อมูลจะเก็บเข้า database พร้อมกับการ publish แผนนี้ ใน web site ของบริษัท โดยอัตโนมัติ ทุกคนจะได้รู้ว่าใครทำงานอะไร วันไหน</p>
   </div>
@@ -79,28 +79,37 @@
 
   <!-- conf -->
   <div style="display: grid; grid-template-columns: auto auto; align-items: center;">
-    <label>Load Work Plan</label>
-    <select class="w3-select">
-    </select>
+    <label>เลือก Work Plan</label>
+    <select id="chooseWorkplan" class="w3-select"
+    onchange="loadPlan(this.value)"></select>
     <label>เลือกวันเริ่มต้น</label>
-    <input id="startDate" type="date" onchange="setStartDateTo(this.value)">
+    <input id="startDate" type="date" class="w3-input"
+    onchange="setStartDateTo(this.value)">
+    <label>ตั้งช่วงเวลากะ เช้า (A)</label>
+    <input id="shiftA" type="text" value="05:00-14:00" class="w3-input">
+    <label>ตั้งช่วงเวลากะ บ่าย (B)</label>
+    <input id="shiftB" type="text" value="14:00-22:00" class="w3-input">
+    <label>ตั้งช่วงเวลากะ พิเศษ (C)</label>
+    <input id="shiftC" type="text" value="07:00-20:00" class="w3-input">
+    
   </div>
+
 
   <!-- staff house -->
   <hr>
   <div class="small bold indigo">Assignment</div>
   <p class="tiny grey">drag คนที่เราต้องการให้ทำงานวันไหน ไปลงวันนั้น ถือเป็นการ Assign (มอบหมาย) หรือ drag ออกจากวันนั้น ก็ถือเป็นการ Unassign (ยกเลิก) ก่อน Confirm ก็ควรจะตกลงกับพนักงานให้เรียบร้อยเสียก่อน</p>
 
-  <div id="resourceHouse" style="font-size: 0.7rem; padding: 8px">
-    <span data-name="ball" draggable="true" class="drag w3-tag w3-round-large">ball</span>
-    <span data-name="best" draggable="true" class="drag w3-tag w3-round-large">best</span>
-    <span data-name="john" draggable="true" class="drag w3-tag w3-round-large">john</span>
-    <span data-name="may" draggable="true" class="drag w3-tag w3-round-large">may</span>
-    <span data-name="nut" draggable="true" class="drag w3-tag w3-round-large">nut</span>
-    <span data-name="or" draggable="true" class="drag w3-tag w3-round-large">or</span>
-    <span data-name="pat" draggable="true" class="drag w3-tag w3-round-large">pat</span>
-    <span data-name="ron" draggable="true" class="drag w3-tag w3-round-large">ron</span>
-    <span data-name="voon" draggable="true" class="drag w3-tag w3-round-large">voon</span>
+  <div id="staffHouse" style="font-size: 0.7rem; padding: 8px 0">
+    <span data-name="ball" draggable="true" class="drag w3-tag w3-round-large w3-red">ball</span>
+    <span data-name="best" draggable="true" class="drag w3-tag w3-round-large w3-green">best</span>
+    <span data-name="john" draggable="true" class="drag w3-tag w3-round-large w3-blue">john</span>
+    <span data-name="may" draggable="true" class="drag w3-tag w3-round-large w3-yellow">may</span>
+    <span data-name="nut" draggable="true" class="drag w3-tag w3-round-large w3-pink">nut</span>
+    <span data-name="or" draggable="true" class="drag w3-tag w3-round-large w3-orange">or</span>
+    <span data-name="pat" draggable="true" class="drag w3-tag w3-round-large w3-purple">pat</span>
+    <span data-name="ron" draggable="true" class="drag w3-tag w3-round-large w3-teal">ron</span>
+    <span data-name="voon" draggable="true" class="drag w3-tag w3-round-large w3-brown">voon</span>
   </div>
 
   <!-- calendar box -->
@@ -135,58 +144,87 @@
       <p day-value class="tc"></p>
     </div>
 
+    <!-- shift A -->
     <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
-      <div class="staff-room"></div>
+      <div id="day1ShiftA" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
-      <div class="staff-room"></div>
+      <div id="day2ShiftA" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
-      <div class="staff-room"></div>
+      <div id="day3ShiftA" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
-      <div class="staff-room"></div>
+      <div id="day4ShiftA" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
-      <div class="staff-room"></div>
+      <div id="day5ShiftA" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
-      <div class="staff-room"></div>
+      <div id="day6ShiftA" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">A</p>
-      <div class="staff-room"></div>
+      <div id="day7ShiftA" class="staff-room"></div>
     </div>
 
-    <div><p style="font-size: 0.5rem; color: lightgrey; padding: 0; margin: 0">B</p>
-      <div class="staff-room"></div>
+    <!-- shift B -->
+    <div><p style="font-size: 0.5rem; color: lightgrey;">B</p>
+      <div id="day1ShiftB" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
-      <div class="staff-room"></div>
+      <div id="day2ShiftB" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
-      <div class="staff-room"></div>
+      <div id="day3ShiftB" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
-      <div class="staff-room"></div>
+      <div id="day4ShiftB" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
-      <div class="staff-room"></div>
+      <div id="day5ShiftB" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
-      <div class="staff-room"></div>
+      <div id="day6ShiftB" class="staff-room"></div>
     </div>
     <div><p style="font-size: 0.5rem; color: lightgrey">B</p>
-      <div class="staff-room"></div>
+      <div id="day7ShiftB" class="staff-room"></div>
     </div>
     
+    <!-- shift C -->
+    <div><p style="font-size: 0.5rem; color: lightgrey;">C</p>
+      <div id="day1ShiftC" class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">C</p>
+      <div id="day2ShiftC" class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">C</p>
+      <div id="day3ShiftC" class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">C</p>
+      <div id="day4ShiftC" class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">C</p>
+      <div id="day5ShiftC" class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">C</p>
+      <div id="day6ShiftC" class="staff-room"></div>
+    </div>
+    <div><p style="font-size: 0.5rem; color: lightgrey">C</p>
+      <div id="day7ShiftC" class="staff-room"></div>
+    </div>
 
 
   </div>
 
+
+
   <!-- action -->
-  <div style="margin-top: 24px; display: flex; align-items: center; justify-content: space-around;">
-    <button class="w3-button w3-blue">Confirm</button>
-    <button class="w3-button w3-grey">Clear</button>
+  <div id="formActBox" style="margin-top: 24px; display: flex; align-items: center; justify-content: space-around;">
+    <button id="saveAct" onclick="saveWorkplan()" class="w3-button w3-blue" disabled>Save</button>
+    <button id="editAct" onclick="editWorkplan()" class="w3-button w3-amber">Edit</button>
+    <button id="newAct" onclick="newPlan()" class="w3-button w3-pink">New</button>
+    <button id="confirmAct" class="w3-button w3-green" disabled>Confirm</button>
+    <button id="cancelAct" onclick="cancel()" class="w3-button w3-grey" disabled>Cancel</button>
   </div>
 
 
@@ -208,12 +246,51 @@ const TODAY = new Date
 let DAY = []
 let START_DAY;
 let dragElem = null;
+let MODE; // new|edit|view
 
 
-window.onload = () => {
+window.onload = async () => {
 
-  document.querySelector('#startDate').value = getToday( TODAY)
-  setStartDateTo( getToday( TODAY))
+  // we'll auto show the last plan, also make list of the last 5 plans for user to choose
+
+  try {
+
+    let findWp = await pumpb.fetchThis( null, '/find-workplan','get')
+    
+    if (findWp.done) {
+
+      // make choices
+      findWp.data.forEach( v => {
+        let newOption = document.createElement('option')
+        newOption.textContent = v.name
+        document.querySelector('#chooseWorkplan').append( newOption)
+      })
+
+      let lastPlan = findWp.data[0]      
+      showPlan( lastPlan)
+      disablePlan()
+      MODE = 'view'
+      
+
+    } else {
+      //alert('not found a plan')
+      // if no plan at all, we start the planning for today onwards
+      document.querySelector('#startDate').value = getIsoDate(TODAY)
+      setStartDateTo( getIsoDate( TODAY))
+      document.querySelector('#saveAct').disabled = false
+      MODE = 'new'
+
+    }
+
+  } catch(er) {
+    console.error('error - find workplan', er)
+    alert('error ' + er.message)
+  }
+
+
+
+  //document.querySelector('#startDate').value = getIsoDate( TODAY)
+  //setStartDateTo( getIsoDate( TODAY))
   
   /*setTimeout( () => {
     window.scrollTo(0,0)
@@ -232,7 +309,7 @@ document.addEventListener('dragstart', (event) => {
   if (event.target.classList.contains('drag')) {
     dragElem = item
     const isFromTargetBox = item.closest('.staff-room') !== null
-    const isFromSourceBox = item.closest('#resourceHouse') !== null
+    const isFromSourceBox = item.closest('#staffHouse') !== null
     event.dataTransfer.setData('text/plain', item.dataset.name)
 
     if (isFromTargetBox) {
@@ -287,7 +364,7 @@ document.addEventListener('drop', (event) => {
         return
       }
     
-      const originalElem = document.querySelector('#resourceHouse').querySelector(`[data-name="${dragName}"]`)
+      const originalElem = document.querySelector('#staffHouse').querySelector(`[data-name="${dragName}"]`)
 
       if (originalElem) {
         const copiedElem = originalElem.cloneNode(true)
@@ -307,7 +384,6 @@ document.addEventListener('drop', (event) => {
 
 
 
-// unassign staff by drag off that day -----------------------
 
 
 
@@ -338,14 +414,15 @@ function getShortMonth( num ) {
 }
 
 
-function getToday() {
-  let datee = new Date
-  return `${ datee.getFullYear() }-${ datee.getMonth() + 1}-${ datee.getDate()}`
+function getIsoDate( dateOj ) {
+  //let datee = new Date
+  return `${ dateOj.getFullYear() }-${ dateOj.getMonth() + 1}-${ dateOj.getDate()}`
 }
 
 
 function setStartDateTo( simpleIsoDate ) {
   // input like 2025-12-13
+  // set the table to show dates starting from the #startDate
 
   DAY = []
   START_DAY = new Date( simpleIsoDate)
@@ -353,9 +430,14 @@ function setStartDateTo( simpleIsoDate ) {
 
   // make days for the whole week
   for (i=1; i < 7; i++) {
-    let prevs = DAY[i - 1].split('-')
-    prevs[2] = Number(prevs[2]) + 1
-    DAY.push( prevs.join('-') )
+    //let prevs = DAY[i - 1].split('-')
+    //prevs[2] = Number(prevs[2]) + 1
+    
+    DAY.push( 
+        START_DAY.setDate(
+          START_DAY.getDate() + 1
+        )
+    )
   }
 
   // show dates on the calendar
@@ -368,6 +450,360 @@ function setStartDateTo( simpleIsoDate ) {
     )
   }  
 }
+
+
+
+async function saveWorkplan() {
+  /*
+      collect all data into an object and send to pump.workplan collection
+      format of workplan ->
+      {
+        name: 2025-12-15, // as same as startDate
+        startDate: 2025-12-15,
+        shift: {
+          a: '05:00-14:00',
+          b: '14:00-22:00',
+          c: '07:00-20:00'
+        },
+        day1: {
+          a: [ staff, staff, staff, ...],
+          b: [...],
+          c: [...]
+        }, 
+        day2: --, day7: --,
+        status: planning|confirmed,
+        confirmedBy: @fern,
+        confirmedTime: --milli--,
+        publishedTime: --milli--,
+        lastUpdate: --milli--
+      }
+  */
+
+
+  if (MODE == 'new') {
+    // the new plan name must not as same as the existing plan
+    if (Array.from(document.querySelector('#chooseWorkplan').options).some( opt => opt.text == document.querySelector('#startDate').value) ) {
+
+      alert('ไม่สามารถทำแผนใหม่ที่มีวันซ้ำกันค่ะ')
+      return 
+
+    }
+  }  
+
+
+  let workplan = {
+    name: document.querySelector('#startDate').value,
+    startDate: document.querySelector('#startDate').value,
+    status: 'planning',
+    confirmedBy: '',
+    confirmedTime: 0,
+    publishedTime: 0,
+    lastUpdate: Date.now(),
+    shift: {
+      a: document.querySelector('#shiftA').value,
+      b: document.querySelector('#shiftB').value,
+      c: document.querySelector('#shiftC').value,
+    },
+    day1: {
+      a: Array.from( document.querySelector('#day1ShiftA').children).map(v => v.dataset.name),
+      b: Array.from( document.querySelector('#day1ShiftB').children).map(v => v.dataset.name),
+      c: Array.from( document.querySelector('#day1ShiftC').children).map(v => v.dataset.name)
+    },
+    day2: {
+      a: Array.from( document.querySelector('#day2ShiftA').children).map(v => v.dataset.name),
+      b: Array.from( document.querySelector('#day2ShiftB').children).map(v => v.dataset.name),
+      c: Array.from( document.querySelector('#day2ShiftC').children).map(v => v.dataset.name)
+    },
+    day3: {
+      a: Array.from( document.querySelector('#day3ShiftA').children).map(v => v.dataset.name),
+      b: Array.from( document.querySelector('#day3ShiftB').children).map(v => v.dataset.name),
+      c: Array.from( document.querySelector('#day3ShiftC').children).map(v => v.dataset.name)
+    },
+    day4: {
+      a: Array.from( document.querySelector('#day4ShiftA').children).map(v => v.dataset.name),
+      b: Array.from( document.querySelector('#day4ShiftB').children).map(v => v.dataset.name),
+      c: Array.from( document.querySelector('#day4ShiftC').children).map(v => v.dataset.name)
+    },
+    day5: {
+      a: Array.from( document.querySelector('#day5ShiftA').children).map(v => v.dataset.name),
+      b: Array.from( document.querySelector('#day5ShiftB').children).map(v => v.dataset.name),
+      c: Array.from( document.querySelector('#day5ShiftC').children).map(v => v.dataset.name)
+    },
+    day6: {
+      a: Array.from( document.querySelector('#day6ShiftA').children).map(v => v.dataset.name),
+      b: Array.from( document.querySelector('#day6ShiftB').children).map(v => v.dataset.name),
+      c: Array.from( document.querySelector('#day6ShiftC').children).map(v => v.dataset.name)
+    },
+    day7: {
+      a: Array.from( document.querySelector('#day7ShiftA').children).map(v => v.dataset.name),
+      b: Array.from( document.querySelector('#day7ShiftB').children).map(v => v.dataset.name),
+      c: Array.from( document.querySelector('#day7ShiftC').children).map(v => v.dataset.name)
+    }
+  }
+
+  try {
+
+    let reply = await pumpb.fetchThis( workplan, '/save-workplan')
+    if (reply.done) {
+
+      alert('เรียบร้อยค่ะ')
+
+      // show the plan name in the #chooseWorklan
+      // plan name is as same as the #startDate
+      let newOptionEl = document.createElement('option')
+      newOptionEl.textContent = document.querySelector('#startDate').value
+      document.querySelector('#chooseWorkplan').prepend( newOptionEl)
+      document.querySelector('#chooseWorkplan').value = workplan.name
+      disablePlan()
+      
+      Array.from(document.querySelector('#formActBox').children).forEach( el => {
+        el.disabled = true
+      })
+
+      document.querySelector('#editAct').disabled = false
+      document.querySelector('#newAct').disabled = false
+
+
+    } else {
+      alert('มีปัญหาค่ะ ลองอีกทีดีมั๊ยคะ')
+    }
+
+  } catch(er) {
+    console.log( er)
+    alert('มีปัญหาทางเทคนิคค่ะ ลองดูอีกทีเผื่อได้ ถ้าไม่ได้อีกก็ต้อง @admin แล้วค่ะ')
+  }
+
+}
+
+
+
+
+
+function showPlan( planOj ) {
+  // throw plan here and shows in the page
+
+  // clear existing assignments
+  document.querySelectorAll('.staff-room').forEach( el => {
+    el.innerHTML = ''
+  })
+
+  setStartDateTo( planOj.startDate)
+  document.querySelector('#shiftA').value = planOj.shift.a
+  document.querySelector('#shiftB').value = planOj.shift.b
+  document.querySelector('#shiftC').value = planOj.shift.c
+  
+  // day1
+  planOj.day1.a.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day1ShiftA').appendChild(copyEl)
+  })
+  planOj.day1.b.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day1ShiftB').appendChild(copyEl)
+  })
+  planOj.day1.c.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day1ShiftC').appendChild(copyEl)
+  })
+  // day2
+  planOj.day2.a.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day2ShiftA').appendChild(copyEl)
+  })
+  planOj.day2.b.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day2ShiftB').appendChild(copyEl)
+  })
+  planOj.day2.c.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day2ShiftC').appendChild(copyEl)
+  })
+  // day3
+  planOj.day3.a.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day3ShiftA').appendChild(copyEl)
+  })
+  planOj.day3.b.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day3ShiftB').appendChild(copyEl)
+  })
+  planOj.day3.c.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day3ShiftC').appendChild(copyEl)
+  })
+  // day4
+  planOj.day4.a.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day4ShiftA').appendChild(copyEl)
+  })
+  planOj.day4.b.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day4ShiftB').appendChild(copyEl)
+  })
+  planOj.day4.c.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day4ShiftC').appendChild(copyEl)
+  })
+  // day5
+  planOj.day5.a.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day5ShiftA').appendChild(copyEl)
+  })
+  planOj.day5.b.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day5ShiftB').appendChild(copyEl)
+  })
+  planOj.day5.c.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day5ShiftC').appendChild(copyEl)
+  })
+  // day6
+  planOj.day6.a.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day6ShiftA').appendChild(copyEl)
+  })
+  planOj.day6.b.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day6ShiftB').appendChild(copyEl)
+  })
+  planOj.day6.c.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day6ShiftC').appendChild(copyEl)
+  })
+  // day7
+  planOj.day7.a.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day7ShiftA').appendChild(copyEl)
+  })
+  planOj.day7.b.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day7ShiftB').appendChild(copyEl)
+  })
+  planOj.day7.c.forEach( st => {
+    let copyEl = document.querySelector('#staffHouse').querySelector(`[data-name="${st}"]`).cloneNode(true)
+    document.querySelector('#day7ShiftC').appendChild(copyEl)
+  })
+
+}
+
+
+
+function disablePlan() {
+  // disable everything, you just see it, don't move anything
+
+  document.querySelectorAll('input').forEach( el => {
+    if ( true /*el.id != 'startDate'*/) {
+      el.disabled = true
+    }
+  })
+
+  //document.querySelectorAll('select').forEach( el => el.disabled = true)
+  document.querySelectorAll('[draggable="true"]').forEach(el => {
+    el.draggable = false;
+    el.classList.remove('drag')
+  })
+
+}
+
+
+function editWorkplan() {
+  // enables all input and set all drag items to be draggable
+
+  MODE = 'edit'
+  document.querySelectorAll('input').forEach( el => {
+    el.disabled = false
+  })
+
+  document.querySelectorAll('[draggable="false"]').forEach(el => {
+    el.draggable = true;
+    el.classList.add('drag')
+  })  
+
+  document.querySelector('#saveAct').disabled = false
+  document.querySelector('#editAct').disabled = true
+  document.querySelector('#newAct').disabled = true
+  document.querySelector('#cancelAct').disabled = false
+
+}
+
+
+
+
+function newPlan() {
+  // clear all and start a clean new plan
+
+  MODE = 'new'
+  document.querySelector('#startDate').value = getIsoDate( TODAY)
+  setStartDateTo( getIsoDate( TODAY))
+  document.querySelectorAll('.staff-room').forEach( el => {
+    el.innerHTML = ''
+  })
+
+  document.querySelectorAll('input').forEach( el => {
+    el.disabled = false
+  })
+
+  /*Array.from(document.querySelector('#staffHouse').children).forEach( el => {
+    el.draggable = true
+  })*/
+  document.querySelectorAll('[draggable="false"]').forEach(el => {
+    el.draggable = true;
+    el.classList.add('drag')
+  })
+
+  document.querySelector('#saveAct').disabled = false
+  document.querySelector('#editAct').disabled = true
+  document.querySelector('#newAct').disabled = true
+  document.querySelector('#cancelAct').disabled = false
+
+}
+
+
+async function loadPlan( wpName ) {
+  // user choosens a plan we find it from db and show it
+
+  if (!wpName) { return }
+
+  try {
+
+    let reply = await pumpb.fetchThis( null, '/find-workplan?name=' + wpName, 'get')
+
+    if (reply.done) {
+      showPlan( reply.data )
+      disablePlan()
+    } else {
+      alert('ไม่เห็นมีข้อมูลเลยค่ะ มีอะไรผิดปกติรึเปล่า')
+    }
+
+  } catch(er) {
+    console.error(er)
+    alert('มีปัญหาทางเทคนิคค่ะ')
+  }
+
+
+}
+
+
+
+function cancel() {
+  // cancel is back to view mode
+
+  /*
+  disablePlan()
+  Array.from(document.querySelector('#formActBox').children).forEach( butt => {
+    butt.disabled = true
+  })
+
+  document.querySelector('#editAct').disabled = false
+  document.querySelector('#newAct').disabled = false
+  MODE = 'view'
+  */ 
+
+  location.reload()
+}
+
+
+
 
 
 
