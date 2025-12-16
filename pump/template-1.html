@@ -16,15 +16,26 @@
 </head>
 <body>
 
-<div class="world-space" style="padding: 0 16px;">
+<div class="world-space">
 
+  <!-- title / page name -->
   <div style="margin-bottom: 24px;">
     <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">กำหนด OT*</div>
-  
     <p class="tiny grey">กำหนดการทำ OT ในหน้านี้ หลังจากตกลงกับพนักงานได้แล้ว</p>
   </div>
 
-  <div class="form-space" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
+
+  <!-- find -->
+  <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
+    <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นชื่อสินค้า ...">
+    <button class="w3-button w3-blue" 
+    style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
+  </div>
+
+
+
+  <!-- form -->
+  <div class="form-space" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px; margin-top: 32px">
 
     <label>พนักงาน</label>
     <select class="w3-select">
@@ -43,6 +54,8 @@
   </div>
 
 
+
+  <!-- form action -->
   <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 32px">
     <button class="w3-button w3-blue">Confirm</button>
     <button class="w3-button w3-yellow">Clear</button>
@@ -53,6 +66,8 @@
 </div>
 
 
+
+<!-- page action -->
 <div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
   <img src="/icon/u-turn.svg" style="width: 32px; height: 32px; cursor: pointer;" 
   onclick="history.back()">

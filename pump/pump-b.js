@@ -295,3 +295,83 @@ pumpb.getMilli = ( humanTime ) => {
 pumpb.clearBrowserBar = () => {
     window.history.replaceState( null,'', window.location.origin + window.location.pathname)
 }
+
+
+
+
+pumpb.MyQuery = class MyQuery {
+    constructor(queryString) {
+        // Initializes with the current URL parameters or a provided string
+        this.params = new URLSearchParams(queryString || window.location.search);
+        this.basePath = window.location.pathname; 
+    }
+    
+    // --- New Method ---
+    /**
+     * Checks if a parameter with the given name exists.
+     * @param {string} name The name of the parameter to check (e.g., 'id', 'page').
+     * @returns {boolean} True if the parameter exists, false otherwise.
+     */
+    has(name) {
+        return this.params.has(name);
+    }
+    
+    // --- Existing Methods ---
+    get(name) { 
+        return this.params.get(name); 
+    }
+    
+    set(name, value) { 
+        this.params.set(name, value); 
+    }
+    
+    toString() { 
+        return '?' + this.params.toString(); 
+    }
+
+    // Method to update URL and re-render (optional, requires a callback function)
+    updateURLAndRender(renderCallback) {
+        const newPath = this.basePath + this.toString();
+        window.history.pushState({ path: newPath }, '', newPath);
+        if (typeof renderCallback === 'function') {
+            renderCallback(this);
+        }
+    }
+}
+
+
+
+
+pumpb.getLengthFrom2times = (startTime, stopTime) => {
+    // 1. Convert "HH:MM" strings to total minutes from midnight.
+    const timeToMinutes = (timeStr) => {
+        // timeStr looks like "HH:MM", e.g., "09:30"
+        const parts = timeStr.split(':');
+        const hours = parseInt(parts[0], 10);
+        const minutes = parseInt(parts[1], 10);
+        return (hours * 60) + minutes;
+    };
+
+    const startTotalMinutes = timeToMinutes(startTime);
+    const stopTotalMinutes = timeToMinutes(stopTime);
+
+    // 2. Calculate the difference in minutes.
+    let differenceInMinutes = stopTotalMinutes - startTotalMinutes;
+
+    // 3. Handle rollover (stop time is on the next day, e.g., 23:00 to 01:00).
+    // If the difference is negative, add 24 hours (1440 minutes).
+    if (differenceInMinutes < 0) {
+        differenceInMinutes += 1440; // 24 hours * 60 minutes
+    }
+
+    // 4. Format the total minutes back into "HH:MM" duration string.
+    const durationHours = Math.floor(differenceInMinutes / 60);
+    const durationMinutes = differenceInMinutes % 60;
+
+    // Use String.padStart() to ensure two digits (e.g., '1' becomes '01').
+    const formattedHours = String(durationHours).padStart(2, '0');
+    const formattedMinutes = String(durationMinutes).padStart(2, '0');
+
+    // Return the final "HH:MM" duration string.
+    return `${formattedHours}:${formattedMinutes}`;
+}

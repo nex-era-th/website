@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Product</title>
+  <script src="conf.js"></script>
+  <script src="pump-b.js"></script>
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/material-x.css" rel="stylesheet" type="text/css">
+  <link href="pump.css" rel="stylesheet" type="text/css">
+<style>
+  /*
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  th { text-align: center; }
+  table {
+    width: 100%; border-collapse: collapse; margin-top: 0px;
+    border: 1px solid gray;
+  }
+  th, td {
+    border: 1px solid gray; padding: 8px; text-align: left;
+  }
+  tr:hover { background-color: aqua; }
+
+  .world-space { max-width: 800px; margin: auto; }
+  */
+
+  .main-grid {
+    background-color: white;
+  }
+  .main-grid > * { 
+    background-color: #eeeeee; padding: 12px 8px; height: 100%;
+  }
+  /*.tcenter { text-align: center; }*/
+</style>
+</head>
+<body>
+
+
+<div class="world-space">
+
+
+   <div style="margin-bottom: 24px;">
+    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">ข้อมูล OT ทั้งหมด</div>
+  
+    <p class="tiny grey"></p>
+  </div>
+
+
+
+
+  <!-- find -->
+  <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
+    <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นชื่อพนักงาน ...">
+    <button class="w3-button w3-blue" 
+    style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
+  </div>
+
+
+  <!-- grid -->
+  <div id="mainGrid" class="main-grid" style="margin-top: 32px; display: grid; grid-template-columns: auto auto auto; align-items: center; gap: 1px">
+
+    <span class="tcenter">พนักงาน</span><span class="tcenter">วันที่</span><span class="tcenter">OT</span>
+    
+
+
+  </div>
+
+
+
+
+</div>
+
+
+<!-- page action -->
+<div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+  <img src="/icon/u-turn.svg" style="width: 32px; cursor: pointer;" 
+  onclick="location.href='/pump/index.html';">
+</div>
+
+
+
+
+
+
+
+
+
+<script>
+/////////////////////////////////////////////////////////////////
+
+let MODE = 'new';
+let OT_ID;
+
+
+window.onload = async () => {
+  // get all product here
+
+
+  try {
+
+    let reply = await pumpb.fetchThis( null, '/get-all-ot', 'get')
+    if (reply.done) {
+
+      let data = reply.data
+      let mainGrid = document.querySelector('#mainGrid')
+
+      data.forEach( ot => {
+
+        let span1 = document.createElement('span')
+        span1.textContent = ot.staffNickName
+        span1.setAttribute('data-id', ot._id)
+        mainGrid.append( span1)
+
+        let span2 = document.createElement('span')
+        span2.textContent = pumpb.simpleDate( ot.otDate)
+        span2.setAttribute('data-id', ot._id)
+        mainGrid.append( span2)
+
+        let span3 = document.createElement('span')
+        span3.textContent = `${ot.startTime}-${ot.stopTime} (${ot.lengthTime})`
+        span3.setAttribute('data-id', ot._id)
+        mainGrid.append( span3)
+      })
+
+    } else {
+      alert('ไม่มีข้อมูล OT เลยค่ะ')
+    }
+
+  } catch(er) {
+    alert('มีปัญหาทางเทคนิคค่ะ ลองกด refresh ดูอีกทีเผื่อได้ค่ะ ถ้าไม่ได้ก็ต้อง @admin แล้วล่ะ')
+  }
+
+}
+
+
+  // if user clicks on table bring her that payment info
+  document.querySelector('#mainGrid').addEventListener('click', event => {
+
+    //alert( event.target.dataset.id)
+    //return
+
+    location.href = 'ot-form.html?mode=view&id=' + event.target.dataset.id
+
+  })
+
+
+</script>
+</body>
+</html>
