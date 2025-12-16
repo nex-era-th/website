@@ -302,7 +302,7 @@
     onclick="location.reload()">Cancel / Clear</button>
   </div>
 
-
+  <input hidden id="keepPayoutIdHere"> 
 
 </div>
 
@@ -371,6 +371,7 @@ style="width: 100%; height: 100%; background-color: black; position: fixed; top:
 <script>
 ///////////////////////////////////////////////////////////////////
 
+let MODE = 'new';
 
 // this code scroll page to top after reload
 window.onload = () => {
@@ -476,6 +477,10 @@ window.onload = () => {
           document.querySelector('#addPartnerAct').hidden = true
           document.querySelector('#productItemHouseAct').style.display = 'none'
           document.querySelector('#formAct').style.display = 'none'
+
+
+          MODE = 'view';
+          document.querySelector('#keepPayoutIdHere').value = id
 
         } else {
           alert( reply.msg)
@@ -616,29 +621,40 @@ async function savePaymentRecord() {
 
   try {
 
-    let reply = await fetchThis( data, '/save-payment-record')
-    /*
-        reply format
-        {
-          done: true | false,
-          msg: 'done - recored this payment',
-          recordId: [_id]
-        }
-    */
+    let reply;
+    if (MODE == 'new') {
+
+      reply = await fetchThis( data, '/save-payment-record')
+      /*
+          reply format
+          {
+            done: true | false,
+            msg: 'done - recored this payment',
+            recordId: [_id]
+          }
+      */
+
+    } else if (MODE == 'edit') {
+
+      data._id = document.querySelector('#keepPayoutIdHere').value
+      reply = await fetchThis( data, '/update-payout')
+
+    }
+    
 
     if (reply.done) {
-      alert(`Done - เก็บข้อมูลเรียบร้อยแล้ว \nid = ${reply.recordId }`)
+      alert(`เรียบร้อยค่ะ`)
       location.reload()
       
 
 
     } else {
-      alert('Fail - มีปัญหาในการเก็บข้อมูลนี้ ลองดูอีกที หากยังมีปัญหาให้ติดต่อ @admin')
+      alert('ไม่มีการ save ข้อมูลนี้ อาจเพราะว่าข้อมูลไม่มีอะไรใหม่ หรือไม่ก็อาจมีปัญหาบางอย่าง')
     }
 
 
   } catch(er) {
-    alert('Error - มีปัญหาสื่อสารกับ Server')
+    alert('มีปัญหาทางเทคนิคค่ะ')
   }
 
 
@@ -853,6 +869,8 @@ function editPayout() {
 
   // clear browser bar
   window.history.replaceState( null,'', window.location.origin + window.location.pathname)
+
+  MODE = 'edit'
 
 }
 

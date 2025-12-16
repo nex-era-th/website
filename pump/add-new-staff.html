@@ -69,6 +69,18 @@
     <input type="text" id="firstName">  
     <label>นามสกุล*</label>
     <input type="text" id="lastName">  
+
+    <hr class="line-in-form">
+
+    <label>Nickname English*</label>
+    <input id="nickNameEn" type="text">
+    <label>Fullname English</label>
+    <input id="fullNameEn" type="text">
+
+
+    <hr class="line-in-form">
+
+
     <label>ตำแหน่ง</label>
     <input type="text" id="position">  
 
@@ -89,6 +101,9 @@
 
     <label>รหัสพนักงาน</label>
     <input type="text" id="staffCode">
+    <label>Fingerprint Code</label>
+    <input id="fingerCode" type="text">
+
     <label>เริ่มทำงาน</label>
     <input type="date" id="start">  
     <label>โทร*</label>
@@ -215,7 +230,7 @@
   <div id="pageActBox" style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
     <button id="saveButton" class="w3-button w3-blue" 
     onclick="sendData()">Save</button>
-    <button id="clearButton" class="w3-button w3-light-grey" 
+    <button id="clearButton" class="w3-button w3-yellow" 
     onclick="location.reload()">Cancel / Clear</button>
   </div>
 
@@ -234,6 +249,8 @@
 <script>
 ///////////////////////////////////////////////////////////////////
 
+let MODE = 'new';
+let STAFF_ID, TEST;
 
 
 // this code scroll page to top after reload
@@ -303,9 +320,13 @@ window.onload = () => {
 
           if (data.facePic) {
             document.querySelector('#showFacePicHere').src = data.facePic
+            document.querySelector('#showFacePicHere').hidden = false
           }
 
 
+          MODE = 'view';
+          STAFF_ID = staffId;
+          pumpb.clearBrowserBar()
 
 
         } else {
@@ -368,10 +389,19 @@ async function sendData() {
       nickName: document.getElementById('nickName').value,
       firstName: document.getElementById('firstName').value,
       lastName: document.getElementById('lastName').value,
+
+      nickNameEn: document.getElementById('nickNameEn').value,
+      fullNameEn: document.getElementById('fullNameEn').value,
+
+
       position: document.getElementById('position').value,
       department: document.getElementById('department').value,
       role: document.getElementById('role').value,
+
       staffCode: document.getElementById('staffCode').value,
+      fingerCode: document.getElementById('fingerCode').value,
+
+
       start: document.getElementById('start').value,
       tel: document.getElementById('tel').value,  
       lineId: document.getElementById('lineId').value,
@@ -403,8 +433,8 @@ async function sendData() {
 
 
     // validate
-    if( !data.nickName || !data.firstName || !data.lastName || !data.tel || !data.enterBy || !data.address ) {
-      alert('กรุณากรอกข้อมูลให้ครบถ้วนในช่องที่มีเครื่องหมาย *')
+    if( !data.nickName || !data.nickNameEn || !data.firstName || !data.lastName || !data.tel || !data.enterBy || !data.address ) {
+      alert('ช่องที่มี * ต้องมีข้อมูลค่ะ')
       return
     }
 
@@ -412,16 +442,33 @@ async function sendData() {
     // pass - basic validation
 
 
-    let resp = await fetchThis( data, '/add-staff' )
-    //alert( JSON.stringify( resp ) )
+    if (MODE == 'new') {
 
-    if (resp.done) {
-      alert(`เรียบร้อย -- Add Staff ชื่อ ${data.firstName} ${data.lastName} เรียบร้อยแล้ว`)
-      location.reload()
-      //document.getElementById('nickName').focus()
-    } else {
-      alert('ไม่สามารถ Save ข้อมูลนี้ได้ โปรดลองอีกครั้ง')
+      let resp = await fetchThis( data, '/add-staff' )
+      //alert( JSON.stringify( resp ) )
+
+      if (resp.done) {
+        alert(`เรียบร้อยค่ะ`)
+        location.reload()
+        //document.getElementById('nickName').focus()
+      } else {
+        alert('Save ข้อมูลไม่ได้ค่ะ โปรดลองอีกครั้ง')
+      }
+
+    } else if (MODE == 'edit') {
+
+      data._id = STAFF_ID
+      let reply = await fetchThis( data, '/update-staff')
+
+      if (reply.done) {
+        alert('เรียบร้อยค่ะ')
+
+      } else {
+        alert('ไม่ได้ update ข้อมูลค่ะ อาจเพราะไม่มีข้อมูลใหม่ หรือมีปัญหาอย่างอื่น')
+      }
     }
+
+    
     
 
   
@@ -441,6 +488,7 @@ function editStaff() {
   document.querySelector('#screenName').textContent = 'แก้ไขข้อมูลพนักงาน'
   document.querySelector('#topActBox').style.display = 'none'
   document.querySelector('#choosePicInputBox').hidden = false
+
   document.querySelectorAll('input').forEach( el => {
     el.disabled = false;
   })
@@ -454,6 +502,8 @@ function editStaff() {
 
   // clear browser query
   window.history.replaceState( null,'', window.location.origin + window.location.pathname)
+
+  MODE = 'edit';
 
 }
 

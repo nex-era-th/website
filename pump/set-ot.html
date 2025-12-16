@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Add Partner</title>
+<script src="conf.js"></script>
+<script src="/js/xdev-b.js"></script>
+<link href="/js/w3.css" rel="stylesheet" type="text/css">
+<link href="/js/material-x.css" rel="stylesheet" type="text/css">
+<link href="pump.css" rel="stylesheet" type="text/css">
+<!--style>
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  small { font-size: 0.8rem }
+  label { font-size: 1.0rem }
+  .medium { font-size: 1.0rem }
+  .default { font-size: 1.25rem }
+  .large { font-size: 1.5rem }
+  .xlarge { font-size: 2.0rem }
+
+  .world-space { max-width: 800px; margin: auto; }
+  .my-form > input {
+    width: 100%; padding: 4px;
+  }
+  .my-form input,
+  .my-form textarea,
+  .my-form select,
+  .my-form option {
+    font-size: 1.25rem;
+  }
+
+  .line-in-form {
+   grid-column: span 2; width: 100%; border-top: 1px solid gray; margin: 16px 0;
+  }
+
+  .hover-it:hover { background-color: #b2ebf2;}
+
+</style-->
+</head>
+<body>
+
+<div class="world-space" style="padding: 0 16px;">
+
+  <div style="margin-bottom: 24px;">
+    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">กำหนด OT*</div>
+  
+    <p class="tiny grey">กำหนดการทำ OT ในหน้านี้ หลังจากตกลงกับพนักงานได้แล้ว</p>
+  </div>
+
+  <div class="form-space" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
+
+    <label>พนักงาน</label>
+    <select class="w3-select">
+      <option>john</option>
+      <option>may</option>
+      <option>voon</option>
+    </select>
+    <label>วันที่</label>
+    <input type="date" class="w3-input">
+    <label>เวลาเริ่ม</label>
+    <input type="time" class="w3-input">
+    <label>เวลาหยุด</label>
+    <input type="time" class="w3-input">
+    <label>Note</label>
+    <textarea rows="4"></textarea>
+  </div>
+
+
+  <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 32px">
+    <button class="w3-button w3-blue">Confirm</button>
+    <button class="w3-button w3-yellow">Clear</button>
+  </div>
+
+
+
+</div>
+</body>
+</html>
+  

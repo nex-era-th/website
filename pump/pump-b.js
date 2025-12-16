@@ -288,3 +288,10 @@ pumpb.getMilli = ( humanTime ) => {
 
   return sign == -1 ? sign*(hh+mm+ss) : hh+mm+ss
 } //ok
+
+
+
+
+pumpb.clearBrowserBar = () => {
+    window.history.replaceState( null,'', window.location.origin + window.location.pathname)
+}

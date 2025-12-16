@@ -106,8 +106,9 @@
       
       if (rowElem && rowElem.getAttribute('x-id')) {
 
-        location.href = PUMP_DOMAIN + '/get-partner-info?partnerId=' + rowElem.getAttribute('x-id')
+        //location.href = PUMP_DOMAIN + '/get-partner-info?partnerId=' + rowElem.getAttribute('x-id')
         //alert(rowElem.getAttribute('x-id'))
+        location.href = 'add-partner.html?mode=view&partnerId=' + rowElem.getAttribute('x-id') 
       }
       // call this api and it will return an html info
 

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Add Partner</title>
   <script src="conf.js"></script>
+  <script src="pump-b.js"></script>
   <script src="/js/xdev-b.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
   <link href="/js/material-x.css" rel="stylesheet" type="text/css">
@@ -21,7 +22,7 @@
   .large { font-size: 1.5rem }
   .xlarge { font-size: 2.0rem }
 
-  .world-space { max-width: 800px; margin: auto; }
+  .world-space { max-width: 800px; margin: 0 auto 60px auto; }
   .my-form > input {
     width: 100%; padding: 4px;
   }
@@ -42,11 +43,28 @@
 </head>
 <body>
 
-<h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0; z-index: 50">ป้อนข้อมูล Partner</h3>
+<!--h3 style="padding: 16px; color: blue; background-color: white; position: sticky; top: 0; z-index: 50">ป้อนข้อมูล Partner</h3-->
 
 
 <div class="world-space" style="padding: 0 16px;">
   
+
+  <div style="margin-bottom: 24px;">
+    <div id="pageName" style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">เพิ่ม Partner</div>
+  
+    <p class="tiny grey">Partner หมายถึงคู่ค้า ทั้งหมด จะเป็นลูกค้าก็ได้ หรือผู้ที่ทำธุรกิจกับเราก็ได้</p>
+  </div>
+
+
+  <!-- top action -->
+  <div id="topActBox" style="display: none; align-items: center; justify-content: space-around; margin-bottom: 24px;">
+    <button class="w3-button" style="padding: 4px 8px; background-color: #fdd835;" 
+    onclick="editPartner()">Edit</button>
+    <button class="w3-button" style="padding: 4px 8px; background-color: #757575;" disabled>Delete</button>
+  </div>
+
+
+
 
   <div class="my-form" id="add_new_staff_form" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
 
@@ -156,7 +174,7 @@
 
 
   <!-- form action -->
-  <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
+  <div id="formActBox" style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
     <button class="w3-button w3-blue" 
     onclick="addPartner()">Save</button>
     <button class="w3-button w3-light-grey" 
@@ -180,11 +198,103 @@
 ///////////////////////////////////////////////////////////////////
 
 
+let MODE = 'new'
+let PARTNER_ID;
+
+
 // this code scroll page to top after reload
 window.onload = () => {
+
   setTimeout( () => {
     window.scrollTo(0,0)
   }, 10)
+
+
+
+  // check mode: view|edit ---------------------------------------
+  const urlParams = new URLSearchParams(window.location.search)
+  const partnerId = urlParams.get('partnerId')
+  const mode = urlParams.get('mode')
+
+  if (mode == 'view' && partnerId) {
+    //alert('this is view mode for id=' + partnerId)
+
+    try {
+
+      pumpb.fetchThis( null, '/find-partner?id=' + partnerId, 'get')
+      .then( reply => {
+
+        if (reply.done) {
+          //console.log( reply)
+          //alert('got partner data')
+
+          let data = reply.data
+          document.querySelector('#showPicHere').src = data.pic || ''
+          document.querySelector('#code').value = data.code || ''
+          document.querySelector('#name').value = data.name || ''
+          document.querySelector('#business').value = data.business || ''
+          document.querySelector('#tel').value = data.tel || ''
+          document.querySelector('#email').value = data.email || ''
+          document.querySelector('#web').value = data.web || ''
+          document.querySelector('#socialApp').value = data.socialApp || ''
+          document.querySelector('#registerType').value = data.registerType || ''
+          document.querySelector('#address').value = data.address || ''
+          document.querySelector('#registerCode').value = data.registerCode || ''
+          document.querySelector('#taxId').value = data.taxId || ''
+          document.querySelector('#creditScore').value = data.creditScore || ''
+          document.querySelector('#bankAccount1').value = data.bankAccount1 || ''
+          document.querySelector('#bankAccount2').value = data.bankAccount2 || ''
+          document.querySelector('#financePerson').value = data.financePerson || ''
+          document.querySelector('#salesPerson').value = data.salesPerson || ''
+          document.querySelector('#servicesPerson').value = data.servicesPerson || ''
+          document.querySelector('#otherPerson').value = data.otherPerson || ''
+          document.querySelector('#note').value = data.note || ''
+          document.querySelector('#enterBy').value = data.enterBy || ''
+
+          // disable, enable controls
+          document.querySelector('#formActBox').style.display = 'none'
+          document.querySelector('#topActBox').style.display = 'flex'
+          
+          document.querySelectorAll('input').forEach( el => {
+            el.disabled = true
+          })
+
+          document.querySelectorAll('textarea').forEach( el => {
+            el.disabled = true
+          })
+
+          document.querySelectorAll('select').forEach( el => {
+            el.disabled = true
+          })
+
+          MODE = 'view'
+          PARTNER_ID = partnerId
+          document.querySelector('#pageName').textContent = 'ข้อมูล Partner'
+
+          pumpb.clearBrowserBar()
+
+
+        
+        } else {
+          alert('ไม่มีข้อมูล Partner รายนี้เลยค่ะ')
+        }
+  
+      })
+
+    } catch(er) {
+      console.log(er)
+      alert('มีปัญหาทางเทคนิคค่ะ')
+    }
+
+  }
+
+
+
+
+
+
+
+
 }
 
 
@@ -259,24 +369,56 @@ async function addPartner() {
 
     // pass - basic validation
 
+    let reply;
+    if (MODE == 'new') {
+      reply = await fetchThis( data, '/add-partner' )
 
-    let reply = await fetchThis( data, '/add-partner' )
-    //alert( JSON.stringify( resp ) )
+    } else if (MODE == 'edit') {
+      data._id = PARTNER_ID
+      reply = await fetchThis( data, '/update-partner' )
+
+    }
+
+
     if (reply.done) {
-      alert(`เรียบร้อย - Add Partner ชื่อ ${data.name} เรียบร้อยแล้ว`)
+      alert(`เรียบร้อยค่ะ`)
       location.reload()
     } else {
-      alert(`ไม่สามารถ Save ข้อมูลได้ โปรดลองอีกครั้ง`)
+      alert(`ไม่สามารถ Save ข้อมูลได้ค่ะ โปรดลองอีกครั้ง`)
     }
     
 
   
   } catch( error ) {
     console.error( error )
-    alert('Error - มีปัญหาทางเทคนิค โปรดลองอีกครั้ง หรือหากยังมีปัญหา ติดต่อ @admin')
+    alert('มีปัญหาทางเทคนิคค่ะ')
   }
 }
 
+
+
+function editPartner() {
+  // enable all inputs to allow user edit, as well as controls
+
+  document.querySelector('#formActBox').style.display = 'flex'
+  document.querySelector('#topActBox').style.display = 'none'
+  
+  document.querySelectorAll('input').forEach( el => {
+    el.disabled = false
+  })
+
+  document.querySelectorAll('textarea').forEach( el => {
+    el.disabled = false
+  })
+
+  document.querySelectorAll('select').forEach( el => {
+    el.disabled = false
+  })
+
+  MODE = 'edit'
+  document.querySelector('#pageName').textContent = 'แก้ไขข้อมูล Partner'
+
+}
 
 
 
