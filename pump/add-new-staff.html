@@ -90,9 +90,8 @@
       <option>-----</option>
       <option>ทีมเติมน้ำมัน</option>
       <option>ร้านกาแฟอเมซอนคาเฟ่</option>
-      <option>ทั่วไป</option>
       <option>บริหาร</option>
-      <option>อื่นๆ</option>
+      <option>ทั่วไป</option>
     </select>  
 
 
@@ -134,6 +133,7 @@
 
     <label>เพศ</label>
     <select id="sex" class="w3-select">
+      <option>-----</option>
       <option value="ชาย">ชาย</option>
       <option value="หญิง">หญิง</option>
       <option value="อื่นๆ">อื่นๆ</option>
@@ -155,6 +155,16 @@
       <input name="skill" id="inspectFuel" type="checkbox" value="วัดคุณภาพน้ำมัน" class="w3-check"> วัดคุณภาพน้ำมัน<br>
       <input name="skill" id="captain" type="checkbox" value="กัปตัน/คุมทีมเติมน้ำมัน" class="w3-check"> กัปตัน/คุมทีมเติมน้ำมัน<br>
       <input name="skill" id="backOfficeSoftware" type="checkbox" value="Back Office Software" class="w3-check"> Back Office Software<br>
+      <input name="skill" type="checkbox" value="ชงกาแฟ" class="w3-check"> ชงกาแฟ<br>
+      <input name="skill" type="checkbox" value="เสริฟอาหารเครื่องดื่ม" class="w3-check"> เสริฟอาหารเครื่องดื่ม<br>
+      <input name="skill" type="checkbox" value="งานแม่บ้าน ดูแลทั่วไป" class="w3-check"> งานแม่บ้าน ดูแลทั่วไป<br>
+      <input name="skill" type="checkbox" value="งานช่างทั่วไป" class="w3-check"> งานช่างทั่วไป<br>
+      <input name="skill" type="checkbox" value="รักษาความปลอดภัย" class="w3-check"> รักษาความปลอดภัย<br>
+      <input name="skill" type="checkbox" value="งานสำนักงาน" class="w3-check"> งานสำนักงาน<br>
+      <input name="skill" type="checkbox" value="บริหาร" class="w3-check"> บริหาร<br>
+      <input name="skill" type="checkbox" value="เทคโนโลยีคอมพิวเตอร์" class="w3-check"> เทคโนโลยีคอมพิวเตอร์<br>
+
+
     </div>
 
     <hr class="line-in-form">
@@ -181,7 +191,23 @@
       <option>อื่นๆ</option>
     </select>
 
-    <hr class="line-in-form">
+    <label>วันหยุดประจำสัปดาห์</label>
+    <select id="holiday" class="w3-select">
+      <option>-----</option>
+      <option>จันทร์</option>
+      <option>อังคาร</option>
+      <option>พุธ</option>
+      <option>พฤหัสบดี</option>
+      <option>ศุกร์</option>
+      <option>เสาร์</option>
+      <option>อาทิตย์</option>
+    </select>
+
+    <label>บัญชีธนาคาร</label>
+    <input id="bankAccount" type="text" class="w3-input" placeholder="เช่น กสิกร/1234567890">
+
+
+    <hr class="line-in-form"><!------------------------------------>
 
     <label>สวัสดิการ</label>
     <div>
@@ -190,6 +216,9 @@
       <input name="benefit" id="food" type="checkbox" value="อาหาร" class="w3-check"> อาหาร<br> 
       <input name="benefit" id="transportation" type="checkbox" value="ค่าพาหนะ" class="w3-check"> ค่าพาหนะ<br>
       <input name="benefit" id="healthcare" type="checkbox" value="ประกันสุขภาพ" class="w3-check"> ประกันสุขภาพ<br>
+      <input name="benefit" id="onTime" type="checkbox" value="เบี้ยขยัน" class="w3-check"> เบี้ยขยัน<br>
+      <input name="benefit" id="auditPass" type="checkbox" value="ประกันสุขภาพ" class="w3-check"> ค่าผ่านออดิต<br>
+
       <input name="benefit" id="otherBenefit" type="checkbox" value="อื่นๆ" class="w3-check"> อื่นๆ<br>
     </div>
 
@@ -217,7 +246,7 @@
     <textarea id="note" rows="8" placeholder="เช่น เป็นคนเก่า / มีประสบการณ์ตรงกี่ปี ..."></textarea>
     
     <label>ป้อนข้อมูลโดย*</label>
-    <input id="enterBy" type="text" placeholder="เช่น @sern, @john ...">
+    <input id="enterBy" type="text" placeholder="เช่น @fern, @fond, @john ...">
 
     <!--label>วันแก้ไขหลังสุด</label>
     <textarea id="lastEdit" disabled></textarea-->
@@ -229,7 +258,7 @@
   <!-- form action -->
   <div id="pageActBox" style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
     <button id="saveButton" class="w3-button w3-blue" 
-    onclick="sendData()">Save</button>
+    onclick="saveStaff()">Save</button>
     <button id="clearButton" class="w3-button w3-yellow" 
     onclick="location.reload()">Cancel / Clear</button>
   </div>
@@ -242,7 +271,7 @@
 <!-- u turn -->
 <div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
   <img src="/icon/u-turn.svg" style="width: 32px; height: 32px; cursor: pointer;" 
-  onclick="location.href='/pump/index.html';">
+  onclick="history.back()">
 </div>
 
 
@@ -382,7 +411,7 @@ async function fetchThis( data, api ) {
 }
 
 
-async function sendData() {
+async function saveStaff() {
   try {
     let data = {
       facePic: showFacePicHere.src,
@@ -421,6 +450,8 @@ async function sendData() {
 
       wages: document.getElementById('wages').value,
       hiringType: document.getElementById('hiringType').value,
+      holiday: document.getElementById('holiday').value,
+      bankAccount: document.getElementById('bankAccount').value,
 
       benefits: Array.from( document.querySelectorAll('input[name="benefit"]:checked') ).map( el => el.value ),
 
@@ -461,7 +492,10 @@ async function sendData() {
       let reply = await fetchThis( data, '/update-staff')
 
       if (reply.done) {
+        
         alert('เรียบร้อยค่ะ')
+        pumpb.clearBrowserBar()
+        location.reload()
 
       } else {
         alert('ไม่ได้ update ข้อมูลค่ะ อาจเพราะไม่มีข้อมูลใหม่ หรือมีปัญหาอย่างอื่น')
@@ -474,7 +508,7 @@ async function sendData() {
   
   } catch( error ) {
     console.error( error )
-    alert('มีปัญหาทางเทคนิค ลองดูอีกครั้ง หากยังมีปัญหา โปรดติดต่อ @admin')
+    alert('มีปัญหาทางเทคนิคค่ะ น่าลองดูอีกครั้ง หากยังมีปัญหา ต้อง @admin แล้วค่ะ')
   }
 }
 
