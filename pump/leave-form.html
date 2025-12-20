@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Leave Form</title>
+<script src="conf.js"></script>
+<script src="pump-b.js"></script>
+<script src="/js/xdev-b.js"></script>
+<link href="/js/w3.css" rel="stylesheet" type="text/css">
+<link href="/js/material-x.css" rel="stylesheet" type="text/css">
+<link href="pump.css" rel="stylesheet" type="text/css">
+<style>
+  /* put local styles here */
+</style>
+</head>
+<body>
+
+<div class="world-space" style="padding: 0 16px;">
+
+  <!-- title -->
+  <div style="margin-bottom: 24px;">
+    <div id="pageTitle" style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Leave Form</div>
+    <p id="pageBrief" class="small">เก็บข้อมูล การลา ของพนักงาน</p>
+  </div>
+
+
+  <!-- form -->
+  <div class="form-space" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px; margin-top: 32px">
+
+    <label>ประเภท*</label>
+    <select id="leaveType" class="w3-select">
+      <option>-----</option>
+      <option>ลาป่วย</option>
+      <option>ลากิจ</option>
+      <option>ลาพักร้อน</option>
+      <option>ลาทำหมัน</option>
+      <option>ลาฝึกอบรม</option>
+      <option>ลาบวช</option>
+      <option>ลาโดยไม่รับค่าจ้าง</option>
+      <option>ลาคลอด</option>
+      <option>ลาไปช่วยเหลือภริยาที่คลอดบุตร*</option>
+      <option>ลาดูแลบุตรป่วย/ผิดปกติ*</option>
+      <option>ลาปวดประจำเดือนสตรี*</option>
+      <option>ลาดูแลคนในครอบครัวป่วย*</option>
+    </select>
+    <div></div>
+    <p class="small">ประเภทที่มี * บริษัทยังไม่มีนโยบายรองรับ เนื่องจากต้องรอกฎหมายออกมาเสียก่อน</p>
+
+    <label>พนักงาน*</label>
+    <select id="selectStaff" class="w3-select">
+      <option>-----</option>
+    </select>
+
+
+    <hr class="line-in-form"><!------------------------------------>
+
+    <p style="grid-column: span 2; margin-bottom: 16px;" class="small italic">ถ้าลาหลายวันติดต่อกัน ให้กด [ลาหลายวัน] เพื่อกำหนดช่วงวันที่ต้องการ</p>
+
+
+    <label>ลาหลายวัน?</label>
+    <div>
+      <input id="isLongLeave" type="checkbox" class="w3-check" 
+      onchange="shortLongSwitch()">
+    </div>
+    
+    <!-- short leave box -->
+    <div id="shortLeaveBox" style="grid-column: span 2; padding: 16px; display: grid; grid-template-columns: auto auto; align-items: center; gap: 8px">
+
+      <label class="normal italic indigo">วันที่*</label>
+      <input id="dateShort" type="date" class="w3-input">
+
+      <label class="normal italic indigo">จากเวลา*</label>
+      <input id="fromShort" type="time" class="w3-input"
+      onchange="calcTime()">
+
+      <label class="normal italic indigo">ถึงเวลา*</label>
+      <input id="toShort" type="time" class="w3-input"
+      onchange="calcTime()">
+
+      <label class="normal italic indigo">รวมเวลา</label>
+      <input id="duraShort" type="text" class="w3-input" disabled>
+
+    </div>
+
+    <!-- long leave box -->
+    <div id="longLeaveBox" style="grid-column: span 2; display: none; padding: 16px; grid-template-columns: auto auto; align-items: center; gap: 8px">
+
+      <p style="grid-column: span 2;" class="small italic">ถ้าลาหลายวัน ให้ลาไปทั้งวันเลย ไม่ต้องกำหนดเวลา</p>
+
+      <label class="normal italic indigo">จากวันที่*</label>
+      <input id="fromDateLong" type="date" class="w3-input">
+      
+      <label class="normal italic indigo">ถึงวันที่*</label>
+      <input id="toDateLong" type="date" class="w3-input">
+      
+      <label class="normal italic indigo">รวมชั่วโมงทำงานที่ลา</label>
+      <input id="duraLong" type="text" class="w3-input" disabled>
+      <div></div>
+      <p id="showDurationInWordsLong"></p>
+    </div>
+
+    
+    <hr class="line-in-form"><!------------------------------------>
+
+
+    <label>Note</label>
+    <textarea id="note" rows="3"></textarea>
+    <label>userName*</label>
+    <input id="userName" type="text" class="w3-input" autocomplete="off">
+  </div>
+
+
+  <!-- form action -->
+  <div id="formActBox" style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px">
+    <button class="w3-button w3-blue"
+    onclick="confirmLeave()">Confirm</button>
+    <button class="w3-button w3-yellow"
+    onclick="pumpb.clearBrowserBar(); location.reload()">Clear</button>
+  </div>
+
+
+
+</div>
+
+<!-- page action -->
+<div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+  <img src="/icon/u-turn.svg" style="width: 32px; height: 32px; cursor: pointer;" 
+  onclick="location.href = 'index.html';">
+</div>
+
+
+<script>
+//////////////////////////////////////////////////////////////////
+
+// GLOBAL VAR
+let MODE = 'new';
+let POJ; // page object, you can keep everything here as needed
+
+
+
+// LOAD FUNC
+window.onload = async () => {
+
+  // scroll to top on reload
+  setTimeout( () => {
+    window.scrollTo(0,0)
+  }, 10)
+
+
+
+  // always load the staff data to make the select choices
+  try {
+
+    let reply = await pumpb.fetchThis( null, '/get-all-staff', 'get')
+    if (reply.done) {
+      let data = reply.data
+
+      data.forEach( staff => {
+        let newElem = document.createElement('option')
+        newElem.textContent = staff.nickName
+        document.querySelector('#selectStaff').append(newElem)
+      })
+
+    } else {
+      alert('ไม่มีข้อมูลพนักงานเลยค่ะ คงต้อง add เข้าไปก่อนป่าว')
+    }
+
+  } catch(er) {
+    console.error('error : fetch /get-all-staff', er)
+    alert('มีปัญหาทางเทคนิคค่ะ ลองกด refresh หน้าจออีกทีดีมั๊ยคะ ถ้าไม่ได้อาจเพราะ server มีปัญหา')
+  }
+
+
+
+
+
+
+
+  // check mode
+  // check mode: view|edit
+  //const urlParams = new URLSearchParams(window.location.search)
+  let myQuery = new pumpb.MyQuery
+  const id = myQuery.get('id') //urlParams.get('id')
+  MODE = myQuery.get('mode') || 'new' //urlParams.get('mode')
+
+  //alert('mode=' + mode + ',id=' + id)
+
+
+  if (MODE == 'new') {
+
+    // may do nothing here    
+
+
+  } else if (MODE == 'view' && id) {
+
+    // if view mode, do it...
+    //alert(id)
+
+    try {
+
+      let reply = await pumpb.fetchThis(
+        { _id: id } , '/find-ot'
+      )
+
+      if (reply.done) {
+        let data = reply.data
+
+        document.querySelector('#leaveType').value = data.leaveType
+        document.querySelector('#selectStaff').value = data.staffNickName
+        document.querySelector('#leaveDate').value = data.leaveDate
+        document.querySelector('#leaveFullDay').checked = data.leaveFullDay
+        document.querySelector('#startTime').value = data.startTime
+        document.querySelector('#stopTime').value = data.stopTime
+        document.querySelector('#leaveDate').value = data.leaveDate
+        document.querySelector('#lengthTime').value = data.lengthTime
+        document.querySelector('#note').value = data.note
+        document.querySelector('#enterBy').value = data.enterBy
+
+        // disable
+        document.querySelectorAll('input').forEach( el => el.disabled = true)
+        document.querySelectorAll('textarea').forEach( el => el.disabled = true)
+        document.querySelectorAll('select').forEach( el => el.disabled = true)
+        document.querySelector('#formActBox').querySelectorAll('button').forEach( el => el.disabled = true)
+
+        // setting
+        document.querySelector('#pageTitle').textContent = 'ข้อมูลการลาหยุดของพนักงาน'
+        document.querySelector('#pageBrief').textContent = ''
+
+        pumpb.clearBrowserBar()
+
+
+      } else {
+        alert('ไม่มีข้อมูล OT นี้ค่ะ')
+      }
+
+    } catch(er) {
+      console.error(er)
+      alert('มีปัญหาทางเทคนิคค่ะ')
+    }
+
+  }
+
+
+
+
+
+  // watch the #longLeaveBox
+  let longLeaveBox = document.querySelector('#longLeaveBox')
+  longLeaveBox.addEventListener('change', event => {
+    
+    calcTime()
+    
+  })
+
+
+
+}
+
+
+
+
+
+
+
+//----------------------------------------------------------------
+
+function calcTime() {
+
+  if (document.querySelector('#isLongLeave').checked == true) {
+
+    const fromDate = document.querySelector('#fromDateLong').value
+    const toDate = document.querySelector('#toDateLong').value
+
+    if (fromDate && toDate) {
+
+      //alert(fromTime + ' - ' + toTime)
+      let longDur = pumpb.getLongLeaveDuration2( fromDate, toDate)
+      document.querySelector('#duraLong').value = longDur.durationInHours
+      document.querySelector('#showDurationInWordsLong').textContent = longDur.durationInWords
+
+    }
+
+    
+
+
+  } else { // short leave
+
+    const date = document.querySelector('#dateShort').value
+    const start = document.querySelector(`#fromShort`).value
+    const stop = document.querySelector(`#toShort`).value
+    const showElem = document.querySelector(`#duraShort`)
+    
+    if ( date && start && stop) {
+
+      showElem.value = pumpb.getLengthFrom2times( start, stop)
+
+    } else {
+      //alert('ต้องใส่เวลาเริ่ม ด้วยค่ะ')
+    }
+
+  }
+
+  
+
+}
+
+
+async function confirmLeave() {
+
+  // get data
+
+  let data = {
+    leaveType: document.querySelector('#leaveType').value,
+    staffNickName: document.querySelector('#selectStaff').value,
+    isLongLeave: document.querySelector('#isLongLeave').checked,
+    shortLeave: {
+      date: document.querySelector('#dateShort').value,
+      fromTime: document.querySelector('#fromShort').value,
+      toTime: document.querySelector('#toShort').value,
+      durationHours: document.querySelector('#duraShort').value 
+    },
+    longLeave: {
+      fromDate: document.querySelector('#fromDateLong').value,
+      toDate: document.querySelector('#toDateLong').value,
+      durationHours: document.querySelector('#duraLong').value,
+      durationInWords: document.querySelector('#showDurationInWordsLong').textContent
+    },
+    note: document.querySelector('#note').value,
+    userName: document.querySelector('#userName').value
+  }
+
+  // check
+
+  if (data.leaveType.startsWith('-') || data.staffNickName.startsWith('-') || !data.userName) {
+    alert('ช่องที่มี * ต้องมีข้อมูลค่ะ')
+    return
+  }
+
+  if (!data.isLongLeave && !data.shortLeave.date && !data.shortLeave.fromTime && !data.shortLeave.toTime) {
+    alert('ช่องที่มี * ต้องมีข้อมูลค่ะ (short leave)')
+    return
+  }
+
+  if (data.isLongLeave && !data.longLeave.fromDate && !data.longLeave.toDate) {
+    alert('ช่องที่มี * ต้องมีข้อมูลค่ะ (long leave)')
+  }
+
+  if (!pumpb.testUsers.includes(data.userName)) {
+    alert('พี่ไม่ใช่ user ที่ถูกต้องค่ะ ต้องให้ user ที่ได้รับอนุญาตเท่านั้น ถึงทำได้ค่ะ')
+    return
+  }
+
+  // pass
+
+  try {
+
+    if (MODE == 'new') {
+
+      let reply = await pumpb.fetchThis( data, '/confirm-leave')
+      if (reply.done) {
+        
+        alert('เรียบร้อยค่ะ')
+        pumpb.clearBrowserBar()
+        location.reload()
+
+      } else {
+        alert('save ข้อมูลไม่ได้ค่ะ ลองดูอีกทีมั๊ยคะ ไม่รู้เป็นไร ...')
+      }
+
+    } else if (MODE == 'edit') {
+
+      //
+      alert('save in edit mode')
+
+    } else {
+      alert('not save in this mode')
+    }
+    
+  } catch(er) {
+    console.error( er)
+    alert('มีปัญหาทางเทคนิคค่ะ ลองกด refresh หน้าจออีกทีดีมั๊ยคะ')
+  }
+}
+
+
+
+
+function shortLongSwitch() {
+  // show/hide the #shortLeaveBox, #longLeaveBox
+
+  if (document.querySelector('#isLongLeave').checked == true) {
+    document.querySelector('#shortLeaveBox').style.display = 'none'
+    document.querySelector('#longLeaveBox').style.display = 'grid'
+  } else {
+    document.querySelector('#shortLeaveBox').style.display = 'grid'      
+    document.querySelector('#longLeaveBox').style.display = 'none'
+  }
+}
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
+  

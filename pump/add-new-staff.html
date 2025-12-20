@@ -150,11 +150,11 @@
 
     <label>ความเชี่ยวชาญ</label>
     <div>
-      <input name="skill" id="filling fuel" type="checkbox" value="เติมน้ำมัน" class="w3-check"> เติมน้ำมัน<br>
-      <input name="skill" id="cashier" type="checkbox" value="คิดเงิน" class="w3-check"> คิดเงิน<br> 
-      <input name="skill" id="inspectFuel" type="checkbox" value="วัดคุณภาพน้ำมัน" class="w3-check"> วัดคุณภาพน้ำมัน<br>
-      <input name="skill" id="captain" type="checkbox" value="กัปตัน/คุมทีมเติมน้ำมัน" class="w3-check"> กัปตัน/คุมทีมเติมน้ำมัน<br>
-      <input name="skill" id="backOfficeSoftware" type="checkbox" value="Back Office Software" class="w3-check"> Back Office Software<br>
+      <input name="skill" type="checkbox" value="เติมน้ำมัน" class="w3-check"> เติมน้ำมัน<br>
+      <input name="skill" type="checkbox" value="คิดเงิน" class="w3-check"> คิดเงิน<br> 
+      <input name="skill" type="checkbox" value="วัดคุณภาพน้ำมัน" class="w3-check"> วัดคุณภาพน้ำมัน<br>
+      <input name="skill" type="checkbox" value="กัปตัน/คุมทีมเติมน้ำมัน" class="w3-check"> กัปตัน/คุมทีมเติมน้ำมัน<br>
+      <input name="skill" type="checkbox" value="Back Office Software" class="w3-check"> Back Office Software<br>
       <input name="skill" type="checkbox" value="ชงกาแฟ" class="w3-check"> ชงกาแฟ<br>
       <input name="skill" type="checkbox" value="เสริฟอาหารเครื่องดื่ม" class="w3-check"> เสริฟอาหารเครื่องดื่ม<br>
       <input name="skill" type="checkbox" value="งานแม่บ้าน ดูแลทั่วไป" class="w3-check"> งานแม่บ้าน ดูแลทั่วไป<br>
@@ -211,15 +211,13 @@
 
     <label>สวัสดิการ</label>
     <div>
-      <input name="benefit" id="uniform" type="checkbox" value="ชุดทำงาน" class="w3-check"> ชุดทำงาน<br>
-      <input name="benefit" id="socialSecurity" type="checkbox" value="ประกันสังคม" class="w3-check"> ประกันสังคม<br>
-      <input name="benefit" id="food" type="checkbox" value="อาหาร" class="w3-check"> อาหาร<br> 
-      <input name="benefit" id="transportation" type="checkbox" value="ค่าพาหนะ" class="w3-check"> ค่าพาหนะ<br>
-      <input name="benefit" id="healthcare" type="checkbox" value="ประกันสุขภาพ" class="w3-check"> ประกันสุขภาพ<br>
-      <input name="benefit" id="onTime" type="checkbox" value="เบี้ยขยัน" class="w3-check"> เบี้ยขยัน<br>
-      <input name="benefit" id="auditPass" type="checkbox" value="ประกันสุขภาพ" class="w3-check"> ค่าผ่านออดิต<br>
-
-      <input name="benefit" id="otherBenefit" type="checkbox" value="อื่นๆ" class="w3-check"> อื่นๆ<br>
+      <input name="benefit" type="checkbox" value="ชุดทำงาน" class="w3-check"> ชุดทำงาน<br>
+      <input name="benefit" type="checkbox" value="ประกันสังคม" class="w3-check"> ประกันสังคม<br>
+      <input name="benefit" type="checkbox" value="อาหาร" class="w3-check"> อาหาร<br> 
+      <input name="benefit" type="checkbox" value="ค่าพาหนะ" class="w3-check"> ค่าพาหนะ<br>
+      <input name="benefit" type="checkbox" value="ประกันสุขภาพ" class="w3-check"> ประกันสุขภาพ<br>
+      <input name="benefit" type="checkbox" value="เบี้ยขยัน" class="w3-check"> เบี้ยขยัน<br>
+      <input name="benefit" type="checkbox" value="ประกันสุขภาพ" class="w3-check"> ค่าผ่านออดิต<br>
     </div>
 
 
@@ -330,6 +328,11 @@ window.onload = () => {
               elem.value = data[key] 
             }
           }
+
+          //let wagesEl = document.querySelector('#wages')
+          //wagesEl.value = pumpb.getMoneyFormat( wagesEl.value)
+          // the #wages is num format so we cannot put str into it
+
 
           if (data.skills.length) {
             document.querySelectorAll('[name="skill"]').forEach( el => {

@@ -10,6 +10,9 @@ project: pump
 
 const pumpb = {}
 
+
+pumpb.testUsers = ['@john','@sern','@fern','@fond','@jum']
+
 // fetchThis ----------------------------------------------------
 
 pumpb.fetchThis = async function ( data, api, method = 'POST' ) {
@@ -162,6 +165,9 @@ pumpb.simpleDate = ( yourDateStr ) => {
   let part = yourDateStr.split('-')
   return part[2] + '/' + part[1]
 } //ok
+
+
+pumpb.getSimpleDate = pumpb.simpleDate
 
 
 // sortArray --------------------------------------------------------
@@ -374,4 +380,100 @@ pumpb.getLengthFrom2times = (startTime, stopTime) => {
 
     // Return the final "HH:MM" duration string.
     return `${formattedHours}:${formattedMinutes}`;
+}
+
+
+
+pumpb.getLongLeaveDuration = (dateTimeStart, dateTimeStop) => {
+    /*
+        input -> dateTimeStart like 2025-12-19T13:59
+
+    */
+
+    const start = new Date(dateTimeStart);
+    const stop = new Date(dateTimeStop);
+    const WORK_HOURS_PER_DAY = 8;
+
+    if (stop <= start) {
+        return { totalDuration: "00:00", label: "0 วัน 0 ชม. 0 นาที" };
+    }
+
+    // 1. คำนวณความต่างแบบปฏิทินก่อนเพื่อหา "วัน"
+    const diffInMs = stop - start;
+    const msInDay = 1000 * 60 * 60 * 24;
+    
+    let totalDays = Math.floor(diffInMs / msInDay);
+    let remainingMs = diffInMs % msInDay;
+
+    // 2. แปลงเศษที่เหลือเป็น ชั่วโมง และ นาที
+    let extraHours = Math.floor(remainingMs / (1000 * 60 * 60));
+    let extraMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    // 3. Logic สำคัญ: รวมชั่วโมงทำงาน (นับวันละ 8 ชม.)
+    // เอาจำนวนวันเต็มๆ คูณ 8
+    let workHours = totalDays * WORK_HOURS_PER_DAY;
+    
+    // บวกเศษชั่วโมงที่ลาเพิ่ม (แต่เศษของวันต้องไม่เกิน 8 ชม. ตามกฎเฮีย)
+    // เช่น ถ้าลาเศษออกมา 10 ชม. เราก็นับแค่ 8 ชม.
+    workHours += Math.min(extraHours, WORK_HOURS_PER_DAY);
+    
+    let workMinutes = extraMinutes;
+
+    // 4. จัด Format ให้เป็น HH:mm (เช่น 100:45)
+    const hh = String(workHours).padStart(2, '0');
+    const mm = String(workMinutes).padStart(2, '0');
+    const totalDuration = `${hh}:${mm}`;
+
+    return {
+        totalDuration: totalDuration,
+        days: totalDays,
+        hours: extraHours,
+        minutes: extraMinutes,
+        label: `${totalDays} วัน ${extraHours} ชม. ${extraMinutes} นาที (นับเฉพาะเวลาทำงาน)`
+    };
+}
+
+
+pumpb.getLongLeaveDuration2 = ( startDate, stopDate ) => {
+    /*
+        we count different of days, and we take 1 day = 8 workhours as standard
+
+    */
+
+    if (startDate && stopDate) {
+
+        const start = new Date(startDate);
+        const stop = new Date(stopDate);
+
+        // 1. หาจำนวนวันที่ลา (วันจบ - วันเริ่ม + 1)
+        const diffInMs = stop - start;
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+
+        if (diffInDays > 0) {
+            // 2. คำนวณชั่วโมงรวม (วันละ 8 ชม.)
+            const totalHours = diffInDays * 8;
+
+            // 3. ปั้นค่าให้ตรงตามที่เฮียต้องการ
+            const result = {
+                durationInHours: `${String(totalHours).padStart(2, '0')}:00`,
+                durationInWords: `${diffInDays} วัน (รวม ${totalHours} ชม.)`
+            };
+
+            // 4. เอาไปโชว์ใน textarea (เฮียจะเลือกโชว์อันไหน หรือเอามาต่อกันก็ได้ครับ)
+            // ตัวอย่าง: โชว์ทั้งสองอย่างต่อกัน
+            //outputField.value = result.durationInHours + " | " + result.durationInWords;
+            
+            // หรือถ้าจะเอาไปใช้ส่งค่าไปหลังบ้าน เฮียก็ใช้ค่าจาก result.durationInHours ได้เลย
+            //console.log(result); 
+
+            return result
+
+        } else {
+            //outputField.value = "00:00 | 0 วัน";
+            return {
+                durationInHours: '00:00',
+                durationInWords: '0 วัน'
+            }
+        }
+    }
 }

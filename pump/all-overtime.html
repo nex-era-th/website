@@ -54,7 +54,7 @@
 
   <!-- find -->
   <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
-    <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นชื่อพนักงาน ...">
+    <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นจากวันที่หรือชื่อ ...">
     <button class="w3-button w3-blue" 
     style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
   </div>
@@ -63,7 +63,7 @@
   <!-- grid -->
   <div id="mainGrid" class="main-grid" style="margin-top: 32px; display: grid; grid-template-columns: auto auto auto; align-items: center; gap: 1px">
 
-    <span class="tcenter">พนักงาน</span><span class="tcenter">วันที่</span><span class="tcenter">OT</span>
+    <span class="tcenter">วันที่</span><span class="tcenter">พนักงาน</span><span class="tcenter">OT</span>
     
 
 
@@ -111,14 +111,16 @@ window.onload = async () => {
       data.forEach( ot => {
 
         let span1 = document.createElement('span')
-        span1.textContent = ot.staffNickName
+        span1.textContent = pumpb.simpleDate( ot.otDate)
         span1.setAttribute('data-id', ot._id)
         mainGrid.append( span1)
 
+
         let span2 = document.createElement('span')
-        span2.textContent = pumpb.simpleDate( ot.otDate)
+        span2.textContent = ot.staffNickName
         span2.setAttribute('data-id', ot._id)
         mainGrid.append( span2)
+
 
         let span3 = document.createElement('span')
         span3.textContent = `${ot.startTime}-${ot.stopTime} (${ot.lengthTime})`
