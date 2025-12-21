@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Find Product</title>
+<script src="conf.js"></script>
+<script src="pump-b.js"></script>
+<link href="/js/w3.css" rel="stylesheet" type="text/css">
+<link href="/js/material-x.css" rel="stylesheet" type="text/css">
+<link href="pump.css" rel="stylesheet" type="text/css">
+
+<style>
+  /*
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  th { text-align: center; }
+  table {
+    width: 100%; border-collapse: collapse; margin-top: 0px;
+    border: 1px solid gray;
+  }
+  th, td {
+    border: 1px solid gray; padding: 8px; text-align: left;
+  }
+  tr:hover { background-color: aqua; }
+
+  .world-space { max-width: 800px; margin: auto; }
+  */
+
+  .product-grid {
+    background-color: white;
+  }
+  .product-grid > * { 
+    background-color: #eeeeee; padding: 12px 8px; height: 100%;
+  }
+  .tcenter { text-align: center; }
+
+
+
+</style>
+</head>
+<body>
+
+
+<div class="world-space">
+
+  <!-- title / page name -->
+  <div style="margin-bottom: 24px;">
+    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Find Product*</div>
+    <p class="small">ค้นหาสินค้าจาก ชื่อสินค้า รหัส หรือชื่อ Partner</p>
+  </div>
+
+  <!-- find -->
+  <div style="display: grid; grid-template-columns: 80% 20%; align-items: center; margin-top: 32px;">
+
+    <input id="keyWord" type="search" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ชื่อสินค้า รหัส หรือชื่อ Partner ..."
+    oninput="if (this.value == '') clearGrid()">
+    
+    <button onclick="findProduct()"
+    class="w3-button w3-blue" 
+    style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
+
+  </div>
+
+
+  <!-- grid -->
+  <div id="showProductGrid" class="product-grid" style="margin-top: 32px; display: grid; grid-template-columns: auto auto; align-items: center; gap: 1px">
+
+    <span class="tcenter" style="padding: 4px">สินค้า</span>
+    <span class="tcenter" style="padding: 4px">ราคา/หน่วย</span>
+    
+
+
+  </div>
+
+
+
+
+</div>
+
+
+<!-- page action -->
+<div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+  <img src="/icon/u-turn.svg" style="width: 32px; cursor: pointer;" 
+  onclick="location.href='/pump/index.html';">
+</div>
+
+
+
+
+
+
+
+
+
+<script>
+/////////////////////////////////////////////////////////////////
+
+const PGOJ = {};
+
+
+
+
+window.onload = async () => {
+
+  document.querySelector('#keyWord').addEventListener('keydown', async event => {
+    if (event.key === 'Enter') {
+      await findProduct()
+    }
+  })  
+
+}
+
+
+// if user clicks on table bring her that payment info
+document.querySelector('#showProductGrid').addEventListener('click', event => {
+  
+  let prod = PGOJ.data.find( v => v._id == event.target.dataset.id)
+  alert(`
+  PRODUCT = ${prod.name}
+  CODE = ${prod.code}
+  UOM = ${prod.uom}
+  PRICE = ${ pumpb.getMoneyFormat( prod.unitPrice)}
+  PARTNER = ${prod.partnerName}`)
+
+})
+
+
+
+async function findProduct() {
+  /*
+      find at .../find-product
+      data -> { keyWord: ... , masterKay: ... }
+      keyWord can be productName, productCode, or partnerName
+  */
+
+  let keyWord = document.querySelector('#keyWord').value
+
+  if (!keyWord) {
+    alert('รบกวนใส่ keyWord นิดค่ะ จะได้รู้ว่าจะค้นหาชื่ออะไร')
+    return
+  }
+
+  try {
+
+    let reply = await pumpb.fetchThis(
+      { keyWord: keyWord, masterKey: MASTER_KEY },
+      '/find-product'
+    )
+
+    if (reply.done) {
+      //console.log(reply)
+      //alert('found')
+
+      let productGrid = document.querySelector('#showProductGrid')
+      productGrid.innerHTML = `<span class="tcenter" style="padding: 4px">สินค้า</span><span class="tcenter" style="padding: 4px">ราคา/หน่วย</span>`
+
+      let data = reply.data
+      data = pumpb.sortArray( data, 'name')
+      PGOJ.data = data
+
+      
+      data.forEach( prod => {
+        productGrid.innerHTML += `<span data-id="${prod._id}">${prod.name} (#${prod.code})</span><span data-id="${prod._id}" class="tr">${ pumpb.getMoneyFormat( prod.unitPrice)}</span>`
+      })
+
+    } else {
+      alert('not found')
+    }
+
+  } catch(er) {
+    console.error('*** error ***', er)
+    alert('*** error ***')
+  }
+}
+
+
+function clearGrid() {
+  let productGrid = document.querySelector('#showProductGrid')
+  productGrid.innerHTML = `<span class="tcenter" style="padding: 4px">สินค้า</span><span class="tcenter" style="padding: 4px">ราคา/หน่วย</span>`    
+}
+
+
+</script>
+</body>
+</html>

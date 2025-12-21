@@ -200,7 +200,8 @@ window.onload = async () => {
     try {
 
       let reply = await pumpb.fetchThis(
-        { _id: id } , '/find-ot'
+        { _id: id, masterKey: MASTER_KEY } , 
+        '/find-leave'
       )
 
       if (reply.done) {
@@ -208,14 +209,27 @@ window.onload = async () => {
 
         document.querySelector('#leaveType').value = data.leaveType
         document.querySelector('#selectStaff').value = data.staffNickName
-        document.querySelector('#leaveDate').value = data.leaveDate
-        document.querySelector('#leaveFullDay').checked = data.leaveFullDay
-        document.querySelector('#startTime').value = data.startTime
-        document.querySelector('#stopTime').value = data.stopTime
-        document.querySelector('#leaveDate').value = data.leaveDate
-        document.querySelector('#lengthTime').value = data.lengthTime
+        document.querySelector('#isLongLeave').checked = data.isLongLeave
+
+        if (data.isLongLeave) {
+
+          document.querySelector('#fromDateLong').value = data.longLeave.fromDate
+          document.querySelector('#toDateLong').value = data.longLeave.toDate
+          document.querySelector('#duraLong').value = data.longLeave.durationHours
+          document.querySelector('#showDurationInWordsLong').textContent = data.longLeave.durationInWords
+
+        } else { // short leave
+
+          document.querySelector('#dateShort').value = data.shortLeave.date
+          document.querySelector('#fromShort').value = data.shortLeave.fromTime
+          document.querySelector('#toShort').value = data.shortLeave.toTime
+          document.querySelector('#duraShort').value = data.shortLeave.durationHours
+        }
+
         document.querySelector('#note').value = data.note
-        document.querySelector('#enterBy').value = data.enterBy
+        document.querySelector('#userName').value = data.userName
+
+        shortLongSwitch()
 
         // disable
         document.querySelectorAll('input').forEach( el => el.disabled = true)
@@ -224,14 +238,13 @@ window.onload = async () => {
         document.querySelector('#formActBox').querySelectorAll('button').forEach( el => el.disabled = true)
 
         // setting
-        document.querySelector('#pageTitle').textContent = 'ข้อมูลการลาหยุดของพนักงาน'
+        document.querySelector('#pageTitle').textContent = 'Leave Info'
         document.querySelector('#pageBrief').textContent = ''
-
         pumpb.clearBrowserBar()
 
 
       } else {
-        alert('ไม่มีข้อมูล OT นี้ค่ะ')
+        alert('ไม่พบข้อมูล Leave นี้ค่ะ')
       }
 
     } catch(er) {

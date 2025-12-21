@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Payout</title>
+  <script src="conf.js"></script>
+  <script src="pump-b.js"></script>
+  <script src="fetch-this.js"></script>
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/material-x.css" rel="stylesheet" type="text/css">
+  <link href="pump.css" rel="stylesheet" type="text/css">
+<style>
+  /*
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  th { text-align: center; }
+  table {
+    width: 100%; border-collapse: collapse; margin-top: 0px;
+    border: 1px solid gray;
+  }
+  th, td {
+    border: 1px solid gray; padding: 8px; text-align: left;
+  }
+  tr:hover { background-color: aqua; }
+
+  .world-space { max-width: 800px; margin-left: auto; margin-right: auto; margin-bottom: 60px;}
+  */
+
+  .sum-box { background-color: white;}
+  .sum-box > * { background-color: #bbdefb; padding: 8px; 
+    height: 100%; font-size: 0.8rem }
+  .main-grid {
+    background-color: white;
+  }
+  .main-grid > * { 
+    background-color: #eeeeee; padding: 12px 8px; height: 100%;
+    font-size: 0.8rem; overflow: hidden;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="world-space" style>
+
+  <!-- title / page name -->
+  <div style="margin-bottom: 24px;">
+    <div id="pageTitle" 
+    style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">All Payout 2.0*</div>
+    <p id="pageBrief" class="small">แสดงรายจ่ายทั้งหมดของเดือนนี้</p>
+  </div>
+
+
+  <!-- search box -->
+  <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
+    <input id="findInput" type="search" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นจากตารางข้างล่าง"
+    oninput="findInTable()">
+    <button class="w3-button w3-blue"
+    onclick="findInTable()" 
+    style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
+  </div>
+
+  <!-- sum -->
+  <div class="sum-box" style="display: grid; grid-template-columns: auto auto; align-items: center; margin-top: 32px; gap: 1px">
+    <div>ยอดสุทธิ รวม</div>
+    <div id="netValueSum" class="tr"></div>
+    <div>ยอดภาษี รวม</div>
+    <div id="taxSum" class="tr"></div>
+    <div>ยอดก่อนภาษี รวม</div>
+    <div id="beforeTaxSum" class="tr"></div>
+  </div>
+
+  <!-- grid -->
+  <div class="main-grid" style="margin-top: 16px; display: grid; grid-template-columns: auto auto auto; align-items: center; gap: 1px">
+    
+    <span style="text-align: center;">วันที่</span><span style="text-align: center;">ยอดสุทธิ</span><span style="text-align: center;">เอกสาร</span>
+
+
+  </div>
+
+
+
+
+</div>
+
+
+<!-- page action -->
+<div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+  <img src="/icon/u-turn.svg" style="width: 32px; cursor: pointer;" 
+  onclick="history.back()">
+</div>
+
+
+
+
+
+
+
+
+
+<script>
+/////////////////////////////////////////////////////////////////
+
+(async function main() {
+
+  let allPayout = await fetchThis( null, '/get-all-payout', 'get')
+
+  if (allPayout.length) {
+  
+    allPayout = pumpb.sortArray( allPayout, 'payDate')
+
+    allPayout.forEach( rec => {
+      /*  
+      let newRow = document.createElement('tr')
+      newRow.setAttribute('x-id', rec._id)
+      let innerCode = `<td>${pumpb.simpleDate( rec.payDate) }</td><td>${pumpb.getMoneyFormat( rec.netValue )}</td><td>${rec.partnerName} #${rec.docNum}</td>`
+      newRow.innerHTML = innerCode
+
+      document.querySelector('#listHere').append( newRow)
+      */
+
+      let mainGrid = document.querySelector('.main-grid')
+      mainGrid.innerHTML += `<span data-id="${rec._id}"">${pumpb.simpleDate(rec.payDate)}</span><span data-id="${rec._id}" class="tr">${pumpb.getMoneyFormat(rec.netValue)}</span><span data-id="${rec._id}">${rec.partnerName.slice(0,12)} #${rec.docNum}</span>` 
+
+
+    });
+
+    // calculate
+    let calc = pumpb.getSumOf( allPayout, ['netValue','taxValue','totalPriceBeforeTax'])
+
+    document.querySelector('#netValueSum').textContent = pumpb.getMoneyFormat( calc.netValue);
+    document.querySelector('#taxSum').textContent = pumpb.getMoneyFormat( calc.taxValue);
+    document.querySelector('#beforeTaxSum').textContent = pumpb.getMoneyFormat( calc.totalPriceBeforeTax);
+
+
+  } else {
+    alert('ไม่มีข้อมูลอะไรเลยค่ะ นี่อาจเป็นการเริ่มระบบใหม่รึเปล่าคะ ถึงไม่มีข้อมูลอะไรเลย')
+  }
+
+})();
+
+
+// if user clicks on table bring her that payment info
+document.querySelector('.main-grid').addEventListener('click', event => {
+
+  if (event.target.dataset.id) {
+
+    //location.href = PUMP_DOMAIN + '/get-payout-info?payoutId=' + rowElem.getAttribute('x-id')
+    location.href = 'add-payout-2.html?mode=view&id=' + event.target.dataset.id
+
+  }
+  // call this api and it will return an html info
+
+})
+
+
+
+function findInTable() {
+  // find the keyword from #findInput in #listHere table
+
+  const inputValue = document.querySelector('#findInput').value.trim()
+
+  if (inputValue == '') {
+    refreshTable()
+    return
+  }
+
+  document.querySelectorAll('tr').forEach( ro => {
+    if (!ro.textContent.includes( inputValue )) {
+      if (ro.rowIndex != 0) { // don't hide the header row
+        ro.hidden = true
+      }
+    }
+  })
+}
+
+
+function refreshTable() {
+  document.querySelectorAll('tr').forEach( ro => ro.hidden = false)
+}
+
+
+
+
+</script>
+</body>
+</html>

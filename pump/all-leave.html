@@ -132,7 +132,7 @@ window.onload = async () => {
       })
 
     } else {
-      alert('ไม่พบข้อมูลสินค้าใดๆเลยค่า')
+      alert('ไม่มีข้อมูลอะไรเลยค่า')
     }
 
   } catch(er) {
@@ -148,9 +148,10 @@ window.onload = async () => {
 // if user clicks on table bring her that payment info
 document.querySelector('.main-grid').addEventListener('click', event => {
 
-  alert( event.target.dataset.id)
-  return
+  //alert( event.target.dataset.id)
+  //return
 
+  location.href = 'leave-form.html?mode=view&id=' + event.target.dataset.id
 
 })
 
