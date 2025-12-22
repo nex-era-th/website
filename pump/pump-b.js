@@ -477,3 +477,39 @@ pumpb.getLongLeaveDuration2 = ( startDate, stopDate ) => {
         }
     }
 }
+
+
+
+
+pumpb.youAreTestUser = ( yourUser ) => {
+  // return true if yourUser is in pumpb.testUsers, false if not
+
+  if (pumpb.testUsers.includes( yourUser)) {
+    return true
+  } else {
+    return false
+  }
+
+}
+
+
+
+
+
+pumpb.calcHourlyFees = (timeLengthStr, hourlyFee) => {
+    // 1. Split the string into hours and minutes
+    const [hours, minutes] = timeLengthStr.split(':').map(Number);
+
+    // 2. Convert minutes to a decimal fraction of an hour
+    // Example: 25 mins / 60 = 0.41666...
+    const decimalMinutes = minutes / 60;
+
+    // 3. Add hours and decimal minutes together
+    const totalHours = hours + decimalMinutes;
+
+    // 4. Calculate final fee
+    const totalFee = totalHours * hourlyFee;
+
+    // Optional: Round to 2 decimal places for currency precision
+    return Math.round(totalFee * 100) / 100;
+}

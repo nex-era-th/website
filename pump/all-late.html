@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Lates</title>
+  <script src="conf.js"></script>
+  <script src="pump-b.js"></script>
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/material-x.css" rel="stylesheet" type="text/css">
+  <link href="pump.css" rel="stylesheet" type="text/css">
+<style>
+  /*
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { font-size: 16px; }
+  th { text-align: center; }
+  table {
+    width: 100%; border-collapse: collapse; margin-top: 0px;
+    border: 1px solid gray;
+  }
+  th, td {
+    border: 1px solid gray; padding: 8px; text-align: left;
+  }
+  tr:hover { background-color: aqua; }
+
+  .world-space { max-width: 800px; margin: auto; }
+  */
+
+  .main-grid {
+    background-color: white;
+  }
+  .main-grid > * { 
+    background-color: #eeeeee; padding: 12px 8px; height: 100%;
+  }
+
+  /*.tcenter { text-align: center; }*/
+
+
+
+</style>
+</head>
+<body>
+
+  <!--div style="padding: 0 16px; color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">All Leaves</div-->
+
+
+  <div class="world-space">
+
+    <!-- title -->
+    <div style="margin-bottom: 24px;">
+      <div id="pageTitle" style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">All Lates</div>
+      <p id="pageBrief" class="small">แสดงข้อมูลการมาสายของพนักงานทั้งหมด</p>
+    </div>
+
+
+    <!-- find -->
+    <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
+      <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นจากวันหรือชื่อคน ...">
+      <button class="w3-button w3-blue" 
+      style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
+    </div>
+
+
+    <!-- grid -->
+    <div class="main-grid" 
+    style="margin-top: 32px; display: grid; grid-template-columns: auto auto auto; align-items: center; gap: 1px">
+
+      <span class="tc small">วันที่</span><span class="tc small">พนักงาน</span><span class="tc small">เวลางานที่หายไป</span>
+      
+
+
+    </div>
+
+
+
+
+  </div>
+
+
+  <!-- page action -->
+  <div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+    <img src="/icon/u-turn.svg" style="width: 32px; cursor: pointer;" 
+    onclick="history.back()">
+  </div>
+  
+
+
+
+
+
+
+
+
+<script>
+/////////////////////////////////////////////////////////////////
+
+// GLOBAL VAR
+
+const PGOJ = {};
+
+
+
+// ON LOAD FUNC
+
+window.onload = async () => {
+  // get all product here
+
+  try {
+
+    let reply = await pumpb.fetchThis( 
+      { masterKey: MASTER_KEY },
+      '/get-all-late'
+    )
+    
+    if (reply.done) {
+      reply.data.forEach( late => {
+        
+        let htmlCode = `<div data-id="${late._id}">${pumpb.getSimpleDate(late.lateDate)}</div><div data-id="${late._id}">${late.staffNickName}</div><div data-id="${late._id}">${late.lateFrom}-${late.lateTo} (${late.lateSum})</div>`
+
+        let gridEl = document.querySelector('.main-grid')
+        gridEl.innerHTML = gridEl.innerHTML + htmlCode
+        
+      })
+
+    } else {
+      alert('ไม่มีข้อมูลอะไรเลยค่า')
+    }
+
+  } catch(er) {
+    console.error(er)
+    alert('มีปัญหาทางเทคนิคค่ะ')
+  }
+
+}
+
+
+// LISTENING FUNC
+
+
+// if user clicks on table bring her that payment info
+document.querySelector('.main-grid').addEventListener('click', event => {
+
+  //alert( event.target.dataset.id)
+  //return
+
+  if (event.target.dataset.id) {
+    location.href = 'late-form.html?mode=view&id=' + event.target.dataset.id
+  }
+
+})
+
+
+</script>
+</body>
+</html>

@@ -30,6 +30,7 @@ label { font-size: 0.8rem }
 /* color */
 .indigo { color: #5c6bc0 }
 .grey { color: #616161 }
+.indigo-bg { background-color: #5c6bc0;}
 .grey-bg { background-color: #eeeeee; }
 
 
@@ -48,6 +49,8 @@ label { font-size: 0.8rem }
 .form-space input,
 .form-space textarea,
 .form-space select,
+.form-space p,
+.form-space span,
 .form-space option { font-size: 1.25rem; }
 .form-space p { padding: 0; margin: 0 }
 .form-space > label { font-size: 1.0rem; }
@@ -58,5 +61,27 @@ label { font-size: 0.8rem }
 
 
 
+/* grid - make grid or table with white border and light grey as the background. We may use this in replacing the traditional <table> */
+.grid-space { display: grid; gap: 1px; align-items: center; }
+.grid-space span { 
+  background-color: #eeeeee; font-size: 0.8rem; padding: 4px; 
+  height: 100%;  
+}
+
+
+
+
 /* action */
 .hover-it:hover { background-color: #b2ebf2;}
+
+
+
+
+/* display */
+.hide { display: none; }
+.grid { display: grid; }
+.flex { display: flex; }
+.block { display: block; }
+
+
+

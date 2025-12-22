@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Late Form</title>
+<script src="conf.js"></script>
+<script src="pump-b.js"></script>
+<script src="/js/xdev-b.js"></script>
+<link href="/js/w3.css" rel="stylesheet" type="text/css">
+<link href="/js/material-x.css" rel="stylesheet" type="text/css">
+<link href="pump.css" rel="stylesheet" type="text/css">
+<style>
+  /* put local styles here */
+</style>
+</head>
+<body>
+
+<div class="world-space">
+
+  <!-- title -->
+  <div style="margin-bottom: 24px;">
+    <div id="pageTitle" style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Late Form</div>
+    <p id="pageBrief" class="small">เก็บข้อมูล การมาทำงานสาย ของพนักงาน ใครมาสาย ก็ป้อนเข้าไป โปรแกรมจะเอาไปคำนวนอีกที ตอนคิดค่าจ้างตอนสิ้นเดือน ตามนโยบาย พนง.รายเดือน เราอาจไม่ป้อนก็ได้ แต่ให้เขาชดเชยทำงานให้ครบ ก็ได้ ส่วนพนง.รายวัน รายชั่วโมง อันนี้ ต้องป้อน สำคัญ กับการคิดเงิน</p>
+  </div>
+
+
+  <!-- form -->
+  <div class="form-space" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px; margin-top: 32px">
+
+
+    <label>พนักงาน*</label>
+    <select id="selectStaff" class="w3-select" 
+    onchange="showStaffFullName()">
+      <option>-----</option>
+    </select>
+
+    <div></div>
+    <span id="showStaffFullNameHere"></span>
+
+    <hr class="line-in-form"><!------------------------------------>
+
+    
+    <div id="shortLeaveBox" style="grid-column: span 2; padding: 16px; display: grid; grid-template-columns: auto auto; align-items: center; gap: 8px">
+
+      <label class="normal italic indigo">วันที่*</label>
+      <input id="lateDate" type="date" class="w3-input">
+
+      <label class="normal italic indigo">ตั้งแต่เวลา*</label>
+      <input id="lateFrom" type="time" class="w3-input"
+      onchange="calcTime()">
+
+      <label class="normal italic indigo">ถึงเวลา*</label>
+      <input id="lateTo" type="time" class="w3-input"
+      onchange="calcTime()">
+
+      <label class="normal italic indigo">รวมเวลาที่หายไป</label>
+      <input id="lateSum" type="text" class="w3-input" disabled>
+
+    </div>
+
+    
+    <hr class="line-in-form"><!------------------------------------>
+
+
+    <label>Note</label>
+    <textarea id="note" rows="3"></textarea>
+    <label>userName*</label>
+    <input id="userName" type="text" class="w3-input" autocomplete="off">
+  </div>
+
+
+  <!-- form action -->
+  <div id="formActBox" style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px">
+    <button class="w3-button w3-blue"
+    onclick="confirmLate()">Confirm</button>
+    <button class="w3-button w3-yellow"
+    onclick="pumpb.clearBrowserBar(); location.reload()">Clear</button>
+  </div>
+
+
+
+</div>
+
+
+
+<!-- page action -->
+<div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+  <img src="/icon/u-turn.svg" style="width: 32px; height: 32px; cursor: pointer;" 
+  onclick="history.back()">
+</div>
+
+
+<script>
+//////////////////////////////////////////////////////////////////
+
+// GLOBAL VAR
+let MODE = 'new';
+const PGOJ = {}; // page object, you can keep everything here as needed
+
+
+
+// LOAD FUNC
+window.onload = async () => {
+
+  // scroll to top on reload
+  setTimeout( () => {
+    window.scrollTo(0,0)
+  }, 10)
+
+
+
+  // always load the staff data to make the select choices
+  try {
+
+    let reply = await pumpb.fetchThis( null, '/get-all-staff', 'get')
+    
+    if (reply.done) {
+
+      let data = reply.data
+      PGOJ.data = data
+
+      data.forEach( staff => {
+        let newElem = document.createElement('option')
+        newElem.textContent = staff.nickName
+        document.querySelector('#selectStaff').append(newElem)
+      })
+
+    } else {
+      alert('ไม่มีข้อมูลพนักงานเลยค่ะ คงต้อง add เข้าไปก่อนป่าว')
+    }
+
+  } catch(er) {
+    console.error('*** error ***', er)
+    alert('มีปัญหาทางเทคนิคค่ะ ลองกด refresh หน้าจออีกทีดีมั๊ยคะ ถ้าไม่ได้อาจเพราะ server มีปัญหา')
+  }
+
+
+
+
+
+
+
+  // check mode
+  // check mode: view|edit
+  //const urlParams = new URLSearchParams(window.location.search)
+  let myQuery = new pumpb.MyQuery
+  const id = myQuery.get('id') //urlParams.get('id')
+  MODE = myQuery.get('mode') || 'new' //urlParams.get('mode')
+
+  //alert('mode=' + mode + ',id=' + id)
+
+
+  if (MODE == 'new') {
+
+    // may do nothing here    
+
+
+  } else if (MODE == 'view' && id) {
+
+    // if view mode, do it...
+    //alert(id)
+
+    try {
+
+      let reply = await pumpb.fetchThis(
+        { _id: id, masterKey: MASTER_KEY } , 
+        '/find-late'
+      )
+
+      if (reply.done) {
+        
+        let data = reply.data
+
+        // fill data
+        document.querySelector('#selectStaff').value = data.staffNickName
+        document.querySelector('#lateDate').value = data.lateDate
+        document.querySelector('#lateFrom').value = data.lateFrom
+        document.querySelector('#lateTo').value = data.lateTo
+        document.querySelector('#lateSum').value = data.lateSum
+        document.querySelector('#note').value = data.note
+        document.querySelector('#userName').value = data.userName
+
+        // disable
+        document.querySelectorAll('input').forEach( el => el.disabled = true)
+        document.querySelectorAll('textarea').forEach( el => el.disabled = true)
+        document.querySelectorAll('select').forEach( el => el.disabled = true)
+        document.querySelector('#formActBox').querySelectorAll('button').forEach( el => el.disabled = true)
+
+        // setting
+        document.querySelector('#pageTitle').textContent = 'Late Info'
+        document.querySelector('#pageBrief').textContent = ''
+        pumpb.clearBrowserBar()
+
+
+      } else {
+        alert('ไม่พบข้อมูล Late นี้ค่ะ')
+      }
+
+    } catch(er) {
+      console.error(er)
+      alert('มีปัญหาทางเทคนิคค่ะ')
+    }
+
+  }
+
+
+
+
+
+  /* / watch the #longLeaveBox
+  let longLeaveBox = document.querySelector('#longLeaveBox')
+  longLeaveBox.addEventListener('change', event => {
+    
+    calcTime()
+    
+  }) */ 
+
+
+
+}
+
+
+
+
+
+
+
+//----------------------------------------------------------------
+
+function calcTime() {
+  
+    const lateDate = document.querySelector('#lateDate').value
+    const lateFrom = document.querySelector(`#lateFrom`).value
+    const lateTo = document.querySelector(`#lateTo`).value
+    const lateSum = document.querySelector(`#lateSum`)
+    
+    if ( lateDate && lateFrom && lateTo) {
+
+      lateSum.value = pumpb.getLengthFrom2times( lateFrom, lateTo)
+
+    } else {
+      //alert('ต้องใส่เวลาเริ่ม ด้วยค่ะ')
+    }
+
+}
+
+
+async function confirmLate() {
+
+  // get data
+
+  let data = {
+    staffNickName: document.querySelector('#selectStaff').value,
+    lateDate: document.querySelector('#lateDate').value,
+    lateFrom: document.querySelector('#lateFrom').value,
+    lateTo: document.querySelector('#lateTo').value,
+    lateSum: document.querySelector('#lateSum').value, 
+    note: document.querySelector('#note').value,
+    userName: document.querySelector('#userName').value
+  }
+
+  // check
+
+  if (data.staffNickName.startsWith('-') || !data.lateDate || !data.lateFrom || !data.lateTo || !data.userName) {
+    alert('ช่องที่มี * ต้องมีข้อมูลค่ะ')
+    return
+  }
+
+  
+
+  if (!pumpb.youAreTestUser(data.userName)) {
+    alert('พี่ไม่ใช่ user ที่ถูกต้องค่ะ ต้องให้ user ที่ได้รับอนุญาตเท่านั้น ถึงทำได้ค่ะ')
+    return
+  }
+
+  // pass
+
+  try {
+
+    if (MODE == 'new') {
+
+      data.masterKey = MASTER_KEY
+      let reply = await pumpb.fetchThis( data, '/confirm-late')
+
+      if (reply.done) {
+        
+        alert('เรียบร้อยค่ะ')
+        pumpb.clearBrowserBar()
+        location.reload()
+
+      } else {
+        alert('save ข้อมูลไม่ได้ค่ะ ลองดูอีกทีมั๊ยคะ ไม่รู้เป็นไร ...')
+      }
+
+    } else if (MODE == 'edit') {
+
+      //
+      alert('save in edit mode')
+
+    } else {
+      alert('not save in this mode')
+    }
+    
+  } catch(er) {
+    console.error( er)
+    alert('มีปัญหาทางเทคนิคค่ะ ลองกด refresh หน้าจออีกทีดีมั๊ยคะ')
+  }
+}
+
+
+
+
+function shortLongSwitch() {
+  // show/hide the #shortLeaveBox, #longLeaveBox
+
+  if (document.querySelector('#isLongLeave').checked == true) {
+    document.querySelector('#shortLeaveBox').style.display = 'none'
+    document.querySelector('#longLeaveBox').style.display = 'grid'
+  } else {
+    document.querySelector('#shortLeaveBox').style.display = 'grid'      
+    document.querySelector('#longLeaveBox').style.display = 'none'
+  }
+}
+
+
+function showStaffFullName() {
+  // once user choose a staff, we show staff full name in #showStaffInfoHere
+
+  let nickName = document.querySelector('#selectStaff').value
+  if (!nickName.startsWith('-')) {
+
+    let info = PGOJ.data.find( v => v.nickName == nickName)
+    if (info.staffCode == '') info.staffCode = '--'
+    if (info.fingerCode == '') info.fingerCode = '--'
+
+    let showInfo = info.firstName + ' ' + info.lastName + ' (' + info.staffCode + '/' + info.fingerCode + ')<br>' + info.position + '/' + info.department
+
+    document.querySelector('#showStaffFullNameHere').innerHTML = showInfo
+  }
+
+}
+
+
+
+
+</script>
+</body>
+</html>
+  

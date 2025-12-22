@@ -9,8 +9,9 @@
   <script src="/js/xdev-b.js"></script>
   <link href="/js/w3.css" rel="stylesheet" type="text/css">
   <link href="/js/material-x.css" rel="stylesheet" type="text/css">
-
+  <link href="pump.css" rel="stylesheet" type="text/css">
 <style>
+  /*
   *,
   *::before,
   *::after { box-sizing: border-box; }
@@ -23,6 +24,8 @@
   .xlarge { font-size: 2.0rem }
 
   .world-space { max-width: 800px; margin: auto; }
+  
+
   .my-form > input {
     width: 100%; padding: 4px;
   }
@@ -38,35 +41,53 @@
   }
 
   .hover-it:hover { background-color: #b2ebf2;}
-
+  */
 </style>
 </head>
 <body>
 
-<div style="padding: 0 16px; color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">เพิ่มสินค้า</div>
 
-<div class="world-space" style="padding: 0 16px; margin-top: 32px">
+<div class="world-space">
   
 
+  <!-- title / page name -->
+  <div style="margin-bottom: 24px;">
+    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Add Product*</div>
+    <p class="small">เพิ่มสินค้า คำว่าสินค้านี้จะเป็นของที่ซื้อมาใช้ในบริษัทก็ได้ ซื้อมาเพื่อขายก็ได้ และอาจไม่ใช่ของสำหรับร้านกาแฟ หรือปั๊มน้ำมันก็ได้ คือนอกระบบทั้ง 2 หรือจะเป็นทรัพย์สินของบริษัทก็ได้ (asset)</p>
+  </div>
+
+
+  <!-- top action -->
+  <div id="topActBox" style="display: none; align-items: center; justify-content: space-around; margin-bottom: 24px;">
+    <button class="w3-button" style="padding: 4px 8px; background-color: #fdd835;" 
+    onclick="">Edit</button>
+    <button class="w3-button" style="padding: 4px 8px; background-color: #757575;" disabled>Delete</button>
+  </div>
+
+
+  <!-- form / grid -->
   <div class="my-form" id="addProductForm" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px">
 
     <label>ภาพ</label>
     <div>
       <div style="cursor: pointer;" onclick="this.children[0].click()">
         <input type="file" id="picFile" hidden 
-          onchange="xb.readPicFileAsDataUrl( this).then( durl => showPicHere.src = durl); showPicHere.hidden = false;">
+          onchange="xb.readPicFileAsDataUrl( this).then( durl => showPicHere.src = durl); picBox.hidden = false;">
         <div class="hover-it" style="display: inline-block; padding-right: 8px;">
           <img src="/icon-x/Image.svg" width="32">
           <small style="color: #5c6bc0">เลือกรูป</small>
         </div>
       </div>
-      <img id="showPicHere" hidden
-      style="width: 100%; object-fit: cover;">
+      <div id="picBox" style="position: relative" hidden>
+        <img id="showPicHere" style="width: 100%; object-fit: cover;">
+        <img src="/icon-x/X.svg" style="width: 32px; position: absolute; left: 0; bottom: 0; cursor: pointer"
+        onclick="clearPic()">
+      </div>
     </div>
 
 
     <label>Code*</label>
-    <input type="text" id="code" placeholder="รหัสสินค้า">
+    <input type="text" id="code" placeholder="รหัสสินค้าที่เราตั้ง">
     <label>ชื่อสินค้า*</label>
     <input type="text" id="name" placeholder="">  
     <label>Description*</label>
@@ -147,6 +168,7 @@
       onclick="findSupplier()"><img src="/icon-x/Search.svg" width="24"></div>
     </div>
     <div></div>
+    <!-- show partner name here -->
     <div id="supplier" supplier-id style="margin-top: 8px; text-decoration: underline;" class="default"></div>
 
     <!-- action -->
@@ -180,8 +202,8 @@
     <label>Note</label>
     <textarea id="note" rows="4" placeholder=""></textarea>
     
-    <label>ป้อนข้อมูลโดย*</label>
-    <input id="enterBy" type="text" placeholder="เช่น @sern, @john ...">
+    <label>userName*</label>
+    <input id="userName" type="text" autocomplete="off">
 
   </div>
 
@@ -225,7 +247,7 @@ window.onload = () => {
 
 const domain = PUMP_DOMAIN //'http://192.168.1.111:4000';
 const showPicHere = document.getElementById('showPicHere');
-
+const picBox = document.querySelector('#picBox')
 
 //const lastEdit = new Date
 //document.getElementById('lastEdit').value = lastEdit
@@ -255,50 +277,66 @@ async function addProduct() {
   */
 
   let data = {
+    
     pic: document.querySelector('#showPicHere').src,
     code: document.querySelector('#code').value,
     name: document.querySelector('#name').value,
     description: document.querySelector('#description').value,
     brand: document.querySelector('#brand').value,
+    
     barCode: document.querySelector('#barCode').value,
     partnerCode: document.querySelector('#partnerCode').value,
     otherCode: document.querySelector('#otherCode').value,
+    
     category: document.querySelector('#category').value,
     uom: document.querySelector('#uom').value,
     unitPrice: document.querySelector('#unitPrice').value,
     currency: document.querySelector('#currency').value,
+    
     minOrder: document.querySelector('#minOrder').value,
     mustStock: document.querySelector('#mustStock').checked,
     minStock: document.querySelector('#minStock').value,
     warranty: document.querySelector('#warranty').value,
     returnBy: document.querySelector('#returnBy').value,
+
     supplierId: document.querySelector('#supplier').getAttribute('supplier-id'),
+    partnerName: document.querySelector('#supplier').textContent,
+    
     status: document.querySelector('#status').value,
     start: document.querySelector('#start').value,
     note: document.querySelector('#note').value,
-    enterBy: document.querySelector('#enterBy').value
+    userName: document.querySelector('#userName').value
   }
 
-  if (!data.code || !data.name || !data.description || !data.category || !data.uom || !data.unitPrice || !data.enterBy ) {
+  if (!data.code || !data.name || !data.description || !data.category || !data.uom || !data.unitPrice || !data.userName ) {
     alert('โปรดป้อนข้อมูลทุกช่องที่มีเครื่องหมาย * ขอบคุณค่ะ')
     return
   }
 
+  if (!pumpb.youAreTestUser(data.userName)) {
+    alert('พี่ไม่ใช่ user ที่ถูกต้องค่ะ ข้อมูลนี้ต้องป้อนโดย user ที่ถูกต้องเท่านั้นนะ อย่ามาแอบป้อนนะ')
+    return
+  }
+
+  data.masterKey = MASTER_KEY
+
+
   // pass - basic validation
+
 
   try {
 
     let reply = await pumpb.fetchThis( data, '/add-product')
-
+    
     if (reply.done) {
-      alert(`เรียบร้อย - เพิ่มสินค้าชื่อ ${data.name} เรียบร้อยแล้วค่ะ`)
+      alert(`เรียบร้อยค่า แจ่มเลย`)
       location.reload()
     } else {
-      alert(`ไม่สามารถ Save ข้อมูลได้ โปรดลองอีกครั้ง`)
+      alert(`Save ข้อมูลไม่ได้อ่ะ \n` + reply.msg)
     }
 
   } catch(er) {
-    alert('Error - มีปัญหาทางเทคนิคค่ะ โปรดลองอีกครั้ง')
+    alert('มีปัญหาทางเทคนิคค่ะ ลองอีกทีมั๊ย')
   }
   
 }
@@ -332,7 +370,7 @@ async function findSupplier() {
     }
 
   } catch(er) {
-    alert('Error - มีปัญหาทางเทคนิคค่ะ โปรดลองอีกครั้ง')
+    alert('มีปัญหาทางเทคนิคค่ะ')
   }
 
 }
@@ -344,6 +382,14 @@ function clearSupplier() {
   document.querySelector('#supplier').textContent = ''
   document.querySelector('#supplier').setAttribute('supplier-id','')
 }
+
+
+function clearPic() {
+  // hide #picBox and clear #showPicHere.src
+  picBox.hidden = true
+  showPicHere.removeAttribute('src')
+}
+
 
 
 </script>

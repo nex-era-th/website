@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Pay Wages</title>
+<title>Pay-Wages Approval</title>
 <script src="conf.js"></script>
 <script src="pump-b.js"></script>
 <script src="/js/xdev-b.js"></script>
@@ -11,12 +11,12 @@
 <link href="/js/material-x.css" rel="stylesheet" type="text/css">
 <link href="pump.css" rel="stylesheet" type="text/css">
 <style>
-  /* put local styles here */
+  /* put local styles here * /
   .grid-table { display: grid; gap: 1px; }
-  .grid-table > * { 
+  .grid-table span { 
     background-color: #eeeeee; font-size: 0.8rem; padding: 4px; 
     height: 100%;  
-  }
+  } */
 </style>
 </head>
 <body>
@@ -25,8 +25,8 @@
 
   <!-- title / page name -->
   <div style="margin-bottom: 24px;">
-    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Pay Wages Approval*</div>
-    <p class="tiny grey">เมื่ออนุมัติในนี้แล้ว โปรแกรมจะสร้าง payslip เพื่อให้การเงิน จ่ายเงินจริงต่อไป และ payslip ก็นำไปให้พนักงาน 1 ชุด ให้พนักงานเซ็นกลับ 1 ชุด</p>
+    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Pay-Wages Approval*</div>
+    <p class="small">เมื่ออนุมัติในนี้แล้ว โปรแกรมจะสร้าง Wages Payment Plan เพื่อให้จ่ายเงินได้ง่าย รวมถึงจะมี payslip เพื่อมอบให้พนักงานด้วย</p>
   </div>
 
 
@@ -50,11 +50,13 @@
   <!-- form -->
   <div class="form-space" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px; margin-top: 32px">
 
-    <label>เลือกเดือน</label>
-    <input id="payMonth" type="month" class="w3-input" onchange="getMonthInfo()">
-    <div id="monthInfo" style="grid-column: span 2; padding: 16px"></div>
+    <!-- เดือน -->
+    <label class="indigo">เลือกเดือน</label>
+    <input id="payMonth" type="month" class="w3-input" onchange="getPayMonthInfo()">
+    <div id="monthInfo" style="grid-column: span 2; padding: 16px; grid-template-columns: auto auto;" class="grid-space"></div>
 
-    <label>เลือกพนักงาน</label>
+    <!-- พนักงาน -->
+    <label class="indigo">เลือกพนักงาน</label>
     <select id="chooseStaff" class="w3-select" onchange="getStaffInfo()">
       <option>-----</option>
       <option>john</option>
@@ -62,35 +64,38 @@
       <option>voon</option>
       <option value="6941a431a98a2683a2d047f0">test</option>
     </select>
-    <div id="staffInfo" style="grid-column: span 2; padding: 16px">
+    <div id="staffInfo" class="grid-space" style="grid-column: span 2; padding: 16px; grid-template-columns: auto auto;">
     </div>
 
     
     <hr class="line-in-form">
 
-    <label style="grid-column: span 2;">เงินเพิ่ม</label>
-    <div class="grid-table" style="grid-column: span 2; padding: 16px; display: grid; grid-template-columns: auto auto auto auto auto auto; gap: 1px">
+    <!-- เงินเพิ่ม -->
+    <label style="grid-column: span 2;" class="indigo">เงินเพิ่ม หรือเงินได้รายวัน รายชั่วโมง</label>
+    <div id="addWage" class="grid-space" style="grid-column: span 2; padding: 16px; grid-template-columns: auto auto auto auto auto auto;">
 
-      <span>วันที่</span><span>รายการ</span><span>เริ่ม</span><span>หยุด</span><span>รวมเวลา</span><span class="tr">เป็นเงิน</span>
+      <span>วันที่</span><span>รายการ</span><span>เริ่ม</span><span>หยุด</span><span>รวมเวลา</span><span class="tr">คิดเป็นเงิน</span>
       
-      <span>05/12</span><span>ค่าทำงานวันหยุด</span><span>05:00</span><span>14:00</span><span>08:00</span><span class="tr">400.00</span>
-      <span>10/12</span><span>ค่าทำงานวันหยุด</span><span>05:00</span><span>14:00</span><span>08:00</span><span class="tr">400.00</span>
-      <span>31/12</span><span>ค่าทำงานวันหยุด</span><span>05:00</span><span>14:00</span><span>08:00</span><span class="tr">400.00</span>
-
-      <span style="grid-column: span 5; text-align: center;">รวม</span><span class="tr">1,200.00</span>
-
+      <!--
+      <span>02/12</span><span>ค่าล่วงเวลาวันทำงาน</span><span>14:00</span><span>18:00</span><span>04:00</span><span class="tr">300.00</span>
+      <span>05/12</span><span>ค่าทำงานวันหยุด</span><span>05:00</span><span>13:00</span><span>08:00</span><span class="tr">400.00</span>
+      <span>05/12</span><span>ค่าล่วงเวลาวันหยุด</span><span>14:00</span><span>18:00</span><span>04:00</span><span class="tr">600.00</span>
+      <span style="grid-column: span 5; text-align: center;">รวม</span><span class="tr">1,300.00</span>
+      -->
 
     </div>
    
 
     <hr class="line-in-form">
 
-    <label style="grid-column: span 2;">เงินหัก</label>
-    <div class="grid-table" style="grid-column: span 2; padding: 16px; display: grid; grid-template-columns: auto auto auto auto auto auto; gap: 1px">
+    <!-- เงินหัก -->
+    <label style="grid-column: span 2;" class="indigo">เงินหัก</label>
+    <div id="deductWage" class="grid-space" style="grid-column: span 2; padding: 16px; grid-template-columns: auto auto auto auto auto auto;">
 
-      <span>วันที่</span><span>รายการ</span><span>เริ่ม</span><span>หยุด</span><span>รวมเวลา</span><span>เป็นเงิน</span>
-      <span>01/12</span><span>ยังไม่เปิดกิจการ</span><span>--</span><span>--</span><span>--</span><span>-400.00</span>
-
+      <span>วันที่</span><span>รายการ</span><span>เริ่ม</span><span>หยุด</span><span>รวมเวลา</span><span class="tr">คิดเป็นเงิน</span>
+      <span>01/12</span><span>ยังไม่เปิดกิจการ</span><span>--</span><span>--</span><span>--</span><span class="tr">-400.00</span>
+      <span>30/12</span><span>ประกันสังคม 5% ของเงินเดือน</span><span>--</span><span>--</span><span>--</span><span class="tr">-600.00</span>
+      <span style="grid-column: span 5;" class="tc">รวม</span><span class="tr">-1,000.00</span>
 
 
     </div>
@@ -98,17 +103,49 @@
 
     <hr class="line-in-form">
     
-    
-    <label style="grid-column: span 2;">สรุปยอด</label>
-    <div style="grid-column: span 2; display: grid; grid-template-columns: auto auto; padding: 0 16px" class="grid-table">
-      <label>เงินเดือน /หรือเงินได้ปกติทั้งเดือน</label>
-      <span>12,000.00</span>
-      <label>รวมเงินเพิ่ม</label>
-      <span>1,200.00</span>
-      <label>รวมเงินหัก</label>
-      <span>-400.00</span>
-      <label>เงินได้สุทธิ</label>
-      <span>12,800.00</span>
+    <!-- สรุปยอดรายได้ -->
+    <label style="grid-column: span 2;" class="indigo">สรุปยอดรายได้</label>
+    <div style="grid-column: span 2; grid-template-columns: auto auto; padding: 16px" class="grid-space">
+      <span>เงินเดือน หรือเงินได้ปกติทั้งเดือน</span>
+      <span class="tr">12,000.00</span>
+      <span>เงินเพิ่ม</span>
+      <span class="tr">1,300.00</span>
+      <span>เงินหัก</span>
+      <span class="tr">-1,000.00</span>
+      <span>เงินได้สุทธิ</span>
+      <span class="tr">12,300.00</span>
+    </div>
+
+
+    <hr class="line-in-form">
+
+    <!-- ภงด -->
+    <label style="grid-column: span 2;" class="indigo">การหักภาษี ณ ที่จ่าย เงินได้บุคคลธรรมดา (ภงด.)</label>
+    <div class="grid-space" style="grid-column: span 2; grid-template-columns: auto auto; padding: 16px">
+
+      <span>ประเมินรายได้ทั้งปี</span>
+      <span class="tr">151,200.00</span>
+      <span>หักค่าใช้จ่ายส่วนตัว 50%</span>
+      <span class="tr">-75,600.00</span>
+      <span>หักค่าลดหย่อนส่วนตน</span>
+      <span class="tr">-60,000.00</span>
+      <span>หักประกันสังคม</span>
+      <span class="tr">-7,200.00</span>
+      <span>เงินได้สุทธิ เพื่อคำนวน ภงด.</span>
+      <span class="tr">8,400.00</span>
+      <span>การหักภาษีเงินได้บุคคลธรรมดา</span>
+      <span class="tr">0.00</span>
+    </div>
+
+    <div style="grid-column: span 2; margin-left: 16px; color: red" class="tiny"><u>หมายเหตุ</u> ได้รับยกเว้นการหักภาษี ณ ที่จ่าย เงินได้บุคคลธรรมดา (ภงด.) เนื่องจากอยู่ในเกณฑ์ รายได้สุทธิก่อนคำนวนภาษี ไม่เกิน 150,000 บาท/ปี</div>
+
+    <hr class="line-in-form">
+
+    <!-- สรุปยอดจ่าย -->
+    <label style="grid-column: span 2;" class="indigo">สรุป</label>
+    <div class="grid-space" style="grid-column: span 2; grid-template-columns: auto auto; padding: 16px">
+      <span>ยอดจ่ายค่าจ้างสุทธิ</span>
+      <span class="tr">12,300.00</span>
     </div>
 
 
@@ -116,15 +153,15 @@
 
     <label>Note</label>
     <textarea rows="2"></textarea>
-    <label>ดำเนินการโดย</label>
-    <input id="doneBy" type="text" placeholder="เช่น @fond" class="w3-input">
+    <label>userName</label>
+    <input id="doneBy" type="text" autocomplete="off" class="w3-input">
   </div>
 
 
 
   <!-- form action -->
   <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 32px">
-    <button class="w3-button w3-blue">อนุมัติ</button>
+    <button class="w3-button w3-blue">Approve</button>
     <button class="w3-button w3-yellow">Clear</button>
   </div>
 
@@ -145,7 +182,7 @@
 //////////////////////////////////////////////////////////////////
 
 let MODE = 'new';
-const PAGE = {};
+const PGOJ = {};
 
 // this code scroll page to top after reload
 window.onload = () => {
@@ -173,33 +210,52 @@ window.onload = () => {
 }
 
 
-async function getMonthInfo() {
+async function getPayMonthInfo() {
+  /*
+      payMonth info is in the pump.conf, tag = businessCalendar
+      so we'll get data like:
 
-  PAGE.payMonth = document.querySelector('#payMonth').value 
+      {
+        startDate: 2025-12-02,
+        endDate: 2025-12-31,
+        holiday: [ 2025-12-05, 2025-12-10, 2025-12-31 ]
+      }
+
+      and we use these to calc wages for holidays, etc.
+  */
+
+  PGOJ.payMonth = document.querySelector('#payMonth').value 
 
   try {
-    
+    /*
     let myYear, myMonth;
 
-    if (PAGE.payMonth == '2025-12') {
+    if (PGOJ.payMonth == '2025-12') {
       myYear = '2025',
       myMonth = 'december'
-    }
+    }*/
     
     let reply = await pumpb.fetchThis(
-      { month: myMonth, year: myYear },
-      '/get-month-info'
+      { payMonth: PGOJ.payMonth, masterKey: MASTER_KEY },
+      '/get-pay-month-info'
     )
-
+    
     if (reply.done) {
       //alert( JSON.stringify( reply))
       
       let data = reply.data
-      PAGE.monthInfo = data
+      PGOJ.monthInfo = data
+      let allHolidays = data.holiday.map( day => {
+        return pumpb.getSimpleDate(day)
+      })
 
-      document.querySelector('#monthInfo').innerHTML = `<p>วันเริ่มต้น = ${data.startDate}<br>
-      วันสุดท้าย = ${data.endDate}<br>
-      วันหยุดประจำปี = ${data.holiday.join(', ')}</p>`
+      document.querySelector('#monthInfo').innerHTML = `
+      <span>วันเริ่มต้น</span>
+      <span>${data.startDate}</span>
+      <span>วันสุดท้าย</span>
+      <span>${data.endDate}</span>
+      <span>วันหยุดตามประเพณี</span>
+      <span>${allHolidays.join(', ')}</span>`
 
     } else {
       alert(reply.msg)
@@ -216,9 +272,18 @@ async function getMonthInfo() {
 
 async function getStaffInfo() {
 
+  /*
+      get staff info and show her payProfile
+      user's payProfile tells all rates of her wages scheme
+
+  */
+
   const chooseStaff = document.querySelector('#chooseStaff').value
+
   if (!chooseStaff.startsWith('-')) {
     try{
+
+      PGOJ.staffId = chooseStaff
 
       let reply = await pumpb.fetchThis(
         null,
@@ -231,16 +296,95 @@ async function getStaffInfo() {
         //alert('got it')
 
         let data = reply.data
-        PAGE.staffInfo = data
+        PGOJ.staffInfo = data
 
         const staffInfo = document.querySelector('#staffInfo')
-        staffInfo.innerHTML = `<p>ประเภทการจ้าง = ${data.hiringType}<br>
-          เงินเดือน = ${pumpb.getMoneyFormat(data.payProfile.monthlyRate)}<br>
-          คิดเป็นค่าจ้าง/ชม = ${pumpb.getMoneyFormat(data.payProfile.calcHourlyRate)}<br>
-          ค่าล่วงเวลาวันทำงาน/ชม = ${pumpb.getMoneyFormat(data.payProfile.workdayOtRate)}<br>
-          ค่าทำงานวันหยุด/ชม = ${pumpb.getMoneyFormat(data.payProfile.holidayWorkRate)}<br>
-          ค่าล่วงเวลาวันหยุด/ชม = ${pumpb.getMoneyFormat(data.payProfile.holidayOtRate)}<br>
-          วันหยุด = ${data.holiday}</p>`
+        staffInfo.innerHTML = `
+        <span>ประเภทการจ้าง</span>
+        <span class="tr">${data.hiringType}</span>
+        <span>เงินเดือน</span>
+        <span class="tr">${pumpb.getMoneyFormat(data.payProfile.monthlyRate)}</span>
+        <span>คิดเป็นค่าจ้าง/ชม</span>
+        <span class="tr">${pumpb.getMoneyFormat(data.payProfile.calcHourlyRate)}</span>
+        <span>OT วันทำงาน/ชม</span>
+        <span class="tr">${pumpb.getMoneyFormat(data.payProfile.workdayOtRate)}</span>
+        <span>ค่าทำงานวันหยุด/ชม</span>
+        <span class="tr">${pumpb.getMoneyFormat(data.payProfile.holidayWorkRate)}</span>
+        <span>OT วันหยุด/ชม</span>
+        <span class="tr">${pumpb.getMoneyFormat(data.payProfile.holidayOtRate)}</span>
+        <span>วันหยุดประจำสัปดาห์</span>
+        <span class="tr">${data.holiday}</span>`
+
+
+
+        // get OT data
+        {
+          
+          let reply = await pumpb.fetchThis(
+            { 
+              payMonth: PGOJ.payMonth, 
+              staffNickName: PGOJ.staffInfo.nickName,
+              //masterKey: MASTER_KEY
+            },
+            '/find-ot'
+          )
+          
+          if (reply.done) {
+
+            let data = reply.data
+            let otBoxEl = document.querySelector('#addWage')
+            let sum = 0
+
+
+            data.forEach( ot => {
+
+              let rateField;
+              switch (ot.workType) {
+                case 'OT วันทำงาน':
+                  rateField = 'workdayOtRate'
+                  break;
+                case 'OT วันหยุด':
+                  rateField = 'holidayOtRate'
+                  break;
+                case 'ทำงานวันหยุด':
+                  rateField = 'holidayWorkRate'
+                  break;
+                default:
+                  rateField = 'workDayOtRate'
+              }
+
+              let thisFee = pumpb.calcHourlyFees(
+                    ot.lengthTime, 
+                    PGOJ.staffInfo.payProfile[rateField]
+                  )
+              sum += thisFee
+
+              otBoxEl.innerHTML += `
+              <span>${pumpb.getSimpleDate( ot.otDate)}</span>
+              <span>${ot.workType}</span>
+              <span>${ot.startTime}</span>
+              <span>${ot.stopTime}</span>
+              <span>${ot.lengthTime}</span>
+              <span class="tr">${
+                pumpb.getMoneyFormat( 
+                  thisFee 
+                )
+              }</span>`
+            })
+
+            otBoxEl.innerHTML += `
+            <span style="grid-column: span 5" class='tc'>รวม</span>
+            <span class="tr">${pumpb.getMoneyFormat(sum)}</span>`
+
+
+          } else {
+            alert('not found')
+          }
+
+        }
+        
+
+
 
 
       } else {
