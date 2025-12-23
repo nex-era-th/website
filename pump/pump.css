@@ -49,7 +49,7 @@ label { font-size: 0.8rem }
 .form-space input,
 .form-space textarea,
 .form-space select,
-.form-space p,
+/*.form-space p,*/
 .form-space span,
 .form-space option { font-size: 1.25rem; }
 .form-space p { padding: 0; margin: 0 }
