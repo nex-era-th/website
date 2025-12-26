@@ -265,3 +265,15 @@ leaveCount = {
   paternityLeave: { got: 15, used: 0}
 
 }
+
+
+
+
+benefit = {
+  staffNickName: '< จอห์น >',
+  description: '< ค่าแต่งหน้า >',
+  value: '< 500.00 >',
+  forMonth: '< 2025-12 >',
+  enterBy: '< userName >',
+  _time: [ Date.now() ]
+}

@@ -21,7 +21,7 @@
   <!-- title -->
   <div style="margin-bottom: 24px;">
     <div id="pageTitle" style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">OT Form</div>
-    <p id="pageBrief" class="tiny grey">บันทึกการทำ OT หรือทำงานในวันหยุด ในหน้านี้ หลังจากตกลงกับพนักงานได้แล้ว</p>
+    <p id="pageBrief" class="small">บันทึกการทำ OT หรือทำงานในวันหยุด ในหน้านี้ หลังจากตกลงกับพนักงานได้แล้ว</p>
   </div>
 
 
@@ -62,7 +62,7 @@
     <label>เหตุผลในการทำ OT ครั้งนี้</label>
     <textarea id="reason" rows="3" placeholder="เช่น ช่วงเทศกาลปีใหม่ ลูกค้ามากผิดปกติ"></textarea>
     <label>ป้อนข้อมูลโดย*</label>
-    <input id="enterBy" type="text" class="w3-input" placeholder="เช่น @fern">
+    <input id="enterBy" type="text" class="w3-input" autocomplete="off">
   </div>
 
 
@@ -212,6 +212,7 @@ function calcTime() {
 
 
 async function confirmOt() {
+  
   let data = {
     workType: document.querySelector('#workType').value,
     staffNickName: document.querySelector('#selectStaff').value,

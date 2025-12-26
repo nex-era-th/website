@@ -30,8 +30,20 @@ label { font-size: 0.8rem }
 /* color */
 .indigo { color: #5c6bc0 }
 .grey { color: #616161 }
+.red { color: red }
+.blue { color: blue;}
+.green { color: green }
+.yellow { color: yellow }
+.pink { color: pink }
+.brown { color: brown }
+.black { color: black }
+.white { color: white }
+.cyan { color: cyan }
 .indigo-bg { background-color: #5c6bc0;}
 .grey-bg { background-color: #eeeeee; }
+.cyan-bg { background-color: cyan;}
+.white-bg { background-color: white;}
+.black-bg { background-color: black;}
 
 
 

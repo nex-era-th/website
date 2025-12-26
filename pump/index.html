@@ -3,20 +3,20 @@
 <head>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>Pump Operation</title>
+  <title>navap 1.0</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="advisory software tech dev รับออกแบบและพัฒนาซอฟท์แวร์ ที่ปรึกษา ความเป็นผู้นำ บริหาร ธุรกิจ">
 
-  <script src="./config.js"></script>
-  <script src="js/xdev-b.js"></script>
-  <script src="js/projex.js"></script>
+  <script src="/config.js"></script>
+  <script src="/js/xdev-b.js"></script>
+  <script src="/js/projex.js"></script>
   <!--script src="./page-profile.js"></script-->
 
   <!--script src="https://cdn.tailwindcss.com"></script-->
-  <link href="js/w3.css" rel="stylesheet" type="text/css">
-  <link href="js/projex.css" rel="stylesheet" type="text/css">
+  <link href="/js/w3.css" rel="stylesheet" type="text/css">
+  <link href="/js/projex.css" rel="stylesheet" type="text/css">
   <!--link href="js/material-design-var.css" rel="stylesheet" type="text/css"-->
-  <link href="js/material-x.css" rel="stylesheet" type="text/css">
+  <link href="/js/material-x.css" rel="stylesheet" type="text/css">
   <style>
     html { font-size: 16px;}
     p { font-size: 1.1rem; text-align: center; }
@@ -81,7 +81,7 @@
       <div onclick="location.href = 'all-overtime.html';" 
       style="color: blue;">All OT</div>
 
-      <div onclick="location.href = 'adjust-work-hour.html';" style="color: blue">Adjust Work Hour*</div>
+      <!--div onclick="location.href = 'adjust-work-hour.html';" style="color: blue">Adjust Work Hour*</div-->
 
 
       <div onclick="location.href = 'leave-form.html';" style="color: blue">Leave Form</div>
@@ -91,6 +91,13 @@
 
       <div onclick="location.href = 'late-form.html';">Late Form*</div>
       <div onclick="location.href = 'all-late.html';">All Lates*</div>
+
+
+
+      <div onclick="location.href = 'approve-benefit.html';" style="color: blue;">Approve Benefit*</div>
+      <div onclick="location.href = 'approve-deduction.html';" style="color: blue;">Approve Deduction*</div>
+      <div onclick="location.href = 'approve-wages-pay.html';" style="color: blue;">Approve Wages Pay*</div>
+
 
 
     </div>
@@ -116,7 +123,7 @@
       <div>รับเงินกรณีอื่น</div>
       <div onclick="location.href = 'payroll.html';" style="color: blue">จ่ายค่าจ้างพนักงาน*</div>
 
-      <div onclick="location.href = 'pay-wages-approval.html';" style="color: blue;">Pay-Wages Approval*</div>
+
 
 
 
@@ -225,7 +232,7 @@
     // tested=ok, @devster, 2025-01-09T01:46+0700
   }
 
-  xMoveAroundFreely(bug)
+  //xMoveAroundFreely(bug)
 
 
 
@@ -280,12 +287,12 @@
   
 
 
-
+  /*
   ifScroll({ moreThan: 50, 
     do: {show: act_scroll_top}, 
     else: {hide: act_scroll_top}
   })
-
+  */
 
 
   function searchSite(_keyword) {

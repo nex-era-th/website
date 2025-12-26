@@ -1,0 +1,35 @@
+// TAKE ANY NOTE HERE
+
+<!-- สรุปยอดรายได้ -->
+    <label style="grid-column: span 2;" class="indigo">สรุปยอดรายได้</label>
+    <div id="incomeSumGrid" style="grid-column: span 2; grid-template-columns: auto auto; padding: 16px" class="grid-space">
+      <span>เงินเดือน หรือเงินได้รายวันทั้งเดือน</span>
+      <span id="normalWagesSum" class="tr"></span>
+      <span>ค่าทำงานล่วงเวลา</span>
+      <span id="otSum" class="tr"></span>
+      <span>เงินเพิ่มอื่นๆ</span>
+      <span id="otherAddSum"></span>
+      <span>เงินหัก</span>
+      <span id="deductWagesSum" class="tr"></span>
+      <span>เงินได้สุทธิ</span>
+      <span id="netWagesSum" class="tr"></span>
+    </div>
+
+
+
+     <span>ประเมินรายได้ทั้งปี (รายได้ปกติตลอดปี + เงินเพิ่ม 5%)</span>
+      <span id="estimateAnnualIncome" class="tr"></span><!--151,200.00-->
+      <span>หักค่าใช้จ่ายส่วนตัว 50%</span>
+      <span id="personalExpense" class="tr"></span><!---75,600.00-->
+      <span>หักค่าลดหย่อนส่วนตน</span>
+      <span id="personalAllowance" class="tr"></span><!-- -60,000.00 -->
+      <span>หักประกันสังคม</span>
+      <span id="socialSecFundDeduct" class="tr"></span><!-- -7,200.00 -->
+      <span>เงินได้สุทธิ เพื่อคำนวน ภงด.</span>
+      <span id="netToCalcIncomeTax" class="tr"></span><!--8,400.00-->
+      <span>การหักภาษีเงินได้บุคคลธรรมดา</span>
+      <span id="deductForPersonalIncomeTax" class="tr"></span><!--0.00-->
+
+
+
+      <span>ลำดับ</span><span>รายการ</span><span class="tr">ยอดเพิ่ม</span>

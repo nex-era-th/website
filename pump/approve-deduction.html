@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Approve Deduction</title>
+<script src="conf.js"></script>
+<script src="pump-b.js"></script>
+<script src="/js/xdev-b.js"></script>
+<link href="/js/w3.css" rel="stylesheet" type="text/css">
+<link href="/js/material-x.css" rel="stylesheet" type="text/css">
+<link href="pump.css" rel="stylesheet" type="text/css">
+<style>
+  /* put local styles here */
+</style>
+</head>
+<body>
+
+<div class="world-space" style="padding: 0 16px;">
+
+  <!-- title -->
+  <div style="margin-bottom: 24px;">
+    <div id="pageTitle" style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Approve Deduction*</div>
+    <p id="pageBrief" class="small">สำหรับอนุมัติ เงินหัก ของพนักงาน ในเดือนนั้นๆ ว่าหักค่าอะไร เงินนี้จะไปตัดออกจากยอดรวมของ รายได้ ของพนักงานในเดือนนี้</p>
+  </div>
+
+
+  <!-- form -->
+  <div class="grid-space" style="grid-template-columns: 30% 70%;">
+
+    <label>เลือกเดือน*</label>
+    <input id="whichMonth" type="month" class="w3-input">
+
+    <hr class="line-in-form">
+
+    <label>เลือกพนักงานได้หลายคน*</label>
+    <div>
+      <select id="selectStaff" class="w3-select" onchange="showStaff(this)">
+        <option>-----</option>
+        <option>ทุกคน</option>
+        <option>ทุกคน - แผนกบริการน้ำมัน</option>
+        <option>ทุกคน - แผนกร้านกาแฟอเมซอน</option>
+        <option>ทุกคน - แม่บ้าน</option>
+        <option>ลบอันหลังสุด</option>
+        <option>ลบทั้งหมด</option>
+        <option>-----</option>
+      </select>
+      <div id="showStaffHere" style="padding: 16px 0">
+        <!-- staff shows here -->
+      </div>
+    </div>
+    
+
+
+    <hr class="line-in-form">
+
+    <label>ยอดเงินที่จะหัก*</label>
+    <input id="deduct_amount" class="w3-input" type="number">
+    
+    <label>หักค่าอะไร*</label>
+    <input id="deduct_for" type="text" class="w3-input" placeholder="เช่น เติมน้ำมันผิด">
+
+    
+    <hr class="line-in-form">
+    
+
+    <label>Note</label>
+    <textarea id="note" rows="3"></textarea>
+    <label>ป้อนข้อมูลโดย*</label>
+    <input id="userName" type="text" class="w3-input" autocomplete="off">
+  </div>
+
+
+  <!-- form action -->
+  <div id="formActBox" style="display: flex; align-items: center; justify-content: space-around; margin-top: 32px">
+    <button class="w3-button w3-blue"
+    onclick="approveDeduction()">Approve</button>
+    <button class="w3-button w3-yellow"
+    onclick="pumpb.clearBrowserBar(); location.reload()">Clear</button>
+  </div>
+
+
+
+</div>
+
+<!-- page action -->
+<div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+  <img src="/icon/u-turn.svg" style="width: 32px; height: 32px; cursor: pointer;" 
+  onclick="history.back()">
+</div>
+
+
+<script>
+//////////////////////////////////////////////////////////////////
+
+const PGOJ = {}
+let MODE = 'new';
+let OT_ID;
+
+// this code scroll page to top after reload
+window.onload = async () => {
+
+  // scroll to top on reload
+  setTimeout( () => {
+    window.scrollTo(0,0)
+  }, 10)
+
+
+
+  /* / listen the #dayOrMonthRadioBox
+  document.querySelector('#dayOrMonthRadioBox').addEventListener('change', event => {
+    if (event.target.type === 'radio') {
+      
+      let selected = document.querySelector('input[name="dayOrMonth"]:checked')
+
+      if (selected) {
+        //alert(selected.value)
+
+        if (selected.value == 'day') {
+          document.querySelector('#whichDay').style.display = 'block'
+          document.querySelector('#whichMonth').style.display = 'none'
+        } else { // month 
+          document.querySelector('#whichDay').style.display = 'none'
+          document.querySelector('#whichMonth').style.display = 'block'
+        }
+
+      } else {
+        return null
+      }
+
+    }
+  }) */ 
+
+
+
+
+  // always load the staff data to make the select choices
+  try {
+
+    let reply = await pumpb.fetchThis( null, '/get-all-staff', 'get')
+    if (reply.done) {
+      let data = reply.data
+
+      data.forEach( staff => {
+        let newElem = document.createElement('option')
+        newElem.textContent = staff.nickName
+        document.querySelector('#selectStaff').append(newElem)
+      })
+
+    } else {
+      alert('ไม่มีข้อมูลพนักงานเลยค่ะ คงต้อง add เข้าไปก่อนป่าว')
+      return
+    }
+
+  } catch(er) {
+    console.error('error : fetch /get-all-staff', er)
+    alert('มีปัญหาทางเทคนิคค่ะ load ข้อมูล staff ไม่ได้')
+    return
+  }
+
+
+
+  // load benefits
+
+  try {
+
+    let reply = await pumpb.fetchThis(
+      { masterKey: MASTER_KEY },
+      '/get-benefit-policy'
+    )
+
+    if (reply.done) {
+
+      let data = reply.data.benefit
+      PGOJ.benefit = data
+      //console.log( data)
+
+      let elem = document.querySelector('#selectBenefit')        
+      data.forEach( ben => {
+        elem.innerHTML += `<option>${ben.nameTh}</option>`
+      })
+
+    } else {
+      alert('ไม่เห็นมีข้อมูล Benefit ไรเลยอ่ะค่ะ ต้องป้อนก่อนป่าวคะ หรือมีปัญหาไรป่าว')
+    }
+
+
+  } catch(er) {
+    console.error('\n*** error ***', er, '\n')
+    alert('มีปัญหาทางเทคนิคค่ะ')
+    return
+  }
+
+
+
+
+  // check mode
+  // check mode: view|edit
+  //const urlParams = new URLSearchParams(window.location.search)
+  let myQuery = new pumpb.MyQuery
+  const id = myQuery.get('id') //urlParams.get('id')
+  MODE = myQuery.get('mode') || 'new' //urlParams.get('mode')
+
+  //alert('mode=' + mode + ',id=' + id)
+
+
+  if (MODE == 'new') {
+
+    // may do nothing here    
+
+
+  } else if (MODE == 'view' && id) {
+
+    // if view mode, do it...
+    //alert(id)
+
+    try {
+      /*
+      let reply = await pumpb.fetchThis(
+        { _id: id } , '/find-ot'
+      )
+
+      if (reply.done) {
+        let data = reply.data
+
+        document.querySelector('#selectStaff').value = data.staffNickName
+        document.querySelector('#otDate').value = data.otDate
+        document.querySelector('#startTime').value = data.startTime
+        document.querySelector('#stopTime').value = data.stopTime
+        document.querySelector('#otDate').value = data.otDate
+        document.querySelector('#lengthTime').value = data.lengthTime
+        document.querySelector('#staffAgreed').checked = data.staffAgreed
+        document.querySelector('#reason').value = data.reason
+        document.querySelector('#enterBy').value = data.enterBy
+
+        // disable
+        document.querySelectorAll('input').forEach( el => el.disabled = true)
+        document.querySelectorAll('textarea').forEach( el => el.disabled = true)
+        document.querySelectorAll('select').forEach( el => el.disabled = true)
+        document.querySelector('#formActBox').querySelectorAll('button').forEach( el => el.disabled = true)
+
+        // setting
+        document.querySelector('#pageTitle').textContent = 'ข้อมูล OT ของพนักงาน'
+        document.querySelector('#pageBrief').textContent = ''
+
+        pumpb.clearBrowserBar()
+
+
+      } else {
+        alert('ไม่มีข้อมูล OT นี้ค่ะ')
+      }
+      */
+    } catch(er) {
+      console.error(er)
+      alert('มีปัญหาทางเทคนิคค่ะ')
+    }
+
+  }
+
+}
+
+
+
+
+/*
+function calcTime() {
+
+  const start = document.querySelector('#startTime').value
+  const stop = document.querySelector('#stopTime').value
+  if ( start && stop ) {
+
+    document.querySelector('#lengthTime').value = pumpb.getLengthFrom2times( start, stop)
+
+  } else {
+    //alert('ต้องใส่เวลาเริ่ม ด้วยค่ะ')
+  }
+
+}
+
+
+async function confirmOt() {
+  let data = {
+    staffNickName: document.querySelector('#selectStaff').value,
+    otDate: document.querySelector('#otDate').value,
+    startTime: document.querySelector('#startTime').value,
+    stopTime: document.querySelector('#stopTime').value,
+    lengthTime: document.querySelector('#lengthTime').value,
+    staffAgreed: document.querySelector('#staffAgreed').checked,
+    reason: document.querySelector('#reason').value,
+    enterBy: document.querySelector('#enterBy').value
+  }
+
+  if (data.staffNickName.startsWith('-') || !data.otDate || !data.startTime || !data.stopTime || !data.staffAgreed || !data.enterBy) {
+    alert('ช่องที่มี * ต้องมีข้อมูลค่ะ')
+    return
+  }
+
+  try {
+
+    if (MODE == 'new') {
+
+      let reply = await pumpb.fetchThis( data, '/confirm-ot')
+      if (reply.done) {
+        
+        alert('เรียบร้อยค่ะ')
+        pumpb.clearBrowserBar()
+        location.reload()
+
+      } else {
+        alert('save ข้อมูลไม่ได้ค่ะ')
+      }
+
+    } else if (MODE == 'edit') {
+
+      //
+      alert('save in edit mode')
+
+    } else {
+      alert('not save in this mode')
+    }
+    
+  } catch(er) {
+    console.error( er)
+    alert('มีปัญหาทางเทคนิคค่ะ ลองกด refresh หน้าจออีกทีดีมั๊ยคะ')
+  }
+}
+*/ 
+
+
+
+function showStaff( callingElement ) {
+  // upon user choosen a staff, shows staff name in the #showStaffHere
+
+  let selectValue = callingElement.value
+  if (!selectValue.startsWith('-')) {
+
+    if (!selectValue.startsWith('ลบ')) {
+
+      // this item is good to put into the box but need to check first if it didn't exist so we don't dup it
+
+      if ([...document.querySelector('#showStaffHere').children].some( el => el.textContent == selectValue)) {
+        return
+        // because it's the dup
+      }
+
+      let newSpan = document.createElement('span')
+      newSpan.textContent = callingElement.value
+      newSpan.className = 'w3-tag'
+      newSpan.style.borderRadius = '10px'
+      newSpan.style.margin = '2px'
+      newSpan.style.fontSize = '1rem'
+      newSpan.style.backgroundColor = 'black'
+      newSpan.style.padding = '4px 8px'
+      document.querySelector('#showStaffHere').append(newSpan)
+
+    } else if (selectValue == 'ลบอันหลังสุด') {
+
+      let elem = document.querySelector('#showStaffHere')
+      let leng = elem.children.length
+      if (leng) {
+        elem.children[ leng - 1].remove()
+      }
+      document.querySelector('#selectStaff').selectedIndex = 0
+
+    } else if (selectValue == 'ลบทั้งหมด') {
+
+      document.querySelector('#showStaffHere').innerHTML = ''
+      document.querySelector('#selectStaff').selectedIndex = 0
+
+    }
+    
+
+  }
+
+  
+}
+
+
+/*
+function showBenefitInfo() {
+  
+  // at user select a benefit, this func shows its detail in the #showBenefitInfoDiv
+
+  let selectElem = document.querySelector('#selectBenefit')
+  if (selectElem.value.startsWith('-')) {
+    alert('ต้องเลือกสิทธิ์ประโยชน์ ซักอันก่อนค่ะ')
+    document.querySelector('#showBenefitInfoDiv').innerHTML = ''
+    return
+  }
+
+  let thisBen = PGOJ.benefit.find( ben => ben.nameTh == selectElem.value)
+  PGOJ.selectedBenefit = thisBen
+
+  document.querySelector('#showBenefitInfoDiv').innerHTML = `<p class="small"><span class="blue default white-bg">${thisBen.brief}</span><br>
+  เงื่อนไขและการเช็ค <span class="blue default white-bg">${thisBen.checkPoint}</span><br>
+  มูลค่า <span class="blue default white-bg">${pumpb.getMoneyFormat(thisBen.value)}</span><br>
+  สำหรับพนักงานคนไหน <span class="blue default white-bg">${thisBen.for}</span><br>
+  สำหรับแผนกไหน <span class="blue default white-bg">${thisBen.appliedDepartments.join(', ')}</span><br>
+  จ่ายเมื่อ <span class="blue default white-bg">${thisBen.payAt}</span>
+  </p>`
+
+
+}
+
+
+
+
+async function approveBenefit() {
+
+  // send data to /approve-benefit
+  // { masterKey: ---, ...the rest is the data ...}
+
+  if (
+    !document.querySelector('#whichMonth').value ||
+    !document.querySelector('#showStaffHere').children.length ||
+    !document.querySelector('#selectBenefit').value ||
+    !document.querySelector('#userName').value
+  ) {
+    alert('ตรงที่มีเครื่องหมาย * ต้องมีข้อมูลค่ะ ขออีกทีค่ะ')
+    return
+  }
+
+  const data = {
+    forMonth: document.querySelector('#whichMonth').value,
+    staffNickName: Array.from(document.querySelector('#showStaffHere').children).map( s => s.textContent),
+    description: document.querySelector('#selectBenefit').value,
+    value: PGOJ.selectedBenefit.value || 0,
+    note: document.querySelector('#note').value,
+    userName: document.querySelector('#userName').value
+  }
+
+  if (!pumpb.checkTestUser( data.userName)) {
+    alert('userName พี่ไม่ถูกค่ะ ต้องเป็นคนที่ได้รับอนุญาตเท่านั้นนะจ๊ะ')
+    return
+  }
+
+
+  // pass
+
+  try {
+
+    data.masterKey = MASTER_KEY
+
+    let reply = await pumpb.fetchThis(
+      data, '/approve-benefit'
+    )
+
+    if (reply.done) {
+      alert('เรียบร้อยค่ะ')
+    } else {
+      alert('มีปัญหาค่ะ save ข้อมูลไม่ได้ น่าจะลองดูอีกซักที')
+    }
+
+
+  } catch(er) {
+    console.error('\n*** error ***', er, '\n')
+    alert('มีปัญหาทางเทคนิคค่ะ')
+  }
+
+
+}
+*/ 
+
+function approveDeduction() {
+
+  alert('ขอบคุณน๊าค๊า แต่หนูยังไม่เสร็จค่า ... ใจเย็นน๊า อีกแป๊ป!')
+  
+
+}
+
+
+
+
+</script>
+</body>
+</html>
+  

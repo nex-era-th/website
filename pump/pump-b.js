@@ -513,3 +513,64 @@ pumpb.calcHourlyFees = (timeLengthStr, hourlyFee) => {
     // Optional: Round to 2 decimal places for currency precision
     return Math.round(totalFee * 100) / 100;
 }
+
+
+
+
+pumpb.getWorkDays = (monthStr, holidayName) => {
+
+    /*
+            it counts every days in the specified month excepts all the speicified holidays in that month. But you have to deduct other holidays, or leaves outside this func by yourself.
+    */
+
+
+    // 1. Parse the year and month from 'YYYY-MM'
+    const [year, month] = monthStr.split('-').map(Number);
+    
+    // 2. Map day names to their getDay() index
+    const dayMap = {
+        'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3,
+        'thursday': 4, 'friday': 5, 'saturday': 6
+    };
+    
+    const holidayIndex = dayMap[holidayName.toLowerCase()];
+    let workDaysCount = 0;
+
+    // 3. Get the total number of days in that month
+    // month - 1 because JS months are 0-indexed (Jan = 0)
+    const totalDays = new Date(year, month, 0).getDate();
+
+    // 4. Loop through each day and check if it matches the holiday
+    for (let day = 1; day <= totalDays; day++) {
+        const date = new Date(year, month - 1, day);
+        if (date.getDay() !== holidayIndex) {
+            workDaysCount++;
+        }
+    }
+
+    return workDaysCount;
+}
+
+// --- Usage ---
+//const workDays = getWorkDays('2025-12', 'sunday');
+//console.log(`Work days in Dec 2025 (excluding Sundays): ${workDays}`); 
+// For Dec 2025: 31 days total - 4 Sundays = 27 work days.
+
+
+
+pumpb.getRound = ( num ) => {
+    // give you 1000.35 from 1000.xxxxxxxxxxxxxxxxxx
+
+    return Math.round( num * 100) / 100
+    
+}
+
+
+
+
+pumpb.checkTestUser = ( userName ) => {
+    // check if you're in test user list
+
+    return pumpb.testUsers.includes( userName)
+    
+}
