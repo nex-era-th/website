@@ -12,6 +12,7 @@
 <link href="pump.css" rel="stylesheet" type="text/css">
 <style>
   /* put local styles here */
+  .benefit-info { font-size: 1.1rem }
 </style>
 </head>
 <body>
@@ -40,7 +41,8 @@
         <option>ทุกคน</option>
         <option>ทุกคน - แผนกบริการน้ำมัน</option>
         <option>ทุกคน - แผนกร้านกาแฟอเมซอน</option>
-        <option>ทุกคน - แม่บ้าน</option>
+        <option>ทุกคน - ทั่วไป</option>
+        <option>ทุกคน - บริหาร</option>
         <option>ลบอันหลังสุด</option>
         <option>ลบทั้งหมด</option>
         <option>-----</option>
@@ -57,11 +59,20 @@
     <label>สิทธิ์ประโยชน์ที่จะมอบให้พนักงานในเดือนนี้*</label>
     <div>
       <select id="selectBenefit" class="w3-select" onchange="showBenefitInfo()">
-      <option>-----</option>
-    </select>
-    <div id="showBenefitInfoDiv">
-      <!-- show benefit info here -->
-    </div>
+        <option>-----</option>
+      </select>
+      <div id="showBenefitInfoDiv">
+        <!-- show benefit info here -->
+      </div>
+
+      <!-- for snack cheers we need user to put qty that they sold -->
+      <div id="snackBenefitBox" style="display: none; grid-template-columns: auto auto; align-items: center; padding: 16px; gap: 4px; font-size: 1.2rem">
+        <label class="blue">จำนวนชิื้นที่ขายได้</label>
+        <input id="snackSoldQty" type="number" class="w3-input" value="0" onchange="calcSnackCheerValue()">
+        <label class="blue">ยอดที่ได้ (1 บาท/ชิ้น)</label>
+        <span id="snackCheerValue" style="font-size: 1.2rem"></span>
+      </div>
+
     </div>
     
 
@@ -397,15 +408,18 @@ function showBenefitInfo() {
   let thisBen = PGOJ.benefit.find( ben => ben.nameTh == selectElem.value)
   PGOJ.selectedBenefit = thisBen
 
-  document.querySelector('#showBenefitInfoDiv').innerHTML = `<p class="small"><span class="blue default white-bg">${thisBen.brief}</span><br>
-  เงื่อนไขและการเช็ค <span class="blue default white-bg">${thisBen.checkPoint}</span><br>
-  มูลค่า <span class="blue default white-bg">${pumpb.getMoneyFormat(thisBen.value)}</span><br>
-  สำหรับพนักงานคนไหน <span class="blue default white-bg">${thisBen.for}</span><br>
-  สำหรับแผนกไหน <span class="blue default white-bg">${thisBen.appliedDepartments.join(', ')}</span><br>
-  จ่ายเมื่อ <span class="blue default white-bg">${thisBen.payAt}</span>
+  document.querySelector('#showBenefitInfoDiv').innerHTML = `<p><span class="blue large white-bg">${thisBen.brief}</span><br>
+  เงื่อนไขและการเช็ค <span class="blue large white-bg">${thisBen.checkPoint}</span><br>
+  มูลค่า <span class="blue large white-bg">${pumpb.getMoneyFormat(thisBen.value)}</span><br>
+  สำหรับพนักงานคนไหน <span class="blue large white-bg">${thisBen.for}</span><br>
+  สำหรับแผนกไหน <span class="blue large white-bg">${thisBen.appliedDepartments.join(', ')}</span><br>
+  จ่ายเมื่อ <span class="blue large white-bg">${thisBen.payAt}</span>
   </p>`
 
-
+  if (selectElem.value == 'ค่าเชียร์ขนม') {
+    document.querySelector('#snackBenefitBox').style.display = 'grid'
+    calcSnackCheerValue()
+  }
 }
 
 
@@ -422,15 +436,48 @@ async function approveBenefit() {
     !document.querySelector('#selectBenefit').value ||
     !document.querySelector('#enterBy').value
   ) {
+
     alert('ตรงที่มีเครื่องหมาย * ต้องมีข้อมูลค่ะ ขออีกทีค่ะ')
     return
   }
 
+  if (document.querySelector('#selectBenefit').value == 'ค่าเชียร์ขนม') {
+
+    if (Number(document.querySelector('#snackCheerValue').textContent) < 1) {
+      alert('ต้องป้อน จำนวนชิ้น ที่ขายได้ก่อนค่ะ จะได้คำนวนเงินให้เนาะ ขออีกทีนะ')
+      return
+    }
+  }
+
+
+  // pass
+
+  const selectBenefitElem = document.querySelector('#selectBenefit')
+  const thisBenefit = selectBenefitElem.value
+
   const data = {
+
     forMonth: document.querySelector('#whichMonth').value,
+
     groupOfStaff: Array.from(document.querySelector('#showStaffHere').children).map( s => s.textContent),
+    
     description: document.querySelector('#selectBenefit').value,
-    value: PGOJ.selectedBenefit.value || 0,
+    value: ( f => {
+
+      if (thisBenefit == 'ค่าเชียร์ขนม') {
+
+        let snackCheerValue = Number( document.querySelector('#snackCheerValue').textContent)
+        if (snackCheerValue > 0) {
+
+          return snackCheerValue
+
+        }
+
+      } else {
+        return PGOJ.selectedBenefit.value
+      }
+
+    })(), //PGOJ.selectedBenefit.value || 0,
     note: document.querySelector('#note').value,
     enterBy: document.querySelector('#enterBy').value
   }
@@ -453,7 +500,12 @@ async function approveBenefit() {
     )
 
     if (reply.done) {
+      
       alert('เรียบร้อยค่ะ')
+      pumpb.clearBrowserBar()
+      location.reload()
+
+
     } else {
       alert('มีปัญหาค่ะ save ข้อมูลไม่ได้ น่าจะลองดูอีกซักที')
     }
@@ -467,6 +519,16 @@ async function approveBenefit() {
 
 }
 
+
+
+function calcSnackCheerValue() {
+
+  // 1 thb / qty so the value = qty
+
+  let qty = document.querySelector('#snackSoldQty').value
+  document.querySelector('#snackCheerValue').textContent = pumpb.getMoneyFormat(qty)
+
+}
 
 
 

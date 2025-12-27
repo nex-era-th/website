@@ -563,8 +563,8 @@ async function getStaffInfo() {
             if (PGOJ.staffInfo.amountDeductForSocialSecFund) {
             
               elem.innerHTML += `<span>${count}</span>
-              <span>หักเงินสมทบประกันสังคมเ 5% ของเงินเดือน(หรือรายได้ปกติทั้งเดือน)</span>
-              <span class="tr">-${PGOJ.staffInfo.amountDeductForSocialSecFund}</span>`
+              <span>หักเงินสมทบประกันสังคม 5% ของเงินเดือน (หรือรายได้ปกติทั้งเดือน)</span>
+              <span class="tr">-${pumpb.getMoneyFormat( PGOJ.staffInfo.amountDeductForSocialSecFund)}</span>`
 
               sum = - PGOJ.staffInfo.amountDeductForSocialSecFund
               //PGOJ.calc.deduct = 
@@ -577,7 +577,7 @@ async function getStaffInfo() {
             const socialSecDeduct = pumpb.getRound( PGOJ.normalPayForDailyStaff * 0.05)
 
             elem.innerHTML += `<span>${count}</span>
-            <span>หักเงินสมทบประกันสังคม 5% ของเงินเดือน(หรือรายได้ปกติทั้งเดือน)</span>
+            <span>หักเงินสมทบประกันสังคม 5% ของเงินเดือน (หรือรายได้ปกติทั้งเดือน)</span>
             <span class="tr">-${pumpb.getMoneyFormat( socialSecDeduct)}</span>`
 
             sum = - socialSecDeduct

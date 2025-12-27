@@ -29,7 +29,7 @@
   <div class="grid-space" style="grid-template-columns: 30% 70%;">
 
     <label>เลือกเดือน*</label>
-    <input id="whichMonth" type="month" class="w3-input">
+    <input id="for_month" type="month" class="w3-input">
 
     <hr class="line-in-form">
 
@@ -40,7 +40,8 @@
         <option>ทุกคน</option>
         <option>ทุกคน - แผนกบริการน้ำมัน</option>
         <option>ทุกคน - แผนกร้านกาแฟอเมซอน</option>
-        <option>ทุกคน - แม่บ้าน</option>
+        <option>ทุกคน - ทั่วไป</option>
+        <option>ทุกคน - บริหาร</option>
         <option>ลบอันหลังสุด</option>
         <option>ลบทั้งหมด</option>
         <option>-----</option>
@@ -58,7 +59,7 @@
     <input id="deduct_amount" class="w3-input" type="number">
     
     <label>หักค่าอะไร*</label>
-    <input id="deduct_for" type="text" class="w3-input" placeholder="เช่น เติมน้ำมันผิด">
+    <input id="deduct_for" class="w3-input" placeholder="เช่น เติมน้ำมันผิด">
 
     
     <hr class="line-in-form">
@@ -67,7 +68,7 @@
     <label>Note</label>
     <textarea id="note" rows="3"></textarea>
     <label>ป้อนข้อมูลโดย*</label>
-    <input id="userName" type="text" class="w3-input" autocomplete="off">
+    <input id="approvedBy" type="text" class="w3-input" autocomplete="off">
   </div>
 
 
@@ -160,7 +161,7 @@ window.onload = async () => {
 
 
 
-  // load benefits
+  /* / load benefits
 
   try {
 
@@ -190,7 +191,7 @@ window.onload = async () => {
     alert('มีปัญหาทางเทคนิคค่ะ')
     return
   }
-
+  */ 
 
 
 
@@ -461,10 +462,38 @@ async function approveBenefit() {
 }
 */ 
 
-function approveDeduction() {
+async function approveDeduction() {
 
-  alert('ขอบคุณน๊าค๊า แต่หนูยังไม่เสร็จค่า ... ใจเย็นน๊า อีกแป๊ป!')
-  
+  let data = {
+    forMonth: document.querySelector('#for_month').value,
+    fromStaff: Array.from(document.querySelector('#showStaffHere').children).map( el => el.textContent),
+    deductAmount: document.querySelector('#deduct_amount').value,
+    description: document.querySelector('#deduct_for').value,
+    note: document.querySelector('#note').value,
+    approvedBy: document.querySelector('#approvedBy').value
+  }  
+
+  if (!data.forMonth || !data.fromStaff || !data.deductAmount || !data.description || !data.approvedBy) {
+    alert('ช่องที่มี * ต้องมีข้อมูลค่ะ ขออีกทีค่ะสู้ๆ')
+    return
+  }
+
+  try {
+
+    data.masterKey = MASTER_KEY
+    let reply = await pumpb.fetchThis(
+      data, '/approve-deduction'
+    )
+
+    if (reply.done) {
+      alert('เรียบร้อยค่ะ')
+    } else {
+      alert('ไม่สามารถ save ข้อมูลได้ ลองอีกทีมั๊ยคะ')
+    }
+  } catch(er) {
+    console.error('*** error ***', er)
+    alert('มีปัญหาทางเทคนิคค่ะ')
+  }
 
 }
 
