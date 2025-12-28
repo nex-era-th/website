@@ -84,7 +84,7 @@
     <label>Note</label>
     <textarea id="note" rows="3"></textarea>
     <label>อนุมัติโดย*</label>
-    <input id="enterBy" type="text" class="w3-input" autocomplete="off">
+    <input id="approvedBy" type="text" class="w3-input" autocomplete="off">
   </div>
 
 
@@ -121,32 +121,6 @@ window.onload = async () => {
   setTimeout( () => {
     window.scrollTo(0,0)
   }, 10)
-
-
-
-  /* / listen the #dayOrMonthRadioBox
-  document.querySelector('#dayOrMonthRadioBox').addEventListener('change', event => {
-    if (event.target.type === 'radio') {
-      
-      let selected = document.querySelector('input[name="dayOrMonth"]:checked')
-
-      if (selected) {
-        //alert(selected.value)
-
-        if (selected.value == 'day') {
-          document.querySelector('#whichDay').style.display = 'block'
-          document.querySelector('#whichMonth').style.display = 'none'
-        } else { // month 
-          document.querySelector('#whichDay').style.display = 'none'
-          document.querySelector('#whichMonth').style.display = 'block'
-        }
-
-      } else {
-        return null
-      }
-
-    }
-  }) */ 
 
 
 
@@ -203,7 +177,7 @@ window.onload = async () => {
 
 
   } catch(er) {
-    console.error('\n*** error ***', er, '\n')
+    console.error(er)
     alert('มีปัญหาทางเทคนิคค่ะ')
     return
   }
@@ -232,41 +206,7 @@ window.onload = async () => {
     //alert(id)
 
     try {
-      /*
-      let reply = await pumpb.fetchThis(
-        { _id: id } , '/find-ot'
-      )
-
-      if (reply.done) {
-        let data = reply.data
-
-        document.querySelector('#selectStaff').value = data.staffNickName
-        document.querySelector('#otDate').value = data.otDate
-        document.querySelector('#startTime').value = data.startTime
-        document.querySelector('#stopTime').value = data.stopTime
-        document.querySelector('#otDate').value = data.otDate
-        document.querySelector('#lengthTime').value = data.lengthTime
-        document.querySelector('#staffAgreed').checked = data.staffAgreed
-        document.querySelector('#reason').value = data.reason
-        document.querySelector('#enterBy').value = data.enterBy
-
-        // disable
-        document.querySelectorAll('input').forEach( el => el.disabled = true)
-        document.querySelectorAll('textarea').forEach( el => el.disabled = true)
-        document.querySelectorAll('select').forEach( el => el.disabled = true)
-        document.querySelector('#formActBox').querySelectorAll('button').forEach( el => el.disabled = true)
-
-        // setting
-        document.querySelector('#pageTitle').textContent = 'ข้อมูล OT ของพนักงาน'
-        document.querySelector('#pageBrief').textContent = ''
-
-        pumpb.clearBrowserBar()
-
-
-      } else {
-        alert('ไม่มีข้อมูล OT นี้ค่ะ')
-      }
-      */
+      
     } catch(er) {
       console.error(er)
       alert('มีปัญหาทางเทคนิคค่ะ')
@@ -277,71 +217,6 @@ window.onload = async () => {
 }
 
 
-
-
-/*
-function calcTime() {
-
-  const start = document.querySelector('#startTime').value
-  const stop = document.querySelector('#stopTime').value
-  if ( start && stop ) {
-
-    document.querySelector('#lengthTime').value = pumpb.getLengthFrom2times( start, stop)
-
-  } else {
-    //alert('ต้องใส่เวลาเริ่ม ด้วยค่ะ')
-  }
-
-}
-
-
-async function confirmOt() {
-  let data = {
-    staffNickName: document.querySelector('#selectStaff').value,
-    otDate: document.querySelector('#otDate').value,
-    startTime: document.querySelector('#startTime').value,
-    stopTime: document.querySelector('#stopTime').value,
-    lengthTime: document.querySelector('#lengthTime').value,
-    staffAgreed: document.querySelector('#staffAgreed').checked,
-    reason: document.querySelector('#reason').value,
-    enterBy: document.querySelector('#enterBy').value
-  }
-
-  if (data.staffNickName.startsWith('-') || !data.otDate || !data.startTime || !data.stopTime || !data.staffAgreed || !data.enterBy) {
-    alert('ช่องที่มี * ต้องมีข้อมูลค่ะ')
-    return
-  }
-
-  try {
-
-    if (MODE == 'new') {
-
-      let reply = await pumpb.fetchThis( data, '/confirm-ot')
-      if (reply.done) {
-        
-        alert('เรียบร้อยค่ะ')
-        pumpb.clearBrowserBar()
-        location.reload()
-
-      } else {
-        alert('save ข้อมูลไม่ได้ค่ะ')
-      }
-
-    } else if (MODE == 'edit') {
-
-      //
-      alert('save in edit mode')
-
-    } else {
-      alert('not save in this mode')
-    }
-    
-  } catch(er) {
-    console.error( er)
-    alert('มีปัญหาทางเทคนิคค่ะ ลองกด refresh หน้าจออีกทีดีมั๊ยคะ')
-  }
-}
-*/ 
 
 
 
@@ -434,7 +309,7 @@ async function approveBenefit() {
     !document.querySelector('#whichMonth').value ||
     !document.querySelector('#showStaffHere').children.length ||
     !document.querySelector('#selectBenefit').value ||
-    !document.querySelector('#enterBy').value
+    !document.querySelector('#approvedBy').value
   ) {
 
     alert('ตรงที่มีเครื่องหมาย * ต้องมีข้อมูลค่ะ ขออีกทีค่ะ')
@@ -479,10 +354,10 @@ async function approveBenefit() {
 
     })(), //PGOJ.selectedBenefit.value || 0,
     note: document.querySelector('#note').value,
-    enterBy: document.querySelector('#enterBy').value
+    approvedBy: document.querySelector('#approvedBy').value
   }
 
-  if (!pumpb.checkTestUser( data.enterBy)) {
+  if (!pumpb.checkTestUser( data.approvedBy)) {
     alert('userName พี่ไม่ถูกค่ะ ต้องเป็นคนที่ได้รับอนุญาตเท่านั้นนะจ๊ะ')
     return
   }
@@ -512,7 +387,7 @@ async function approveBenefit() {
 
 
   } catch(er) {
-    console.error('\n*** error ***', er, '\n')
+    console.error(er)
     alert('มีปัญหาทางเทคนิคค่ะ')
   }
 

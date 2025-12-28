@@ -12,6 +12,9 @@ const pumpb = {}
 
 
 pumpb.testUsers = ['@john','@sern','@fern','@fond','@jum']
+pumpb.payoutApprovalUser = [ '@fern' ]
+
+
 
 // fetchThis ----------------------------------------------------
 
@@ -39,6 +42,9 @@ pumpb.fetchThis = async function ( data, api, method = 'POST' ) {
   }
 
 }
+
+
+pumpb.request = pumpb.fetchThis
 
 
 // getMoneyFormat -------------------------------------------
@@ -574,3 +580,160 @@ pumpb.checkTestUser = ( userName ) => {
     return pumpb.testUsers.includes( userName)
     
 }
+
+
+
+/*
+pumpb.getThisPageStatic = () => {
+
+    
+        this func convert the page into a very static web page, like a paper or pure document. We use this to make Payslip and similar.
+
+    
+
+
+    // 1. Sync Input Values
+    const inputs = document.querySelectorAll('input, textarea, select');
+    inputs.forEach(el => {
+        el.setAttribute('value', el.value);
+        el.setAttribute('disabled', 'true');
+    });
+
+    // 2. Clone the Page
+    const doc = document.documentElement.cloneNode(true);
+
+    // 3. Remove Interactive Elements (Buttons & Scripts)
+    const toDelete = doc.querySelectorAll('button, script, .no-save');
+    toDelete.forEach(el => el.remove());
+
+    // 4. Capture all CSS
+    let cssMarkup = '';
+    for (const sheet of document.styleSheets) {
+        try {
+            const rules = Array.from(sheet.cssRules);
+            cssMarkup += rules.map(rule => rule.cssText).join('\n');
+        } catch (e) {
+            console.warn("Stylesheet inaccessible");
+        }
+    }
+
+    // 5. Add a "TOTAL LOCK" CSS Rule
+    // This makes everything non-clickable and removes the 'pointer' cursor
+    const lockStyle = `
+        * { 
+            pointer-events: none !important; 
+            cursor: default !important; 
+            user-select: text !important; /* Still allows people to highlight/copy text */
+        //}
+    /*`;
+
+    const styleTag = document.createElement('style');
+    styleTag.textContent = cssMarkup + lockStyle;
+    doc.querySelector('head').appendChild(styleTag);
+
+    // 6. Return the string
+    return '<!DOCTYPE html>\n' + doc.outerHTML;
+}
+*/
+
+
+
+pumpb.getThisPageStatic = () => {
+    // 1. SYNC ALL INPUTS & SELECTS
+    const inputs = document.querySelectorAll('input, textarea, select');
+    
+    inputs.forEach(el => {
+        if (el.tagName === 'SELECT') {
+            // FIX: Loop through options and manually set the 'selected' attribute
+            // so the clone knows which one to show.
+            const options = el.querySelectorAll('option');
+            options.forEach(opt => {
+                if (opt.value === el.value) {
+                    opt.setAttribute('selected', 'selected');
+                } else {
+                    opt.removeAttribute('selected');
+                }
+            });
+        } else if (el.type === 'checkbox' || el.type === 'radio') {
+            if (el.checked) el.setAttribute('checked', 'checked');
+            else el.removeAttribute('checked');
+        } else {
+            // For standard text/number inputs
+            el.setAttribute('value', el.value);
+        }
+        
+        // Lock the element so it's a static record
+        el.setAttribute('disabled', 'true');
+    });
+
+    // 2. NOW CLONE THE DOCUMENT
+    const doc = document.documentElement.cloneNode(true);
+
+    // 3. CLEAN UP (Remove scripts and buttons as before)
+    doc.querySelectorAll('script, button').forEach(el => el.remove());
+
+    // 4. BUNDLE CSS
+    let cssMarkup = '';
+    for (const sheet of document.styleSheets) {
+        try {
+            const rules = Array.from(sheet.cssRules);
+            cssMarkup += rules.map(rule => rule.cssText).join('\n');
+        } catch (e) {
+            console.warn("Stylesheet inaccessible");
+        }
+    }
+
+    // 5. ADD MASTER LOCK (No clicking allowed)
+    const lockStyle = `
+        * { 
+            pointer-events: none !important; 
+            cursor: default !important; 
+            user-select: text !important; 
+        }
+    `;
+
+    const styleTag = document.createElement('style');
+    styleTag.textContent = cssMarkup + lockStyle;
+    doc.querySelector('head').appendChild(styleTag);
+
+    //return '<!DOCTYPE html>\n' + doc.outerHTML;
+
+    // Optional: Simple minify to save database space
+    const finalString = '<!DOCTYPE html>\n' + doc.outerHTML;
+    return finalString.replace(/\s+/g, ' ').trim();
+
+}
+
+
+
+
+
+
+
+
+
+pumpb.previewNewTab = (htmlCode) => {
+
+    /*
+        this func open new tab to show your htmlCode
+
+    */
+
+
+    // 1. Create a "Blob" (a file-like object) from your string
+    const blob = new Blob([htmlCode], { type: 'text/html' });
+
+    // 2. Create a temporary URL for that Blob
+    const blobUrl = URL.createObjectURL(blob);
+
+    // 3. Open that URL in a new tab
+    window.open(blobUrl, '_blank');
+
+    // 4. (Optional) Cleanup memory after a delay
+    // Note: Don't revoke immediately or the new tab might not load
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+}
+
+// --- HOW TO USE ---
+//const finalHtml = getLockedStaticHtml(); // Your previous function
+//previewStaticHtml(finalHtml);
