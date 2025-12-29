@@ -215,7 +215,7 @@
 
 
 <script>
-//////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 let MODE = 'new';
 const PGOJ = {};
@@ -422,6 +422,7 @@ async function getStaffInfo() {
           fullName: `${data.firstName} ${data.lastName}`,
           nickName: data.nickName,
           citizenId: data.citizenId,
+          bankAccount: data.bankAccount,
           wages: data.wages,
           hiringType: data.hiringType,
           monthlyRate: data.payProfile.monthlyRate,
@@ -440,6 +441,7 @@ async function getStaffInfo() {
           staffInfo.innerHTML = `
             <span>ชื่อ นามสกุล</span><span class="tr">${data.firstName} ${data.lastName}</span>
             <span>หมายเลขบัตรประชาชน หรือเอกสารสำคัญ</span><span class="tr">${data.citizenId}</span>
+            <span>บัญชีธนาคาร</span><span class="tr">${data.bankAccount}</span>
             <span>ประเภทการจ้าง</span>
             <span class="tr">${data.hiringType}</span>
             <span>เงินเดือน</span>
@@ -506,8 +508,8 @@ async function getStaffInfo() {
           staffInfo.innerHTML = `
             <span>ชื่อ นามสกุล</span><span class="tr">${data.firstName} ${data.lastName}</span>
             <span>หมายเลขบัตรประชาชน หรือเอกสารสำคัญ</span><span class="tr">${data.citizenId}</span>
-            <span>ประเภทการจ้าง</span>
-            <span class="tr">${data.hiringType}</span>
+            <span>บัญชีธนาคาร</span><span class="tr">${data.bankAccount}</span>
+            <span>ประเภทการจ้าง</span><span class="tr">${data.hiringType}</span>
             <span>ค่าแรง/วัน ${pumpb.getMoneyFormat(data.wages)} x ${normalWorkdays} วันทำงานปกติเดือนนี้ = </span>
             <span class="tr">${pumpb.getMoneyFormat( normalPay) }</span>
             <span>คิดเป็นค่าจ้าง/ชม</span>

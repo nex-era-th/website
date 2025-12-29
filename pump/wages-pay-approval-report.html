@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Wages Pay Report</title>
+<title>Wages Pay Approval Report</title>
 <script src="conf.js"></script>
 <script src="pump-b.js"></script>
 <script src="/js/xdev-b.js"></script>
@@ -20,7 +20,7 @@
 
   <!-- title / page name -->
   <div id="page_title" style="margin-bottom: 24px;">
-    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Wages Pay Approval Report*</div>
+    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Wages Pay Approval Report</div>
     <p id="page_brief">แสดงข้อมูลสรุปยอดจ่ายของพนักงานแต่ละคน ในแต่ละงวด</p>
   </div>
 
@@ -46,9 +46,16 @@
   <div class="form-space" style="grid-template-columns: 30% 70%; margin-top: 32px">
 
     <label>เลือกเดือน*</label>
-    <input type="month" class="w3-input">
+    <select id="select_month" onchange="showReport()">
+      <option>-----</option>
+      <option>2025-12</option>
+    </select>
     
+    <div id="report_grid" class="grid-space" style="grid-column: span 2; grid-template-columns: auto auto auto auto auto; margin-top: 24px">
 
+      <span class="tc">ลำดับ</span><span class="tc">พนักงาน</span><span class="tc">ยอดจ่ายสุทธิ</span><span class="tc">บัญชีธนาคาร</span><span class="tc">PAID</span>
+
+    </div>
 
 
   </div>
@@ -57,8 +64,8 @@
 
   <!-- form action -->
   <div id="form_act" style="display: flex; align-items: center; justify-content: space-around; margin-top: 32px">
-    <button class="w3-button w3-blue">Confirm</button>
-    <button class="w3-button w3-yellow">Clear</button>
+    <button id="update_act" class="w3-button w3-blue" onclick="updatePaidStatus()" disabled>Update Paid Status</button>
+    <!--button class="w3-button w3-yellow">Clear</button-->
   </div>
 
 
@@ -75,12 +82,14 @@
 
 
 <script>
-//////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+const PGOJ = {}
+PGOJ.paidArray = []
 let MODE = 'new';
 
 // this code scroll page to top after reload
-window.onload = () => {
+window.onload = async () => {
 
   // scroll to top on reload
   setTimeout( () => {
@@ -101,9 +110,194 @@ window.onload = () => {
 
     // if view mode, do it...
 
+  } else {
+
+
   }
 
+
+  // watching the PAID status
+  document.querySelector('#report_grid').addEventListener('change', (event) => {
+    // Check if the changed element is a checkbox
+    if (event.target.type === 'checkbox') {
+      
+      /*
+      const checkbox = event.target;
+      if (checkbox.checked) {
+        PGOJ.paidArray.push( checkbox.dataset.id)
+      }*/ 
+
+      const paidItem = []
+      document.querySelectorAll('[paid-status]').forEach( el => {
+
+        if (el.checked) {
+          paidItem.push( el.dataset.id )
+        }
+
+      })
+
+      PGOJ.paidArray = paidItem
+
+    }
+  });
+
+
 }
+
+
+
+async function showReport() {
+
+  const selectMonth = document.querySelector('#select_month').value
+
+  if (selectMonth.startsWith('-')) {
+
+    const reportHeader = '<span class="tc">ลำดับ</span><span class="tc">พนักงาน</span><span class="tc">ยอดจ่ายสุทธิ</span><span class="tc">บัญชีธนาคาร</span><span class="tc">PAID</span>'
+
+    document.querySelector('#report_grid').innerHTML = reportHeader
+    document.querySelector('#update_act').disabled = true
+    return
+
+  }
+
+  // pass
+
+  try {
+
+    let reply = await pumpb.request(
+      { 
+        allApprovedWagesPayThisMonth: selectMonth, 
+        masterKey: MASTER_KEY 
+      },
+      '/find-staff'
+    )
+
+    if (reply.done) {
+
+      let data = reply.data
+      PGOJ.allApprove = data
+      
+      PGOJ.netTotal = data.reduce( (sum, eachApprove) => {
+          return sum + eachApprove.netPay
+        }, 0
+      )
+
+      const reportGrid = document.querySelector('#report_grid')
+      let count = 0
+
+      data.forEach( approve => {
+
+        let paidStatus = ''
+        let disableStatus = ''
+
+        if (approve.paid == true) {
+          paidStatus = 'checked'
+          disableStatus = 'disabled'
+        }
+
+        count++
+        reportGrid.innerHTML += `<span class="tc">${count}</span>
+        <span>${approve.staffInfo.fullName} (${approve.staffNickName})</span>
+        <span class="tr">${pumpb.getMoneyFormat( approve.netPay)}</span>
+        <span>${approve.staffInfo.bankAccount}</span>
+        <span><input paid-status type="checkbox" class="w3-check" data-id="${approve._id}" ${paidStatus} ${disableStatus}> PAID</span>`
+      
+      })
+
+      reportGrid.innerHTML += `<span style="grid-column: span 2" class="tc blue">ยอดสุทธิรวม</span>
+      <span class="tr blue">${pumpb.getMoneyFormat( PGOJ.netTotal)}</span>
+      <span style="grid-column: span 2"></span>`
+
+      if ( allItemsPaid() ) {
+        document.querySelector('#update_act').disabled = true
+      } else {
+        document.querySelector('#update_act').disabled = false
+      }
+
+    } else {
+      alert('ยังไม่มีพนักงานได้รับการอนุมัติ ค่าจ้าง (Wages Payment) ในเดือนที่เลือกนี้เลยค่ะ')
+    }
+
+  } catch(er) {
+    console.error(er)
+    alert('มีปัญหาทางเทคนิคค่ะ')
+  }
+
+
+
+}
+
+
+
+
+async function updatePaidStatus() {
+
+  // send ids of wagesPay to /update-wages-paid-status
+  // format { theseIdsArePaid: [ --id--, --id--, ................ ]}
+
+
+  //alert(PGOJ.paidArray.toString())
+
+  if (PGOJ.paidArray.length) {
+
+    try {
+
+      let reply = await pumpb.request(
+        { 
+          masterKey: MASTER_KEY,
+          theseIdsArePaid: PGOJ.paidArray
+        },
+        '/update-wages-paid-status'
+      )
+
+      //console.log( reply)
+
+      if (reply.done) {
+        alert('เรียบร้อยค่ะ - Update รายการที่จ่ายแล้ว เรียบร้อย')
+
+        // make sure all the paid item are disabled
+        document.querySelectorAll('[paid-status]').forEach( el => {
+
+          if (el.checked) {
+            el.disabled = true
+          }
+
+        })
+
+        // if all items are paid, disabled the [Update] button
+        /*if ( Array.from(document.querySelector('[paid-status]')).every( paid => paid.checked) ) {
+
+          document.querySelector('#update_act').disabled = true
+
+        }*/ 
+
+        if ( allItemsPaid() ) document.querySelector('#update_act').disabled = true 
+
+      } else {
+        alert('ไม่มีการ Update ค่า - อาจเพราะไม่มีการจ่ายเพิ่มเติม หรือเปล่า')
+      }
+
+    } catch(er) {
+      console.error(er)
+      alert('มีปัญหาทางเทคนิคค่ะ')
+    }
+  }
+
+
+}
+
+
+
+
+function allItemsPaid() {
+
+  // check if all wages pay items paid or not
+  return Array.from(document.querySelectorAll('[paid-status]')).every( paid => paid.checked) 
+
+}
+
+
+
 
 </script>
 </body>
