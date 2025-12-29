@@ -26,7 +26,7 @@
 
   <!-- title / page name -->
   <div style="margin-bottom: 24px;">
-    <div id="pageTitle" style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Approve Wages Pay*</div>
+    <div id="pageTitle" style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Approve Wages Pay</div>
     <p id="pageBrief" class="small">เมื่ออนุมัติในนี้แล้ว ถือว่า ยอดเงินทั้งหมดในนี้ ถูกต้อง และบริษัทจะจ่ายเงินให้พนักงานตามยอดเหล่านี้ โปรแกรมจะสร้าง Wages Payment Guide แสดงยอดสุทธิ ที่จะต้องจ่ายให้กับแต่ละคน เพื่อสะดวกในการจ่ายเงิน</p>
   </div>
 
@@ -172,7 +172,7 @@
     <!-- สรุป -->
     <label style="grid-column: span 2;" class="indigo">สรุป</label>
     <div class="grid-space" style="grid-column: span 2; grid-template-columns: auto auto; padding: 16px">
-      <span>รายได้สุทธิ</span>
+      <span>ยอดสุทธิ</span>
       <span id="netWagesPay" class="tr"></span>
     </div>
 
@@ -184,21 +184,21 @@
     <label bottom-of-form>อนุมัติโดย*</label>
     <input id="approvedBy" type="text" autocomplete="off" class="w3-input" bottom-of-form placeholder="ต้องอนุมัติโดย ผู้อนุมัติการจ่ายเงิน เท่านั้น">
 
+    <!-- this is footer for payslip -->
+    <div id="footer" class="small" style="display: none; grid-column: span 2;">บจ. นวประชา 2025<br>
+      994/3 ถนนเพชรเกษม ตำบลห้วยจรเข้ อำเภอเมืองนครปฐม จังหวัดนครปฐม 73000<br>
+      หมายเลขประจำตัวผู้เสียภาษี 0735567011184
+    </div>
+
   </div>
 
 
 
   <!-- form action -->
-  <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 32px">
+  <div id="form_action" style="display: flex; align-items: center; justify-content: space-around; margin-top: 32px">
     <button id="approveButton" class="w3-button w3-green" onclick="approveWagesPay()">Approve</button>
-    <button id="convertButton" class="w3-button w3-blue" onclick="makePayslip()" disabled>Convert to Payslip</button>
-    <button id="clearButton" class="w3-button w3-yellow" onclick="pumpb.clearBrowserBar(); location.reload()">Clear</button>
-  </div>
-
-
-  <div id="footer" class="small" hidden>บจ. นวประชา 2025<br>
-    994/3 ถนนเพชรเกษม ตำบลห้วยจรเข้ อำเภอเมืองนครปฐม จังหวัดนครปฐม 73000<br>
-    หมายเลขประจำตัวผู้เสียภาษี 0735567011184
+    <button id="viewPayslipButton" class="w3-button w3-blue" onclick="viewPayslip()" disabled>View Payslip</button>
+    <button id="clearButton" class="w3-button w3-yellow" onclick="pumpb.clearBrowserBar(); location.reload()">Clear / New Approval</button>
   </div>
 
 
@@ -208,7 +208,7 @@
 
 
 <!-- page action -->
-<div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+<div id="page_act" style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
   <img src="/icon/u-turn.svg" style="width: 32px; height: 32px; cursor: pointer;" 
   onclick="history.back()">
 </div>
@@ -243,7 +243,7 @@ window.onload = async () => {
 
   } else {
 
-    // get all staff info and put into #chooseStaff
+    /* / get all staff info and put into #chooseStaff
 
     let reply = await pumpb.fetchThis(null, '/get-all-staff', 'get')
 
@@ -252,14 +252,16 @@ window.onload = async () => {
       let data = reply.data
       PGOJ.allStaff = data
       data.forEach( staff => {
+
         let selectElem = document.querySelector('#chooseStaff')
         selectElem.innerHTML += `<option value="${staff._id}">${staff.nickName}</option>`
+      
       })
 
 
     } else {
       alert('ไม่มีข้อมูลพนักงานเลยค่า เริ่มต้น app ใหม่ใช่ป่าว')
-    }
+    } */ 
   }
 
 }
@@ -280,7 +282,9 @@ async function getPayMonthInfo() {
   */
 
   PGOJ.payMonth = document.querySelector('#payMonth').value 
-  PGOJ.complete = {
+
+  // this PGOJ.doc is to keep all info about this WagesPay and finally we'll save it in the db
+  PGOJ.doc = {
     payMonth: PGOJ.payMonth
   }
 
@@ -302,12 +306,23 @@ async function getPayMonthInfo() {
 
     if (reply.done) {
       //alert( JSON.stringify( reply))
+
       
+      
+
+
       let data = reply.data
       PGOJ.monthInfo = data
       let allHolidays = data.holiday.map( day => {
         return pumpb.getSimpleDate(day)
       })
+
+
+      PGOJ.doc.monthInfo = {
+        startDate : data.startDate,
+        endDate   : data.endDate,
+        holidy    : data.holiday // array
+      }
 
       document.querySelector('#monthInfo').innerHTML = `
       <span>วันเริ่มต้น</span>
@@ -326,6 +341,35 @@ async function getPayMonthInfo() {
   } catch(er) {
     console.error(er)
     alert('error')
+  }
+
+  // now get all staff who has pending WagesPay approval
+
+  try {
+
+    let reply = await pumpb.request(
+      { pendingWagesPayForThisMonth: PGOJ.payMonth, masterKey: MASTER_KEY },
+      '/find-staff'
+    )
+
+    if (reply.done) {
+
+      let data = reply.data
+      PGOJ.allStaff = data
+      data.forEach( staff => {
+
+        let selectElem = document.querySelector('#chooseStaff')
+        selectElem.innerHTML += `<option value="${staff._id}">${staff.nickName}</option>`
+      
+      })
+
+    } else {
+      alert('ไม่มีพนักงานที่ยังไม่ได้รับการอนุมัติ ค่าจ้าง (Wages Payment) ในเดือนที่เลือกนี้ค่ะ')
+    }
+
+  } catch(er) {
+    console.error(er)
+    alert('มีปัญหาทางเทคนิคค่ะ')
   }
 
 }
@@ -371,7 +415,24 @@ async function getStaffInfo() {
 
         const staffInfo = document.querySelector('#staffInfo')
 
-        
+
+        PGOJ.doc.staffNickName = data.nickName
+        PGOJ.doc.staffInfo = {
+          id: PGOJ.staffId,
+          fullName: `${data.firstName} ${data.lastName}`,
+          nickName: data.nickName,
+          citizenId: data.citizenId,
+          wages: data.wages,
+          hiringType: data.hiringType,
+          monthlyRate: data.payProfile.monthlyRate,
+          calcHourlyRate: data.payProfile.calcHourlyRate,
+          workdayOtRate: data.payProfile.workdayOtRate,
+          holidayWorkRate: data.payProfile.holidayWorkRate,
+          holidayOtRate: data.payProfile.holidayOtRate,
+          holiday: data.holiday,
+          estimateAnnualIncome: data.estimateAnnualIncome2025,
+          amountDeductForSocialSecFund: data.amountDeductForSocialSecFund
+        }
 
 
         if (PGOJ.staffInfo.hiringType == 'รายเดือน') {
@@ -437,6 +498,9 @@ async function getStaffInfo() {
             net   : normalPay
           }
 
+          // daily staff has varied normal workdays each month so we record these in the PGOJ.doc.staffInfo
+          PGOJ.doc.staffInfo.normalWorkdays = normalWorkdays
+          PGOJ.doc.staffInfo.normalPayForDailyStaff = normalPay
 
 
           staffInfo.innerHTML = `
@@ -461,8 +525,10 @@ async function getStaffInfo() {
         
 
 
-        // get OT data
+        // OT, HOLIDAY WORK
         {
+
+          PGOJ.doc.ot = [] // will keep all ot records here
           
           let reply = await pumpb.fetchThis(
             { 
@@ -481,6 +547,7 @@ async function getStaffInfo() {
 
 
             data.forEach( ot => {
+
 
               let rateField;
               switch (ot.workType) {
@@ -504,6 +571,10 @@ async function getStaffInfo() {
 
               sum += thisFee
               PGOJ.calc.ot = sum
+
+              ot.otAmout = thisFee
+              PGOJ.doc.ot.push( ot) // keep the ot data and amount into the doc
+
 
               otBoxEl.innerHTML += `
               <span>${pumpb.getSimpleDate( ot.otDate)}</span>
@@ -530,8 +601,10 @@ async function getStaffInfo() {
         }
 
 
-        // addition like benefits: เบี้ยขยัน ค่าแต่งหน้า ค่าผ่าน audit ...
+        // ADDITIONAL BENEFITS : เบี้ยขยัน ค่าแต่งหน้า ค่าผ่าน audit ...
         {
+
+          PGOJ.doc.otherAdd = [] // keep all additional benefits/addup here
 
           let reply = await pumpb.fetchThis(
             { 
@@ -549,6 +622,9 @@ async function getStaffInfo() {
             let count = 0, sum = 0
             
             data.forEach( ben => {
+
+              PGOJ.doc.otherAdd.push( ben)
+
               count++
               elem.innerHTML = elem.innerHTML + `<span>${count}</span>
               <span>${ben.description}</span>
@@ -569,8 +645,10 @@ async function getStaffInfo() {
 
 
 
-        // social security deduction, other deduction
+        // DEDUCT -- social security deduction, other deduction
         {
+
+          PGOJ.doc.deduct = []
 
           let elem = document.querySelector('#deductGrid')
           let count = 0, sum = 0
@@ -586,6 +664,12 @@ async function getStaffInfo() {
               <span class="tr">-${pumpb.getMoneyFormat( PGOJ.staffInfo.amountDeductForSocialSecFund)}</span>`
 
               sum = - PGOJ.staffInfo.amountDeductForSocialSecFund
+              PGOJ.doc.deduct.push(
+                { 
+                  description: 'หักเงินสมทบประกันสังคม 5% ของเงินเดือน (หรือรายได้ปกติทั้งเดือน)',
+                  deductAmount: PGOJ.staffInfo.amountDeductForSocialSecFund
+                }
+              )
               //PGOJ.calc.deduct = 
 
             } 
@@ -600,6 +684,12 @@ async function getStaffInfo() {
             <span class="tr">-${pumpb.getMoneyFormat( socialSecDeduct)}</span>`
 
             sum = - socialSecDeduct
+            PGOJ.doc.deduct.push(
+              {
+                description: 'หักเงินสมทบประกันสังคม 5% ของเงินเดือน (หรือรายได้ปกติทั้งเดือน)',
+                deductAmount: socialSecDeduct
+              }
+            )
             //PGOJ.calc.deduct = - socialSecDeduct
 
           }
@@ -626,6 +716,8 @@ async function getStaffInfo() {
               let data = reply.data
               data.forEach( deduc => {
 
+                PGOJ.doc.deduct.push( deduc)
+
                 count++
                 elem.innerHTML += `<span>${count}</span>
                   <span>${deduc.description}</span>
@@ -637,7 +729,7 @@ async function getStaffInfo() {
 
             }
           } else {
-            alert('not found deduct')
+            //alert('not found deduct')
           }
 
 
@@ -650,7 +742,7 @@ async function getStaffInfo() {
         }
         
 
-        // calc the net
+        // SUMMARY
 
         {
 
@@ -662,6 +754,13 @@ async function getStaffInfo() {
           document.querySelector('#deductWagesSum').textContent = pumpb.getMoneyFormat(PGOJ.calc.deduct)
           document.querySelector('#netWagesSum').textContent = pumpb.getMoneyFormat(PGOJ.calc.net)
 
+          PGOJ.doc.summary = {
+            normalWagesSum: PGOJ.calc.wages,
+            otSum: PGOJ.calc.ot,
+            otherAddSum: PGOJ.calc.add,
+            deductSum: PGOJ.calc.deduct,
+            netSum: PGOJ.calc.net
+          }
 
         }
 
@@ -696,6 +795,10 @@ async function getStaffInfo() {
             netIncomeForTaxCalc: net 
           }
 
+          PGOJ.doc.personalIncomeTax = PGOJ.incomeTaxCalc
+          PGOJ.doc.personalIncomeTax.exempt = exempt
+          PGOJ.doc.personalIncomeTax.deductAmount = exempt? 0 : '--calc result / more dev --'
+
           document.querySelector('#estimateAnnualIncome').textContent = pumpb.getMoneyFormat(estimate)
           document.querySelector('#personalExpense').textContent = pumpb.getMoneyFormat(expense)
           document.querySelector('#personalAllowance').textContent = pumpb.getMoneyFormat(allowance)
@@ -708,7 +811,7 @@ async function getStaffInfo() {
 
         // จ่ายสุทธิ, net pay
         document.querySelector('#netWagesPay').textContent = pumpb.getMoneyFormat(PGOJ.calc.net)
-
+        PGOJ.doc.netPay = PGOJ.calc.net
 
 
 
@@ -756,8 +859,8 @@ function clearForm() {
 
 
 
-
-function approveWagesPay() {
+//---------------------------------------------------------------------------------
+async function approveWagesPay() {
 
   // approve this wages pay
 
@@ -773,55 +876,82 @@ function approveWagesPay() {
 
   // pass
 
+
+  PGOJ.doc.note = document.querySelector('#note').value
+  PGOJ.doc.approvedBy = document.querySelector('#approvedBy').value
+  //console.log( PGOJ.doc)  
+
+  // ^ the PGOJ.doc is complted here
+
+
+  // hide act/buttons, disable everything
+
+  //document.querySelector('#form_action').style.display = 'none'
+  //document.querySelector('#page_act').hidden = true
+
   document.querySelectorAll('select').forEach( el => el.disabled = true)
   document.querySelectorAll('input').forEach( el => el.disabled = true)
   document.querySelectorAll('textarea').forEach( el => el.disabled = true)
-  document.querySelector('#approveButton').disabled = true
-  document.querySelector('#approveButton').disabled = true
-  document.querySelector('#convertButton').disabled = false
-  document.querySelector('#clearButton').disabled = true
 
 
-  alert('การจ่ายเงินค่าจ้างและสวัสดิการแก่พนักงานรายนี้ ได้รับการอนุมัติแล้ว ขอบคุณค่ะ')
-
-  //document.querySelector('#pageTitle').textContent = "ใบแสดงการจ่ายเงินเดือน"
-  //document.querySelector('#pageBrief').textContent = 'เอกสารนี้ออกโดย บจ. นวประชา 2025 ให้กับพนักงานเป็นรายคน เพื่อแสดงรายละเอียดการจ่ายค่าจ้าง ในแต่ละเดือน'
-
-  //document.querySelectorAll('[bottom-of-form]').forEach( el => el.hidden = true)
-}
+  //document.querySelector('#approveButton').disabled = true
+  //document.querySelector('#approveButton').disabled = true
+  //document.querySelector('#convertButton').disabled = false
+  //document.querySelector('#clearButton').disabled = true
 
 
-
-
-function makePayslip() {
-
-  // makes this page a payslip
+  // reformat page to payslip
 
   document.querySelector('#pageTitle').textContent = 'ใบแสดงการจ่ายค่าจ้างแก่พนักงาน'
   document.querySelector('#pageTitle').style.textAlign = 'center'
-  document.querySelector('#pageBrief').textContent = 'เอกสารนี้ ออกโดย บจ. นวประชา 2025 เพื่อแสดงรายละเอียดการจ่ายค่าจ้าง สวัสดิการ ต่างๆ ในแต่ละเดือน และมอบให้พนักงานเฉพาะรายไว้ เพื่อเป็นข้อมูล'
+  document.querySelector('#pageBrief').textContent = 'เอกสารนี้ ออกโดย บจ. นวประชา 2025 เพื่อแสดงรายละเอียดการจ่ายค่าจ้าง สวัสดิการ ต่างๆ ในแต่ละเดือน และมอบให้พนักงานเฉพาะรายไว้ เพื่อเป็นข้อมูล หากมีข้อสงสัย กรุณาติดต่อหัวหน้างาน หรือผู้จัดการ ได้ตลอดเวลา'
 
   document.querySelectorAll('[bottom-of-form]').forEach( el => el.hidden = true)
   document.querySelector('#approvedBy').style.display = 'none'
-  document.querySelector('#footer').hidden = false
+  document.querySelector('#footer').style.display = 'block'
 
-  let payslipHtml = pumpb.getThisPageStatic()
-  pumpb.previewNewTab( payslipHtml)
 
-  console.log(payslipHtml)
+  // now make a payslip in html and save into PGOJ.doc.payslip and save the PGOJ.doc into /approve-wages-pay
+
+
+  try {
+
+    PGOJ.doc.payslip = pumpb.getThisPageStatic()
+    PGOJ.doc.masterKey = MASTER_KEY
+
+    let reply = await pumpb.request(
+      PGOJ.doc, '/approve-wages-pay'
+    )
+
+    if (reply.done) {
+
+      //pumpb.previewNewTab( PGOJ.doc.payslip)
+      alert('เรียบร้อยค่ะ - รายการนี้ได้รับการอนุมัติแล้ว พี่สามารถกด [View Payslip] แล้วพิมพ์ให้พนักงานได้ค่ะ และหากจะเริ่มอนุมัติคนต่อไป ก็กด [New Approval] ได้เลย')
+
+      document.querySelector('#approveButton').disabled = true
+      document.querySelector('#clearButton').disabled = false
+      document.querySelector('#viewPayslipButton').disabled = false
+
+
+    } else {
+      alert('การ save ข้อมูลมีปัญหาค่ะ')
+    }
+
+  } catch(er) {
+    console.error(er)
+    alert('มีปัญหาทางเทคนิคค่ะ')
+  }
+
+
 
 }
 
 
 
-
-
-
-
-
-
-
-
+function viewPayslip() {
+  // show the PGOJ.doc.payslip in new tab so you can print as payslip
+  pumpb.previewNewTab( PGOJ.doc.payslip)
+}
 
 
 

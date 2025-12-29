@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Approve Special Add</title>
+<script src="conf.js"></script>
+<script src="pump-b.js"></script>
+<script src="/js/xdev-b.js"></script>
+<link href="/js/w3.css" rel="stylesheet" type="text/css">
+<link href="/js/material-x.css" rel="stylesheet" type="text/css">
+<link href="pump.css" rel="stylesheet" type="text/css">
+<style>
+  /* put local styles here */
+</style>
+</head>
+<body>
+
+<div class="world-space" style="padding: 0 16px;">
+
+  <!-- title -->
+  <div style="margin-bottom: 24px;">
+    <div id="pageTitle" style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Approve Special Add*</div>
+    <p id="pageBrief" class="small">สำหรับอนุมัติ เงินเพิ่มพิเศษ นอกเหนือจากที่กำหนดไว้ในนโยบาย หรือในกรณีที่ App ยังไม่มี ก็กำหนดไว้ในนี้ก่อนได้</p>
+  </div>
+
+
+  <!-- form -->
+  <div class="grid-space" style="grid-template-columns: 30% 70%;">
+
+    <label>เลือกเดือน*</label>
+    <input id="for_month" type="month" class="w3-input">
+
+    <hr class="line-in-form">
+
+    <label>เลือกพนักงานได้หลายคน*</label>
+    <div>
+      <select id="selectStaff" class="w3-select" onchange="showStaff(this)">
+        <option>-----</option>
+        <option>ทุกคน</option>
+        <option>ทุกคน - แผนกบริการน้ำมัน</option>
+        <option>ทุกคน - แผนกร้านกาแฟอเมซอน</option>
+        <option>ทุกคน - ทั่วไป</option>
+        <option>ทุกคน - บริหาร</option>
+        <option>ลบอันหลังสุด</option>
+        <option>ลบทั้งหมด</option>
+        <option>-----</option>
+      </select>
+      <div id="showStaffHere" style="padding: 16px 0">
+        <!-- staff shows here -->
+      </div>
+    </div>
+    
+
+
+    <hr class="line-in-form">
+
+    <label>ยอดเงินที่จะเพิ่มให้*</label>
+    <input id="add_amount" class="w3-input" type="number">
+    
+    <label>ให้ค่าอะไร*</label>
+    <input id="add_for" class="w3-input" placeholder="เช่น โบนัส ...">
+
+    
+    <hr class="line-in-form">
+    
+
+    <label>Note</label>
+    <textarea id="note" rows="3"></textarea>
+    <label>อนุมัติโดย*</label>
+    <input id="approved_by" type="text" class="w3-input" autocomplete="off">
+  </div>
+
+
+  <!-- form action -->
+  <div id="formActBox" style="display: flex; align-items: center; justify-content: space-around; margin-top: 32px">
+    <button class="w3-button w3-blue"
+    onclick="approveSpecialAdd()">Approve</button>
+    <button class="w3-button w3-yellow"
+    onclick="pumpb.clearBrowserBar(); location.reload()">Clear</button>
+  </div>
+
+
+
+</div>
+
+<!-- page action -->
+<div style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+  <img src="/icon/u-turn.svg" style="width: 32px; height: 32px; cursor: pointer;" 
+  onclick="history.back()">
+</div>
+
+
+<script>
+//////////////////////////////////////////////////////////////////
+
+const PGOJ = {}
+let MODE = 'new';
+let OT_ID;
+
+// this code scroll page to top after reload
+window.onload = async () => {
+
+  // scroll to top on reload
+  setTimeout( () => {
+    window.scrollTo(0,0)
+  }, 10)
+
+
+
+  // always load the staff data to make the select choices
+  try {
+
+    let reply = await pumpb.fetchThis( null, '/get-all-staff', 'get')
+    if (reply.done) {
+      let data = reply.data
+
+      data.forEach( staff => {
+        let newElem = document.createElement('option')
+        newElem.textContent = staff.nickName
+        document.querySelector('#selectStaff').append(newElem)
+      })
+
+    } else {
+      alert('ไม่มีข้อมูลพนักงานเลยค่ะ คงต้อง add เข้าไปก่อนป่าว')
+      return
+    }
+
+  } catch(er) {
+    console.error('error : fetch /get-all-staff', er)
+    alert('มีปัญหาทางเทคนิคค่ะ load ข้อมูล staff ไม่ได้')
+    return
+  }
+
+
+
+  // check mode
+  // check mode: view|edit
+  //const urlParams = new URLSearchParams(window.location.search)
+  let myQuery = new pumpb.MyQuery
+  const id = myQuery.get('id') //urlParams.get('id')
+  MODE = myQuery.get('mode') || 'new' //urlParams.get('mode')
+
+  //alert('mode=' + mode + ',id=' + id)
+
+
+  if (MODE == 'new') {
+
+    // may do nothing here    
+
+
+  } else if (MODE == 'view' && id) {
+
+    // if view mode, do it...
+    //alert(id)
+
+    try {
+      
+    } catch(er) {
+      console.error(er)
+      alert('มีปัญหาทางเทคนิคค่ะ')
+    }
+
+  }
+
+}
+
+
+
+
+
+function showStaff( callingElement ) {
+  // upon user choosen a staff, shows staff name in the #showStaffHere
+
+  let selectValue = callingElement.value
+  if (!selectValue.startsWith('-')) {
+
+    if (!selectValue.startsWith('ลบ')) {
+
+      // this item is good to put into the box but need to check first if it didn't exist so we don't dup it
+
+      if ([...document.querySelector('#showStaffHere').children].some( el => el.textContent == selectValue)) {
+        return
+        // because it's the dup
+      }
+
+      let newSpan = document.createElement('span')
+      newSpan.textContent = callingElement.value
+      newSpan.className = 'w3-tag'
+      newSpan.style.borderRadius = '10px'
+      newSpan.style.margin = '2px'
+      newSpan.style.fontSize = '1rem'
+      newSpan.style.backgroundColor = 'black'
+      newSpan.style.padding = '4px 8px'
+      document.querySelector('#showStaffHere').append(newSpan)
+
+    } else if (selectValue == 'ลบอันหลังสุด') {
+
+      let elem = document.querySelector('#showStaffHere')
+      let leng = elem.children.length
+      if (leng) {
+        elem.children[ leng - 1].remove()
+      }
+      document.querySelector('#selectStaff').selectedIndex = 0
+
+    } else if (selectValue == 'ลบทั้งหมด') {
+
+      document.querySelector('#showStaffHere').innerHTML = ''
+      document.querySelector('#selectStaff').selectedIndex = 0
+
+    }
+    
+
+  }
+
+  
+}
+
+
+
+async function approveSpecialAdd() {
+
+  let data = {
+    forMonth: document.querySelector('#for_month').value,
+    staffNickName: Array.from(document.querySelector('#showStaffHere').children).map( el => el.textContent),
+    value: document.querySelector('#add_amount').value,
+    currency: 'thb',
+    description: document.querySelector('#add_for').value,
+    note: document.querySelector('#note').value,
+    enterBy: document.querySelector('#approved_by').value
+  }  
+
+  if (!data.forMonth || !data.staffNickName || !data.value || !data.description || !data.enterBy) {
+
+    alert('ช่องที่มี * ต้องมีข้อมูลค่ะ ขออีกทีค่ะสู้ๆ')
+    return
+
+  }
+
+  if (!pumpb.checkTestUser(data.enterBy)) {
+    alert('ต้องอนุมัติโดย user ที่ถูกต้องค่ะ เรื่องนี้สำคัญนะคะ')
+    return
+  }
+
+  // pass
+
+  try {
+
+    data.masterKey = MASTER_KEY
+    let reply = await pumpb.request(
+      data, '/approve-special-add'
+    )
+
+    if (reply.done) {
+      
+      alert('เรียบร้อยค่ะ')
+      pumpb.clearBrowserBar()
+      location.reload()
+
+
+    } else {
+      alert('ไม่สามารถ save ข้อมูลได้ ลองอีกทีมั๊ยคะ')
+    }
+  } catch(er) {
+    console.error(er)
+    alert('มีปัญหาทางเทคนิคค่ะ')
+  }
+
+}
+
+
+
+
+</script>
+</body>
+</html>
+  

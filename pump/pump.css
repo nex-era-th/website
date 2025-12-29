@@ -11,7 +11,7 @@ label { font-size: 0.8rem }
 
 
 
-/* font, text */
+/* FONT, TEXT --------------------------------------------------------- */
 .micro { font-size: 0.5rem; }
 .tiny { font-size: 0.7rem }
 .small { font-size: 0.8rem }
@@ -27,7 +27,7 @@ label { font-size: 0.8rem }
 
 
 
-/* color */
+/* COLOR ---------------------------------------------------------------- */
 .indigo { color: #5c6bc0 }
 .grey { color: #616161 }
 .red { color: red }
@@ -48,15 +48,14 @@ label { font-size: 0.8rem }
 
 
 
-/* space */
+/* SPACE, CONTAINER, GRID ----------------------------------------------------------------- */
 .world-space { 
-  max-width: 800px; margin: 0 auto 60px auto; 
-  padding: 0 16px;   
+  max-width: 800px; margin: 0 auto 60px auto; padding: 0 16px;   
 }
 
 
 
-/* form */
+.form-space { display: grid; align-items: center; gap: 1px; margin-top: 32px }
 .form-space > input { width: 100%; padding: 4px; }
 .form-space input,
 .form-space textarea,
@@ -83,13 +82,13 @@ label { font-size: 0.8rem }
 
 
 
-/* action */
+/* ACT -------------------------------------------------------*/
 .hover-it:hover { background-color: #b2ebf2;}
 
 
 
 
-/* display */
+/* DISPLAY, SHOW, HIDE ------------------------*/
 .hide { display: none; }
 .grid { display: grid; }
 .flex { display: flex; }
@@ -97,3 +96,6 @@ label { font-size: 0.8rem }
 
 
 
+
+/* SHAPE -------------------------------------------------------*/
+.round { border-radius: 10px; }

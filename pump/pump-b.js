@@ -637,7 +637,7 @@ pumpb.getThisPageStatic = () => {
 */
 
 
-
+/*
 pumpb.getThisPageStatic = () => {
     // 1. SYNC ALL INPUTS & SELECTS
     const inputs = document.querySelectorAll('input, textarea, select');
@@ -703,11 +703,68 @@ pumpb.getThisPageStatic = () => {
     return finalString.replace(/\s+/g, ' ').trim();
 
 }
+*/
 
 
 
+pumpb.getThisPageStatic = () => {
+    // 1. SYNC ALL INPUTS & SELECTS
+    const inputs = document.querySelectorAll('input, textarea, select');
+    
+    inputs.forEach(el => {
+        if (el.tagName === 'SELECT') {
+            const options = el.querySelectorAll('option');
+            options.forEach(opt => {
+                if (opt.value === el.value) {
+                    opt.setAttribute('selected', 'selected');
+                } else {
+                    opt.removeAttribute('selected');
+                }
+            });
+        } else if (el.type === 'checkbox' || el.type === 'radio') {
+            if (el.checked) el.setAttribute('checked', 'checked');
+            else el.removeAttribute('checked');
+        } else {
+            el.setAttribute('value', el.value);
+        }
+        el.setAttribute('disabled', 'true');
+    });
 
+    // 2. NOW CLONE THE DOCUMENT
+    const doc = document.documentElement.cloneNode(true);
 
+    // 3. CLEAN UP (Remove scripts, buttons, AND IMAGES)
+    // Adding 'img', 'svg', and 'picture' to the list
+    doc.querySelectorAll('script, button, img, svg, picture').forEach(el => el.remove());
+
+    // 4. BUNDLE CSS
+    let cssMarkup = '';
+    for (const sheet of document.styleSheets) {
+        try {
+            const rules = Array.from(sheet.cssRules);
+            cssMarkup += rules.map(rule => rule.cssText).join('\n');
+        } catch (e) {
+            console.warn("Stylesheet inaccessible");
+        }
+    }
+
+    // 5. ADD MASTER LOCK
+    const lockStyle = `
+        * { 
+            pointer-events: none !important; 
+            cursor: default !important; 
+            user-select: text !important; 
+        }
+    `;
+
+    const styleTag = document.createElement('style');
+    styleTag.textContent = cssMarkup + lockStyle;
+    doc.querySelector('head').appendChild(styleTag);
+
+    // 6. MINIFY AND RETURN
+    const finalString = '<!DOCTYPE html>\n' + doc.outerHTML;
+    return finalString.replace(/\s+/g, ' ').trim();
+}
 
 
 

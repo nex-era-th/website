@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>tab name ...</title>
+<title>Wages Pay Report</title>
 <script src="conf.js"></script>
 <script src="pump-b.js"></script>
 <script src="/js/xdev-b.js"></script>
@@ -20,8 +20,8 @@
 
   <!-- title / page name -->
   <div id="page_title" style="margin-bottom: 24px;">
-    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">page title here ...*</div>
-    <p id="page_brief" class="tiny grey">page brief here ..........</p>
+    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Wages Pay Approval Report*</div>
+    <p id="page_brief">แสดงข้อมูลสรุปยอดจ่ายของพนักงานแต่ละคน ในแต่ละงวด</p>
   </div>
 
 
@@ -36,29 +36,21 @@
   <!-- top action -->
   <div id="top_act" style="display: none; align-items: center; justify-content: space-around; margin-bottom: 24px;">
     <button id="edit_act" class="w3-button" style="padding: 4px 8px; background-color: #fdd835;" 
-    onclick="editPartner()">Edit</button>
+    onclick="editSomething()">Edit</button>
     <button id="delete_act" class="w3-button" style="padding: 4px 8px; background-color: #757575;" disabled>Delete</button>
   </div>
 
 
 
   <!-- form -->
-  <div class="form-space" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px; margin-top: 32px">
+  <div class="form-space" style="grid-template-columns: 30% 70%; margin-top: 32px">
 
-    <label>พนักงาน</label>
-    <select class="w3-select">
-      <option>john</option>
-      <option>may</option>
-      <option>voon</option>
-    </select>
-    <label>วันที่</label>
-    <input type="date" class="w3-input">
-    <label>เวลาเริ่ม</label>
-    <input type="time" class="w3-input">
-    <label>เวลาหยุด</label>
-    <input type="time" class="w3-input">
-    <label>Note</label>
-    <textarea rows="4"></textarea>
+    <label>เลือกเดือน*</label>
+    <input type="month" class="w3-input">
+    
+
+
+
   </div>
 
 
