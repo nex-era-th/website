@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin/Delete</title>
+<script src="conf.js"></script>
+<script src="pump-b.js"></script>
+<script src="/js/xdev-b.js"></script>
+<link href="/js/w3.css" rel="stylesheet" type="text/css">
+<link href="/js/material-x.css" rel="stylesheet" type="text/css">
+<link href="pump.css" rel="stylesheet" type="text/css">
+<style>
+  /* put local styles here */
+  .hr-thick {
+    border: none;       /* Remove the default 1px line */
+    height: 2px;        /* This is your thickness */
+    background-color: blue; /* Set the color */
+  }
+</style>
+</head>
+<body>
+
+<div class="world-space">
+
+  <!-- title / page name -->
+  <div id="page_title" style="margin-bottom: 24px;">
+    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Admin/Delete*</div>
+    <p id="page_brief">ค้นหาข้อมูลที่ต้องการลบ แล้วนำเอา _id ของข้อมูลนั้นๆ มาลบอีกที</p>
+  </div>
+
+
+  <!-- find -- >
+  <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
+    <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นชื่อสินค้า ...">
+    <button class="w3-button w3-blue" 
+    style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
+  </div-->
+
+
+  <!-- top action -- >
+  <div id="top_act" style="display: none; align-items: center; justify-content: space-around; margin-bottom: 24px;">
+    <button id="edit_act" class="w3-button" style="padding: 4px 8px; background-color: #fdd835;" 
+    onclick="editPartner()">Edit</button>
+    <button id="delete_act" class="w3-button" style="padding: 4px 8px; background-color: #757575;" disabled>Delete</button>
+  </div-->
+
+
+
+  <!-- form -->
+  <div class="form-space" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px; margin-top: 32px">
+
+    <label>ลบอะไร*</label>
+    <select id="which_data" class="w3-select">
+      <option value="">-----</option>
+      <option value="overtime">OT - ทำงานล่วงเวลา</option>
+      <option value="benefit">Benefit - สิทธิ์ประโยชน์ เงินเพิ่ม</option>
+      <option value="deduct">Deduction - เงินหัก</option>
+    </select>
+    <label>ของใคร*</label>
+    <select id="staff_nickname" class="w3-select">
+      <option value="">-----</option>
+    </select>
+    <label>เดือนไหน*</label>
+    <input id="which_month" type="month" class="w3-input">
+
+    <div></div>
+    <div>
+      <button class="w3-button w3-blue" onclick="findData()">Find</button>
+    </div>
+
+    <div></div>
+    <div id="find_output"></div>
+
+  </div>
+
+
+  <hr class="hr-thick">
+
+  <h3 style="margin-top: 32px">DELETE</h3>
+  <p>ป้อน _id แล้วกด Delete เพื่อลบ</p>
+
+  <div class="form-space" style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 4px; margin-top: 32px">
+
+    <label>_id</label>
+    <input id="which_id" type="text" class="w3-input">
+
+    <div></div>
+    <div>
+      <button class="w3-button w3-orange"
+        onclick="deleteData()"  
+      >Delete</button>
+    </div>
+  </div>
+
+  <!-- form action -- >
+  <div id="form_act" style="display: flex; align-items: center; justify-content: space-around; margin-top: 32px">
+    <button class="w3-button w3-blue" onclick="findData()">Find</button>
+    <button class="w3-button w3-yellow">Clear</button-- >
+  </div-->
+
+</div>
+
+
+
+<!-- page action -->
+<div id="page_act" style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+  <img id="back_back" src="/icon/u-turn.svg" style="width: 32px; height: 32px; cursor: pointer;" 
+  onclick="history.back()">
+</div>
+
+
+<script>
+//////////////////////////////////////////////////////////////////
+
+let MODE = 'new';
+
+// this code scroll page to top after reload
+window.onload = async () => {
+
+  // scroll to top on reload
+  setTimeout( () => {
+    window.scrollTo(0,0)
+  }, 10)
+
+
+  // check mode
+  // check mode: view|edit
+  //const urlParams = new URLSearchParams(window.location.search)
+  let myQuery = new pumpb.MyQuery
+  const id = myQuery.get('id')
+  const mode = myQuery.get('mode')
+
+  //alert('mode=' + mode + ',id=' + id)
+
+  if (mode == 'view' && id) {
+
+    // if view mode, do it...
+
+  } else {
+
+    // this is new-mode or normal-mode
+
+    try {
+
+      let reply = await pumpb.fetchThis( null, '/get-all-staff', 'get')
+      if (reply.done) {
+        let data = reply.data
+
+        data.forEach( staff => {
+          let newElem = document.createElement('option')
+          newElem.textContent = staff.nickName
+          document.querySelector('#staff_nickname').append(newElem)
+        })
+
+      } else {
+        alert('ไม่มีข้อมูลพนักงานเลยค่ะ คงต้อง add เข้าไปก่อนป่าว')
+        return
+      }
+
+    } catch(er) {
+      console.error('error : fetch /get-all-staff', er)
+      alert('มีปัญหาทางเทคนิคค่ะ load ข้อมูล staff ไม่ได้')
+      return
+    }
+
+
+
+
+  }
+
+}
+
+
+
+async function findData() {
+  // find data before delete
+  const whichData = document.querySelector('#which_data')
+  const nickname = document.querySelector('#staff_nickname')
+  const month = document.querySelector('#which_month')
+
+  if (!whichData.value || !nickname.value || !month.value) {
+    alert("พี่ต้องเลือก ช่องที่มี * ให้ครบก่อนค่ะ ขออีกทีนะ")
+    return
+  }
+
+  // pass check
+
+  try {
+
+    const findOutput = await pumpb.request(
+      {
+        masterKey: MASTER_KEY,
+        collection: whichData.value,
+        nickname: nickname.value,
+        month: month.value
+      },
+      '/admin-find', 
+    )
+
+    if (findOutput.done) {
+      
+      findOutput.data.forEach( doc => {
+
+        let newP = document.createElement('p')
+        newP.innerHTML = JSON.stringify(doc) + '<hr>'
+        newP.setAttribute('style',"overflow-wrap: break-word; font-size: 1.1rem")
+        document.querySelector('#find_output').append( newP)
+
+      })
+      
+
+    } else {
+      alert('ไม่พบข้อมูลเลยค่ะ เสียใจด้วยน๊า')
+      location.reload()
+    }
+  } catch(er) {
+    console.error(er)
+    alert("มีปัญหาทางเทคนิคค่ะ ลองดูอีกที")
+  }
+
+}
+
+
+
+
+async function deleteData() {
+  
+  const collection = document.querySelector('#which_data').value
+  const _id = document.querySelector('#which_id').value
+  if (!collection || !_id) {
+    alert('พี่ต้องป้อน _id และต้องเลือกข้อมูลข้างบนด้วยค่ะ ลองอีกที')
+    return
+  }
+
+  // pass
+
+  try {
+
+    let serverReply = await pumpb.request(
+      { 
+        _id: _id, 
+        collection: collection, 
+        masterKey: MASTER_KEY 
+      },
+      '/admin-delete'
+    )
+
+    if (serverReply.done) {
+      alert("เรียบร้อยค่า")
+      location.reload()
+    } else {
+      console.log(serverReply)
+      alert("ลบไม่ได้ค่ะ ลองอีกที มีอะไรผิดพลาดป่าว")
+    }
+
+  } catch(er) {
+    console.error(er)
+    alert('มีปัญหาทางเทคนิคค่ะ ลองอีกทีนะ')
+  }
+
+}
+
+
+
+
+</script>
+</body>
+</html>
+  
