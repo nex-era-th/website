@@ -317,7 +317,7 @@ async function getPayMonthInfo() {
       PGOJ.doc.monthInfo = {
         startDate : data.startDate,
         endDate   : data.endDate,
-        holidy    : data.holiday // array
+        holiday    : data.holiday // array ; changed fieldName from holidy to holiday @devster 2026-01-23
       }
 
       document.querySelector('#monthInfo').innerHTML = `
@@ -480,13 +480,34 @@ async function getStaffInfo() {
             'อาทิตย์'   : 'sunday'
           }
 
-
+          let myHolidayEn = dayMapping[data.holiday]
           let normalWorkdays = pumpb.getWorkDays( PGOJ.payMonth, dayMapping[data.holiday])
 
           // *** speical for 2025-12
-          if (PGOJ.payMonth == '2025-12') normalWorkdays = normalWorkdays - 3 // starts operation on dec2, dec5 = father day, dec10 = constitution day
+          if (PGOJ.payMonth == '2025-12') {
+            normalWorkdays = normalWorkdays - 3 // starts operation on dec2, dec5 = father day, dec10 = constitution day
+          } else {
 
-          // have to calculate the holidays of this month too
+            // most cases come to this
+            // have to calculate the holidays of this month too !!!
+
+            let holidayCountThisMonth = PGOJ.doc.monthInfo.holiday.length
+
+            if (holidayCountThisMonth) {
+              let holidayList = PGOJ.doc.monthInfo.holiday
+              holidayList.forEach( hol => {
+                if ( pumpb.getDayName(hol).toLowerCase() == myHolidayEn ) {
+                  // ถ้าวันหยุดตามประเพณี ตรงกับ วันหยุดประจำสัปดาห์ของเขา เขาได้ชดเชยอีก 1 วัน
+                  holidayCountThisMonth++
+                }
+              })
+
+              // now deduct holidays from normalWorkdays
+              normalWorkdays = normalWorkdays - holidayCountThisMonth
+            }
+          }
+
+          // at this point the normalWorkdays are adjusted with my holidays this month so it is good to calcualte the normalPay
 
           let normalPay = data.wages * normalWorkdays
           PGOJ.normalPayForDailyStaff = normalPay

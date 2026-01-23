@@ -794,3 +794,36 @@ pumpb.previewNewTab = (htmlCode) => {
 // --- HOW TO USE ---
 //const finalHtml = getLockedStaticHtml(); // Your previous function
 //previewStaticHtml(finalHtml);
+
+
+
+
+
+pumpb.getDayName = (yourIsoDate) => {
+    /*
+        returns dayName like Monday..to..Sunday from your ISO date input
+        test = ok
+        by = @devster
+        date = 2026-01-23
+    */
+
+    if (!yourIsoDate || typeof yourIsoDate != 'string') { return false }
+
+    // 1. Convert "2026-02-30" into [2026, 2, 30]
+    const [y, m, d] = yourIsoDate.split('-').map(Number);
+    
+    // 2. Create the Date object (Note: Month is 0-indexed, so Jan is 0, Feb is 1)
+    const dateObj = new Date(y, m - 1, d);
+
+    // 3. The "Honesty Check"
+    // Does the dateObj still have the same Year, Month, and Day we gave it?
+    const isValid = dateObj.getFullYear() === y && 
+                    dateObj.getMonth() === (m - 1) && 
+                    dateObj.getDate() === d;
+
+    if (isValid) {
+        return dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+    }
+
+    return false;
+};
