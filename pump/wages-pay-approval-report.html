@@ -48,7 +48,7 @@
     <label>เลือกเดือน*</label>
     <select id="select_month" onchange="showReport()">
       <option>-----</option>
-      <option>2025-12</option>
+      <!--option>2025-12</option-->
     </select>
     
     <div id="report_grid" class="grid-space" style="grid-column: span 2; grid-template-columns: auto auto auto auto auto; margin-top: 24px">
@@ -112,6 +112,27 @@ window.onload = async () => {
 
   } else {
 
+    // get pay month list
+    try {
+
+      let gotList = await pumpb.request({masterKey: MASTER_KEY},'/get-pay-month-list')
+      if (gotList.done) {
+        
+        //alert(gotList.data.toString())
+        gotList.data.forEach( month => {
+          let newOpt = document.createElement('option')
+          newOpt.textContent = month 
+          document.querySelector('#select_month').append(newOpt)
+        })
+
+      } else {
+        //alert('ไม่มีข้อมูล approvedWagesPay (เดือนที่อนุมัติการจ่ายค่าจ้างแล้ว) เลยค่ะ')
+      }
+
+    } catch(er) {
+      console.error(er)
+      alert('มีปัญหาทางเทคนิคค่ะ')
+    }
 
   }
 

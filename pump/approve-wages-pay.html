@@ -793,7 +793,8 @@ async function getStaffInfo() {
         {
 
 
-          const estimate = PGOJ.staffInfo.estimateAnnualIncome2025
+          const estimate = PGOJ.staffInfo.estimateAnnualIncome2025 // won't change this for 2026 because we just start the business in dec2025 and figures in 2026 should be similar to 2025 so stick to the same value
+           
           const expense = pumpb.getRound(Number(estimate) * 0.5)
           const allowance = 60000
           const socialSec = pumpb.getRound( PGOJ.staffInfo.amountDeductForSocialSecFund * 12)
