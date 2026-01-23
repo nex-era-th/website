@@ -302,14 +302,10 @@ async function getPayMonthInfo() {
       '/get-pay-month-info'
     )
     
-    //console.log( reply)
+    //console.log('reply = ', reply)
 
     if (reply.done) {
       //alert( JSON.stringify( reply))
-
-      
-      
-
 
       let data = reply.data
       PGOJ.monthInfo = data
@@ -333,9 +329,11 @@ async function getPayMonthInfo() {
       <span>${allHolidays.join(', ')}</span>`
 
     } else {
+      
       alert('ยังไม่มีข้อมูล Business Calendar ของเดือนนี้ค่ะ ลองเลือกเดือนที่มีข้อมูลอีกทีนะคะ')
       pumpb.clearBrowserBar()
       location.reload()
+
     }
 
   } catch(er) {
@@ -487,6 +485,8 @@ async function getStaffInfo() {
 
           // *** speical for 2025-12
           if (PGOJ.payMonth == '2025-12') normalWorkdays = normalWorkdays - 3 // starts operation on dec2, dec5 = father day, dec10 = constitution day
+
+          // have to calculate the holidays of this month too
 
           let normalPay = data.wages * normalWorkdays
           PGOJ.normalPayForDailyStaff = normalPay
