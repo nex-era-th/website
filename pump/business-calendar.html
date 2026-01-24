@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Business Calendar</title>
+<script src="conf.js"></script>
+<script src="pump-b.js"></script>
+<script src="/js/xdev-b.js"></script>
+<link href="/js/w3.css" rel="stylesheet" type="text/css">
+<link href="/js/material-x.css" rel="stylesheet" type="text/css">
+<link href="pump.css" rel="stylesheet" type="text/css">
+<style>
+  #show_holiday { background-color: oklch(92.8% 0.006 264.531); padding: 16px 8px }
+</style>
+</head>
+<body>
+
+<div class="world-space">
+
+  <!-- title / page name -->
+  <div id="page_title" style="margin-bottom: 24px;">
+    <div style="color: blue; background-color: white; z-index: 50; font-size: 1.5rem; font-style: bold">Business Calendar*</div>
+    <p id="page_brief">กำหนดวันหยุดของบริษัท ตามกฎหมายนายจ้างต้องให้ลูกจ้างมีวันหยุดตามประเพณี ไม่น้อยกว่า 13 วัน / ปี</p>
+  </div>
+
+
+  <!-- find -- >
+  <div style="display: grid; grid-template-columns: 80% 20%; align-items: center;">
+    <input type="text" style="width: 100%; border-radius: 10px 0 0 10px; font-size: 1.2rem;" class="w3-input w3-border" placeholder="ค้นชื่อสินค้า ...">
+    <button class="w3-button w3-blue" 
+    style="border-radius: 0 10px 10px 0; padding: 11px 0"><img src="/icon-x/Search.svg" width="24"></button>
+  </div-->
+
+
+  <!-- top action -->
+  <div id="top_act" style="display: none; align-items: center; justify-content: space-around; margin-bottom: 24px;">
+    <button id="edit_act" class="w3-button" style="padding: 4px 8px; background-color: #fdd835;" 
+    onclick="editPartner()">Edit</button>
+    <button id="delete_act" class="w3-button" style="padding: 4px 8px; background-color: #757575;" disabled>Delete</button>
+  </div>
+
+
+
+  <!-- form -->
+  <div class="form-space" style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4px; margin-top: 32px; font-size: 1.2rem">
+
+    <label>ปีปฏิทิน</label>
+    <select id="select_year" class="w3-select" onchange="showHolidayList()">
+      <!-- (auto) put the defined calendar year here -->
+    </select>
+
+    <label data-tohide>กำหนดจำนวนวันหยุดสำหรับปีนี้</label>
+    <input id="set_holiday_count" type="number" class="w3-input" value="13"
+      onchange="enableAddButton()" data-tohide>
+
+    <hr class="line-in-form" data-tohide>
+    <label data-tohide>เพิ่มวันหยุด</label>
+    <div style="display: flex; flex-direction: column; gap: 4px" data-tohide>
+      <input id="day_name" type="text" class="w3-input" placeholder="ใส่ชื่อวันหยุด ..."
+        oninput="enableAddButton()">
+      <input id="choose_date" type="date" class="w3-input"
+        oninput="enableAddButton()"> 
+      <div>
+        <button id="add_button" class="w3-button w3-blue" style="font-size: 1rem;"
+          onclick="addHoliday()"
+          disabled
+        >Add</button>
+      </div>
+    </div>
+    <hr class="line-in-form" data-tohide>
+
+    <label data-tohide>ลบวันออก</label>
+    <div style="display: flex; flex-direction: column; gap: 4px" data-tohide>
+      <input id="delete_this_date" type="date" class="w3-input" oninput="document.querySelector('#del_button').disabled = false">
+      <div>
+        <button id="del_button" class="w3-button w3-orange" 
+          style="font-size: 1rem" disabled
+          onclick="deleteHoliday()">Delete</button>
+      </div>
+    </div>
+
+    <hr class="line-in-form" data-tohide>
+
+
+    <label>วันหยุดในปีนี้</label>
+    <div id="show_holiday" style="font-size: 1.2rem">
+
+      <!-- show holidays here -->
+
+    </div>
+
+    <label>จำนวนวันหยุดที่กำหนดไว้</label>
+    <input id="holiday_count_now" type="number" class="w3-input">
+
+    <label>Note</label>
+    <input id="note" type="text" class="w3-input">
+    <label>Approved By*</label>
+    <input id="approve_by" type="text" class="w3-input">
+
+  </div>
+
+
+
+  <!-- form action -->
+  <div id="form_act" 
+    style="display: flex; align-items: center; margin-top: 60px; gap: 16px; flex-wrap: wrap;"
+    data-tohide>
+    
+    <button id="approve_button" class="w3-button w3-blue" disabled
+      onclick="approveAct()">Approve/Update</button>
+    
+    <button id="print_view_button" class="w3-button w3-green" 
+      onclick="printViewAct()">Print View</button>
+
+    <button id="clear_button" class="w3-button w3-yellow"
+      onclick="location.reload()">Clear</button>
+  </div>
+
+
+
+</div>
+
+
+
+<!-- page action -->
+<div id="page_act" style="padding: 4px; position: fixed; left: 0; bottom: 0; ">
+  <img id="back_back" src="/icon/u-turn.svg" style="width: 32px; height: 32px; cursor: pointer;" 
+  onclick="history.back()">
+</div>
+
+
+<script>
+////////////////////////////////////////////////////////////////////////////////
+
+let MODE = 'view';
+const PGOJ = {
+  holidayList: [],
+  //modified: false, // state of this calendar 
+  approved: false, // if you approve it turns true
+}
+
+const SELECT_YEAR_L = document.querySelector('#select_year')
+const DAY_NAME_L = document.querySelector('#day_name')
+const CHOOSE_DATE_L = document.querySelector('#choose_date')
+const SET_HOLIDAY_COUNT = document.querySelector('#set_holiday_count')
+const HOLIDAY_COUNT_NOW = document.querySelector('#holiday_count_now')
+const DELETE_THIS_DATE = document.querySelector('#delete_this_date')
+const SHOW_HOLIDAY = document.querySelector('#show_holiday')
+
+// this code scroll page to top after reload //////////////////
+window.onload = async () => {
+
+  // scroll to top on reload
+  setTimeout( () => {
+    window.scrollTo(0,0)
+  }, 10)
+
+
+  // check mode
+  // check mode: view|edit
+  //const urlParams = new URLSearchParams(window.location.search)
+  let myQuery = new pumpb.MyQuery
+  const id = myQuery.get('id')
+  const mode = myQuery.get('mode')
+
+  //alert('mode=' + mode + ',id=' + id)
+
+  if (MODE == 'view') {
+
+    // we always start with view-mode for this page
+
+    try {
+
+      let gotCalendarYearList = await pumpb.request(
+        { masterKey: MASTER_KEY },
+        '/get-business-calendar'
+      )
+      
+      if (gotCalendarYearList.yes) {
+
+        // sort desending
+        let calList = gotCalendarYearList.data
+        calList = pumpb.sortArray( calList, 'year', 'descending')
+        PGOJ.calList = calList
+
+        calList.forEach( cal => {
+          let newOpt = document.createElement('option')
+          newOpt.textContent = cal.year
+          document.querySelector('#select_year').append( newOpt)
+        })
+
+        //document.querySelector('#select_year').dispatchEvent(new Event('change'))
+        showHolidayList()
+
+      } else {
+        // no businessCalendar defined yet in the server
+        alert("ยังไม่มีข้อมูล ปฏิทินวันหยุด เลยค่ะ")
+      }
+    } catch(er) {
+      console.error(er)
+      alert('มีปัญหาเทคนิคค่ะ')
+    }
+
+  }
+
+  //showHolidayCount()
+
+}
+
+
+
+///////////////////////////////
+function showHolidayList() {
+
+  // show all holidays in the table
+
+  let thisCal = PGOJ.calList.find(v => v.year == SELECT_YEAR_L.value)
+  PGOJ.holidayList = thisCal.holidayList
+
+  /*
+  document.querySelectorAll('[data-holiday-box]')
+    .forEach(el => el.replaceChildren());  //
+  */
+  // now PGOJ.holiday has holidays so show them
+
+  SHOW_HOLIDAY.innerHTML = ''
+  PGOJ.holidayList = pumpb.sortArray( PGOJ.holidayList, 'date')
+  PGOJ.holidayList.forEach( hol => {
+    putDateOnTable( hol.date, hol.name )
+  })
+
+  showHolidayCount()
+}
+
+
+
+///////////////////////////
+function addHoliday() {
+
+  // when user choosen a date shows that date on the proper month
+
+  let chooseDate = document.querySelector('#choose_date').value
+  if (!chooseDate) { 
+    alert('รบกวนเลือกวัน ก่อน นิดนึงค่ะพี่')
+    return
+   }
+
+   if (PGOJ.holidayList.some(v => v.date == chooseDate)) {
+    // this date already choosen, cannot dup
+    alert('วันนี้ได้เลือกไปแล้วค่ะ วันอื่นมีมั๊ยจ๊ะ')
+    choose_date.value = ''
+    return
+  }
+
+
+  let dayName = document.querySelector('#day_name').value
+  if (!dayName) {
+    alert('ต้องมี ชื่อวันหยุด ด้วยจ้า ขออีกที')
+    return
+  }
+
+  // --- pass ---
+
+  let selectYear = document.querySelector('#select_year').value
+  let setHolidayCount = document.querySelector('#set_holiday_count').value
+  
+  /*
+  let [ year, month, day ] = chooseDate.split('-')
+  month = Number(month)
+  day = Number(day)
+  monthMap = [null,'jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
+
+  let newP = document.createElement('p')
+  newP.textContent = day + ' - ' + dayName
+  document.querySelector('#' + monthMap[month]).append( newP)
+  */ 
+
+  //putDateOnTable( chooseDate, dayName)
+  PGOJ.holidayList.push({ date: chooseDate, name: dayName })
+  PGOJ.holidayList = pumpb.sortArray( PGOJ.holidayList, 'date')
+  SHOW_HOLIDAY.innerHTML = ''
+  
+  PGOJ.holidayList.forEach( hol => {
+    putDateOnTable( hol.date, hol.name)
+  })
+  showHolidayCount()
+  clearAdd()
+  //PGOJ.modified = true
+  document.querySelector('#approve_button').disabled = false
+}
+
+
+/////////////////////////////////////////////////
+function putDateOnTable( myDate, dateName ) {
+  // make element and put it on proper month in the table
+
+  let [ year, month, day ] = myDate.split('-')
+  year = Number(year) + 543
+  month = Number(month)
+  day = Number(day)
+  monthMap = [null,'มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม']
+
+  let newP = document.createElement('p')
+  newP.textContent = `${day} ${monthMap[month]} - ${dateName}`
+  newP.setAttribute('data-date', myDate) // for delete feature
+  document.querySelector('#show_holiday').append( newP)
+
+}
+
+
+/////////////////////////
+function clearAdd() {
+  // clear adding stuff
+  day_name.value = ''
+  choose_date.value = ''
+  add_button.disabled = true
+}
+
+////////////////////////////////
+function showHolidayCount() {
+  // show holiday count
+
+  document.querySelector('#holiday_count_now').value = PGOJ.holidayList.length
+
+}
+
+/////////////////////////////////
+function enableAddButton() {
+  // if #day_name and #choose_date have value, enables the #add_button
+  if (DAY_NAME_L.value && CHOOSE_DATE_L.value) {
+    if (Number(HOLIDAY_COUNT_NOW.value) < Number(SET_HOLIDAY_COUNT.value)) {
+      document.querySelector('#add_button').disabled = false;
+    }
+  }
+}
+
+
+/////////////////////////////
+function deleteHoliday() {
+  // delete holiday from table
+
+  let whichDate = DELETE_THIS_DATE.value
+  if (whichDate.endsWith('05-01')) {
+    // this is labour day, cannot delete
+    alert("เราไม่สามารถลบวันแรงงานได้ค่ะ กฎหมายบังคับต้องหยุดวันนี้ด้วยในทุกๆปีจ้า วันอื่นเนาะ")
+    DELETE_THIS_DATE.value = ''
+    del_button.disabled = true
+    return
+  }
+
+  let whereIsIt = PGOJ.holidayList.findIndex(hol => hol.date == DELETE_THIS_DATE.value)
+  if (whereIsIt < 0) {
+    alert("ไม่มีวันนี้ในตารางอยู่แล้วนี่คะ เข้าใจไรผิดป่าว")
+    DELETE_THIS_DATE.value = ''
+    del_button.disabled = true
+    return
+  }
+
+  // action
+
+  PGOJ.holidayList.splice(whereIsIt, 1)
+  document.querySelector(`[data-date="${DELETE_THIS_DATE.value}"]`).remove()
+  showHolidayCount()
+
+  // clear delete state
+
+  DELETE_THIS_DATE.value = ''
+  document.querySelector('#del_button').disabled = true
+  document.querySelector('#approve_button').disabled = false
+
+}
+
+
+
+//////////////////////////////
+async function approveAct() {
+  // approve or update the calendar and send to /approve-calendar
+
+  let myUser = document.querySelector('#approve_by').value
+  if (!pumpb.adminUsers.includes(myUser)) {
+    alert("ต้องอนุมัติโดย admin เท่านั้นค่ะ")
+    return
+  }
+
+  // --- pass ---
+
+  try {
+
+    let serverReply = await pumpb.request(
+      { 
+        masterKey: MASTER_KEY, 
+        data: {
+          holidayList: PGOJ.holidayList,
+          note: document.querySelector('#note').value,
+          approveBy: myUser
+        }  
+      },
+      '/approve-calendar'
+    )
+
+    if (serverReply.done) {
+      PGOJ.approved = true
+      document.querySelector('#print_view_button').disabled = false
+      alert("เรียบร้อยค่า")
+    } else {
+      console.log(serverReply)
+      alert("update ข้อมูลไม่ได้ ลองอีกทีค่ะ")
+    }
+
+  } catch(er) {
+    console.error(er)
+    alert("มีปัญหาเทคนิคค่ะ เอาอีกทีซิ")
+  }
+
+
+}
+
+
+////////////////////////////
+function printViewAct() {
+  // make page to be printer-friendly (no controls)
+
+  document.querySelectorAll('[data-tohide]').forEach( el => {
+    el.style.display = 'none'
+  })
+
+}
+
+
+</script>
+</body>
+</html>
+  

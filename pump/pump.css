@@ -72,11 +72,11 @@ label { font-size: 0.8rem }
 .form-space span,
 .form-space option { font-size: 1.25rem; }
 .form-space p { padding: 0; margin: 0 }
-.form-space > label { font-size: 1.0rem; }
+.form-space > label { font-size: 1.1rem; color: #5c6bc0 }
 
 
 
-
+/* use this with hr element */
 .line-in-form {
   grid-column: span 2; width: 100%; border-top: 1px solid lightgrey; margin: 16px 0;
 }

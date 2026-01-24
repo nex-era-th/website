@@ -12,6 +12,7 @@ const pumpb = {}
 
 
 pumpb.testUsers = ['@john','@sern','@fern','@fond','@jum']
+pumpb.adminUsers = ['@john']
 pumpb.payoutApprovalUser = [ '@fern' ]
 
 
@@ -706,7 +707,7 @@ pumpb.getThisPageStatic = () => {
 */
 
 
-
+//////////////////////////////////////
 pumpb.getThisPageStatic = () => {
     // 1. SYNC ALL INPUTS & SELECTS
     const inputs = document.querySelectorAll('input, textarea, select');
