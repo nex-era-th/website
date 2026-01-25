@@ -72,7 +72,7 @@
 
     <label data-tohide>ลบวันออก</label>
     <div style="display: flex; flex-direction: column; gap: 4px" data-tohide>
-      <input id="delete_this_date" type="date" class="w3-input" oninput="document.querySelector('#del_button').disabled = false">
+      <input id="delete_this_date" type="date" class="w3-input" oninput="enableDelButton()">
       <div>
         <button id="del_button" class="w3-button w3-orange" 
           style="font-size: 1rem" disabled
@@ -217,6 +217,7 @@ function showHolidayList() {
 
   let thisCal = PGOJ.calList.find(v => v.year == SELECT_YEAR_L.value)
   PGOJ.holidayList = thisCal.holidayList
+  PGOJ.activeCal  = thisCal
 
   /*
   document.querySelectorAll('[data-holiday-box]')
@@ -328,12 +329,30 @@ function showHolidayCount() {
 /////////////////////////////////
 function enableAddButton() {
   // if #day_name and #choose_date have value, enables the #add_button
+
+  if (PGOJ.activeCal._doNotChange) {
+    // this year-calendar is closed we cannot change it
+    return
+  }
+
   if (DAY_NAME_L.value && CHOOSE_DATE_L.value) {
     if (Number(HOLIDAY_COUNT_NOW.value) < Number(SET_HOLIDAY_COUNT.value)) {
       document.querySelector('#add_button').disabled = false;
     }
   }
 }
+
+
+function enableDelButton() {
+  // enable the #del_button so you can delete the dates
+
+  if (PGOJ.activeCal._doNotChange) {
+    return
+  }
+  document.querySelector('#del_button').disabled = false;
+
+}
+
 
 
 /////////////////////////////
@@ -402,6 +421,7 @@ async function approveAct() {
     if (serverReply.done) {
       PGOJ.approved = true
       document.querySelector('#print_view_button').disabled = false
+      document.querySelector('#approve_button').disabled = true
       alert("เรียบร้อยค่า")
     } else {
       console.log(serverReply)
