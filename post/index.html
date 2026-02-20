@@ -10,40 +10,61 @@
     html { font-size: 16px; }
     body { max-width: 600px; margin: 0 auto; padding: 0 16px;}
     .list-box * { font-size: 1.2rem; }
+    .post-brief { display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 16px; width: 100%;}
   </style>
 </head>
 <body>
 
   <h3>ความเป็นไปในโลก</h3>
-
-  <div class="list-box" style="display: grid; grid-template-columns: 1fr; gap: 16px;">
-
-    <div style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 16px; width: 100%;"
-      onclick="location.href='test.html';"
-    >
-      <img src="/pic/lisa-on-bike.jpeg" style="width: 100%; height: 100%; object-fit: cover;">
-      <div>
-        <div>เรื่องราวต่างๆในโลก มีมากมายเหลือเกิน ทำยังไงคนเราจะมีความสุขในการใช้ชีวิตไปในแต่ละวัน บางคนมีชีวิตอยู่ด้วยความเศร้าโศก ทุกข์ตรม</div>
-        <i>-- 20 กพ 2569</i>
-      </div>
-    </div>
-     <div style="display: grid; grid-template-columns: 30% 70%; align-items: center; gap: 16px; width: 100%">
-      <img src="/pic/myanmar-earthquake.jpeg" style="width: 100%; height: 100%; object-fit: cover;">
-      <div>
-        <div>เรื่องราวต่างๆในโลก มีมากมายเหลือเกิน ทำยังไงคนเราจะมีความสุขในการใช้ชีวิตไปในแต่ละวัน บางคนมีชีวิตอยู่ด้วยความเศร้าโศก ทุกข์ตรม</div>
-        <i>-- 20 กพ 2569</i>
-      </div>
-    </div>
-
-
+  <p>เล่าเรื่องต่างๆ ทั้งในไทย ในโลก เอาแบบสั้นๆ ง่ายๆ เป็นประโยชน์ จะทำเป็นคล้ายๆ blog แต่เป็นแบบง่ายๆ ธรรมดาๆ ไม่หวือหวา เน้นอ่าน แต่ละเรื่องมีภาพซัก 1 ใบพอเนาะ</p>
+  <div class="list-box" style="display: grid; grid-template-columns: 100%; gap: 16px;">
   </div>
-
-
-
-
 
 
 </body>
 <script>
+  
+  let postList;
+  const listBoxEl = document.querySelector('.list-box')
+  
+ 
+
+  getPostList().then( list => {
+    list.forEach( brief => {
+
+      let template = `<div class="post-brief"
+        onclick="location.href='./${brief.file}';"
+      >
+        <img src="./${brief.pic}" style="width: 100%; height: 100%; object-fit: cover;">
+        <div>
+          <h2>${brief.title}</h2>
+          <i>-- ${brief.date}</i>
+        </div>
+      </div>`
+
+      let newPostBrief = document.createElement('div')
+      newPostBrief.innerHTML = template
+      listBoxEl.append(newPostBrief)
+    })
+    
+  })
+  
+    
+
+  
+  
+  
+  
+  async function getPostList() {
+    try {
+      const resp = await fetch('./post-list.json')
+      const oj = await resp.json()
+      console.log(oj)
+      return oj
+    } catch(er) {
+      console.error(er)
+    }
+  }
+  
 </script>
 </html>
