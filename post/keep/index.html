@@ -6,24 +6,18 @@
   <title>@nex-era / ความเป็นไปของโลก</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!--script src="https://cdn.tailwindcss.com"></script-->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!--link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet"-->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped:wght@100..900&display=swap" rel="stylesheet">
   <style>
-    html { font-size: 16px; font-family: Noto Sans Thai Looped, sans-serif }
-    body { max-width: 600px; margin: 0 auto; padding: 0 16px }
-    .list-box * { font-size: 1.2rem }
-    .post-brief { display: grid; grid-template-columns: 2fr 5fr; gap: 16px; align-items: stretch; cursor: pointer; background-color: oklch(96.7% 0.003 264.542)}
-    .post-brief:hover { background-color: lightblue}
+    html { font-size: 16px; }
+    body { max-width: 600px; margin: 0 auto; padding: 0 16px;}
+    .list-box * { font-size: 1.2rem; }
+    .post-brief { display: grid; grid-template-columns: 2fr 5fr; gap: 16px; align-items: stretch;}
   </style>
 </head>
 <body>
 
-  <h2>ความเป็นไปในโลก</h2>
+  <h3>ความเป็นไปในโลก</h3>
   <p>เล่าเรื่องต่างๆ ทั้งในไทย ในโลก เอาแบบสั้นๆ ง่ายๆ เป็นประโยชน์ จะทำเป็นคล้ายๆ blog แต่เป็นแบบง่ายๆ ธรรมดาๆ ไม่หวือหวา เน้นอ่าน แต่ละเรื่องมีภาพซัก 1 ใบพอเนาะ</p>
-
-  <div class="list-box" style="display: grid; grid-template-columns: 100%; gap: 8px; margin-top: 32px">
+  <div class="list-box" style="display: grid; grid-template-columns: 100%; gap: 16px;">
   </div>
 
 
@@ -39,7 +33,7 @@
     list.forEach( brief => {
 
       if (!brief.pic) {
-        brief.pic = '/icon-x/File.svg'
+        brief.pic = '/icon-x/Justify.svg'
       } else {
         brief.pic = './' + brief.pic
       }
@@ -47,14 +41,10 @@
       let template = `<div class="post-brief"
         onclick="location.href='./${brief.file}';"
         >
-          <div style="${brief.pic.includes('File.svg')? 'display: flex; align-items: center; justify-content: center' : ''}">
-            <img src="${brief.pic}" 
-              style="${brief.pic.includes('File.svg') ? 
-                'width: 40px; height: 40px;' : 
-                'width: 100%; height: 100%; object-fit: cover'}"
-            />
+          <div style="${brief.pic.includes('Justify.svg')? 'padding: 8px' : ''}">
+            <img src="${brief.pic}" style="width: 100%; height: 100%; object-fit: cover">
           </div>
-          <div style="padding: 16px 0; display: grid; align-items: center">
+          <div style="padding: 8px 0">
             <h3 style="margin: 0">${brief.title}</h3>
             <i style="font-size: 0.8rem">-- ${brief.date}</i>
           </div>
