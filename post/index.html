@@ -5,13 +5,22 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>@nex-era / ความเป็นไปของโลก</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!--script src="https://cdn.tailwindcss.com"></script-->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!--link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet"-->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped:wght@100..900&display=swap" rel="stylesheet">
   <style>
-    html { font-size: 16px; font-family: Noto Sans Thai Looped, sans-serif }
+    /* Define the Regular weight */
+    @font-face {
+      font-family: 'SaraSamkan';
+      src: url('/font/sara-regular.ttf') format('truetype');
+      font-weight: normal;
+    }
+
+    /* Define the Bold weight */
+    @font-face {
+      font-family: 'SaraSamkan';
+      src: url('/font/sara-bold.ttf') format('truetype');
+      font-weight: bold;
+    }
+
+    html { font-size: 16px; font-family: 'SaraSamkan', sans-serif }
     body { max-width: 600px; margin: 0 auto; padding: 0 16px }
     .list-box * { font-size: 1.2rem }
     .post-brief { display: grid; grid-template-columns: 2fr 5fr; gap: 16px; align-items: stretch; cursor: pointer; background-color: oklch(96.7% 0.003 264.542) }
