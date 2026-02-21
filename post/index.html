@@ -20,7 +20,14 @@
       font-weight: bold;
     }
 
-    html { font-size: 16px; font-family: 'SaraSamkan', sans-serif }
+    html { 
+      font-size: 16px; 
+      font-family: 'SaraSamkan', sans-serif;
+      font-weight: 400; /* Use the Regular file */
+      color: #555;      /* Use a dark grey instead of pure black */
+      letter-spacing: 0.5px; /* Adding tiny space makes it feel lighter */
+      -webkit-font-smoothing: antialiased;
+    }
     body { max-width: 600px; margin: 0 auto; padding: 0 16px }
     .list-box * { font-size: 1.2rem }
     .post-brief { display: grid; grid-template-columns: 2fr 5fr; gap: 16px; align-items: stretch; cursor: pointer; background-color: oklch(96.7% 0.003 264.542) }
