@@ -76,8 +76,14 @@
         .back-nav svg { color: var(--red) !important; stroke: var(--red) !important; stroke-width: 1px !important; width: 32px !important; height: 32px !important; }
 
         /* for any icon */
-        .my-icon svg {color: var(--red) !important; stroke: var(--red) !important; stroke-width: 1px mpo !important; width: 24px !important; height: 24px !important; padding-right: 8px !important;}
+        .my-icon svg {color: var(--red) !important; stroke: var(--red) !important; stroke-width: 1px mpo !important; width: 24px !important; height: 24px !important; padding-right: 8px;}
         .my-icon:hover { background-color: var(--hover-gray);}
+        
+        /* use as icon alone, no label */
+        .my-icon-24 { padding: 8px; }
+        .my-icon-24:hover { background-color: var(--hover-gray);}
+        .my-icon-24 svg {color: var(--red) !important; stroke: var(--red) !important; stroke-width: 1px mpo !important; width: 24px !important; height: 24px !important;}
+
 
         #edit-panel, #pin-panel { display: none; }
         .visible { display: block !important; }
@@ -282,18 +288,19 @@
             </div>
 
             <!-- update button -->
-            <div style="margin-top: 32px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px">
+            <div style="margin-top: 32px; display: flex; justify-content: space-between;">
               <button class="w3-button w3-blue" onclick="updateStation()">ปรับข้อมูล</button>
               <!--button class="w3-button back-nav" onclick="showView('view-home')">
                 <i data-lucide="undo-2"></i>
               </button-->
-              <button class="w3-button w3-red"
-                onclick="deletePump()">ลบข้อมูลปั๊มนี้ทั้งหมด</button>
+              <div onclick="deletePump()" class="my-icon-24" title="ลบข้อมูลปั๊มทั้งหมด">
+                <i data-lucide="trash-2"></i>
+              </div>
             </div>
         </div>
 
         <!-- go back -->
-        <div class="back-nav" onclick="showView('view-home')" style="margin-top: 32px;">
+        <div class="back-nav" onclick="showView('view-home')" style="margin-top: 32px; cursor: pointer;">
           <i data-lucide="undo-2" style="width: 40px; height: 40px;"></i>
         </div>
         
@@ -318,7 +325,7 @@
   if (location.host.includes('nex-era.xyz')) {
     API_BASE = 'https://pump-1ati.onrender.com/oil-report'
   } else {
-    API_BASE = 'http://localhost:4000/oil-report'
+    API_BASE = 'http://192.168.1.128:4000/oil-report'
   }
   //const API_BASE = 'http://192.168.1.128:4000/oil-report' //"http://localhost:4000/oil-report";
   
