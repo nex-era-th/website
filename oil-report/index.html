@@ -321,11 +321,13 @@
   //////////////////////////////////////////////////////////////////////////////////////////////
 
 
-  let API_BASE;
+  let API_BASE, API_HOST;
   if (location.host.includes('nex-era.xyz')) {
-    API_BASE = 'https://pump-1ati.onrender.com/oil-report'
+    API_HOST = 'https://pump-1ati.onrender.com'    
+    API_BASE = API_HOST + '/oil-report' //'https://pump-1ati.onrender.com/oil-report'
   } else {
-    API_BASE = 'http://192.168.1.128:4000/oil-report'
+    API_HOST = 'http://192.168.1.128:4000'
+    API_BASE = API_HOST + '/oil-report' //'http://192.168.1.128:4000/oil-report'
   }
   //const API_BASE = 'http://192.168.1.128:4000/oil-report' //"http://localhost:4000/oil-report";
   
@@ -415,7 +417,7 @@
 
       try {
 
-        let reply = await postTo('/reset-pin', resetPinOj.form)
+        let reply = await postTo(API_BASE + '/reset-pin', resetPinOj.form)
 
         console.log( reply) //test
 
@@ -451,6 +453,22 @@
   //---------------------------------- func ---------------------------------------
 
   
+
+  //window.onload = fetchStations;
+  window.onload = function() {
+    //fetchStations();
+    //renderProvinceOptions();
+    //lucide.createIcons();
+    reloadAll()
+    sendVisitSignal()
+  }
+
+
+
+
+
+
+
   
   
   // these are element handling stuff
@@ -723,7 +741,7 @@
       if (name && pin && secretWord && name.length > 2 && pin.length > 5) {
 
         try {
-          let reply = await postTo('/check-name-to-signup',{
+          let reply = await postTo(API_BASE + '/check-name-to-signup',{
             name: name
           })
 
@@ -790,7 +808,7 @@
         // pass -------------------
 
         try {
-          let reply = await postTo('/sign-up', newStation)
+          let reply = await postTo(API_BASE + '/sign-up', newStation)
           if (reply.ok) {
             await fetchStations()
             loadReport( reply.data.id)
@@ -875,8 +893,8 @@
 
 
   // use this for any fetch/post to oil-report
-  async function postTo( api, dataOj ) {
-    const res = await fetch(`${API_BASE}` + api, {
+  async function postTo( fullApi, dataOj ) {
+    const res = await fetch( fullApi, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify( dataOj)
@@ -885,12 +903,25 @@
     return await res.json()
   }
   
+  // for simple GET stuff
+  async function getFrom( fullApi ) {
+    const res = await fetch( fullApi )
+    return await res.text()
+  }
+
+
+  // send visit to pump-server
+  function sendVisitSignal() {
+    postTo(API_HOST + '/visit', { page: location.href })
+  }
+
+
 
   ////////////////////////
   async function checkPin() {
     const myPin = document.querySelector('#edit-pin-check').value
     try {
-      let reply = await postTo('/check-pin',{ pin: myPin, name: db.current.name})
+      let reply = await postTo(API_BASE + '/check-pin',{ pin: myPin, name: db.current.name})
       
       console.log( reply) //test
       
@@ -907,13 +938,7 @@
   }
 
 
-  //window.onload = fetchStations;
-  window.onload = function() {
-    //fetchStations();
-    //renderProvinceOptions();
-    //lucide.createIcons();
-    reloadAll()
-  }
+
 
 
   //////////////////////
@@ -951,7 +976,7 @@
     // it is confirmed --------
 
     try {
-      let server = await postTo('/delete-pump',{ id: db.current.id})
+      let server = await postTo(API_BASE + '/delete-pump',{ id: db.current.id})
       if (server.ok) {
         alert("ลบข้อมูลออกแล้วค่ะ")
         fetchStations()
