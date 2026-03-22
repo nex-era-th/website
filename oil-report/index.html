@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เช็คน้ำมัน</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        :root { --red: #e53935; --blue: #2196f3; --black: #000; --link: #0000ee; --hover-gray: oklch(92.8% 0.006 264.531); --my-indigo: oklch(67.3% 0.182 276.935); }
+        * { -webkit-tap-highlight-color: transparent;}
+        html { font-size: 16px; }
+        body { 
+            font-family: 'Inter', 'Sarabun', sans-serif; 
+            padding: 0; max-width: 600px; margin: 0 auto; 
+            font-size: 1.2rem;
+        }
+
+        h2 { color: var(--red); font-size: 1.5rem; font-weight: bold; margin: 0 0 10px 0; }
+
+
+        .meta-text { color: #444; margin: 2px 0; }
+        .hr-line { border: none; border-top: 1px solid lightgray; margin: 32px 0; }
+        
+        .lucide { vertical-align: middle; }
+
+        /* View Management */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* List View */
+        .search-input { width: 100%; padding: 12px; border: 1px solid var(--black); font-size: 1.2rem; box-sizing: border-box; margin-bottom: 20px; border-radius: 4px; }
+        
+        .signup-trigger { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: none; color: indigo; display: inline-block; padding-right: 8px !important;}
+        .signup-trigger:hover { background-color: var(--hover-gray);}
+        
+        
+        .province-group { margin-bottom: 25px; }
+        .province-label { color: var(--blue); font-weight: none; border-bottom: 1px solid lightgray; margin-bottom: 8px; }
+        .station-link { padding: 12px 0; border-bottom: 0.5px solid #eee; cursor: pointer; display: block; text-decoration: none; color: inherit; }
+
+        /* Charts */
+        .tank-section { margin-bottom: 0; }
+        .label-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0; }
+        .cap-text { color: #666; font-size: 0.65rem }
+        .bar-outer { width: 100%; height: 55px; border: 1px solid lightgray; position: relative; overflow: hidden; background: #fafafa; }
+        .bar-fill { height: 100%; position: absolute; transition: width 0.6s ease; }
+        .hashed { background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,255,255,0.25) 8px, rgba(255,255,255,0.25) 12px); }
+        .bar-text { position: absolute; width: 100%; text-align: center; font-weight: bold; line-height: 55px; z-index: 2; }
+
+        /* Forms */
+        /*input, textarea { width: 100%; padding: 12px; border: 1px solid var(--black); font-size: 1.2rem; box-sizing: border-box; margin-top: 5px; } */
+        input, textarea {
+          width: 100%;
+          outline: none;          /* Removes the default blue glow on some browsers */
+        } 
+        input:focus { background-color: var(--hover-gray); }
+        textarea { background-color: var(--hover-gray);}
+
+
+        label { font-weight: none; font-size: 1rem; color: var(--my-indigo) }
+        .btn-blue { background-color: var(--blue); color: #fff; border: 1px solid var(--black); width: 100%; padding: 16px; font-weight: bold; margin-top: 20px; cursor: pointer; border-radius: 8px; }
+        .btn-small { padding: 8px 30px; width: auto; margin-top: 10px; }
+
+        /* Edit Controls */
+        .edit-toggle-trigger { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: none; margin: 20px 0; font-size: 1rem; padding: 8px 0; display: inline-block;}
+        .edit-toggle-trigger:hover { background-color: var(--hover-gray);}
+        #new-oil-input-part { display: none; background-color: gray; padding: 16px; margin: 16px 0;}
+        
+        .control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 15px 0; }
+        .action-trigger { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: none; font-size: 0.8rem; padding: 10px 0; }
+        .action-trigger svg { color: #777; stroke-width: 1.5px; }
+        .action-trigger:hover { background-color: var(--hover-gray);}
+
+        .back-nav { display: flex; align-items: center; }
+        .back-nav svg { color: var(--red) !important; stroke: var(--red) !important; stroke-width: 1px !important; width: 32px !important; height: 32px !important; }
+
+        /* for any icon */
+        .my-icon svg {color: var(--red) !important; stroke: var(--red) !important; stroke-width: 1px mpo !important; width: 24px !important; height: 24px !important; padding-right: 8px !important;}
+        .my-icon:hover { background-color: var(--hover-gray);}
+
+        #edit-panel, #pin-panel { display: none; }
+        .visible { display: block !important; }
+    </style>
+</head>
+<body>
+    <!-------------------------------------- home --------------------------------------------->
+
+    <div id="view-home" class="view active" style="padding: 16px;">
+        <h2>ข้อมูลระดับน้ำมันในแต่ละปั๊ม</h2>
+        <p><small>เว็บนี้เป็นที่เผยแพร่ว่าปั๊มไหนมีน้ำมันเท่าไหร่ โดยแต่ละปั๊มจะเป็นผู้กรอกข้อมูลเอง ทั้งหมด ความถูกต้องของข้อมูล ขึ้นอยู่กับ user ผู้ป้อนข้อมูล</small></p>
+
+        <!-- search -->
+        <div style="display: grid; grid-template-columns: 6fr 2fr; border-radius: 20px; border: 1px solid lightgray; margin-top: 32px;">
+          <input 
+            type="text" 
+            class="" 
+            placeholder="eg ชื่อปั๊ม จังหวัด ..." 
+            oninput="renderHomeList(this.value)" 
+            style="padding: 12px 16px; border-radius: 20px 0 0 20px; border: none"
+          />
+          <div 
+            class="w3-blue" 
+            style="display: flex; align-items: center; justify-content: center; height: 100%; border-radius: 0 20px 20px 0;"
+          >
+            <i data-lucide="search"></i>
+          </div>
+        </div>
+
+        <!-- put some actions in the home here -->
+        <div style="display: flex; align-items: center; gap: 32px; flex-wrap: wrap; margin-top: 24px;">
+          <!-- sign up -->
+          <div 
+            class="signup-trigger my-icon" 
+            onclick="showView('view-signup')" 
+            style="color: var(--link); padding: 8px 8px 8px 0;"
+          >
+            <i data-lucide="database"></i> <small>ลงทะเบียนปั๊มใหม่</small>
+          </div>
+          <!-- reset pin -->
+          <div id="reset_pin_act_icon" style="color: var(--link); padding: 8px 8px 8px 0; cursor: pointer;" class="my-icon" onclick="resetPinOj.toggle(this)">
+            <i data-lucide="key-square"></i> <small>ตั้ง PIN ใหม่</small>
+          </div> 
+        </div>
+
+        <!-- mini space for actions above to use-->
+        <div id="mini_act_space" style="background-color: var(--hover-gray); padding: 16px; display: none">
+          <div id="reset_pin_space">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 8px">
+              <label style="grid-column: span 2;">ชื่อปั๊ม</label>
+              <input style="grid-column: span 2;" class="w3-input" type="text" id="form_reset_pin_name" onchange="resetPinOj.form.name = this.value">
+              <label style="grid-column: span 2;">ข้อความลับของคุณ</label>
+              <input type="text" placeholder="ที่คุณตั้งตอนแรก" class="w3-input" style="grid-column: span 2;" id="form_reset_pin_secret_word" onchange="resetPinOj.form.secretWord = this.value">
+              <label>PIN ใหม่</label>
+              <input type="password" placeholder="6+ ตัว" class="w3-input" id="form_reset_pin_new_pin" onchange="resetPinOj.form.newPin = this.value">
+            </div>
+            <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center;">
+              <button class="w3-button w3-blue" onclick="resetPinOj.confirm()">ขอตั้ง PIN ใหม่ตามนี้</button>          
+              <button class="w3-button w3-yellow" onclick="resetPinOj.reset()">ยกเลิก</button>
+            </div>
+          </div>
+          <!-- we can have more spaces here -->
+        </div>
+
+
+        <!-- this is where the list shows -->
+        <div id="home-list" style="margin-top: 40px">
+
+          <p style="font-size: 1rem;">----- ยังไม่มีข้อมูลเลย -----</p>
+
+        </div>
+
+    </div>
+
+    <!------------------------------------- sign up ---------------------------------------->
+
+    <div id="view-signup" class="view" style="padding: 16px">
+        <h2>ลงทะเบียนปั๊มใหม่</h2>
+        <small>ชื่อปั๊มน้ำมันห้ามซ้ำกัน กรุณาจำรหัส PIN เพราะมีแต่ท่านเท่านั้นที่จะรู้และจะได้ใช้เข้ามาปรับปรุงข้อมูลต่อไปได้</small>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px;">
+          <label style="grid-column: span 2;">ชื่อปั๊มน้ำมัน*</label>
+          <input type="text" id="reg-name" placeholder="ห้ามซ้ำ" class="w3-input" style="grid-column: span 2;" minlength="6" required>
+          <label>PIN*</label>
+          <input type="password" id="reg-pin"  placeholder="6 ตัวขึ้นไป" class="w3-input" minlength="6" required>
+          <label style="grid-column: span 2;">ความลับของคุณ (สิ่งนี้จะใช้เพื่อ ตั้ง PIN ใหม่ให้คุณ เมื่อคุณทำ PIN หาย)*</label>
+          <input type="text" class="w3-input" id="form_sign_up_secret_word" style="grid-column: span 2;" placeholder="สิ่งที่คุณรู้คนเดียว">
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 24px; gap: 8px">
+          <button class="w3-button w3-blue" onclick="goToSetup()">ลงทะเบียน</button>
+          <button class="w3-button back-nav" onclick="showView('view-home'); clearSignUpForm()">
+            <i data-lucide="undo-2"></i>
+          </button>
+        </div>
+        
+    </div>
+
+    <!-- direction to pump -->
+    <div id="view-setup" class="view" style="padding: 16px;">
+        <h2>การเดินทางมาที่ปั๊ม</h2>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 8px">
+          <div>
+            <label>จังหวัด*</label>
+            <!--input type="text" id="set-province" class="w3-input"-->
+            <select id="set-province" class="w3-select">
+            </select>
+          </div>
+          <div>
+            <label>การเดินทางมา</label>
+            <textarea id="set-direction" rows="3" placeholder="เช่น ติดกับ..." class="w3-input"></textarea>
+          </div>        
+        </div>
+
+        <!-- buttons -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 32px">
+          <button class="w3-button w3-blue" onclick="saveNewStation()">ยืนยัน</button>
+          <button class="w3-button back-nav" onclick="showView('view-signup'); clearSetDirection()">
+            <i data-lucide="undo-2"></i>
+          </button>
+        </div>
+    </div>
+
+    <!------------------------------------ report ------------------------------------------->
+
+    <div id="view-report" class="view" style="padding: 16px;">
+        
+      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+        <h2 id="rep-name" style="display: inline-block; padding: 0; margin: 0"></h2>
+        <!-- province tag -->
+        <span class="meta-text" id="rep-prov" style="background-color: black; color: white; border-radius: 14px; padding: 4px 8px; font-size: 14px; display: inline-block"></span>
+      </div>
+        
+        
+        <div class="meta-text" id="rep-dir"></div>
+        <div class="meta-text" id="rep-time" style="font-size: 1rem; color: gray"></div>
+        <div class="hr-line"></div>
+        
+        <div id="rep-charts" style="display: flex; gap: 8px; flex-direction: column;"></div><!-- this is where the chart comes -->
+
+        <!-- toggle -->
+        <div id="update_toggle" class="edit-toggle-trigger" onclick="toggleEditRequest()" style="margin-top: 40px; color: var(--link); padding-right: 8px">
+            <i data-lucide="chevron-down"></i> ปรับข้อมูล
+        </div>
+
+        <!-- pin -->
+        <div id="pin-panel" style="background-color: var(--hover-gray); padding: 16px">
+          <div style="display: grid; grid-template-columns: 1fr 1fr;">
+            <label>PIN</label>
+            <input type="password" id="edit-pin-check" autocomplete="off"
+              class="w3-input w3-white"  
+              >
+          </div>
+          <button class="w3-button w3-blue" onclick="checkPin()">ยืนยัน</button>
+        </div>
+
+        <div id="edit-panel">
+            <hr>
+            <h4 style="color: red;"><u>ปรับข้อมูล</u></h4>
+            <small style="color: red">!! โปรดให้ความสำคัญกับความถูกต้อง เพื่อลูกค้าของท่านจะได้ทราบข้อมูลที่ตรงความจริง</small>
+
+            <!-- existing -->
+            <div id="edit-inputs" style="margin-top: 24px;"></div>
+
+            <!-- new -->
+            <div id="new-oil-input-part" style="background-color: var(--hover-gray); padding: 16px">
+                <label>ชนิดน้ำมัน</label>
+                <!--input type="text" id="new-oil-name" placeholder="eg แก๊สโซฮอล์ 91" class="w3-input"-->
+                <select id="new-oil-name" class="w3-select"></select>
+
+                <label>ความจุรวมของปั๊ม (ลิตร)</label>
+                <input type="number" id="new-oil-max" placeholder="eg 10000" class="w3-input">
+
+                <button onclick="confirmNewOil()" class="w3-button w3-blue" style="margin-top: 16px;">เพิ่ม</button>
+            </div>
+
+            <!-- add/delete icons -->
+            <div class="control-grid" style="margin: 40px 0;">
+                <div class="action-trigger" id="add-btn-trigger" onclick="showNewOilInput()">
+                    <i data-lucide="circle-plus" style="color: var(--link)"></i> เพิ่มชนิดน้ำมัน
+                </div>
+                <div class="action-trigger" onclick="deleteLastOil()">
+                    <i data-lucide="circle-minus" style="color: var(--link)"></i> ลบอันหลังสุด
+                </div>
+            </div>
+
+            <!-- edit text fields -->
+            <div style="display: grid; grid-template-columns: 1fr; gap: 16px">
+              <div>
+                <label>ชื่อปั๊ม</label>
+                <input type="text" id="edit-name" class="w3-input">
+              </div>
+              <div>
+                <label>จังหวัด</label>
+                <!--input type="text" id="edit-province" class="w3-input"-->
+                <select id="edit-province" class="w3-select"></select>
+              </div>            
+              <div>
+                <label>ทางมาปั๊ม</label>
+                <textarea id="edit-direction" rows="3" class="w3-input" placeholder="แนะนำการเดินทางมาที่ปั๊ม"></textarea>
+              </div>            
+            </div>
+
+            <!-- update button -->
+            <div style="margin-top: 32px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px">
+              <button class="w3-button w3-blue" onclick="updateStation()">ปรับข้อมูล</button>
+              <!--button class="w3-button back-nav" onclick="showView('view-home')">
+                <i data-lucide="undo-2"></i>
+              </button-->
+              <button class="w3-button w3-red"
+                onclick="deletePump()">ลบข้อมูลปั๊มนี้ทั้งหมด</button>
+            </div>
+        </div>
+
+        <!-- go back -->
+        <div class="back-nav" onclick="showView('view-home')" style="margin-top: 32px;">
+          <i data-lucide="undo-2" style="width: 40px; height: 40px;"></i>
+        </div>
+        
+    </div>
+
+  <!----------------------------------------- footer --------------------------------------------->
+
+  <div style="margin-top: 50px; padding: 16px">
+    <small><u>หมายเหตุ</u><br>
+    การเผยแพร่ข้อมูลนี้เป็นเรื่องของ User หรือ ผู้ใช้งาน หรือ เจ้าของปั๊ม ที่ต้องการจะเผยแพร่ข้อมูลระดับน้ำมันของปั๊มตน ผู้ทำเว็บเป็นเพียงผู้เปิดให้ใช้เว็บนี้เพื่อเผยแพร่ เท่านั้น เว็บนี้ไม่มีการเก็บข้อมูลส่วนบุคคล ใดๆ และเป็นสิทธิ์ในการเผยแพร่ของผู้เผยแพร่อย่างเต็มที่ ไม่มีการแก้ไขดัดแปลงข้อมูลใดๆ จากผู้ทำเว็บไซท์ ยกเว้นในส่วนของ code หรือโปรแกรมคอมพิวเตอร์เท่านั้น อีกทั้งผู้ทำเว็บก็ไม่ได้มีผลประโยชน์ใดๆ กับผู้เผยแพร่ข้อมูล แต่ประการใด สุดท้ายเว็บไม่รับรองความถูกต้องของข้อมูลเหล่านี้ เพราะเป็นเรื่องของผู้เผยแพร่แต่เพียงผู้เดียวว่าจะปรับปรุงข้อมูลหรือไม่ เวลาใด และข้อมูลผิดถูกหรือไม่</small>
+
+    <p><small>เว็บนี้จัดทำโดย <a href="http://x.com/nex__era">@nex-era</a></small></p>
+
+  </div>
+
+
+<script>
+  //////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  const API_BASE = 'http://192.168.1.128:4000/oil-report' //"http://localhost:4000/oil-report";
+  const DEFAULT_COLORS = ["#2196f3", "#e53935", "#ff9131", "#4caf50", "#9c27b0", "#00bcd4", "#ffeb3b", "#795548", "#607d8b", "#000000"];
+
+  let db = {
+      stations: [],
+      current: null,
+      isEditing: false
+  };
+
+
+  const thaiProvinces = [
+    '-----','กทมฯ', 'กระบี่', 'กาญจนบุรี', 'กาฬสินธุ์', 'กำแพงเพชร', 
+    'ขอนแก่น', 'จันทบุรี', 'ฉะเชิงเทรา', 'ชลบุรี', 'ชัยนาท', 
+    'ชัยภูมิ', 'ชุมพร', 'เชียงราย', 'เชียงใหม่', 'ตรัง', 
+    'ตราด', 'ตาก', 'นครนายก', 'นครปฐม', 'นครพนม', 
+    'นครราชสีมา', 'นครศรีธรรมราช', 'นครสวรรค์', 'นนทบุรี', 'นราธิวาส', 
+    'น่าน', 'บึงกาฬ', 'บุรีรัมย์', 'ปทุมธานี', 'ประจวบฯ', 
+    'ปราจีนฯ', 'ปัตตานี', 'อยุธยา', 'พะเยา', 'พังงา', 
+    'พัทลุง', 'พิจิตร', 'พิษณุโลก', 'เพชรบุรี', 'เพชรบูรณ์', 
+    'แพร่', 'ภูเก็ต', 'มหาสารคาม', 'มุกดาหาร', 'แม่ฮ่องสอน', 
+    'ยโสธร', 'ยะลา', 'ร้อยเอ็ด', 'ระนอง', 'ระยอง', 
+    'ราชบุรี', 'ลพบุรี', 'ลำปาง', 'ลำพูน', 'เลย', 
+    'ศรีสะเกษ', 'สกลนคร', 'สงขลา', 'สตูล', 'สมุทรปราการ', 
+    'สมุทรสงคราม', 'สมุทรสาคร', 'สระแก้ว', 'สระบุรี', 'สิงห์บุรี', 
+    'สุโขทัย', 'สุพรรณบุรี', 'สุราษฯ', 'สุรินทร์', 'หนองคาย', 
+    'หนองบัวลำภู', 'อ่างทอง', 'อำนาจเจริญ', 'อุดรธานี', 'อุตรดิตถ์', 
+    'อุทัยธานี', 'อุบลราชธานี'
+  ];
+
+
+  const fuelTypes = [
+    '-----',
+    'แก๊สโซฮอล์ 91',
+    'แก๊สโซฮอล์ 95',
+    'แก๊สโซฮอล์ E20',
+    'แก๊สโซฮอล์ E85',
+    'เบนซิน 95',
+    'ซูเปอร์พรีเมียม 95',
+    'ดีเซล',
+    'ดีเซล B7',
+    'ดีเซล B20',
+    'ดีเซล พรีเมียม',
+    'LPG',
+    'NGV'
+  ];
+
+  const miniActSpace = document.querySelector('#mini_act_space')
+
+  // for reset pin ////////////////////
+  const resetPinOj = {
+    active: false,
+    actIconElem: document.querySelector('#reset_pin_act_icon'),
+    form: {
+      name: document.querySelector('#form_reset_pin_name').value,
+      secretWord: document.querySelector('#form_reset_pin_secret_word').value,
+      newPin: document.querySelector('#form_reset_pin_new_pin').value
+    },
+
+    spaceElem: miniActSpace,
+
+    toggle: () => {
+      resetPinOj.active = !resetPinOj.active
+      console.log( resetPinOj.active)
+      if (resetPinOj.active) {
+        activeElem( resetPinOj.actIconElem)
+        showElem( resetPinOj.spaceElem)
+      } else {
+        inactiveElem( resetPinOj.actIconElem)
+        hideElem( resetPinOj.spaceElem)
+      }
+    },
+
+    confirm: async () => {
+      const name = resetPinOj.form.name
+      const secret = resetPinOj.form.secretWord
+      const newPin = resetPinOj.form.newPin
+
+      if (!name || !newPin || !secret || name.length < 3 || newPin.length < 6) {
+        alert("ข้อมูลที่ป้อนไม่สมบูรณ์ค่ะ ชื่อปั๊มต้อง > ตัวอักษร PIN ต้องตั้งแต่ 6 ตัวขึ้นไป และต้องมีความลับของคุณด้วยค่ะ")
+        return
+      }
+
+      // pass ---------
+
+      try {
+
+        let reply = await postTo('/reset-pin', resetPinOj.form)
+
+        console.log( reply) //test
+
+        if (reply.ok) {
+          alert("เรียบร้อยค่า")
+          resetPinOj.reset()
+        } else {
+          alert("ตั้ง PIN ใหม่ไม่ได้ค่ะ ลองตรวจดูว่า ใส่ชื่อปั๊มผิดหรือไม่ ใส่ความลับผิดหรือไม่ PIN ใหม่ต้องยาวตั้งแต่ 6 ตัวอักษรขึ้นไปค่ะ ลองดูอีกที")
+        }
+      } catch( err) {
+        console.error( err)
+        alert("มีปัญหาทางเทคนิคค่ะ")
+      }
+    },
+
+    reset: () => {
+      const oj = resetPinOj
+      oj.active = false
+      inactiveElem( resetPinOj.actIconElem)
+      hideElem( resetPinOj.spaceElem)
+      oj.form = {
+        name: document.querySelector('#form_reset_pin_name').value = '',
+        secretWord: document.querySelector('#form_reset_pin_secret_word').value = '',
+        newPin: document.querySelector('#form_reset_pin_new_pin').value = ''
+      }
+    }
+
+  }
+
+
+
+
+  //---------------------------------- func ---------------------------------------
+
+  
+  
+  
+  // these are element handling stuff
+
+  function showElem( elem, displayType = 'block') {
+    // displayType can be block, flex, grid
+    elem.style.display = displayType
+  }
+
+  function hideElem( elem) {
+    elem.style.display = 'none'
+  }
+
+  function activeElem( elem) {
+    elem.style.backgroundColor = 'var(--hover-gray)'
+  }
+
+  function inactiveElem( elem) {
+    elem.style.backgroundColor = 'transparent'
+    elem.blur()
+  }
+
+
+    ///////////////////////////////////
+    async function fetchStations() {
+      /*
+            get all reports from DB
+      */
+        try {
+            const res = await fetch(`${API_BASE}/list`);
+            const data = await res.json();
+            db.stations = data;
+
+            console.log( data) //test
+
+            renderHomeList();
+
+        } catch (err) {
+            console.error("Fetch failed", err);
+            // กรณีไม่มีข้อมูล (เพื่อทดสอบหน้าตา)
+            if(db.stations.length === 0) {
+                db.stations = [{ id: 100, name: "กำลังโหลดข้อมูล...", province: "-", oil: [] }];
+                renderHomeList();
+            }
+        }
+    }
+
+    ///////////////////////////
+    function showView(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        lucide.createIcons();
+        window.scrollTo(0,0);
+    }
+
+    ////////////////////////////////////////
+    function renderHomeList(search = "") {
+
+      // if no data, why bother
+      if (db.stations.length == 0) return
+
+        const container = document.getElementById('home-list');
+        container.innerHTML = "";
+        const filtered = db.stations.filter(s => 
+            s.name.toLowerCase().includes(search.toLowerCase()) || 
+            s.province.toLowerCase().includes(search.toLowerCase())
+        );
+        
+        const groups = filtered.reduce((acc, s) => {
+            (acc[s.province] = acc[s.province] || []).push(s);
+            return acc;
+        }, {});
+
+        Object.keys(groups).sort().forEach(p => {
+            let html = `<div class="province-group"><div class="province-label">${p}</div>`;
+            groups[p].forEach(s => {
+              html += `<div class="station-link" onclick="loadReport('${s.id}')">
+                <i data-lucide="map-pin" size="18" style="margin-right:8px; color: gray"></i> ${s.name}</div>`;
+            });
+            container.insertAdjacentHTML('beforeend', html + `</div>`);
+        });
+        lucide.createIcons();
+    }
+
+    //////////////////////////////
+    function loadReport(id) {
+        const found = db.stations.find(s => s.id === id);
+        if(!found) return;
+        db.current = JSON.parse(JSON.stringify(found));
+        const s = db.current;
+        
+        document.getElementById('rep-name').innerText = s.name;
+        document.getElementById('rep-prov').innerText = s.province;
+        document.getElementById('rep-dir').innerText = s.direction || "";
+        document.getElementById('rep-time').innerText = "ปรับปรุงข้อมูลล่าสุดเมื่อ " + (getThaiTime(s.updated) || "-");
+        
+        document.getElementById('rep-charts').innerHTML = (s.oil || []).map((oil, index) => {
+          const barColor = DEFAULT_COLORS[index % DEFAULT_COLORS.length];
+          const percent = oil.max > 0 ? (oil.level/oil.max)*100 : 0;
+          return `<div class="tank-section">
+            <div class="label-row">
+              <span style="font-size: 1rem;">${oil.name}</span>
+              <small class="cap-text">${oil.max.toLocaleString()}</small>
+            </div>
+            <div class="bar-outer">
+              <div class="bar-fill hashed" style="width:${percent}%; background-color:${barColor};"></div>
+              <div class="bar-text">${oil.level.toLocaleString()} ล.</div>
+            </div>
+          </div>`;
+        }).join('');
+
+        renderEditInputs();
+        db.isEditing = false;
+        document.getElementById('pin-panel').classList.remove('visible');
+        document.getElementById('edit-panel').classList.remove('visible');
+        showView('view-report');
+    }
+
+    ///////////////////////////////////
+    async function updateStation() {
+      /*
+          we have no validation here, how to improve this?
+      */
+
+      let pumpName = document.querySelector('#edit-name').value
+      let province = document.querySelector('#edit-province').value
+
+      if (!pumpName || !province || province.startsWith('-')) {
+        alert("ชื่อปั๊มกับจังหวัดจะเว้นว่างไม่ได้ค่ะ")
+        return
+      }
+
+      // pass ----------------
+
+
+        document.querySelectorAll('.oil-input-val').forEach(el => {
+            const oil = db.current.oil.find(o => o.id == el.dataset.id);
+            if(oil) oil.level = parseInt(el.value) || 0;
+        });
+        db.current.name = document.getElementById('edit-name').value;
+        db.current.province = document.getElementById('edit-province').value;
+        db.current.direction = document.getElementById('edit-direction').value;
+
+        try {
+            const res = await fetch(`${API_BASE}/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(db.current)
+            });
+            
+            if(res.ok) {
+                await fetchStations();
+                loadReport(db.current.id);
+                resetUpdateToggle()
+                //alert("ปรับข้อมูลแล้วค่ะ");
+            }
+        } catch (err) {
+            alert("มีปัญหาทางเทคนิค");
+        }
+    }
+
+    /////////////////////////////////
+    function toggleEditRequest() {
+        db.isEditing = !db.isEditing;
+        if(db.isEditing) {
+            document.getElementById('pin-panel').classList.add('visible');
+            document.getElementById('edit-pin-check').focus();
+
+            // change toggle
+            document.querySelector('#update_toggle').innerHTML = `<i data-lucide="chevron-up"></i> ปรับข้อมูล`
+            lucide.createIcons();
+
+        } else {
+            document.getElementById('pin-panel').classList.remove('visible');
+            document.getElementById('edit-panel').classList.remove('visible');
+            document.getElementById('edit-pin-check').value = "";
+
+            // change toggle
+            document.querySelector('#update_toggle').innerHTML = `<i data-lucide="chevron-down"></i> ปรับข้อมูล`
+            lucide.createIcons();
+        }
+    }
+
+    /////////////////////////
+    function showEditPanel() {
+      /*
+            show entire edit box
+      */
+      document.getElementById('edit-panel').classList.add('visible');
+      document.getElementById('pin-panel').classList.remove('visible');
+
+      // clear pin field
+      document.querySelector('#edit-pin-check').value = ''
+      //makeProvinceOptionIn( document.querySelector('#edit-province'))
+      lucide.createIcons();
+
+    }
+
+    /////////////////////////////////
+    function renderEditInputs() {
+      /*
+            show edit box so you can update each oil
+      */
+        document.getElementById('edit-inputs').innerHTML = (db.current.oil || []).map(oil => `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; align-items:center; gap: 8px">
+                <label>${oil.name}</label>
+                <input type="number" class="w3-input oil-input-val" data-id="${oil.id}" value="${oil.level}">
+            </div>`).join('');
+        document.getElementById('edit-name').value = db.current.name;
+        makeProvinceOptionIn( document.querySelector('#edit-province'))
+        document.getElementById('edit-province').value = db.current.province;
+        document.getElementById('edit-direction').value = db.current.direction || "";
+    }
+
+    /////////////////////////////
+    function showNewOilInput() {
+      /*
+          show add new oil box
+      */
+        document.getElementById('new-oil-input-part').classList.add('visible');
+        document.getElementById('add-btn-trigger').style.display = 'none';
+    }
+
+    /////////////////////////////
+    function confirmNewOil() {
+      /*
+            เพิ่มน้ำมันชนิดใหม่
+      */
+        const name = document.getElementById('new-oil-name').value;
+        const max = parseInt(document.getElementById('new-oil-max').value) || 10000;
+        if(name && max && !name.startsWith('-')) {
+            db.current.oil.push({ id: Date.now(), name, level: 0, max });
+            document.getElementById('new-oil-name').value = "";
+            document.getElementById('new-oil-max').value = "";
+            document.getElementById('new-oil-input-part').classList.remove('visible');
+            document.getElementById('add-btn-trigger').style.display = 'flex';
+            renderEditInputs();
+            lucide.createIcons();
+        } else {
+          alert("ต้องป้อน ชนิดน้ำมัน กับ ความจุรวม ด้วยค่ะ")
+        }
+    }
+
+    ///////////////////////////
+    function deleteLastOil() {
+        if(db.current.oil.length > 0 && confirm("ต้องการลบรายการน้ำมันล่าสุดใช่หรือไม่?")) {
+            db.current.oil.pop();
+            renderEditInputs();
+            lucide.createIcons();
+        }
+    }
+
+
+
+    ////////////////////////////
+    async function goToSetup() {
+      /*
+          we'll check the name here is it dup or not
+      */
+      const name = document.getElementById('reg-name').value
+      const pin = document.getElementById('reg-pin').value
+      const secretWord = document.querySelector('#form_sign_up_secret_word').value
+
+      if (name && pin && secretWord && name.length > 2 && pin.length > 5) {
+
+        try {
+          let reply = await postTo('/check-name-to-signup',{
+            name: name
+          })
+
+          if (reply.ok) {
+            showView('view-setup');
+          } else {
+            alert("ใช้ชื่อนี้ไม่ได้แล้วค่ะ น่าจะซ้ำ")
+          }
+        } catch( err) {
+          console.error( err)
+          alert("มีปัญหาทางเทคนิคค่ะ")
+        }
+
+
+      } else { 
+        alert("ชื่อปั๊มต้องอย่างน้อย 3 ตัว และ PIN ต้องมีอย่างน้อย 6 ตัว และต้องมี ข้อความลับ ด้วยค่ะ"); 
+      }
+    }
+
+
+
+    /////////////////////////////////////
+    async function saveNewStation() {
+      /*
+          this is the submit of the sign-up doc
+          call /oil-report/sign-up
+      */
+        const newStation = {
+            //id: Date.now(),
+            name: document.getElementById('reg-name').value,
+            province: document.getElementById('set-province').value,
+            direction: document.getElementById('set-direction').value,
+            pin: document.getElementById('reg-pin').value,
+            secretWord: document.querySelector('#form_sign_up_secret_word').value,
+            oil: [
+              // these are default oils auto-added for every new member
+              { id: getRandomInt(), name: "ดีเซล", level: 0, max: 10000 },
+              { id: getRandomInt(), name: 'แก๊สโซฮอล์ 91', level: 0, max: 10000 },
+              { id: getRandomInt(), name: 'แก๊สโซฮอล์ 95', level: 0, max: 10000 },
+              { id: getRandomInt(), name: 'แก๊สโซฮอล์ E20', level: 0, max: 10000 },
+              { id: getRandomInt(), name: 'เบนซิน 95', level: 0, max: 10000 },
+            ]
+        };
+
+        // validate
+        if (!newStation.name || !newStation.province || !newStation.pin || !newStation.secretWord || newStation.name.length < 3 || newStation.pin < 6 || !/^\w{6,}$/.test(newStation.pin) ) {
+          alert("ข้อมูลไม่ครบสมบูรณ์ค่ะ ลองตรวจสอบดูอีกที")
+          return
+        }
+
+        if (  isBadCode(newStation.name) || isBadCode(newStation.province) || 
+              isBadCode(newStation.direction) ) {
+          alert("ข้อมูลของท่านมีปัญหาค่ะ ลองปรับแก้ใหม่ อย่าใส่รหัสอะไรที่เป็นอันตรายนะคะ")
+          return
+        }
+
+        for ( ea of newStation.oil) {
+          if ( isBadCode( ea) ) {
+            alert("พบรหัสอันตรายในข้อมูลของพี่ค่ะ รบกวนแก้ด้วยค่ะ ไม่งั้นจะไม่สามารถไปต่อได้")
+            return
+          } 
+        }
+
+        // pass -------------------
+
+        try {
+          let reply = await postTo('/sign-up', newStation)
+          if (reply.ok) {
+            await fetchStations()
+            loadReport( reply.data.id)
+            clearSignUpForm()
+          }
+
+         
+        } catch (err) { console.error(err); }
+    }
+
+
+
+    /////////////////////////////////////
+    function getThaiTime(dateInput) {
+      const d = new Date(dateInput);
+      
+      // ตรวจสอบเผื่อกรณีข้อมูลวันที่มีปัญหา
+      if (isNaN(d.getTime())) return "-";
+
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0'); // เดือนเริ่มจาก 0
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const seconds = String(d.getSeconds()).padStart(2, '0');
+
+      return `${day}/${month} ${hours}:${minutes}:${seconds}`;
+    }
+
+  // ตัวอย่างการใช้งาน:
+  // getThaiTime("2026-03-20T18:41:54.974Z") -> "21/03 01:41:54" (ตาม Timezone)
+
+
+
+  // reset to init icon [v] ////////////
+  function resetUpdateToggle() {
+    document.querySelector('#update_toggle').innerHTML = `<i data-lucide="chevron-down"></i> ปรับข้อมูล`
+    lucide.createIcons();
+  }
+    
+
+
+  /////////////////////////////////////////
+  function renderProvinceOptions() {
+    const select = document.getElementById('set-province');
+    select.innerHTML = thaiProvinces.map(p => 
+        `<option value="${p}">${p}</option>`
+    ).join('');
+  }
+
+  ////////////////////////////////////////
+  function makeProvinceOptionIn( elem) {
+    // throw <select> elem in and you get all Thai provinces in it
+    elem.innerHTML = thaiProvinces.map(p => `<option value="${p}">${p}</option>`).join('')
+  }
+
+
+  //////////////////
+  function makeOilOptionIn( elem) {
+    elem.innerHTML = fuelTypes.map( f => `<option value="${f}">${f}</option>`).join('')
+  }
+
+
+
+
+
+
+  ///////////////////////////////
+  function clearSetDirection() {
+    document.querySelector('#set-province').value = ''
+    document.querySelector('#set-direction').value = ''
+  }
+
+  ///////////////////
+  function clearSignUpForm() {
+
+    clearSetDirection()
+    document.querySelector('#reg-name').value = ''
+    document.querySelector('#reg-pin').value = ''
+    document.querySelector('#form_sign_up_secret_word').value = ''
+  }
+
+
+
+  // use this for any fetch/post to oil-report
+  async function postTo( api, dataOj ) {
+    const res = await fetch(`${API_BASE}` + api, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify( dataOj)
+    });
+    
+    return await res.json()
+  }
+  
+
+  ////////////////////////
+  async function checkPin() {
+    const myPin = document.querySelector('#edit-pin-check').value
+    try {
+      let reply = await postTo('/check-pin',{ pin: myPin, name: db.current.name})
+      
+      console.log( reply) //test
+      
+      if (reply.ok) {
+        //alert('your pin is good')
+        showEditPanel()
+      } else {
+        alert('PIN ไม่ถูกต้องค่ะ')
+      }
+    } catch( err) {
+      console.error( err)
+      alert('error, checkPin')
+    }
+  }
+
+
+  //window.onload = fetchStations;
+  window.onload = function() {
+    //fetchStations();
+    //renderProvinceOptions();
+    //lucide.createIcons();
+    reloadAll()
+  }
+
+
+  //////////////////////
+  function reloadAll() {
+    fetchStations()
+    renderProvinceOptions()
+    makeOilOptionIn( document.querySelector('#new-oil-name'))
+    lucide.createIcons()
+  }
+
+
+  // listen for Enter key in the PIN field
+  document.querySelector('#edit-pin-check').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      checkPin()
+    }
+  })
+
+
+
+  /////////////////////////////
+  async function deletePump() {
+    if (!db.current.id) {
+      alert("มีปัญหา")
+      return
+    }
+
+    // confirm?
+    let confirm = prompt("ลบแล้วข้อมูลคุณจะหายไปทั้งหมด หากคุณแน่ใจแล้วรบกวนพิมพ์คำว่า yes อีกทีค่ะ")
+    if (confirm != 'yes') {
+      return
+    }
+
+    // it is confirmed --------
+
+    try {
+      let server = await postTo('/delete-pump',{ id: db.current.id})
+      if (server.ok) {
+        alert("ลบข้อมูลออกแล้วค่ะ")
+        fetchStations()
+        showView('view-home')
+        //location.reload()
+
+      } else {
+        alert("มีปัญหาค่ะ ลบไม่ได้")
+      }
+    } catch(err) {
+      console.error( err)
+      alert("error")
+    }
+  }
+
+
+
+  ////////////////////
+  function getRandomInt(length = 10) {
+    // returns random int at length you need
+
+    const min = Math.pow(10, length - 1);
+    const max = Math.pow(10, length) - 1;
+    return Math.floor(Math.floor(Math.random() * (max - min + 1)) + min);
+  }
+
+
+
+
+  /**
+  * Checks for "danger codes" like script tags, mongo selectors, or HTML injection.
+  * @param {string} inputStr - The user's input to check.
+  * @returns {boolean} - Returns false if dangerous patterns are found.
+  */
+  function isBadCode(inputStr) {
+      if (typeof inputStr !== 'string') return false;
+
+      // Danger Patterns:
+      // 1. <script> tags or any HTML tags
+      // 2. MongoDB operators ($where, $ne, etc.)
+      // 3. JavaScript event handlers (onclick, onerror)
+      const dangerPatterns = [
+          /<script/i,
+          /<\//i,              // Closing tags
+          /<[a-z][\s\S]*>/i,   // Any HTML-like tags
+          /\$where/i,          // Mongo Injection
+          /\{\s*\$/i,          // Mongo object injection like {$ne: null}
+          /javascript:/i,
+          /on\w+\s*=/i         // Event handlers like onclick=
+      ];
+
+      // If any pattern matches, it's not clean
+      const isDirty = dangerPatterns.some(pattern => pattern.test(inputStr));
+
+      return isDirty;
+  }
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

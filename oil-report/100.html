@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nex-Era Oil Report</title>
+    <style>
+        :root { 
+            --red: #e53935; 
+            --blue: #2196f3; /* Updated Blue */
+            --black: #000;
+        }
+        
+        /* Base Configuration */
+        html { font-size: 16px; }
+        body { 
+            font-family: 'Inter', 'Sarabun', sans-serif; 
+            padding: 20px; 
+            max-width: 450px; 
+            margin: auto; 
+            background: #fff; 
+            color: var(--black);
+            font-size: 1.2rem; 
+        }
+
+        h1 { 
+            color: var(--red); 
+            font-size: 2rem; 
+            font-weight: bold; 
+            margin: 0; 
+        }
+
+        .meta-text { color: #444; margin: 2px 0; }
+        .last-update { font-size: 1.2rem; margin-bottom: 20px; }
+
+        /* 1px Black Separator */
+        .hr-line { 
+            border: none; 
+            border-top: 1px solid var(--black); 
+            margin: 20px 0; 
+        }
+
+        /* Charts */
+        .tank-section { margin-bottom: 20px; }
+        .label-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px; }
+        .label-text { font-weight: bold; }
+        .cap-text { font-size: 1rem; color: #666; }
+        
+        .bar-outer { 
+            width: 100%; height: 55px; border: 1px solid var(--black); 
+            position: relative; overflow: hidden; background: #fafafa; 
+        }
+        .bar-fill { 
+            height: 100%; position: absolute; left: 0; top: 0; 
+            transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        .hashed { background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,255,255,0.25) 8px, rgba(255,255,255,0.25) 12px); }
+        .bar-text { 
+            position: absolute; width: 100%; text-align: center; 
+            font-weight: bold; z-index: 2; line-height: 55px; 
+        }
+
+        /* Modern Toggle Switch */
+        .switch-row { display: flex; align-items: center; gap: 12px; margin: 20px 0; font-weight: bold; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { 
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
+            background-color: #ccc; transition: .4s; border-radius: 34px; border: 1px solid var(--black); 
+        }
+        .slider:before { 
+            position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 3px; 
+            background-color: white; transition: .4s; border-radius: 50%; border: 1px solid var(--black); 
+        }
+        input:checked + .slider { background-color: var(--black); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* Panels Hidden by Default */
+        #pin-section, #update-form, #new-oil-input-part { display: none; }
+        .visible { display: block !important; }
+
+        /* Form Elements */
+        .section-title { color: var(--blue); font-weight: bold; margin-bottom: 15px; }
+        .form-group { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        input, textarea { border: 1px solid var(--black); padding: 10px; font-size: 1.2rem; font-family: inherit; }
+        .full-width { width: 100%; box-sizing: border-box; margin-top: 5px; margin-bottom: 10px; }
+
+        /* Add New Oil Logic (Specific Positioning) */
+        #new-oil-input-part { border: 1px dashed var(--black); padding: 15px; margin: 10px 0; background: #fcfcfc; }
+        .add-btn-row { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: bold; margin: 15px 0; }
+        .circle-plus { 
+            width: 32px; height: 32px; background: #777; color: #fff; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; font-size: 1.5rem; 
+        }
+        
+        /* Blue Theme Buttons */
+        .btn-blue { 
+            background-color: var(--blue); color: #fff; border: 1px solid var(--black); 
+            font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 1.2rem;
+        }
+        .btn-small { padding: 8px 30px; margin-top: 10px; }
+        .btn-large { width: 100%; padding: 16px; margin-top: 20px; margin-bottom: 50px; }
+        .btn-blue:active { filter: brightness(110%); transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+    <h1 id="disp-name">Pump Name</h1>
+    <div class="meta-text" id="disp-prov">นครปฐม</div>
+    <div class="meta-text" id="disp-dir">Direction to Station .....</div>
+    <div class="last-update" id="disp-time">Last updated --/-- --:--</div>
+    
+    <div class="hr-line"></div>
+
+    <div id="chart-container"></div>
+
+    <div class="hr-line"></div>
+
+    <div class="switch-row">
+        <label class="switch">
+            <input type="checkbox" id="main-toggle" onchange="handleToggle()">
+            <span class="slider"></span>
+        </label>
+        <span>แก้ไข</span>
+    </div>
+
+    <div id="pin-section">
+        <div class="form-group">
+            <label>PIN</label>
+            <input type="password" id="pin-input" maxlength="4" placeholder="••••" style="width: 140px; text-align: center;" oninput="checkPinInstant()">
+        </div>
+        <div class="hr-line"></div>
+    </div>
+
+    <div id="update-form">
+        <div class="section-title">ส่วนแก้ไขข้อมูล</div>
+        
+        <div id="input-container"></div>
+
+        <div id="new-oil-input-part">
+            <label>ประเภทน้ำมัน</label><br>
+            <input type="text" id="new-fuel-name" class="full-width" placeholder="ชื่อน้ำมันใหม่...">
+            <button onclick="confirmNewFuel()" class="btn-blue btn-small">บันทึก</button>
+        </div>
+
+        <div class="add-btn-row" id="add-btn-trigger" onclick="showNewOilInput()">
+            <div class="circle-plus">+</div> เพิ่มประเภทน้ำมัน
+        </div>
+
+        <label>ชื่อปั๊ม</label>
+        <input type="text" id="edit-name" class="full-width">
+
+        <label>จังหวัด</label>
+        <input type="text" id="edit-prov" class="full-width">
+
+        <label>จุดสังเกตที่ตั้งของปั๊ม</label>
+        <textarea id="edit-dir" class="full-width" rows="3"></textarea>
+
+        <button onclick="saveAll()" class="btn-blue btn-large">บันทึก</button>
+    </div>
+
+<script>
+    let state = {
+        name: "Pump Name",
+        prov: "นครปฐม",
+        dir: "Direction to Station .....",
+        updated: "20/3 13:00",
+        fuels: [
+            { id: 1, name: 'ดีเซล', level: 8000, max: 10000, color: '#31a0ff' },
+            { id: 2, name: 'แก๊สโซฮอล 95', level: 9000, max: 10000, color: '#ff4d4d' },
+            { id: 3, name: 'E20', level: 3000, max: 10000, color: '#ff9131' }
+        ]
+    };
+
+    const MASTER_PIN = "1234";
+
+    function render() {
+        document.getElementById('disp-name').innerText = state.name;
+        document.getElementById('disp-prov').innerText = state.prov;
+        document.getElementById('disp-dir').innerText = state.dir;
+        document.getElementById('disp-time').innerText = "Last updated " + state.updated;
+
+        document.getElementById('chart-container').innerHTML = state.fuels.map(f => `
+            <div class="tank-section">
+                <div class="label-row">
+                    <span class="label-text">${f.name}</span>
+                    <span class="cap-text">${f.max.toLocaleString()}</span>
+                </div>
+                <div class="bar-outer">
+                    <div class="bar-fill hashed" style="width: ${(f.level/f.max)*100}%; background-color: ${f.color}; border-right: 1px solid var(--black);"></div>
+                    <div class="bar-text">${f.level.toLocaleString()} ล.</div>
+                </div>
+            </div>
+        `).join('');
+
+        document.getElementById('input-container').innerHTML = state.fuels.map(f => `
+            <div class="form-group">
+                <label>${f.name}</label>
+                <input type="number" class="fuel-val" data-id="${f.id}" placeholder="${f.level}" style="width: 150px;">
+            </div>
+        `).join('');
+
+        document.getElementById('edit-name').value = state.name;
+        document.getElementById('edit-prov').value = state.prov;
+        document.getElementById('edit-dir').value = state.dir;
+    }
+
+    function handleToggle() {
+        const isEdit = document.getElementById('main-toggle').checked;
+        if (isEdit) {
+            document.getElementById('pin-section').classList.add('visible');
+            document.getElementById('pin-input').focus();
+        } else {
+            document.getElementById('pin-section').classList.remove('visible');
+            document.getElementById('update-form').classList.remove('visible');
+            document.getElementById('pin-input').value = "";
+        }
+    }
+
+    function checkPinInstant() {
+        if (document.getElementById('pin-input').value === MASTER_PIN) {
+            document.getElementById('update-form').classList.add('visible');
+        } else {
+            document.getElementById('update-form').classList.remove('visible');
+        }
+    }
+
+    function showNewOilInput() {
+        document.getElementById('new-oil-input-part').classList.add('visible');
+        document.getElementById('add-btn-trigger').style.display = 'none';
+    }
+
+    function confirmNewFuel() {
+        const name = document.getElementById('new-fuel-name').value;
+        if (name) {
+            state.fuels.push({ id: Date.now(), name: name, level: 0, max: 10000, color: '#999' });
+            document.getElementById('new-fuel-name').value = "";
+            document.getElementById('new-oil-input-part').classList.remove('visible');
+            document.getElementById('add-btn-trigger').style.display = 'flex';
+            render();
+        }
+    }
+
+    function saveAll() {
+        document.querySelectorAll('.fuel-val').forEach(input => {
+            const id = parseInt(input.getAttribute('data-id'));
+            const f = state.fuels.find(x => x.id === id);
+            if (input.value !== "") f.level = parseInt(input.value);
+        });
+
+        state.name = document.getElementById('edit-name').value;
+        state.prov = document.getElementById('edit-prov').value;
+        state.dir = document.getElementById('edit-dir').value;
+        
+        const d = new Date();
+        state.updated = `${d.getDate()}/${d.getMonth()+1} ${d.getHours()}:${d.getMinutes().toString().padStart(2, '0')}`;
+
+        document.getElementById('main-toggle').checked = false;
+        document.getElementById('pin-input').value = "";
+        handleToggle();
+        render();
+    }
+
+    render();
+</script>
+</body>
+</html>
