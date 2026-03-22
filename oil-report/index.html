@@ -233,6 +233,7 @@
           <button class="w3-button w3-blue" onclick="checkPin()">ยืนยัน</button>
         </div>
 
+        <!---------------------------------- update part --------------------------------->
         <div id="edit-panel">
             <hr>
             <h4 style="color: red;"><u>ปรับข้อมูล</u></h4>
@@ -313,7 +314,15 @@
   //////////////////////////////////////////////////////////////////////////////////////////////
 
 
-  const API_BASE = 'http://192.168.1.128:4000/oil-report' //"http://localhost:4000/oil-report";
+  let API_BASE;
+  if (location.host.includes('nex-era.xyz')) {
+    API_BASE = 'https://pump-1ati.onrender.com/oil-report'
+  } else {
+    API_BASE = 'http://localhost:4000/oil-report'
+  }
+  //const API_BASE = 'http://192.168.1.128:4000/oil-report' //"http://localhost:4000/oil-report";
+  
+  
   const DEFAULT_COLORS = ["#2196f3", "#e53935", "#ff9131", "#4caf50", "#9c27b0", "#00bcd4", "#ffeb3b", "#795548", "#607d8b", "#000000"];
 
   let db = {
@@ -577,6 +586,12 @@
         db.current.name = document.getElementById('edit-name').value;
         db.current.province = document.getElementById('edit-province').value;
         db.current.direction = document.getElementById('edit-direction').value;
+
+        // bad code check
+        if (isBadCode(db.current.name) || isBadCode(db.current.province) || isBadCode(db.current.direction) ) {
+          alert("ข้อมูลของพี่มีปัญหาค่ะ อย่าใส่รหัสอันตรายอะไรลงไปนะคะ ฝากแก้ด้วยค่ะ")
+          return
+        }
 
         try {
             const res = await fetch(`${API_BASE}/update`, {
