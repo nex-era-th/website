@@ -87,6 +87,10 @@
 
         #edit-panel, #pin-panel { display: none; }
         .visible { display: block !important; }
+
+        /* LINE Open Chat : better-life */
+        #better_life:hover { background-color: var(--hover-gray);}
+
     </style>
 </head>
 <body>
@@ -94,7 +98,7 @@
 
     <div id="view-home" class="view active" style="padding: 16px;">
         <h2>ข้อมูลระดับน้ำมันในแต่ละปั๊ม</h2>
-        <p><small>เว็บนี้เป็นที่เผยแพร่ว่าปั๊มไหนมีน้ำมันเท่าไหร่ โดยแต่ละปั๊มจะเป็นผู้กรอกข้อมูลเอง ทั้งหมด ความถูกต้องของข้อมูล ขึ้นอยู่กับ user ผู้ป้อนข้อมูล</small></p>
+        <p><small>เชิญทุกปั๊มน้ำมันที่อยากแสดงข้อมูล ระดับน้ำมัน ให้ลูกค้าได้ดูเป็นข้อมูล มาป้อนข้อมูลได้ง่ายๆ</small></p>
 
         <!-- search -->
         <div style="display: grid; grid-template-columns: 6fr 2fr; border-radius: 20px; border: 1px solid lightgray; margin-top: 32px;">
@@ -310,11 +314,22 @@
 
   <div style="margin-top: 50px; padding: 16px">
     <small><u>หมายเหตุ</u><br>
-    การเผยแพร่ข้อมูลนี้เป็นเรื่องของ User หรือ ผู้ใช้งาน หรือ เจ้าของปั๊ม ที่ต้องการจะเผยแพร่ข้อมูลระดับน้ำมันของปั๊มตน ผู้ทำเว็บเป็นเพียงผู้เปิดให้ใช้เว็บนี้เพื่อเผยแพร่ เท่านั้น เว็บนี้ไม่มีการเก็บข้อมูลส่วนบุคคล ใดๆ และเป็นสิทธิ์ในการเผยแพร่ของผู้เผยแพร่อย่างเต็มที่ ไม่มีการแก้ไขดัดแปลงข้อมูลใดๆ จากผู้ทำเว็บไซท์ ยกเว้นในส่วนของ code หรือโปรแกรมคอมพิวเตอร์เท่านั้น อีกทั้งผู้ทำเว็บก็ไม่ได้มีผลประโยชน์ใดๆ กับผู้เผยแพร่ข้อมูล แต่ประการใด สุดท้ายเว็บไม่รับรองความถูกต้องของข้อมูลเหล่านี้ เพราะเป็นเรื่องของผู้เผยแพร่แต่เพียงผู้เดียวว่าจะปรับปรุงข้อมูลหรือไม่ เวลาใด และข้อมูลผิดถูกหรือไม่</small>
+    เว็บนี้เป็นที่ใช้ในการเผยแพร่ข้อมูลระดับน้ำมันเท่านั้น แต่ความถูกต้องของข้อมูลเป็นหน้าที่ของปั๊มต่างๆที่มาป้อนเข้าไป ในเว็บนี้ไม่มีการเก็บข้อมูลส่วนตัว ไม่มีการบิดเบือนข้อมูล ป้อนเข้าไปยังไงก็ออกมาอย่างงั้น หวังว่าจะเป็นประโยชน์สำหรับทั้งปั๊มน้ำมัน และประชาชนทั่วไป</small>
 
     <p><small>เว็บนี้จัดทำโดย <a href="http://x.com/nex__era">@nex-era</a></small></p>
 
   </div>
+
+  <!-- LINE Open Chat -->
+  <div id="better_life"
+    style="display: flex; align-items: center; gap: 8px; margin: 40px 0; cursor: pointer; padding: 16px; display: inline-block;"
+    onclick="window.location.href='https://line.me/ti/g2/tltoPk7QgHWD7WjGz2lAD2nJHx6fMdSD8WCmtA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default';"
+  >
+    <i data-lucide="message-circle" style="color: var(--red)"></i> 
+    <small>แจ้งปัญหา</small>
+  </div>
+
+
 
 
 <script>
