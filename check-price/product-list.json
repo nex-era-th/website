@@ -1,0 +1,44 @@
+[
+  { "id": 101, "nameThai": "เนื้อหมู (สันนอก)", "nameEnglish": "Pork (Loin)", "categoryThai": "เนื้อสด", "categoryEnglish": "Fresh Meat", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 102, "nameThai": "เนื้อหมู (สามชั้น)", "nameEnglish": "Pork (Belly)", "categoryThai": "เนื้อสด", "categoryEnglish": "Fresh Meat", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 103, "nameThai": "เนื้อไก่ (อก)", "nameEnglish": "Chicken (Breast)", "categoryThai": "เนื้อสด", "categoryEnglish": "Fresh Meat", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 104, "nameThai": "เนื้อไก่ (น่องสะโพก)", "nameEnglish": "Chicken (Thigh)", "categoryThai": "เนื้อสด", "categoryEnglish": "Fresh Meat", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 105, "nameThai": "เนื้อวัว (สันใน)", "nameEnglish": "Beef (Tenderloin)", "categoryThai": "เนื้อสด", "categoryEnglish": "Fresh Meat", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 106, "nameThai": "ซี่โครงหมู", "nameEnglish": "Pork Ribs", "categoryThai": "เนื้อสด", "categoryEnglish": "Fresh Meat", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+
+  { "id": 201, "nameThai": "ไข่ไก่", "nameEnglish": "Chicken Eggs", "categoryThai": "ไข่และผลิตภัณฑ์นม", "categoryEnglish": "Eggs & Dairy", "uomThai": "ฟอง", "uomEnglish": "Unit" },
+  { "id": 202, "nameThai": "ไข่เป็ด", "nameEnglish": "Duck Eggs", "categoryThai": "ไข่และผลิตภัณฑ์นม", "categoryEnglish": "Eggs & Dairy", "uomThai": "ฟอง", "uomEnglish": "Unit" },
+  { "id": 203, "nameThai": "ไข่เค็ม", "nameEnglish": "Salted Eggs", "categoryThai": "ไข่และผลิตภัณฑ์นม", "categoryEnglish": "Eggs & Dairy", "uomThai": "ฟอง", "uomEnglish": "Unit" },
+  { "id": 204, "nameThai": "นมสด (จืด)", "nameEnglish": "Fresh Milk (Plain)", "categoryThai": "ไข่และผลิตภัณฑ์นม", "categoryEnglish": "Eggs & Dairy", "uomThai": "ลิตร", "uomEnglish": "Liter" },
+  { "id": 205, "nameThai": "เนยจืด", "nameEnglish": "Unsalted Butter", "categoryThai": "ไข่และผลิตภัณฑ์นม", "categoryEnglish": "Eggs & Dairy", "uomThai": "กรัม", "uomEnglish": "g" },
+
+  { "id": 301, "nameThai": "ผักบุ้งจีน", "nameEnglish": "Morning Glory", "categoryThai": "ผักสด", "categoryEnglish": "Vegetables", "uomThai": "กำ", "uomEnglish": "Bunch" },
+  { "id": 302, "nameThai": "คะน้า", "nameEnglish": "Chinese Kale", "categoryThai": "ผักสด", "categoryEnglish": "Vegetables", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 303, "nameThai": "กะหล่ำปลี", "nameEnglish": "Cabbage", "categoryThai": "ผักสด", "categoryEnglish": "Vegetables", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 304, "nameThai": "มะเขือเทศ", "nameEnglish": "Tomato", "categoryThai": "ผักสด", "categoryEnglish": "Vegetables", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 305, "nameThai": "แตงกวา", "nameEnglish": "Cucumber", "categoryThai": "ผักสด", "categoryEnglish": "Vegetables", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 306, "nameThai": "มะนาว", "nameEnglish": "Lime", "categoryThai": "ผักสด", "categoryEnglish": "Vegetables", "uomThai": "ลูก", "uomEnglish": "Unit" },
+  { "id": 307, "nameThai": "พริกขี้หนู", "nameEnglish": "Bird's Eye Chili", "categoryThai": "ผักสด", "categoryEnglish": "Vegetables", "uomThai": "ขีด (100g)", "uomEnglish": "100g" },
+  { "id": 308, "nameThai": "กระเทียม", "nameEnglish": "Garlic", "categoryThai": "ผักสด", "categoryEnglish": "Vegetables", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 309, "nameThai": "หอมแดง", "nameEnglish": "Shallots", "categoryThai": "ผักสด", "categoryEnglish": "Vegetables", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+
+  { "id": 401, "nameThai": "ข้าวหอมมะลิ", "nameEnglish": "Jasmine Rice", "categoryThai": "ของแห้ง", "categoryEnglish": "Dry Goods", "uomThai": "ถุง (5กก.)", "uomEnglish": "Bag (5kg)" },
+  { "id": 402, "nameThai": "ข้าวเหนียว", "nameEnglish": "Sticky Rice", "categoryThai": "ของแห้ง", "categoryEnglish": "Dry Goods", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 403, "nameThai": "น้ำตาลทรายขาว", "nameEnglish": "White Sugar", "categoryThai": "ของแห้ง", "categoryEnglish": "Dry Goods", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 404, "nameThai": "เกลือป่น", "nameEnglish": "Table Salt", "categoryThai": "ของแห้ง", "categoryEnglish": "Dry Goods", "uomThai": "ถุง", "uomEnglish": "Bag" },
+  { "id": 405, "nameThai": "แป้งสาลี", "nameEnglish": "Wheat Flour", "categoryThai": "ของแห้ง", "categoryEnglish": "Dry Goods", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+  { "id": 406, "nameThai": "ถั่วเขียว", "nameEnglish": "Mung Beans", "categoryThai": "ของแห้ง", "categoryEnglish": "Dry Goods", "uomThai": "กิโลกรัม", "uomEnglish": "kg" },
+
+  { "id": 501, "nameThai": "น้ำมันถั่วเหลือง", "nameEnglish": "Soybean Oil", "categoryThai": "เครื่องปรุง", "categoryEnglish": "Seasonings", "uomThai": "ขวด (1ลิตร)", "uomEnglish": "Bottle (1L)" },
+  { "id": 502, "nameThai": "น้ำมันปาล์ม", "nameEnglish": "Palm Oil", "categoryThai": "เครื่องปรุง", "categoryEnglish": "Seasonings", "uomThai": "ขวด (1ลิตร)", "uomEnglish": "Bottle (1L)" },
+  { "id": 503, "nameThai": "น้ำปลา", "nameEnglish": "Fish Sauce", "categoryThai": "เครื่องปรุง", "categoryEnglish": "Seasonings", "uomThai": "ขวด", "uomEnglish": "Bottle" },
+  { "id": 504, "nameThai": "ซีอิ๊วขาว", "nameEnglish": "Light Soy Sauce", "categoryThai": "เครื่องปรุง", "categoryEnglish": "Seasonings", "uomThai": "ขวด", "uomEnglish": "Bottle" },
+  { "id": 505, "nameThai": "ซอสหอยนางรม", "nameEnglish": "Oyster Sauce", "categoryThai": "เครื่องปรุง", "categoryEnglish": "Seasonings", "uomThai": "ขวด", "uomEnglish": "Bottle" },
+  { "id": 506, "nameThai": "ซอสพริก", "nameEnglish": "Chili Sauce", "categoryThai": "เครื่องปรุง", "categoryEnglish": "Seasonings", "uomThai": "ขวด", "uomEnglish": "Bottle" },
+  { "id": 507, "nameThai": "กะทิสด/กล่อง", "nameEnglish": "Coconut Milk", "categoryThai": "เครื่องปรุง", "categoryEnglish": "Seasonings", "uomThai": "กล่อง", "uomEnglish": "Box" },
+
+  { "id": 601, "nameThai": "น้ำดื่มสะอาด", "nameEnglish": "Drinking Water", "categoryThai": "เครื่องดื่ม", "categoryEnglish": "Beverages", "uomThai": "ขวด", "uomEnglish": "Bottle" },
+  { "id": 602, "nameThai": "โซดา", "nameEnglish": "Soda Water", "categoryThai": "เครื่องดื่ม", "categoryEnglish": "Beverages", "uomThai": "ขวด", "uomEnglish": "Bottle" },
+  { "id": 603, "nameThai": "กาแฟสำเร็จรูป", "nameEnglish": "Instant Coffee", "categoryThai": "เครื่องดื่ม", "categoryEnglish": "Beverages", "uomThai": "ถุง/ขวด", "uomEnglish": "Bag/Bottle" },
+  { "id": 604, "nameThai": "ผงชาไทย", "nameEnglish": "Thai Tea Powder", "categoryThai": "เครื่องดื่ม", "categoryEnglish": "Beverages", "uomThai": "ถุง", "uomEnglish": "Bag" }
+]

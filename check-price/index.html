@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>เช็คราคา</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css">
+  <script src="/js/xPageCounter.js"></script>
+  <script src="./productList.js"></script>
+  <style>
+    :root { --red: #e53935; --blue: #2196f3; --black: #000; --link: #0000ee; --light-gray: oklch(92.8% 0.006 264.531); --indigo: oklch(67.3% 0.182 276.935); --very-light-gray: oklch(96.7% 0.003 264.542)}
+
+    /* tag */
+    html { font-size: 16px; box-sizing: border-box }
+    *, *:before, *:after { box-sizing: inherit; }
+    body, p { margin: 0; padding: 0 }
+    input { font-size: 1.2rem; }
+    input:focus { background-color: var(--light-gray);}
+
+
+    /* class */
+    #main-view { max-width: 800px; margin: 0 auto; padding: 16px; }
+    .center { text-align: center; }
+    .right { text-align: right; }
+    .border-bottom { border-bottom: 1px solid gray; }
+    .my-table { font-size: 1.2rem;}
+    .my-table p { padding: 4px 0 }
+    .rem1 { font-size: 1.0rem;}
+    .gray { color: gray}
+    .bold { font-weight: bold;}
+    .no-pad { padding: 0}
+    .table-head { font-size: 1rem; color: gray; border-bottom: 1px solid gray; padding: 0 !important}
+    .blue { color: var(--link)}
+    
+  </style>
+</head>
+<body>
+<!----------------------------------------------------------------
+
+# UI note
+
+- the main-view is the biggest
+- while other views are inside, eg, title-view, search-view, ...
+- this is light weighted UI try using plain styles, css but still using few libraries like
+w3.css, fontawesome, chart.js, ...
+- it is SPA (single page app) so we try not to goto other pages but finish it off in here
+
+------------------------------------------------------------------>
+
+<div id="main-view">
+
+  <!-- title -->
+  <div id="title-view">
+    <h2 style="color: var(--red)">เช็คราคา</h2>
+    <small>เว็บนี้เป็นที่เช็คราคาสินค้าอุปโภค-บริโภค ทั่วประเทศไทย</small>
+  </div>
+  
+
+  <!-- search -->
+  <div id="search-view">
+    <div style="display: grid; grid-template-columns: 4fr 1fr; margin-top: 24px;">
+      <input type="text" class="w3-input w3-border" placeholder="ชื่อ สินค้า ผู้ขาย" style="border-radius: 14px 0 0 14px; padding: 8px">
+      <div class="w3-blue" style="display: flex; align-items: center; justify-content: center; border-radius: 0 14px 14px 0; padding: 8px">
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 24px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- search option -->
+  <div id="search-option-view" style="margin-top: 16px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
+      จังหวัด
+      <select class="w3-select">
+        <option>ทั่วประเทศ</option>
+        <option>กทมฯ</option>
+        <option>นครปฐม</option>
+        <option>อยุธยา</option>
+        <option>เชียงใหม่</option>
+        <option>นครศรีธรรมราช</option>
+      </select>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; margin-top: 8px">
+      ประเภทสินค้า
+      <select class="w3-select">
+        <option>อุปโภค-บริโภค</option>
+        <option>ข้าวสารอาหารแห้ง</option>
+        <option>เชื้อเพลิง</option>
+        <option>เครื่องใช้ไฟฟ้า</option>
+
+      </select>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; margin-top: 8px;">
+      หมวดสินค้า
+      <select class="w3-select">
+        <option>เนื้อสัตว์</option>
+        <option>ผักสด</option>
+        <option>เครื่องเทศ</option>
+        <option>เครื่องปรุง</option>
+        <option>เครื่องเทศ</option>
+      </select>
+    </div>
+  </div>
+
+
+  <!-- chart -->
+  <div id="chart-view" style="background-color: white; margin-top: 24px; padding: 16px; width: 100%">
+    <canvas id="myChart"></canvas>
+  </div>
+
+
+  <!-- pork table -->
+  <div id="pork-table-view" style="background-color: var(--very-light-gray); margin-top: 24px; padding: 16px;">
+    <p class="bold blue">เนื้อหมู</p>
+    <div id="table_pork" style="display: grid; grid-template-columns: auto auto auto;" class="my-table">
+      <p class="table-head">#</p><p class="table-head">ร้าน</p><p class="right table-head">ราคา</p>
+      
+      <!-- auto fill table here -->
+    
+    </div>
+  </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+///////////////////////////////////////////////////////////////////////////////
+
+const productList = JSON.parse( productListJson)
+console.log( productList)
+
+const viewElem = new Map([
+  ['title-view', document.querySelector('#title-view')],
+  ['search-view', document.querySelector('#search-view')],
+  ['search-option-view', document.querySelector('#search-option-view')],
+  ['chart-view', document.querySelector('#chart-view')],
+  ['pork-table-view', document.querySelector('#pork-table-view')]
+])
+
+
+
+
+
+const pork = [
+  { vendor: 'เจ๊เอ๋ ตลาดบน', price: 254.45},
+  { vendor: 'เจ๊ดาว ตลาดกลาง', price: 452.56},
+  { vendor: 'สมทรง หมูสด', price: 452.36},
+  { vendor: 'บิ๊ก ศิษย์หนองโพธิ์', price: 452.36}
+]
+
+
+// make pork table
+
+pork.forEach( (v,i) => {
+  let p1 = document.createElement('p')
+  p1.textContent = i + 1
+  let p2 = document.createElement('p')
+  p2.textContent = v.vendor
+  let p3 = document.createElement('p')
+  p3.textContent = v.price
+  p3.className = 'right'
+  table_pork.append(p1)
+  table_pork.append(p2)
+  table_pork.append(p3)
+})
+
+
+
+const porkPriceData = [
+  { day: 1, price: (Math.random()*1000).toFixed(2) },
+  { day: 2, price: (Math.random()*1000).toFixed(2) },
+  { day: 3, price: (Math.random()*1000).toFixed(2) },
+  { day: 4, price: (Math.random()*1000).toFixed(2) },
+  { day: 5, price: (Math.random()*1000).toFixed(2) },
+  { day: 6, price: (Math.random()*1000).toFixed(2) },
+  { day: 7, price: (Math.random()*1000).toFixed(2) },
+  { day: 8, price: (Math.random()*1000).toFixed(2) },
+  { day: 9, price: (Math.random()*1000).toFixed(2) },
+  { day: 10, price: (Math.random()*1000).toFixed(2) }
+]
+
+
+
+window.onload = () => {
+  // 1. Check if Chart.js loaded
+  if (typeof Chart === 'undefined') {
+    console.error("Chart.js failed to load. Check your internet or CDN link.");
+    return;
+  }
+
+  // 2. Prepare your data from your 'pork' array
+  const labels = porkPriceData.map(v => v.day);
+  const prices = porkPriceData.map(v => v.price);
+
+  const ctx = document.getElementById('myChart');
+
+  new Chart(ctx, {
+    type: 'line', // 'line' or 'bar'
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'ราคาเนื้อหมู (บาท)',
+        data: prices,
+        backgroundColor: '#2196f3', // Your --blue variable
+        borderColor: '#0d47a1',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: false // Better for seeing price differences
+        }
+      }
+    }
+  });
+  
+  console.log("Chart.js is live, man!");
+};
+
+
+
+
+function show( viewList ) { // input is ['view1','view2', ...]
+  if (viewList.length) {
+    viewList.forEach(view => viewElem.get(view).hidden = false)
+    
+  } else { // if [], view all
+    viewElem.forEach( v => v.hidden = false)
+  }
+}
+
+function hide( viewList) { // input is ['view1','view2', ...]
+  if (viewList.length) {
+    viewList.forEach( view => viewElem.get( view).hidden = true)
+  } else { // if no viewName, hide all
+    viewElem.forEach(v => v.hidden = true)
+  }
+}
+
+
+
+</script>
+</body>
+</html>
