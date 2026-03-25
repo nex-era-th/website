@@ -17,16 +17,20 @@
     html { font-size: 16px; box-sizing: border-box }
     *, *:before, *:after { box-sizing: inherit; }
     body, p { margin: 0; padding: 0 }
-    input { font-size: 1.2rem; }
+    input, textarea { font-size: 1.2rem; }
     input:focus { background-color: var(--light-gray);}
+    textarea:focus { background-color: var(--light-gray);}
+    label { color: var(--indigo)}
+
+    /* id */
+    #main-view { max-width: 800px; margin: 0 auto; padding: 16px; }
 
 
     /* class */
-    #main-view { max-width: 800px; margin: 0 auto; padding: 16px; }
     .center { text-align: center; }
     .right { text-align: right; }
     .border-bottom { border-bottom: 1px solid gray; }
-    .my-table { font-size: 1.2rem;}
+    .my-table { font-size: 1.0rem;}
     .my-table p { padding: 4px 0 }
     .rem1 { font-size: 1.0rem;}
     .gray { color: gray}
@@ -34,7 +38,9 @@
     .no-pad { padding: 0}
     .table-head { font-size: 1rem; color: gray; border-bottom: 1px solid gray; padding: 0 !important}
     .blue { color: var(--link)}
-    
+    .mt16 { margin-top: 16px;}
+    .small, .rem08 { font-size: 0.8rem }
+    .setting-act:hover { background-color: var(--light-gray);}
   </style>
 </head>
 <body>
@@ -82,16 +88,15 @@ w3.css, fontawesome, chart.js, ...
         <option>นครศรีธรรมราช</option>
       </select>
     </div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; margin-top: 8px">
+    <!--div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; margin-top: 8px">
       ประเภทสินค้า
       <select class="w3-select">
         <option>อุปโภค-บริโภค</option>
         <option>ข้าวสารอาหารแห้ง</option>
         <option>เชื้อเพลิง</option>
         <option>เครื่องใช้ไฟฟ้า</option>
-
       </select>
-    </div>
+    </div-->
     <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; margin-top: 8px;">
       หมวดสินค้า
       <select class="w3-select">
@@ -107,6 +112,7 @@ w3.css, fontawesome, chart.js, ...
 
   <!-- chart -->
   <div id="chart-view" style="background-color: white; margin-top: 24px; padding: 16px; width: 100%">
+    <p class="bold blue">ราคา 10 วันย้อนหลัง</p>
     <canvas id="myChart"></canvas>
   </div>
 
@@ -121,6 +127,101 @@ w3.css, fontawesome, chart.js, ...
     
     </div>
   </div>
+
+
+
+  <!-- notice -->
+  <div id="notice-view" style="margin-top: 32px; font-size: 0.8rem">
+    <p class="bold"><u>หมายเหตุ</u></p>
+    <p>เว็บนี้สร้างขึ้นมาเพื่อประโยชน์สาธารณะ ไม่มีการเก็บข้อมูลส่วนตัวใดๆ และความถูกต้องของข้อมูลเป็นหน้าที่ของผู้ใช้ (user) เท่านั้น ผู้จัดทำเว็บ มีหน้าที่ดูแลทางเทคนิค เท่านั้น หวังว่าจะได้รับประโยชน์จากการเผยแพร่ข้อมูลราคาสินค้า ในเว็บนี้ไม่มากก็น้อย</p>
+
+    <p class="mt16" style="font-size: 1rem">ผู้ทำเว็บ <a href="http://x.com/nex__era" class="blue">@nex-era</a></p>
+  </div>
+
+  <!-- setting -->
+  <div id="setting-view" style="margin-top: 32px">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 16px;">
+      <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px"
+      onclick="signUp()">
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd" d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z" clip-rule="evenodd"/>
+        </svg>
+        <p class="small">ลงทะเบียน</p>
+      </div>
+      <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px">
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd" d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z" clip-rule="evenodd"/>
+          <path fill-rule="evenodd" d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z" clip-rule="evenodd"/>
+        </svg>
+        <p class="small">แก้ไขข้อมูล</p>
+      </div>
+      <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px">
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+        </svg>
+        <p class="small">ลบข้อมูล</p>
+      </div>
+      <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px">
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd" d="M7 6a1 1 0 0 1 2 0v4l6.4-4.8A1 1 0 0 1 17 6v12a1 1 0 0 1-1.6.8L9 14v4a1 1 0 1 1-2 0V6Z" clip-rule="evenodd"/>
+        </svg>
+        <p class="small">ลืม PIN</p>
+      </div>
+      <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px">
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd" d="M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd"/>
+        </svg>
+        <p class="small">คู่มือ</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- software tag -->
+  <div id="software-tag-view" style="margin-top: 24px; margin-bottom: 60px; color: gray; font-size: 0.8rem">
+    <code>version==0.1 updated==2026/03/24</code>
+  </div>
+
+
+
+  <!------------------------------------- hidden views ----------------------------------------->
+
+  <div id="sign-up-view" hidden>
+    <h3 style="color: var(--red)">ลงทะเบียนร้านใหม่</h3>
+    <p><small>ลงทะเบียนแล้วท่านก็สามารถป้อนข้อมูลสินค้า และราคาได้ทันที เพื่อแสดงต่อสาธารณะ ผ่านเว็บนี้</small></p>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; margin-top: 24px;">
+      <label style="grid-column: span 2;">ชื่อร้าน*</label>
+      <input name="vendorName" type="text" class="w3-input" placeholder="ตย. เจ๊หงษ์ ตลาดไท" style="grid-column: span 2;" onchange="formOj.signUp.vendorName = this.value">
+      <label>PIN*</label>
+      <input name="pin" type="text" class="w3-input" placeholder="6 ตัวขึ้นไป" onchange="formOj.signUp.pin = this.value">
+      <label>จังหวัด*</label>
+      <select name="province" class="w3-select" onchange="formOj.signUp.province = this.value">
+        <option>-----</option>
+        <option>กทมฯ</option>
+        <option>เชียงใหม่</option>
+      </select>
+      <label>โทร*</label>
+      <input name="tel" type="number" class="w3-input" placeholder="ตย. 0123456789" onchange="formOj.signUp.tel = this.value">
+      <label style="grid-column: span 2;">ชื่อผู้ติดต่อ*</label>
+      <input name="contactPerson" type="text" class="w3-input" placeholder="ตย. เจ๊หงษ์ สะพานใหม่" style="grid-column: span 2;" onchange="formOj.signUp.contactPerson = this.value">
+      <label style="grid-column: span 2;">ข้อความลับ*</label>
+      <input name="secretWord" type="text" class="w3-input" placeholder="สิ่งที่ท่านคนเดียวรู้ ใช้ตอนลืม PIN" style="grid-column: span 2;" onchange="formOj.signUp.secretWord = this.value">
+      <label>ที่ตั้งร้าน*</label>
+      <textarea name="address" rows="4" style="width: 100%" onchange="formOj.signUp.address = this.value"></textarea>
+      <label>โซเชียล*</label>
+      <input name="socialAccount" type="text" class="w3-input" placeholder="ตย. line/@nex-era" onchange="formOj.signUp.socialAccount = this.value">
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 32px;">
+      <button class="w3-button w3-blue">ลงทะเบียน</button>
+      <button class="w3-button">ยกเลิก</button>
+    </div>
+  </div>
+
+
+
+
+
 
 
 </div>
@@ -142,14 +243,82 @@ w3.css, fontawesome, chart.js, ...
 const productList = JSON.parse( productListJson)
 console.log( productList)
 
+
+const formOj = {
+  signUp: {
+    vendorName: null,
+    pin: null,
+    province: null,
+    tel: null,
+    contactPerson: null,
+    secretWord: null,
+    address: null,
+    socialAccount: null
+  }
+}
+
+
+
+
+// this class to handle views
+class ViewMe {
+  constructor( viewList ) {
+    this.elem = new Map()
+    
+    viewList.forEach( v => {
+      this.elem.set(v, document.querySelector('#'+v))
+    })
+
+    this.about = 'this class is designed to handle view elements in your html page'
+  }
+
+  //get(view) { return this.elem.get(view)}
+
+  hide( viewList) { // input is ['view1','view2', ...]
+    if (viewList && Array.isArray(viewList) && viewList.length) {
+      viewList.forEach( view => this.elem.get( view).hidden = true)
+    } else if (!viewList || !viewList.length) { // if no viewName, hide all
+      this.elem.forEach(v => v.hidden = true)
+    } else if (viewList && typeof viewList == 'string') {
+      this.elem.get(viewList).hidden = true
+    }
+  }
+
+  show( viewList ) { // input is ['view1','view2', ...]
+    if (viewList && Array.isArray(viewList) && viewList.length) {
+      viewList.forEach(view => this.elem.get(view).hidden = false)
+    } else if (!viewList || !viewList.length) { // if [], view all
+      this.elem.forEach( v => v.hidden = false)
+    } else if (viewList && typeof viewList == 'string') {
+      this.elem.get(viewList).hidden = false
+    }
+  }
+}
+
+const myView = new ViewMe([
+  'title-view',
+  'search-view',
+  'search-option-view',
+  'chart-view',
+  'pork-table-view',
+  'notice-view',
+  'setting-view',
+  'software-tag-view',
+  'sign-up-view'
+])
+
+/*
 const viewElem = new Map([
   ['title-view', document.querySelector('#title-view')],
   ['search-view', document.querySelector('#search-view')],
   ['search-option-view', document.querySelector('#search-option-view')],
   ['chart-view', document.querySelector('#chart-view')],
-  ['pork-table-view', document.querySelector('#pork-table-view')]
+  ['pork-table-view', document.querySelector('#pork-table-view')],
+  ['notice-view',document.querySelector('#notice-view')],
+  ['setting-view',document.querySelector('#setting-view')],
+  ['software-tag-view',document.querySelector('#software-tag-view')]
 ])
-
+*/
 
 
 
@@ -179,17 +348,57 @@ pork.forEach( (v,i) => {
 
 
 
-const porkPriceData = [
-  { day: 1, price: (Math.random()*1000).toFixed(2) },
-  { day: 2, price: (Math.random()*1000).toFixed(2) },
-  { day: 3, price: (Math.random()*1000).toFixed(2) },
-  { day: 4, price: (Math.random()*1000).toFixed(2) },
-  { day: 5, price: (Math.random()*1000).toFixed(2) },
-  { day: 6, price: (Math.random()*1000).toFixed(2) },
-  { day: 7, price: (Math.random()*1000).toFixed(2) },
-  { day: 8, price: (Math.random()*1000).toFixed(2) },
-  { day: 9, price: (Math.random()*1000).toFixed(2) },
-  { day: 10, price: (Math.random()*1000).toFixed(2) }
+const priceData = [
+  { day: 1, 
+    porkPrice: (Math.random()*1000).toFixed(2), 
+    chickenPrice: (Math.random()*1000).toFixed(2),
+    beefPrice: (Math.random()*1000).toFixed(2)
+  },
+  { day: 2, 
+    porkPrice: (Math.random()*1000).toFixed(2), 
+    chickenPrice: (Math.random()*1000).toFixed(2),
+    beefPrice: (Math.random()*1000).toFixed(2)
+  },
+  { day: 3, 
+    porkPrice: (Math.random()*1000).toFixed(2), 
+    chickenPrice: (Math.random()*1000).toFixed(2),
+    beefPrice: (Math.random()*1000).toFixed(2)
+  },
+  { day: 4, 
+    porkPrice: (Math.random()*1000).toFixed(2), 
+    chickenPrice: (Math.random()*1000).toFixed(2),
+    beefPrice: (Math.random()*1000).toFixed(2)
+  },
+  { day: 5, 
+    porkPrice: (Math.random()*1000).toFixed(2), 
+    chickenPrice: (Math.random()*1000).toFixed(2),
+    beefPrice: (Math.random()*1000).toFixed(2)
+  },
+  { day: 6, 
+    porkPrice: (Math.random()*1000).toFixed(2), 
+    chickenPrice: (Math.random()*1000).toFixed(2),
+    beefPrice: (Math.random()*1000).toFixed(2)
+  },
+  { day: 7, 
+    porkPrice: (Math.random()*1000).toFixed(2), 
+    chickenPrice: (Math.random()*1000).toFixed(2),
+    beefPrice: (Math.random()*1000).toFixed(2)
+  },
+  { day: 8, 
+    porkPrice: (Math.random()*1000).toFixed(2), 
+    chickenPrice: (Math.random()*1000).toFixed(2),
+    beefPrice: (Math.random()*1000).toFixed(2)
+  },
+  { day: 9, 
+    porkPrice: (Math.random()*1000).toFixed(2), 
+    chickenPrice: (Math.random()*1000).toFixed(2),
+    beefPrice: (Math.random()*1000).toFixed(2)
+  },
+  { day: 10, 
+    porkPrice: (Math.random()*1000).toFixed(2), 
+    chickenPrice: (Math.random()*1000).toFixed(2),
+    beefPrice: (Math.random()*1000).toFixed(2)
+  }
 ]
 
 
@@ -202,54 +411,197 @@ window.onload = () => {
   }
 
   // 2. Prepare your data from your 'pork' array
-  const labels = porkPriceData.map(v => v.day);
-  const prices = porkPriceData.map(v => v.price);
-
+  const labels = priceData.map(v => v.day);
+  const porkPrices = priceData.map(v => v.porkPrice);
+  const chickenPrices = priceData.map(v => v.chickenPrice)
+  const beefPrices = priceData.map(v => v.beefPrice)
   const ctx = document.getElementById('myChart');
 
+  /*
   new Chart(ctx, {
     type: 'line', // 'line' or 'bar'
     data: {
       labels: labels,
-      datasets: [{
-        label: 'ราคาเนื้อหมู (บาท)',
-        data: prices,
-        backgroundColor: '#2196f3', // Your --blue variable
-        borderColor: '#0d47a1',
-        borderWidth: 1
-      }]
+      datasets: [
+        {
+          label: 'ราคาเนื้อหมู',
+          data: porkPrices,
+          borderColor: '#2196f3',          
+          backgroundColor: 'rgba(33, 150, 243, 0.1)', // Your --blue variable
+          borderWidth: 2,
+          tension: 0
+        },
+        {
+          label: 'ราคาเนื้อไก่',
+          data: chickenPrices,
+          borderColor: '#f44336', // Red line
+          backgroundColor: 'rgba(244, 67, 54, 0.1)',
+          borderWidth: 2,
+          tension: 0,
+        },
+        {
+          label: 'ราคาเนื้อวัว',
+          data: beefPrices,
+          borderColor: 'green', 
+          backgroundColor: 'rgba(0,255,0, 0.1)',
+          borderWidth: 2,
+          tension: 0,
+        }
+      ]
     },
     options: {
       responsive: true,
+      interaction: {
+        mode: 'index',     // Shows both prices when you hover over a day
+        intersect: false,
+      },
       scales: {
         y: {
-          beginAtZero: false // Better for seeing price differences
+          beginAtZero: false 
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,   // Shows the labels at the top
+          position: 'top'
         }
       }
     }
   });
+  */ 
+
+  makeChart({
+    type: 'line',
+    xLabel: labels,
+    dataSet: [
+      { yLabel: 'เนื้อหมู', data: porkPrices },
+      { yLabel: 'เนื้อไก่', data: chickenPrices },
+      { yLabel: 'เนื้อวัว', data: beefPrices },
+    ],
+    canvas: document.querySelector('#myChart')
+  })
   
   console.log("Chart.js is live, man!");
 };
 
 
 
-
+/*
 function show( viewList ) { // input is ['view1','view2', ...]
-  if (viewList.length) {
+  if (viewList && Array.isArray(viewList) && viewList.length) {
     viewList.forEach(view => viewElem.get(view).hidden = false)
-    
-  } else { // if [], view all
+  } else if (!viewList || !viewList.length) { // if [], view all
     viewElem.forEach( v => v.hidden = false)
+  } else if (viewList && typeof viewList == 'string') {
+    viewElem.get(viewList).hidden = false
   }
 }
 
 function hide( viewList) { // input is ['view1','view2', ...]
-  if (viewList.length) {
+  if (viewList && Array.isArray(viewList) && viewList.length) {
     viewList.forEach( view => viewElem.get( view).hidden = true)
-  } else { // if no viewName, hide all
+  } else if (!viewList || !viewList.length) { // if no viewName, hide all
     viewElem.forEach(v => v.hidden = true)
+  } else if (viewList && typeof viewList == 'string') {
+    viewElem.get(viewList).hidden = true
   }
+}
+*/
+
+
+
+
+function makeChart( oj ) {
+  /*
+    {
+      type: <<line|bar>>, 
+      xLabel: ['jan','feb','mar', ...],
+      dataSet: [
+        { yLabel: 'porkPrice', data: [100, 200, 300, ...]},
+        ...
+      ],
+      canvas: <<canvas elem>>
+    }  
+  */
+
+  /*const myColor = [
+    { border: 'red', background: 'rgba(255,0,0,0.1)'},
+    { border: 'green', background: 'rgba(0,255,0,0.1)'},
+    { border: 'blue', background: 'rgba(0,0,255,0.1)'},
+
+  ]*/ 
+
+  const myColor = [
+    { border: '#FF0000', background: 'rgba(255, 0, 0, 0.2)' },     // 1. Pure Red
+    { border: '#0000FF', background: 'rgba(0, 0, 255, 0.2)' },     // 2. Pure Blue
+    { border: '#008000', background: 'rgba(0, 128, 0, 0.2)' },     // 3. Pure Green
+    { border: '#FFD700', background: 'rgba(255, 215, 0, 0.2)' },   // 4. Gold/Yellow
+    { border: '#FF00FF', background: 'rgba(255, 0, 255, 0.2)' },   // 5. Magenta
+    { border: '#00FFFF', background: 'rgba(0, 255, 255, 0.2)' },   // 6. Cyan
+    { border: '#FF8C00', background: 'rgba(255, 140, 0, 0.2)' },   // 7. Dark Orange
+    { border: '#800080', background: 'rgba(128, 0, 128, 0.2)' },   // 8. Purple
+    { border: '#000000', background: 'rgba(0, 0, 0, 0.1)' },       // 9. Black
+    { border: '#FF1493', background: 'rgba(255, 20, 147, 0.2)' }   // 10. Deep Pink
+  ];
+
+  const myDataSet = oj.dataSet.map((v,i) => {
+    const color = myColor[i % myColor.length];
+    return {
+      label: v.yLabel, 
+      data: v.data, 
+      borderColor: color.border, 
+      backgroundColor: color.background,
+      borderWidth: 2,
+      tension: 0
+    }
+  })
+
+  new Chart(oj.canvas, {
+    type: oj.type,
+    data: {
+      labels: oj.xLabel,
+      datasets: myDataSet,
+    },
+    options: {
+      responsive: true,
+      interaction: {
+        mode: 'index',     // Shows both prices when you hover over a day
+        intersect: false,
+      },
+      scales: {
+        y: {
+          beginAtZero: false 
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,   // Shows the labels at the top
+          position: 'top'
+        }
+      }
+    }
+  })
+}
+
+
+
+///////////////////////
+function signUp() {
+  myView.hide()
+  myView.show('sign-up-view')
+}
+
+
+
+//////////////
+function querSel( selectStr ) {
+  // getelem('[name="sssss"]')
+  return document.querySelector( selectStr)
+}
+
+///////////
+function querSelAll( selectStr) {
+  return document.querySelectorAll( selectStr)
 }
 
 
