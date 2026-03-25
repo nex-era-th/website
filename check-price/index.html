@@ -19,6 +19,7 @@
     body, p { margin: 0; padding: 0 }
     input, textarea { font-size: 1.2rem; }
     input:focus { background-color: var(--light-gray);}
+    textarea { border: 1px solid lightgray}
     textarea:focus { background-color: var(--light-gray);}
     label { color: var(--indigo)}
 
@@ -192,26 +193,33 @@ w3.css, fontawesome, chart.js, ...
     
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; margin-top: 24px;">
       <label style="grid-column: span 2;">ชื่อร้าน*</label>
-      <input name="vendorName" type="text" class="w3-input" placeholder="ตย. เจ๊หงษ์ ตลาดไท" style="grid-column: span 2;" onchange="formOj.signUp.vendorName = this.value">
+      <input name="vendorName" type="text" class="w3-input" placeholder="ตย. เจ๊หงษ์ ตลาดไท" style="grid-column: span 2;" onchange="signUpFormOj.vendorName = this.value">
+      
       <label>PIN*</label>
-      <input name="pin" type="text" class="w3-input" placeholder="6 ตัวขึ้นไป" onchange="formOj.signUp.pin = this.value">
+      <input name="pin" type="text" class="w3-input" placeholder="6 ตัวขึ้นไป" onchange="signUpFormOj.pin = this.value">
+
       <label>จังหวัด*</label>
-      <select name="province" class="w3-select" onchange="formOj.signUp.province = this.value">
+      <select name="province" class="w3-select" onchange="signUpFormOj.province = this.value">
         <option>-----</option>
         <option>กทมฯ</option>
         <option>เชียงใหม่</option>
       </select>
       <label>โทร*</label>
-      <input name="tel" type="number" class="w3-input" placeholder="ตย. 0123456789" onchange="formOj.signUp.tel = this.value">
+      <input name="tel" type="number" class="w3-input" placeholder="ตย. 0123456789" onchange="signUpFormOj.tel = this.value">
+
       <label style="grid-column: span 2;">ชื่อผู้ติดต่อ*</label>
-      <input name="contactPerson" type="text" class="w3-input" placeholder="ตย. เจ๊หงษ์ สะพานใหม่" style="grid-column: span 2;" onchange="formOj.signUp.contactPerson = this.value">
-      <label style="grid-column: span 2;">ข้อความลับ*</label>
-      <input name="secretWord" type="text" class="w3-input" placeholder="สิ่งที่ท่านคนเดียวรู้ ใช้ตอนลืม PIN" style="grid-column: span 2;" onchange="formOj.signUp.secretWord = this.value">
-      <label>ที่ตั้งร้าน*</label>
-      <textarea name="address" rows="4" style="width: 100%" onchange="formOj.signUp.address = this.value"></textarea>
+      <input name="contactPerson" type="text" class="w3-input" placeholder="ตย. เจ๊หงษ์ สะพานใหม่" style="grid-column: span 2;" onchange="signUpFormOj.contactPerson = this.value">
+      
+      <label style="grid-column: span 2;">ที่ตั้งร้าน*</label>
+      <textarea name="address" rows="3" style="width: 100%; grid-column: span 2;" onchange="signUpFormOj.address = this.value" placeholder="ตย. ตลาดล่าง หน้าองค์พระปฐมเจดีย์ ล็อคที่ 12"></textarea>
+
       <label>โซเชียล*</label>
-      <input name="socialAccount" type="text" class="w3-input" placeholder="ตย. line/@nex-era" onchange="formOj.signUp.socialAccount = this.value">
+      <input name="socialAccount" type="text" class="w3-input" placeholder="ตย. line/@nex-era" onchange="signUpFormOj.socialAccount = this.value">
+    
+      <label style="grid-column: span 2;">ข้อความลับ*</label>
+      <input name="secretWord" type="text" class="w3-input" placeholder="สิ่งที่ท่านคนเดียวรู้ ใช้ตอนลืม PIN" style="grid-column: span 2;" onchange="signUpFormOj.secretWord = this.value">
     </div>
+
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 32px;">
       <button class="w3-button w3-blue">ลงทะเบียน</button>
       <button class="w3-button">ยกเลิก</button>
@@ -244,17 +252,15 @@ const productList = JSON.parse( productListJson)
 console.log( productList)
 
 
-const formOj = {
-  signUp: {
-    vendorName: null,
-    pin: null,
-    province: null,
-    tel: null,
-    contactPerson: null,
-    secretWord: null,
-    address: null,
-    socialAccount: null
-  }
+const signUpFormOj = {
+  vendorName: null,
+  pin: null,
+  province: null,
+  tel: null,
+  contactPerson: null,
+  secretWord: null,
+  address: null,
+  socialAccount: null
 }
 
 
@@ -266,7 +272,7 @@ class ViewMe {
     this.elem = new Map()
     
     viewList.forEach( v => {
-      this.elem.set(v, document.querySelector('#'+v))
+      this.elem.set(v, document.querySelector(v)) // v is querySelector format
     })
 
     this.about = 'this class is designed to handle view elements in your html page'
@@ -296,15 +302,15 @@ class ViewMe {
 }
 
 const myView = new ViewMe([
-  'title-view',
-  'search-view',
-  'search-option-view',
-  'chart-view',
-  'pork-table-view',
-  'notice-view',
-  'setting-view',
-  'software-tag-view',
-  'sign-up-view'
+  '#title-view',
+  '#search-view',
+  '#search-option-view',
+  '#chart-view',
+  '#pork-table-view',
+  '#notice-view',
+  '#setting-view',
+  '#software-tag-view',
+  '#sign-up-view'
 ])
 
 /*
@@ -588,21 +594,22 @@ function makeChart( oj ) {
 ///////////////////////
 function signUp() {
   myView.hide()
-  myView.show('sign-up-view')
+  myView.show('#sign-up-view')
 }
 
 
 
 //////////////
-function querSel( selectStr ) {
+function getElem( selectStr, opt) {
   // getelem('[name="sssss"]')
-  return document.querySelector( selectStr)
+  if (opt == 'all') {
+    return document.querySelectorAll( selectStr)
+  } else {
+    return document.querySelector( selectStr)
+  }
 }
 
-///////////
-function querSelAll( selectStr) {
-  return document.querySelectorAll( selectStr)
-}
+
 
 
 
