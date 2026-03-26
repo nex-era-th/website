@@ -2,6 +2,7 @@
 <html>
 <head>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!--script src="./my-svg.js"></script-->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>เช็คราคา</title>
@@ -24,24 +25,48 @@
     label { color: var(--indigo)}
 
     /* id */
-    #main-view { max-width: 800px; margin: 0 auto; padding: 16px; }
+    #main-view { max-width: 800px; margin: 0 auto; padding: 16px; margin-bottom: 40px;}
 
 
     /* class */
     .center { text-align: center; }
     .right { text-align: right; }
     .border-bottom { border-bottom: 1px solid gray; }
-    .my-table { font-size: 1.0rem;}
-    .my-table p { padding: 4px 0 }
+    
+    /*.my-table { font-size: 1.0rem;}
+    .my-table p { padding: 4px 0 } */
+    
     .rem1 { font-size: 1.0rem;}
     .gray { color: gray}
     .bold { font-weight: bold;}
     .no-pad { padding: 0}
-    .table-head { font-size: 1rem; color: gray; border-bottom: 1px solid gray; padding: 0 !important}
     .blue { color: var(--link)}
     .mt16 { margin-top: 16px;}
     .small, .rem08 { font-size: 0.8rem }
     .setting-act:hover { background-color: var(--light-gray);}
+
+    .table-head-row { font-size: 1rem; color: gray; border-bottom: 1px solid gray; padding: 0 !important; display: grid; grid-template-columns: 1fr 3fr 3fr; align-items: center; width: 100%;}
+    .table-data-row { display: grid; grid-template-columns: 1fr 3fr 3fr; padding: 8px 0; align-items: center; cursor: pointer;}
+    .table-data-row:hover { color: var(--link); background-color: white;}
+    .table-data-row p { width: 100% }
+
+
+    /* This centers the modal-content perfectly */
+    .w3-modal {
+      display: none; /* Hidden by default */
+      align-items: center;    /* Vertical center */
+      justify-content: center; /* Horizontal center */
+    }
+
+    /* Override W3.CSS default top margin to keep it centered */
+    .w3-modal-content {
+      margin: 0 auto !important; 
+      top: 0 !important;
+    }
+
+
+
+
   </style>
 </head>
 <body>
@@ -69,7 +94,7 @@ w3.css, fontawesome, chart.js, ...
   <!-- search -->
   <div id="search-view">
     <div style="display: grid; grid-template-columns: 4fr 1fr; margin-top: 24px;">
-      <input type="text" class="w3-input w3-border" placeholder="ชื่อ สินค้า ผู้ขาย" style="border-radius: 14px 0 0 14px; padding: 8px">
+      <input id="search-field" type="text" class="w3-input w3-border" placeholder="ชื่อร้าน" style="border-radius: 14px 0 0 14px; padding: 8px" oninput="search(this.value)">
       <div class="w3-blue" style="display: flex; align-items: center; justify-content: center; border-radius: 0 14px 14px 0; padding: 8px">
         <i class="fa-solid fa-magnifying-glass" style="font-size: 24px;"></i>
       </div>
@@ -121,11 +146,35 @@ w3.css, fontawesome, chart.js, ...
   <!-- pork table -->
   <div id="pork-table-view" style="background-color: var(--very-light-gray); margin-top: 24px; padding: 16px;">
     <p class="bold blue">เนื้อหมู</p>
-    <div id="table_pork" style="display: grid; grid-template-columns: auto auto auto;" class="my-table">
-      <p class="table-head">#</p><p class="table-head">ร้าน</p><p class="right table-head">ราคา</p>
+    <div id="table-pork">
+      <div class="table-head-row">
+        <p>#</p><p>ร้าน</p><p class="right">ราคา</p>
+      </div>
       
       <!-- auto fill table here -->
     
+    </div>
+  </div>
+
+
+  <!-- chicken table -->
+  <div id="chicken-table-view" style="background-color: var(--very-light-gray); margin-top: 24px; padding: 16px;">
+    <p class="bold blue">เนื้อไก่</p>
+    <div id="table-chicken">
+      <div class="table-head-row">
+        <p>#</p><p>ร้าน</p><p class="right">ราคา</p>
+      </div>
+      <!-- auto fill table here -->
+    </div>
+  </div>
+
+
+  <!-- beef table -->
+  <div id="beef-table-view" style="background-color: var(--very-light-gray); margin-top: 24px; padding: 16px;">
+    <p class="bold blue">เนื้อวัว</p>
+    <div id="table-beef">
+      <div class="table-head-row"><p>#</p><p>ร้าน</p><p class="right">ราคา</p></div>
+      <!-- auto fill table here -->
     </div>
   </div>
 
@@ -144,34 +193,23 @@ w3.css, fontawesome, chart.js, ...
     <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 16px;">
       <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px"
       onclick="signUp()">
-        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-          <path fill-rule="evenodd" d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z" clip-rule="evenodd"/>
-        </svg>
+        <img src="./sign-up.svg">
         <p class="small">ลงทะเบียน</p>
       </div>
       <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px">
-        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-          <path fill-rule="evenodd" d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z" clip-rule="evenodd"/>
-          <path fill-rule="evenodd" d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z" clip-rule="evenodd"/>
-        </svg>
+        <img src="./edit.svg">
         <p class="small">แก้ไขข้อมูล</p>
       </div>
       <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px">
-        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-          <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
-        </svg>
+        <img src="./delete.svg">
         <p class="small">ลบข้อมูล</p>
       </div>
       <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px">
-        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-          <path fill-rule="evenodd" d="M7 6a1 1 0 0 1 2 0v4l6.4-4.8A1 1 0 0 1 17 6v12a1 1 0 0 1-1.6.8L9 14v4a1 1 0 1 1-2 0V6Z" clip-rule="evenodd"/>
-        </svg>
+        <img src="./reset-pin.svg">
         <p class="small">ลืม PIN</p>
       </div>
       <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px">
-        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-          <path fill-rule="evenodd" d="M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd"/>
-        </svg>
+        <img src="./manual.svg">
         <p class="small">คู่มือ</p>
       </div>
     </div>
@@ -191,12 +229,12 @@ w3.css, fontawesome, chart.js, ...
     <h3 style="color: var(--red)">ลงทะเบียนร้านใหม่</h3>
     <p><small>ลงทะเบียนแล้วท่านก็สามารถป้อนข้อมูลสินค้า และราคาได้ทันที เพื่อแสดงต่อสาธารณะ ผ่านเว็บนี้</small></p>
     
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; margin-top: 24px;">
-      <label style="grid-column: span 2;">ชื่อร้าน*</label>
-      <input name="vendorName" type="text" class="w3-input" placeholder="ตย. เจ๊หงษ์ ตลาดไท" style="grid-column: span 2;" onchange="signUpFormOj.vendorName = this.value">
-      
-      <label>PIN*</label>
-      <input name="pin" type="text" class="w3-input" placeholder="6 ตัวขึ้นไป" onchange="signUpFormOj.pin = this.value">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: center; margin-top: 24px;">
+
+      <div style="grid-column: span 2;">
+        <label>ชื่อร้าน*</label>
+        <input name="vendorName" type="text" class="w3-input" placeholder="ตย. เจ๊หงษ์ ตลาดไท" onchange="signUpFormOj.vendorName = this.value">
+      </div>
 
       <label>จังหวัด*</label>
       <select name="province" class="w3-select" onchange="signUpFormOj.province = this.value">
@@ -204,29 +242,55 @@ w3.css, fontawesome, chart.js, ...
         <option>กทมฯ</option>
         <option>เชียงใหม่</option>
       </select>
+      
+      <label>โซเชียล*</label>
+      <input name="socialAccount" type="text" class="w3-input" placeholder="ตย. line==@nex-era" onchange="signUpFormOj.socialAccount = this.value">
+      
       <label>โทร*</label>
       <input name="tel" type="number" class="w3-input" placeholder="ตย. 0123456789" onchange="signUpFormOj.tel = this.value">
 
-      <label style="grid-column: span 2;">ชื่อผู้ติดต่อ*</label>
-      <input name="contactPerson" type="text" class="w3-input" placeholder="ตย. เจ๊หงษ์ สะพานใหม่" style="grid-column: span 2;" onchange="signUpFormOj.contactPerson = this.value">
+      <div style="grid-column: span 2;">
+        <label>ชื่อผู้ติดต่อ*</label>
+        <input name="contactPerson" type="text" class="w3-input" placeholder="ตย. เจ๊หงษ์ สะพานใหม่" onchange="signUpFormOj.contactPerson = this.value">
+      </div>
       
-      <label style="grid-column: span 2;">ที่ตั้งร้าน*</label>
-      <textarea name="address" rows="3" style="width: 100%; grid-column: span 2;" onchange="signUpFormOj.address = this.value" placeholder="ตย. ตลาดล่าง หน้าองค์พระปฐมเจดีย์ ล็อคที่ 12"></textarea>
+      <div style="grid-column: span 2;">
+        <label>ที่ตั้งร้าน*</label>
+        <textarea name="address" rows="3"onchange="signUpFormOj.address = this.value" placeholder="ตย. ตลาดล่าง หน้าองค์พระปฐมเจดีย์ ล็อคที่ 12" style="width: 100%;"></textarea>
+      </div>
+      
+      <div style="grid-column: span 2;">
+        <label>GPS</label>
+        <input name="contactPerson" type="text" class="w3-input" placeholder="ตย. 13.7563,100.5018" onchange="signUpFormOj.gps = this.value">
+      </div>
+      
 
-      <label>โซเชียล*</label>
-      <input name="socialAccount" type="text" class="w3-input" placeholder="ตย. line/@nex-era" onchange="signUpFormOj.socialAccount = this.value">
-    
-      <label style="grid-column: span 2;">ข้อความลับ*</label>
-      <input name="secretWord" type="text" class="w3-input" placeholder="สิ่งที่ท่านคนเดียวรู้ ใช้ตอนลืม PIN" style="grid-column: span 2;" onchange="signUpFormOj.secretWord = this.value">
+      <label>PIN*</label>
+      <input name="pin" type="text" class="w3-input" placeholder="6 ตัวขึ้นไป" onchange="signUpFormOj.pin = this.value">
+      
+      <div style="grid-column: span 2;">
+        <label>ข้อความลับ*</label>
+        <input name="secretWord" type="text" class="w3-input" placeholder="สิ่งที่ท่านคนเดียวรู้ ใช้ตอนลืม PIN" onchange="signUpFormOj.secretWord = this.value">
+      </div>
+      
     </div>
 
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 32px;">
-      <button class="w3-button w3-blue">ลงทะเบียน</button>
-      <button class="w3-button">ยกเลิก</button>
+      <button class="w3-button w3-blue" onclick="signUpOj.confirm()">ลงทะเบียน</button>
+      <button class="w3-button w3-light-gray" onclick="signUpOj.cancel()">ยกเลิก</button>
     </div>
   </div>
 
 
+
+
+
+
+  <div id="modal-view" class="w3-modal">
+    <div class="w3-modal-content w3-card-4 w3-blue" style="width: 90%; min-height: 150px; min-width: 50%; padding: 16px">
+      this is modal
+    </div>
+  </div>
 
 
 
@@ -252,15 +316,29 @@ const productList = JSON.parse( productListJson)
 console.log( productList)
 
 
-const signUpFormOj = {
-  vendorName: null,
-  pin: null,
-  province: null,
-  tel: null,
-  contactPerson: null,
-  secretWord: null,
-  address: null,
-  socialAccount: null
+const signUpOj = {
+  form: {
+    vendorName: null,
+    pin: null,
+    province: null,
+    tel: null,
+    contactPerson: null,
+    secretWord: null,
+    address: null,
+    socialAccount: null,
+    gps: null
+  },
+  confirm: () => {
+    const {vendorName, pin, province, secretWord, address} = signUpOj.form
+    if (!vendorName || !pin || !province || province.startsWith('-') || !secretWord || !address) {
+      alert("ช่องที่มีเครื่องหมาย * ต้องกรอกข้อมูลค่ะ")
+      return
+    }
+  },
+  cancel: () => {
+    myView.show()
+    myView.hide('#sign-up-view')
+  }
 }
 
 
@@ -307,10 +385,12 @@ const myView = new ViewMe([
   '#search-option-view',
   '#chart-view',
   '#pork-table-view',
+  '#chicken-table-view',
+  '#beef-table-view',
   '#notice-view',
   '#setting-view',
   '#software-tag-view',
-  '#sign-up-view'
+  '#sign-up-view',
 ])
 
 /*
@@ -328,32 +408,117 @@ const viewElem = new Map([
 
 
 
-
-const pork = [
-  { vendor: 'เจ๊เอ๋ ตลาดบน', price: 254.45},
-  { vendor: 'เจ๊ดาว ตลาดกลาง', price: 452.56},
-  { vendor: 'สมทรง หมูสด', price: 452.36},
-  { vendor: 'บิ๊ก ศิษย์หนองโพธิ์', price: 452.36}
+// table handling -------------------------------------
+const tablePorkData = [
+  { vendor: 'เจ๊เอ๋ ตลาดบน', price: 125.45},
+  { vendor: 'เจ๊ดาว ตลาดกลาง', price: 256.56},
+  { vendor: 'สมทรง หมูสด', price: 356.36},
+  { vendor: 'บิ๊ก ศิษย์หนองโพธิ์', price: 420.36}
 ]
 
+makeElem({
+  data: tablePorkData,
+  class: 'table-data-row',
+  onclick: (v,i) => alert(v.vendor),
+  make: (v,i) => `<p>${i+1}</p><p>${v.vendor}</p><p class="right">${v.price}</p>`,
+  appendTo: '#table-pork'
+})
 
-// make pork table
+/* / make pork table
+tablePorkData.forEach((v,i) => {
+  let newRow = document.createElement('div')
+  newRow.className = 'table-data-row'
+  newRow.key = i
+  newRow.setAttribute('onclick',"alert(tablePorkData[this.key].vendor)")
+  newRow.innerHTML = `<p>${i+1}</p><p>${v.vendor}</p><p class="right">${v.price}</p>`
+  getElem('#table-pork').append( newRow)
+  
+}) */
 
-pork.forEach( (v,i) => {
-  let p1 = document.createElement('p')
-  p1.textContent = i + 1
-  let p2 = document.createElement('p')
-  p2.textContent = v.vendor
-  let p3 = document.createElement('p')
-  p3.textContent = v.price
-  p3.className = 'right'
-  table_pork.append(p1)
-  table_pork.append(p2)
-  table_pork.append(p3)
+
+
+const tableChickenData = [
+  { vendor: 'ดาวเด่น ไก่สด', price: 45.45},
+  { vendor: 'ไก่จ้าไก่', price: 56.56},
+  { vendor: 'ขายทุกอย่าง', price: 35.36},
+  //{ vendor: 'ร้านที่ใครๆก็รัก', price: 78.36}
+]
+
+makeElem({
+  data: tableChickenData,
+  class: 'table-data-row',
+  onclick: (v,i) => alert(v.vendor),
+  make: (v,i) => `<p>${i+1}</p><p>${v.vendor}</p><p class="right">${v.price}</p>`,
+  appendTo: '#table-chicken'
+})
+
+/*
+tableChickenData.forEach((v,i) => {
+  let newRow = document.createElement('div')
+  newRow.className = 'table-data-row'
+  newRow.key = i
+  newRow.setAttribute('onclick',"alert(tableChickenData[this.key].vendor)")
+  newRow.innerHTML = `<p>${i+1}</p><p>${v.vendor}</p><p class="right">${v.price}</p>`
+  getElem('#table-chicken').append( newRow)
+}) */
+
+
+const tableBeefData = [
+  { vendor: 'วัววัววัว', price: 785.45},
+  { vendor: 'เจ๊หมวยตลาดสด', price: 456.56},
+  { vendor: 'มาเลยจ้า', price: 75.36},
+]
+
+/*
+tableBeefData.forEach((v,i) => {
+  let newRow = document.createElement('div')
+  newRow.className = 'table-data-row'
+  newRow.key = i
+  newRow.setAttribute('onclick',"alert(tableBeefData[this.key].vendor)")
+  newRow.innerHTML = `<p>${i+1}</p><p>${v.vendor}</p><p class="right">${v.price}</p>`
+  getElem('#table-beef').append( newRow)
+})
+*/
+
+function makeElem( oj ) {
+  /*
+      oj.data = tableBeefData
+      oj.class = 'table-data-row'
+      oj.onclick = (v,i) => alert(v.vendor)
+      oj.make = (v,i) => `<p>${i+1}</p><p>${v.vendor}</p><p class="right">${v.price}</p>`
+      oj.appendTo = '#table-beef'
+  */
+
+  if (!oj.data || !oj.appendTo || !oj.make) return
+
+  oj.data.forEach((v,i) => {
+    let newRow = document.createElement('div')
+    newRow.dataset.index = i
+    newRow.className = oj.class 
+    newRow.dataset.index = i
+    
+    newRow.onclick = () => {
+      oj.onclick(v,i)
+    }
+    
+    newRow.innerHTML = oj.make(v,i)
+    document.querySelector(oj.appendTo).append( newRow)
+  })
+  
+}
+
+makeElem({
+  data: tableBeefData,
+  class: 'table-data-row',
+  onclick: (v,i) => alert(v.vendor),
+  make: (v,i) => `<p>${i+1}</p><p>${v.vendor}</p><p class="right">${v.price}</p>`,
+  appendTo: '#table-beef'
 })
 
 
 
+
+// chart --------------------------------------------------
 const priceData = [
   { day: 1, 
     porkPrice: (Math.random()*1000).toFixed(2), 
@@ -487,7 +652,12 @@ window.onload = () => {
     canvas: document.querySelector('#myChart')
   })
   
-  console.log("Chart.js is live, man!");
+  //////////////////////
+
+  // make icons
+  getElem('[data-svg]','all').forEach( elem => {
+    elem.innerHTML = mySvg[elem.dataset.svg]
+  })
 };
 
 
@@ -610,7 +780,22 @@ function getElem( selectStr, opt) {
 }
 
 
+////////////////////
+function search( value ) {
+  const tableList = [
+    getElem('#table-pork'), getElem('#table-chicken'), getElem('#table-beef')
+  ]
 
+  tableList.forEach( table => {
+    Array.from(table.children).forEach( row => {
+      if (!row.textContent.includes(value) && row.dataset.index /*!row.classList.contains('table-head-row')*/) {
+        row.style.display = 'none'
+      } else {
+        row.style.display = 'grid'
+      }
+    })
+  })
+}
 
 
 </script>
