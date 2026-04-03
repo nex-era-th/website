@@ -37,12 +37,16 @@
     .my-table p { padding: 4px 0 } */
     
     .rem1 { font-size: 1.0rem;}
-    .gray { color: gray}
+    .small, .rem08 { font-size: 0.8rem }
+
+    .gray { color: gray }
+    .black { color: black }
+    .blue { color: var(--link)}
+    .red { color: var(--red)}
+    
     .bold { font-weight: bold;}
     .no-pad { padding: 0}
-    .blue { color: var(--link)}
     .mt16 { margin-top: 16px;}
-    .small, .rem08 { font-size: 0.8rem }
     .setting-act:hover { background-color: var(--light-gray);}
 
     .table-head-row { font-size: 1rem; color: gray; border-bottom: 1px solid gray; padding: 0 !important; display: grid; grid-template-columns: 1fr 3fr 3fr; align-items: center; width: 100%;}
@@ -148,7 +152,7 @@ w3.css, fontawesome, chart.js, ...
     <p class="bold blue">เนื้อหมู</p>
     <div id="table-pork">
       <div class="table-head-row">
-        <p>#</p><p>ร้าน</p><p class="right">ราคา</p>
+        <p>#</p><p>ร้าน</p><p class="right">ราคา บาท/กก.</p>
       </div>
       
       <!-- auto fill table here -->
@@ -162,7 +166,7 @@ w3.css, fontawesome, chart.js, ...
     <p class="bold blue">เนื้อไก่</p>
     <div id="table-chicken">
       <div class="table-head-row">
-        <p>#</p><p>ร้าน</p><p class="right">ราคา</p>
+        <p>#</p><p>ร้าน</p><p class="right">ราคา บาท/กก.</p>
       </div>
       <!-- auto fill table here -->
     </div>
@@ -173,7 +177,7 @@ w3.css, fontawesome, chart.js, ...
   <div id="beef-table-view" style="background-color: var(--very-light-gray); margin-top: 24px; padding: 16px;">
     <p class="bold blue">เนื้อวัว</p>
     <div id="table-beef">
-      <div class="table-head-row"><p>#</p><p>ร้าน</p><p class="right">ราคา</p></div>
+      <div class="table-head-row"><p>#</p><p>ร้าน</p><p class="right">ราคา บาท/กก.</p></div>
       <!-- auto fill table here -->
     </div>
   </div>
@@ -208,9 +212,13 @@ w3.css, fontawesome, chart.js, ...
         <img src="./reset-pin.svg">
         <p class="small">ลืม PIN</p>
       </div>
-      <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px">
+      <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px" onclick="showModal({active: true, header:'Test modal', message:'This is test message that force the user to pay attention on.'})">
         <img src="./manual.svg">
         <p class="small">คู่มือ</p>
+      </div>
+      <div class="setting-act" style="padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px">
+        <img src="./log-in.svg">
+        <p class="small">เข้าใช้งาน</p>
       </div>
     </div>
   </div>
@@ -285,10 +293,16 @@ w3.css, fontawesome, chart.js, ...
 
 
 
-
+  <!-- modal -->
   <div id="modal-view" class="w3-modal">
-    <div class="w3-modal-content w3-card-4 w3-blue" style="width: 90%; min-height: 150px; min-width: 50%; padding: 16px">
-      this is modal
+    <div 
+      class="w3-modal-content w3-card-4 w3-amber w3-round-large" 
+      style="width: auto; max-width: 90%; min-width: 300px; min-height: 150px; padding: 0 16px 56px 16px; position: relative"
+    >
+      <div id="modal-content" style="margin-top: 24px;">
+        <!-- content comes here -->
+      </div>
+      <img src="./close.svg" style="position: absolute; left: 4px; bottom: 4px; width: 32px; height: 32px; cursor: pointer" onclick="showModal({active: false})">
     </div>
   </div>
 
@@ -315,6 +329,8 @@ w3.css, fontawesome, chart.js, ...
 const productList = JSON.parse( productListJson)
 console.log( productList)
 
+
+const logInUser = '@john'
 
 const signUpOj = {
   form: {
@@ -410,16 +426,16 @@ const viewElem = new Map([
 
 // table handling -------------------------------------
 const tablePorkData = [
-  { vendor: 'เจ๊เอ๋ ตลาดบน', price: 125.45},
-  { vendor: 'เจ๊ดาว ตลาดกลาง', price: 256.56},
-  { vendor: 'สมทรง หมูสด', price: 356.36},
-  { vendor: 'บิ๊ก ศิษย์หนองโพธิ์', price: 420.36}
+  { vendor: 'เจ๊เอ๋ ตลาดบน', price: 125.45, product:'เนื้อหมู'},
+  { vendor: 'เจ๊ดาว ตลาดกลาง', price: 256.56, product:'เนื้อหมู'},
+  { vendor: 'สมทรง หมูสด', price: 356.36, product:'เนื้อหมู'},
+  { vendor: 'บิ๊ก ศิษย์หนองโพธิ์', price: 420.36, product:'เนื้อหมู'}
 ]
 
 makeElem({
   data: tablePorkData,
   class: 'table-data-row',
-  onclick: (v,i) => alert(v.vendor),
+  onclick: (v,i) => showOrderForm(v,i),
   make: (v,i) => `<p>${i+1}</p><p>${v.vendor}</p><p class="right">${v.price}</p>`,
   appendTo: '#table-pork'
 })
@@ -438,16 +454,17 @@ tablePorkData.forEach((v,i) => {
 
 
 const tableChickenData = [
-  { vendor: 'ดาวเด่น ไก่สด', price: 45.45},
-  { vendor: 'ไก่จ้าไก่', price: 56.56},
-  { vendor: 'ขายทุกอย่าง', price: 35.36},
-  //{ vendor: 'ร้านที่ใครๆก็รัก', price: 78.36}
+  { vendor: 'ดาวเด่น ไก่สด', price: 45.45, product:'เนื้อไก่'},
+  { vendor: 'ไก่จ้าไก่', price: 56.56, product:'เนื้อไก่'},
+  { vendor: 'ขายทุกอย่าง', price: 35.36,  product:'เนื้อไก่'},
+  //{ vendor: 'ร้านที่ใครๆก็รัก', price: 78.36,  product:'เนื้อไก่'}
 ]
 
 makeElem({
   data: tableChickenData,
+  note: 'เนื้อไก่',
   class: 'table-data-row',
-  onclick: (v,i) => alert(v.vendor),
+  onclick: (v,i) => showOrderForm(v,i),
   make: (v,i) => `<p>${i+1}</p><p>${v.vendor}</p><p class="right">${v.price}</p>`,
   appendTo: '#table-chicken'
 })
@@ -464,9 +481,9 @@ tableChickenData.forEach((v,i) => {
 
 
 const tableBeefData = [
-  { vendor: 'วัววัววัว', price: 785.45},
-  { vendor: 'เจ๊หมวยตลาดสด', price: 456.56},
-  { vendor: 'มาเลยจ้า', price: 75.36},
+  { vendor: 'วัววัววัว', price: 785.45, product:'เนื้อวัว'},
+  { vendor: 'เจ๊หมวยตลาดสด', price: 456.56, product:'เนื้อวัว'},
+  { vendor: 'มาเลยจ้า', price: 75.36, product:'เนื้อวัว'},
 ]
 
 /*
@@ -483,6 +500,7 @@ tableBeefData.forEach((v,i) => {
 function makeElem( oj ) {
   /*
       oj.data = tableBeefData
+      oj.note = __any value you like to keep__
       oj.class = 'table-data-row'
       oj.onclick = (v,i) => alert(v.vendor)
       oj.make = (v,i) => `<p>${i+1}</p><p>${v.vendor}</p><p class="right">${v.price}</p>`
@@ -496,6 +514,7 @@ function makeElem( oj ) {
     newRow.dataset.index = i
     newRow.className = oj.class 
     newRow.dataset.index = i
+    newRow.dataset.note = oj.note
     
     newRow.onclick = () => {
       oj.onclick(v,i)
@@ -510,7 +529,7 @@ function makeElem( oj ) {
 makeElem({
   data: tableBeefData,
   class: 'table-data-row',
-  onclick: (v,i) => alert(v.vendor),
+  onclick: (v,i) => showOrderForm(v,i),
   make: (v,i) => `<p>${i+1}</p><p>${v.vendor}</p><p class="right">${v.price}</p>`,
   appendTo: '#table-beef'
 })
@@ -796,6 +815,63 @@ function search( value ) {
     })
   })
 }
+
+
+
+
+////////////////
+function showModal( oj ) {
+  /*
+      oj = {
+        header: ___header text___,
+        message: ___message you like to show___,
+        innerHtml: ___put html code here if you like to control your own content___,
+        active: ___true | false___
+      }
+
+      if there's innerHtml we'll take care it first, if no, we regard it is simple message
+
+  */
+
+  const elem = getElem('#modal-view')
+
+  if (oj.active) { // show
+    if (oj.innerHtml) {
+      getElem('#modal-content').innerHTML = oj.innerHtml
+    } else {
+      let headerHtml = '<h2>' + oj.header + '</h2>'
+      let messageHtml = '<p style="font-size: 1.3rem">' + oj.message + '</p>'
+      getElem('#modal-content').innerHTML = headerHtml + messageHtml
+    }
+    elem.style.display = 'flex'
+
+  } else { // hide & clear
+    elem.style.display = 'none'
+    getElem('#modal-content').innerHTML = ''
+  }
+
+}
+
+
+
+////////////
+function showOrderForm(v,i) {
+  showModal({
+    active: true,
+    innerHtml: `<h4 class="bold">${logInUser} กำลังสั่งซื้อ ${v.product} จากร้าน <u>@${v.vendor}</u></h4>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px">
+        <p class="rem1">ราคา</p><input type="text" class="w3-input right" value="${v.price}">
+        <p>จำนวน</p><input type="number" class="w3-input right" value="1">
+        <p>รวม</p><input type="text" class="w3-input right">
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 24px">
+        <button class="w3-button w3-blue">สั่งซื้อ</button>
+        <button class="w3-button w3-light-gray">ยกเลิก</button>
+      </div>`
+  })
+}
+
+
 
 
 </script>
