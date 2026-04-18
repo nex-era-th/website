@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    html { font-size: 16px }
+    hr { border-top: 1px solid gray}
+    .main-view { margin: 0 auto; max-width: 800px;  }
+    .search-output { font-size: 1.2rem; padding: 0 16px }
+    .search-output li:hover { background-color: lightgrey; cursor: pointer}
+  </style>
+</head>
+<body>
+
+<div class="main-view">
+
+  <!-- HEADER -->
+  <div style="padding: 0 16px">
+    <h3>เรียนธรรม</h3>
+    <p>ท่านสามารถค้นหาชื่อสูตร หรือเนื้อหา ที่ต้องการได้ เมื่อพบแล้วจะแสดงเป็นรายการให้ท่านเลือกอีกที หรือหากต้องการเนื้อหาทั้งหมดที่มีในฐานข้อมูล ให้พิมพ์ all</p>
+  </div>
+
+  <!-- SEARCH -->
+  <div>
+    <div style="display: flex; align-items: center; font-size: 1.2rem; padding: 0 16px">
+      <input class="w3-input w3-border" style="border-radius: 12px 0 0 12px;"
+        id="findSootInput"
+        placeholder="ค้นจากชื่อสูตร"
+        type="search"
+      >
+      <button class="w3-button w3-blue" style="width: 80px; border-radius: 0 12px 12px 0;"
+        onclick="findSoot()"
+      >
+        <i class="fa fa-search"></i>
+      </button>
+    </div>
+    <div id="displaySearchOutputList" hidden
+      class="search-output"
+    >
+      <!-- put list of search result here -->
+    </div>
+  </div>
+  
+
+  <!-- DISPLAY -->
+  <div id="displaySoot" style="padding: 0 16px; font-size: 1.2rem"></div>
+
+
+
+</div>
+<script>
+//===================================================================================================
+
+let nodexHost;
+if (location.href.includes('localhost')) {
+  nodexHost = 'http://192.168.1.128:10000'
+} else {
+  nodexHost = 'https://node-x-qd6s.onrender.com'
+}
+
+
+const findInput = document.querySelector('#findSootInput')
+const display = document.querySelector('#displaySoot')
+const displaySearchOutput = document.querySelector('#displaySearchOutputList')
+
+
+
+findInput.addEventListener('keydown', event => {
+  if (event.key === 'Enter') findSoot()
+})
+
+// HTML: <input type="search" id="findInput">
+
+findInput.addEventListener('search', (e) => {
+  if (findInput.value === '') {
+    // This triggers when they click the 'X' or press Enter on an empty field
+    displaySearchOutput.hidden = true
+    displaySearchOutput.innerHTML = ''
+    display.innerHTML = ''
+  }
+});
+
+
+
+
+/////////
+async function findSoot() {
+
+  let sootName = findInput.value
+  if (!sootName) {
+    alert("โปรดใส่ชื่อสูตรด้วยจ้า")
+    return
+  }
+   
+
+  let getSoot = await fetch(nodexHost + '/buddhism-text/get-soot/' + sootName)
+  getSoot = await getSoot.json()
+  console.log(getSoot)
+  if (getSoot.ok) {
+
+    // getSoot == { ok: true, soot: { ..., 'เนื้อหา': .... }}    
+
+    if (getSoot.manySoot) { // if there're many soots, make a list for selection
+  
+      console.log( getSoot)
+      let displayList = '<ol>'
+      getSoot.sootList.forEach( v => {
+        displayList += `<li id="${v.id}" onclick="getTextById('${v.id}')">` + v.sootName + '</li>'
+      })
+
+      displayList += '</ol>'
+      displaySearchOutput.innerHTML = displayList
+      displaySearchOutput.hidden = false
+      
+    } else {
+      /*
+      let contentArr = getSoot.soot.เนื้อหา.split('\n')
+      let finalContent = contentArr.map( v => {
+        if (v) {
+          return '<p>' + v + '</p>'
+        }
+      }).join('') */
+
+
+
+      // if only 1 soot found, just show it
+
+      let contentHtml = parseHtml( getSoot.soot.เนื้อหา)
+      //let sootInfo = `<p>พระไตรปิฎก${getSoot.soot.ฉบับ} เล่มที่ ${getSoot.soot.เล่มที่} ${getSoot.soot.ปิฎก}</p>`
+      
+      let sootInfo = parseSootInfo( getSoot.soot)
+      display.innerHTML = '<hr>' + sootInfo + contentHtml
+    }
+
+
+  } else alert("หาไม่พบ")
+}
+
+
+///////////
+async function getTextById( id ) {
+  let getText = await fetch(nodexHost + '/buddhism-text/get-text-by-id/' + id)
+  getText = await getText.json()
+  
+  console.log( getText)
+
+  //let content = getText.text.เนื้อหา
+  //let lineBreakOpen = false
+
+  let contentHtml = parseHtml( getText.text.เนื้อหา) 
+
+
+  /*
+  content = content.split('\n').map(v => {
+    if (v) {
+      v = v.trim()
+      
+      if (!lineBreakOpen && v.endsWith(' -')) { // start of the lineBreak paragraph
+        lineBreakOpen = true
+        return '<p>' + v.replace(/ -$/, '') + '<br>'
+      
+      } else if (lineBreakOpen && v.endsWith(' -')) {   // inbetween the lineBreak paragraph
+        return v.replace(/ -$/, '') + '<br>'
+
+      } else if (lineBreakOpen && !v.endsWith(' -')) {  // this is end of lineBreak paragraph
+        lineBreakOpen = false
+        return v + '</p>'
+
+      } else {    // normal paragraph so we put <p>...............</p>
+        return '<p>' + v + '</p>'
+      }
+    }
+
+  }).join('') */
+
+  // add the soot info
+  //let sootInfo = `<p>พระไตรปิฎก${getText.text.ฉบับ} เล่มที่ ${getText.text.เล่มที่} ${getText.text.ปิฎก}</p>`
+
+  let sootInfo = parseSootInfo( getText.text)
+  display.innerHTML = '<hr>' + sootInfo + contentHtml
+
+}
+
+
+////////////
+function parseHtml( pureText ) {
+  let lineBreakOpen = false
+
+  return pureText.split('\n').map(v => {
+    if (v) {
+      v = v.trim()
+      
+      if (!lineBreakOpen && v.endsWith(' -')) { // start of the lineBreak paragraph
+        lineBreakOpen = true
+        return '<p>' + v.replace(/ -$/, '') + '<br>'
+      
+      } else if (lineBreakOpen && v.endsWith(' -')) {   // inbetween the lineBreak paragraph
+        return v.replace(/ -$/, '') + '<br>'
+
+      } else if (lineBreakOpen && !v.endsWith(' -')) {  // this is end of lineBreak paragraph
+        lineBreakOpen = false
+        return v + '</p>'
+
+      } else {    // normal paragraph so we put <p>...............</p>
+        return '<p>' + v + '</p>'
+      }
+    }
+
+  }).join('')
+}
+
+
+
+//////////
+function parseSootInfo( sootOj ) {
+  return `<p>พระไตรปิฎก${ sootOj.ฉบับ} เล่มที่ ${ sootOj.เล่มที่} ${sootOj.ปิฎก}</p>`
+}
+
+
+</script>
+</body>
+</html>
