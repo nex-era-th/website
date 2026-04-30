@@ -13,14 +13,15 @@
   <!--script src="./page-profile.js"></script-->
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="js/w3.css" rel="stylesheet" type="text/css">
   <link href="js/projex.css" rel="stylesheet" type="text/css">
   <link href="js/material-design-var.css" rel="stylesheet" type="text/css">
 
   <style>
     html { font-size: 16px;}
-    p { font-size: 1.1rem; text-align: center; }
-    p, div, span, a {font-family: "Open Sans", sans-serif;}
+    p { font-size: 1.1rem; }
+    p, div, span, a {font-family:;}
     /*a {background-color: lightgray; color: black; border-radius: 10px; padding: 4px 8px; font-family: 'Times New Roman', Times, serif;}*/
     /*code {background-color: #efebe9;}*/
 
@@ -39,7 +40,8 @@
 </head>
 <body>
 
-  <!-- bug & nature -->
+  <!------------------------------ bug & nature ------------------------------->
+
   <img id="bug" src="art/taotong.png" style="position: fixed; left: 0; top: 0; width: 45px; transform: rotate(50deg); z-index: 60" class="x-spin-very-slow">
 
   <!--img id="nature" src="art/leaf100.png" style="position: fixed; top: 100px; left: 96%; height: 250px; z-index: 50; transform: rotate(-26deg); opacity: 0.8"-->
@@ -63,22 +65,61 @@
       <div style="height: 32px;"></div>
 
 
+      <!--------------------------------- advisory ------------------------------>
       <div id="advisory_city">
-        <p>โลกกำลังอยู่ในภาวะ ที่เปลี่ยนแปลง อย่างมาก ด้านการเมือง ธุรกิจ เศรษฐกิจ สังคม ต่างๆ รวมถึงเทคโนโลยี &nbsp; <code style="color: slateblue; background-color: initial;">@nex-era</code> ให้คำปรึกษาในหลายด้าน เช่นด้านธุรกิจ เทคโนโลยี การบริหาร/ปกครอง และอีกหลายอย่าง เพื่อให้คุณมีหลัก ในการตัดสินใจ หรือดำเนินการใดๆ ให้เกิดประโยชน์สูงสุด</p>
+        <p><b class="font-bold font-serif">Advisory</b> - โลกกำลังอยู่ในภาวะ ที่เปลี่ยนแปลง อย่างมาก ด้านการเมือง ธุรกิจ เศรษฐกิจ สังคม ต่างๆ รวมถึงเทคโนโลยี &nbsp; <code class="text-blue-800">@nex-era</code> ให้คำปรึกษาในหลายด้าน เช่น ด้านธุรกิจ เทคโนโลยี การบริหาร/ปกครอง ยุทธศาสตร์ และอีกหลายอย่าง เพื่อให้คุณมีหลัก ในการตัดสินใจ หรือดำเนินการใดๆ ให้เกิดประโยชน์สูงสุด</p>
+
+        <ul class="list-disc list-inside text-[1.1rem] mt-4 ml-4">
+          <li>Strategy</li>
+          <li>Business, Management</li>
+          <li>Technology</li>
+          <li>Governance</li>
+        </ul>
       </div>
 
-      <div style="display: flex; align-items: center; justify-content: center; padding: 16px; margin-top: 32px">
+      <!-------------------------------- icon ----------------------------------->
+
+      <div style="display: flex; align-items: center; justify-content: center; padding: 16px; margin: 32px 0">
         <img src="/icon-x/Thunder.svg" style="width: 40px">
       </div>
 
+      <!--------------------------------- software ------------------------------>
       <div id="tech_city">
-        <p>เทคโนโลยีกำลัง disrupt โลก ในแทบทุกด้าน เช่นพวก <code style="font-size: 0.9rem">AI, Robot, Quantum Computing, Social Media, Apps, Drone, EV, Hyperloop</code> ต่างๆ &nbsp; <code style="color: slateblue; background-color: initial;">@nex-era</code> ให้บริการด้านเทคโนโลยี โดยรับ design & dev software (หรือระบบซอฟท์แวร์เพื่อธุรกิจ) เพื่อให้ธุรกิจของคุณหมุนตามความเปลี่ยนแปลงของสภาพแวดล้อมใหม่ ทางธุรกิจ ได้อย่างทันท่วงที ในขณะที่ระบบ software ธุรกิจแบบเดิมๆ ล้าสมัย ไม่สามารถตอบสนองธุรกิจยุคใหม่ได้อีกต่อไปแล้ว</p>
+        <p><b class="font-bold font-serif">Software</b> - เทคโนโลยีกำลัง disrupt โลก ในแทบทุกด้าน เช่นพวก <code class="text-[1rem] bg-gray-100">AI, Robot, Quantum Computing, Social Media, Apps, Drone, EV, Hyperloop, Crypto</code> ต่างๆ &nbsp; <code class="text-blue-800">@nex-era</code> ให้บริการด้านเทคโนโลยี โดยรับ design & dev software (หรือระบบซอฟท์แวร์เพื่อธุรกิจ) เพื่อให้ธุรกิจของคุณ ปรับ เข้ากับสภาพแวดล้อมใหม่ ได้อย่างทันท่วงที เพราะซอฟท์แวร์ธุรกิจแบบเดิมๆ ล้าสมัยไปแล้ว ไม่มีความยืดหยุ่น เทอะทะ ค่าใช้จ่ายสูง ไม่สามารถตอบสนองธุรกิจยุคใหม่ได้อีกต่อไป</p>
+
+        <p class="mt-4">โมดุลทางธุรกิจ ตัวอย่างเช่น</p>
+        <ul class="list-disc list-inside text-[1.1rem] ml-4">
+          <li>Sales</li>
+          <li>Purchasing</li>
+          <li>Warehouse, Inventory</li>
+          <li>Manufacturing</li>
+          <li>HR</li>
+          <li>Payroll</li>
+          <li>Accounting</li>
+          <li>Finance</li>
+          <li>Reports, Analytics</li>
+        </ul>
+
+        <p class="mt-4">เครื่องมือที่เราใช้เป็นประจำในการ dev มีเช่น</p>
+        <ul class="list-disc list-inside text-[1.1rem] ml-4">
+          <li>java script, node.js, python, java</li>
+          <li>fastify, express</li>
+          <li>react, vite, tailwind</li>
+          <li>mongodb, postgresql, mariadb</li>
+          <li>ubuntu - open source OS</li>
+          <li>odoo - open source business app</li>
+        </ul>
+
+
       </div>
 
-      <div id="contact_city" style="margin-top: 32px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-        <small>x.com/nex__era</small>
-        <button class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:bg-blue-600 focus:outline-none focus:ring-blue-400 focus:ring-opacity-75 transition duration-150 ease-in-out"
-        onclick="location.href='http://x.com/nex__era';">nex__era</button>
+
+      <!------------------------------- button -------------------------------->
+      <div id="contact_city" class="flex items-center justify-center mt-8">
+        <button class="px-4 py-4 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:bg-blue-600 focus:outline-none focus:ring-blue-400 focus:ring-opacity-75 transition duration-150 ease-in-out"
+        onclick="location.href='http://x.com/nex__era';">
+          x.com/nex__era
+        </button>
       </div>
 
       <div style="height: 40px;"></div>
@@ -460,15 +501,21 @@
 
 
   <!-- main act / to open menu -->
-  <div id="main_act">
+  <div id="main_act" 
+    style="position: fixed; left: 0; top: 50%; transform: translateY(-50%);" 
+    class="pt-4 pr-2 pb-4 hover:bg-gray-200 cursor-pointer hover:rounded-r-[10px]  text-red-300 hover:text-red-500"
+    onclick="main_menu.hidden=false; main_menu.classList.remove('x-slide-left-to-left-edge')"
+  >
 
-    <!-- menu act -->
+    <!-- menu act -- >
     <img id="act_open_menu" src="icon/right.svg" 
     style="position: fixed; left: 0; top: 50%; transform: translateY(-50%); opacity: 0.5;" 
-    class="w3-btn x-p8 w3-light-gray" 
+    class="w3-btn" 
     width="48px" height="48px"
-    onclick="main_menu.hidden=false; main_menu.classList.remove('x-slide-left-to-left-edge')">
+    onclick="main_menu.hidden=false; main_menu.classList.remove('x-slide-left-to-left-edge')" -->
 
+
+    <i class="fa-solid fa-chevron-right text-[24px]"></i>
 
     <!-- signal / get attention from user -- >
     <div id="signal" 
