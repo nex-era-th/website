@@ -235,6 +235,33 @@
       <option value="ไม่ได้เป็นพนักงานแล้ว">ไม่ได้เป็นพนักงานแล้ว</option>
     </select>
 
+
+    <!---------------------------------------------------------->
+    <hr class="line-in-form">
+
+
+    <div style="grid-column: span 2; margin-bottom: 16px;">
+      <div style="color: red; font-weight: bold; font-size: 1rem">PAY PROFILE</div>
+      <div style="font-size: 0.9rem">สรุปข้อมูลการจ้างงานของพนักงานรายนี้</div>
+    </div>
+
+    <label>ค่าจ้าง/เดือน</label>
+    <input id="monthlyRate" type="number" />
+    <label>ค่าจ้าง/ชั่วโมง</label>
+    <input id="calcHourlyRate" type="number" />
+    <label>ค่า OT วันทำงานปกติ/ชั่วโมง</label>
+    <input id="workdayOtRate" type="number" />
+    <label>ค่าจ้างทำงานวันหยุด/ชั่วโมง</label>
+    <input id="holidayWorkRate" type="number" />
+    <label>ค่า OT วันหยุด/ชั่วโมง</label>
+    <input id="holidayOtRate" type="number" />
+    <label>ค่าประกันสังคม/เดือน</label>
+    <input id="amountDeductForSocialSecFund" type="number" />
+    <label>ประมาณการรายได้/ปี</label>
+    <input id="estimateAnnualIncome2025" type="number" />
+
+
+
     <!---------------------------------------------------------->
     <hr class="line-in-form">
 
@@ -254,7 +281,8 @@
 
 
 
-  <!-- form action -->
+  <!------------------------------- form action ------------------------------>
+
   <div id="pageActBox" style="display: flex; align-items: center; justify-content: space-around; margin-top: 40px; margin-bottom: 60px;">
     <button id="saveButton" class="w3-button w3-blue" 
     onclick="saveStaff()">Save</button>
@@ -356,6 +384,14 @@ window.onload = () => {
             document.querySelector('#showFacePicHere').hidden = false
           }
 
+          // fill payProfile
+          for (field in data.payProfile) {
+            let elem = document.querySelector(`#${field}`)
+            if (elem) {
+              elem.value = data.payProfile[field]
+            }
+          }
+
 
           MODE = 'view';
           STAFF_ID = staffId;
@@ -452,7 +488,7 @@ async function saveStaff() {
 
       workPlace: document.getElementById('workPlace').value,
 
-      wages: document.getElementById('wages').value,
+      wages: Number(document.getElementById('wages').value),
       hiringType: document.getElementById('hiringType').value,
       holiday: document.getElementById('holiday').value,
       bankAccount: document.getElementById('bankAccount').value,
@@ -460,6 +496,20 @@ async function saveStaff() {
       benefits: Array.from( document.querySelectorAll('input[name="benefit"]:checked') ).map( el => el.value ),
 
       status: document.getElementById('status').value,
+
+
+      payProfile: {
+        monthlyRate: Number(document.querySelector('#monthlyRate').value),
+        calcHourlyRate: Number(document.querySelector('#calcHourlyRate').value),
+        workdayOtRate: Number(document.querySelector('#workdayOtRate').value),
+        holidayWorkRate: Number(document.querySelector('#holidayWorkRate').value),
+        holidayOtRate: Number(document.querySelector('#holidayOtRate').value)
+      },
+
+      amountDeductForSocialSecFund: Number(document.querySelector('#amountDeductForSocialSecFund').value),
+      estimateAnnualIncome2025: Number(document.querySelector('#estimateAnnualIncome2025').value),
+
+
       ref: document.getElementById('ref').value,
       note: document.getElementById('note').value,
       enterBy: document.getElementById('enterBy').value,
@@ -546,7 +596,55 @@ function editStaff() {
 }
 
 
+// if change in the wages field we calculate the payProfile
+document.querySelector('#wages').addEventListener('input', calcPayProfile)
+document.querySelector('#hiringType').addEventListener('input', calcPayProfile)
 
+function calcPayProfile() {
+
+  const wagesEl = document.querySelector('#wages')
+  const hiringTypeEl = document.querySelector('#hiringType')
+  if (!wagesEl.value || hiringTypeEl.value.startsWith('-')) return
+
+  //--- pass check 1 ---
+
+  const wages = wagesEl.value
+  const hiringType = hiringTypeEl.value
+  const monthlyRateEl = document.querySelector('#monthlyRate')
+  const calcHourlyRateEl = document.querySelector('#calcHourlyRate')
+  const workdayOtRateEl = document.querySelector('#workdayOtRate')
+  const holidayWorkRateEl = document.querySelector('#holidayWorkRate')
+  const holidayOtRateEl = document.querySelector('#holidayOtRate')
+  const amountDeductForSocialSecFundEl = document.querySelector('#amountDeductForSocialSecFund')
+  const estimateAnnualIncome2025El = document.querySelector('#estimateAnnualIncome2025')
+
+
+  if (hiringType === 'รายเดือน') {
+    let hourlyRate = wages / 30 / 8
+    monthlyRateEl.value = wages
+    calcHourlyRateEl.value = hourlyRate
+    workdayOtRateEl.value = hourlyRate * 1.5
+    holidayWorkRateEl.value = hourlyRate * 1
+    holidayOtRateEl.value = hourlyRate * 3
+    amountDeductForSocialSecFundEl.value = wages >= 15000? 750 : wages * 0.05
+    estimateAnnualIncome2025El.value = wages * 12 * 1.05
+
+  } else if (hiringType === 'รายวัน') {
+    let hourlyRate = wages / 8
+    monthlyRateEl.value = 0
+    calcHourlyRateEl.value = hourlyRate
+    workdayOtRateEl.value = hourlyRate * 1.5
+    holidayWorkRateEl.value = hourlyRate * 2
+    holidayOtRateEl.value = hourlyRate * 3
+    amountDeductForSocialSecFundEl.value = wages*25 >= 15000? 750 : wages*25*0.05
+    estimateAnnualIncome2025El.value = wages * 25 * 12 * 1.05
+
+  } else {
+    // not cover other type yet
+
+  }
+
+}
 
 
 </script>
