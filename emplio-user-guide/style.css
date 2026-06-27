@@ -1,0 +1,80 @@
+/*===============================================================================
+
+    for emplio-user-guide/index.html 
+
+================================================================================*/
+
+
+
+/* grid table --------------------------------*/
+.m-grid {
+  background-color: white;
+  display: grid; 
+  grid-template-columns: 1fr 2fr; 
+  gap: 1px
+}
+
+.m-grid span { 
+  background-color: var(--m-lgray); 
+  font-size: 1.125rem; 
+  padding: 8px 16px; 
+}
+
+
+/* steap shape -------------------------------*/
+.m-step-mom {
+  display: flex; 
+  align-items: center; 
+  flex-wrap: wrap;
+}
+
+
+.m-step {
+  background-color: DarkGray;
+  /*color: white;*/
+
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
+  height: 100px;
+  
+  /* Flexbox for perfect centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Layout */
+  margin: 0;
+  min-width: 160px;
+  max-width: 200px;
+  
+  /* The sharp "v" arrow shape */
+  /*clip-path: polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%, 10% 50%);
+  */
+  clip-path: polygon(0% 0%, calc(100% - 25px) 0%, 100% 50%, calc(100% - 25px) 100%, 0% 100%, 25px 50%);
+  /* Padding keeps the text away from the left point */
+  padding: 16px calc(25px + 16px);
+
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+
+  /*border: 2px solid #ddd; */
+}
+
+
+/*-----------------------------------mobile----------------------------------------*/
+@media (max-width: 500px) {
+  .m-step-mom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    margin-top: 32px;
+  }
+
+  .m-step {
+    width: 100%;
+    font-size: 1rem;
+    padding: 8px calc(16px + 16px);
+    clip-path: polygon(0% 0%, calc(100% - 16px) 0%, 100% 50%, calc(100% - 16px) 100%, 0% 100%, 16px 50%);
+
+  }
+}
