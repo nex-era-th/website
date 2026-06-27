@@ -5,6 +5,44 @@
 ================================================================================*/
 
 
+:root {
+  --m-lgray: oklch(96.7% 0.003 264.542);
+  --m-def-font-size: 1.125rem;
+  --brand-color: #1fc1e9;
+  --brand-color2: #112b4f;
+}
+
+
+
+* { font-family: "Times New Roman", Times, serif }
+html { font-size: 16px }
+body { padding: 0 24px }
+h1 { color: black; font-family: "Noto Sans Thai"; }
+h2 { color: oklch(62.3% 0.214 259.815); font-family: "Noto Sans Thai"; margin-top: 40px }
+h3 { color: oklch(52.7% 0.154 150.069); font-style: italic; text-decoration: underline; font-family: "Noto Sans Thai"}
+
+p, li, a { font-size: 1.125rem; }
+code { font-family: monospace; background-color: oklch(92.8% 0.006 264.531); padding: 0 8px; border-radius: 8px; }
+
+img { width: 100%; margin: 32px 0; }
+
+#m-scroll-top-icon:hover { color: HotPink !important }
+.m-gray-bg { background-color: var(--m-lgray) !important;}
+
+
+/* this is for EMPliO360 brand, tried to use color codes that client sent but they not show off, so just pick DeepPink first */
+brand { 
+  font-family: sans-serif;
+  font-weight: bold; 
+  color: DeepPink; 
+}
+
+
+
+
+
+
+
 
 /* grid table --------------------------------*/
 .m-grid {
@@ -21,11 +59,12 @@
 }
 
 
-/* steap shape -------------------------------*/
+/* step shape -------------------------------*/
 .m-step-mom {
   display: flex; 
   align-items: center; 
   flex-wrap: wrap;
+  margin: 32px 0;
 }
 
 
@@ -59,6 +98,37 @@
 
   /*border: 2px solid #ddd; */
 }
+
+
+
+
+/* footer --------------------------------------*/
+
+
+
+
+/* Update your CSS */
+.m-footer-mom {
+  padding: 60px 0 24px 0;
+}
+
+.m-footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: gray;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*-----------------------------------mobile----------------------------------------*/

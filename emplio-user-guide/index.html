@@ -10,9 +10,11 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="style.css"/>
 <style>
+  /*
   :root {
     --m-lgray: oklch(96.7% 0.003 264.542);
     --m-def-font-size: 1.125rem;
+    --brand-color: #1fc1e9;
   }
 
   * { font-family: "Times New Roman", Times, serif }
@@ -23,14 +25,14 @@
   h3 { color: oklch(52.7% 0.154 150.069); font-style: italic; text-decoration: underline; font-family: "Noto Sans Thai"}
   p, li { font-size: 1.125rem; }
   code { font-family: monospace; background-color: oklch(92.8% 0.006 264.531); padding: 0 8px; border-radius: 8px; }
-  img { width: 100% }
+  img { width: 100%; margin: 32px 0; }
 
-  #m-scroll-top-icon:hover { color: green !important }
+  #m-scroll-top-icon:hover { color: HotPink !important }
   .m-gray-bg { background-color: var(--m-lgray) !important;}
 
+  brand { font-weight: bold; color: blue; }
 
-
- 
+  */
 
 </style>
 </head>
@@ -43,19 +45,19 @@
   style="position: fixed; left: 8px; bottom: 5%; cursor: pointer; background-color: azure; border-radius: 50%; z-index: 100;"
   onclick="window.scrollTo({top: 0, behavior: 'smooth'});"
 >
-  <i id="m-scroll-top-icon" class="fa-solid fa-circle-up" style="font-size: 32px; color: #90EE90"></i>
+  <i id="m-scroll-top-icon" class="fa-solid fa-circle-up" style="font-size: 32px; color: pink"></i>
 </div>
 
 
 <!-- content -->
 
 <h1>คู่มือใช้งาน เอ็มพลิโอ360</h1>
-<div>--EMPliO360 v1.0</div>
+<div style="font-family: sans-serif; color: gray">--EMPliO360 v1.0</div>
 
 <!-------------------------------------- toc ------------------------------------>
 
 <div 
-  style="display: flex; flex-direction: column; gap: 8px; margin-top: 40px; padding: 16px"
+  style="display: flex; flex-direction: column; gap: 16px; margin-top: 40px; padding: 16px"
   class="m-gray-bg"
 >
   <a href="#intro">เกริ่นนำ</a>
@@ -75,7 +77,7 @@
 <!------------------------------------ chapters --------------------------------->
 <h2 id="intro" style="margin-top: 40px;">เกริ่นนำ</h2>
 
-<p>EMPliO360 (เอ็มพลิโอ360) เป็นระบบคอมพิวเตอร์ที่ทางกลุ่มธนะวัฒน์พัฒนาขึ้นมา เพื่อเพิ่มศักยภาพโดยรวมขององค์กร ของพนักงาน และจะเป็นการเสริมสร้างความยั่งยืนขององค์กร ในระยะยาวด้วย</p>
+<p><brand>EMPliO360</brand> (เอ็มพลิโอ360) เป็นระบบคอมพิวเตอร์ที่ทางกลุ่มธนะวัฒน์พัฒนาขึ้นมา เพื่อเพิ่มศักยภาพโดยรวมขององค์กร ของพนักงาน และจะเป็นการเสริมสร้างความยั่งยืนขององค์กร ในระยะยาวด้วย</p>
 
 <p>เอ็มพลิโอ360 มีโมดุลย่อยดังนี้</p>
 <ul>
@@ -105,8 +107,10 @@
 
 <p>เปิดเบราเซอร์ไปที่ <a href="https://odap.tnwg.co"><code>https://odap.tnwg.co</code></a></p>
 
-<div style="padding: 32px">
-  <img src="./img/app-url.png" style="width: 100%"/>
+<div>
+  <a href="https://odap.tnwg.co">
+    <img src="./img/app-url.png" style="height: 80px; width: 100%; object-fit: cover;"/>
+  </a>
 </div>
 
 
@@ -199,7 +203,7 @@
   <div class="m-step w3-pink">กก.ผจก./ผจก. อนุมัติ</div>
 </div>
 
-<ol style="margin-top: 32px">
+<ol>
   <li>คือเมื่อคุณรู้แล้วว่า เป้าหมายงานของคุณมีอะไรบ้าง ก็ให้นำมาป้อนเข้าไปในเอ็มพลิโอ360 โดยเลือกเมนู “สร้างเป้าหมายใหม่”</li>
   <li>เมื่อเรียบร้อยแล้ว สถานะของเป้าหมายนั้นจะเป็น “เปิด” คือ ใช้การได้</li>
   <li>และเมื่อครบกำหนด เช่น ทุกสิ้นเดือน ก็นำหลักฐานเพื่อมา “ป้อนผลลัพธ์”</li>
@@ -236,7 +240,7 @@
 </div>
 
 
-<ol style="margin-top: 32px;">
+<ol>
   <li>ทุกคนสามารถเสนอโครงการอะไรก็ได้</li>
   <li>จากนั้น ผู้จัดการจะตรวจสอบเบื้องต้้น</li>
   <li>หากผ่านผู้จัดการแล้ว กรรมการผู้จัดการจะเป็นผู้อนุมัติ</li>
@@ -270,10 +274,10 @@
   <div class="m-step w3-blue">ทุกคนเข้าร่วมได้</div>
   <div class="m-step w3-yellow">แนบหลักฐานการเข้าร่วม</div>
   <div class="m-step w3-brown">ผู้จัดฯ ตรวจหลักฐาน</div>
-  <div class="m-step w3-orange">ผู้ผ่านการตรวจฯ ได้รับคะแนน</div>
+  <div class="m-step w3-orange">รับคะแนน</div>
 </div>
 
-<ol style="margin-top: 32px">
+<ol>
   <li>ทุกคนสามารถจัดกิจกรรมได้ ในทางปฏิบัติอาจหารือหัวหน้า ผู้จัดการ ให้เรียบร้อยเสียก่อน จากนั้นก็มาเมนู “จัดกิจกรรมใหม่” ในเอ็มพลิโอ360</li>
   <li>เมื่อเรียบร้อยแล้ว กิจกรรมนั้นจะถูกประกาศไปทั่วบริษัท ทุกคนจะได้รับแจ้งเตือน</li>
   <li>ทุกคนสามารถเข้าร่วมได้ หรือแล้วแต่เงื่อนไขที่คุณกำหนด เช่นต้องการ ผู้หญิง ผู้ชาย หรือกลุ่มไหนยังไง</li>
@@ -310,7 +314,7 @@
 </div>
 
 
-<ol style="margin-top: 32px;">
+<ol>
   <li>เข้าไปในเมนู “ขอบคุณ & แบ่งปัน” แล้วกด “ขอขอบคุณ” แล้วป้อนข้อมูลเข้าไป</li>
   <li>ผู้จัดการของคุณจะได้รับแจ้ง ให้เข้ามาตรวจดูใน เอ็มพลิโอ360</li>
   <li>เมื่อผ่าน ผู้จัดการแล้ว จะไปแจ้งกรรมการผู้จัดการ ให้อนุมัติอีกที</li>
@@ -350,8 +354,18 @@
 
 <p>ส่วนนี้เป็นวีดีโอ เพื่อการสาธิต การใช้งาน คุณสามารถเลือกดูตามเรื่องได้ ว่าต้องการดูการใช้งานในโมดุลไหน เป็นต้น</p>
 
-<div id="m-video-show" style="margin-bottom: 100px;"></div>
+<!--show video playlist here-->
+<div id="m-video-show"></div>
 
+
+
+
+
+<!------------------------------------footer----------------------------------->
+
+<footer class="m-footer-mom">
+  <p class="m-footer">&copy; 2026 Thanawat Group. All rights reserved.</p>
+</footer>
 
 
 
