@@ -637,17 +637,6 @@ px.getAvgBrightOfPic = (image) => {
   return totalBrightness / pixelCount;
 }
 
-// Example Usage:
-const image = new Image();
-image.src = 'example.jpg'; // Replace with your image source
-image.onload = function () {
-  const avgBrightness = getAverageBrightness(image);
-  console.log('Average Brightness:', avgBrightness);
-};
-
-
-
-
 // SORT-ARRAY ----------------------------------------------------
 px.sortArray = function (arrayIn, fieldToSort, option) {
   /*

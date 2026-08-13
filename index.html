@@ -7,505 +7,111 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="advisory software tech dev รับออกแบบและพัฒนาซอฟท์แวร์ ที่ปรึกษา ความเป็นผู้นำ บริหาร ธุรกิจ">
 
-  <script src="./config.js"></script>
+  <!--script src="./config.js"></script>
   <script src="js/xdev-b.js"></script>
   <script src="js/projex.js"></script>
-  <!--script src="./page-profile.js"></script-->
+  <script src="./page-profile.js"></script-->
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link href="js/w3.css" rel="stylesheet" type="text/css">
-  <link href="js/projex.css" rel="stylesheet" type="text/css">
-  <link href="js/material-design-var.css" rel="stylesheet" type="text/css">
-
-  <style>
-    html { font-size: 16px;}
-    p { font-size: 1.1rem; }
-    p, div, span, a {font-family:;}
-    /*a {background-color: lightgray; color: black; border-radius: 10px; padding: 4px 8px; font-family: 'Times New Roman', Times, serif;}*/
-    /*code {background-color: #efebe9;}*/
-
-    #slide_set > div {
-      padding: 0 4px; border-right:; 
-      width: calc(100%/3); height: 120px; overflow: hidden
-    }
-/*    #slide_set > div:last-child { border: none}
-    #slide_set > div:nth-child(even) { color: steelblue }
-*/    
-    #gallery > div { width: calc(100%/3); height: 100px;}
-    #gallery img { width: 100%; height: 100%; object-fit: cover;}
-
-    #search_result a { background-color: initial; display: none; margin-bottom: 16px;}
-  </style>
+  <link href="css/w3.css" rel="stylesheet" type="text/css">
+  <!--link href="css/projex.css" rel="stylesheet" type="text/css"-->
+  <!--link href="css/material-design-var.css" rel="stylesheet" type="text/css"-->
+  <link href="css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 
-  <!------------------------------ bug & nature ------------------------------->
+  <!------------------------------ bug & nature ------------------------------- >
 
   <img id="bug" src="art/taotong.png" style="position: fixed; left: 0; top: 0; width: 45px; transform: rotate(50deg); z-index: 60" class="x-spin-very-slow">
 
   <!--img id="nature" src="art/leaf100.png" style="position: fixed; top: 100px; left: 96%; height: 250px; z-index: 50; transform: rotate(-26deg); opacity: 0.8"-->
 
 
-  <!-- lock max width to 800px -->
-  <div id="main_content" style="max-width: 600px; margin-left: auto; margin-right: auto">
+  <!-- Content Space -->
+  <div id="main-content">
 
     
 
-    <div class="w3-container" style="display: grid; grid-template-columns: 100%; place-items: center;">
-
-      <!-- top part -->
-      <img id="logo" src="logo2026-final.png" 
-      class="x-spin-slow" 
-      style="width: 120px; height: 120px; margin-top: 36px">
-      <div style="height: 16px;"></div>
-
-      <!-- x-ubuntu-mono -->
-      <h2 id="brand_name" class="gluten text-2xl" style="color: var(--pink-900)">nex-era</h2>
-      <div style="height: 32px;"></div>
-
-
-      <!--------------------------------- advisory ------------------------------>
-      <div id="advisory_city">
-        <p><b class="font-bold font-serif">Advisory</b> - โลกกำลังอยู่ในภาวะ ที่เปลี่ยนแปลง อย่างมาก ด้านการเมือง ธุรกิจ เศรษฐกิจ สังคม ต่างๆ รวมถึงเทคโนโลยี &nbsp; <code class="text-blue-800">@nex-era</code> ให้คำปรึกษาในหลายด้าน เช่น ด้านธุรกิจ เทคโนโลยี การบริหาร/ปกครอง ยุทธศาสตร์ และอีกหลายอย่าง เพื่อให้คุณมีหลัก ในการตัดสินใจ หรือดำเนินการใดๆ ให้เกิดประโยชน์สูงสุด</p>
-
-        <ul class="list-disc list-inside text-[1.1rem] mt-4 ml-4">
-          <li>Strategy</li>
-          <li>Business, Management</li>
-          <li>Technology</li>
-          <li>Governance</li>
-        </ul>
-      </div>
-
-      <!-------------------------------- icon ----------------------------------->
-
-      <div style="display: flex; align-items: center; justify-content: center; padding: 16px; margin: 32px 0">
-        <img src="/icon-x/Thunder.svg" style="width: 40px">
-      </div>
-
-      <!--------------------------------- software ------------------------------>
-      <div id="tech_city">
-        <p><b class="font-bold font-serif">Software</b> - เทคโนโลยีกำลัง disrupt โลก ในแทบทุกด้าน เช่นพวก <code class="text-[1rem] bg-gray-100">AI, Robot, Quantum Computing, Social Media, Apps, Drone, EV, Hyperloop, Crypto</code> ต่างๆ &nbsp; <code class="text-blue-800">@nex-era</code> ให้บริการด้านเทคโนโลยี โดยรับ design & dev software (หรือระบบซอฟท์แวร์เพื่อธุรกิจ) เพื่อให้ธุรกิจของคุณ ปรับ เข้ากับสภาพแวดล้อมใหม่ ได้อย่างทันท่วงที เพราะซอฟท์แวร์ธุรกิจแบบเดิมๆ ล้าสมัยไปแล้ว ไม่มีความยืดหยุ่น เทอะทะ ค่าใช้จ่ายสูง ไม่สามารถตอบสนองธุรกิจยุคใหม่ได้อีกต่อไป</p>
-
-        <p class="mt-4">โมดุลทางธุรกิจ ตัวอย่างเช่น</p>
-        <ul class="list-disc list-inside text-[1.1rem] ml-4">
-          <li>Sales</li>
-          <li>Purchasing</li>
-          <li>Warehouse, Inventory</li>
-          <li>Manufacturing</li>
-          <li>HR</li>
-          <li>Payroll</li>
-          <li>Accounting</li>
-          <li>Finance</li>
-          <li>Reports, Analytics</li>
-        </ul>
-
-        <p class="mt-4">เครื่องมือที่เราใช้เป็นประจำในการ dev มีเช่น</p>
-        <ul class="list-disc list-inside text-[1.1rem] ml-4">
-          <li>java script, node.js, python, java</li>
-          <li>fastify, express</li>
-          <li>react, vite, tailwind</li>
-          <li>mongodb, postgresql, mariadb</li>
-          <li>ubuntu - open source OS</li>
-          <li>odoo - open source business app</li>
-        </ul>
-
-
-      </div>
-
-
-      <!------------------------------- button -------------------------------->
-      <div id="contact_city" class="flex items-center justify-center mt-8">
-        <button class="px-4 py-4 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:bg-blue-600 focus:outline-none focus:ring-blue-400 focus:ring-opacity-75 transition duration-150 ease-in-out"
-        onclick="location.href='http://x.com/nex__era';">
-          x.com/nex__era
-        </button>
-      </div>
-
-      <div style="height: 40px;"></div>
-
-      <!--div id="slogan" class="beth-ellen-regular x-red-dark x-center x-fz175">Advisory, Software & Beyond</div>
-      
-      
-      <img src="art/nex-line2-t.png" style="width: 70%; margin: 60px 0 40px 0; opacity: ;"-->
-
-
-
-      <!-- content starts here -------------------------------------->
-
-
-      <!-- highlight -- >
-      <p id="highlight_sect" class="x-center x-fz135"><span class="x-blue-dark">@nex-era</span> ให้คำปรึกษาด้านความเป็นผู้นำ ด้านธุรกิจและองค์กร นอกจากนี้ยังทำงานด้านเทคโนโลยี โดยเฉพาะการออกแบบซอฟท์แวร์ การพัฒนา รวมถึงบริการอื่นๆอีกหลายอย่าง</p-->
-
-
-      <!-- UI -- >
-      <div id="ui_sect">
-        <div style="display: grid; grid-template-columns: 60% 40%; place-items: center; margin-top: 70px">
-          <img src="pic/card-view65.jpg" width="100%" class="w3-card-4 x-round">
-          <p class="x-roboto-thin x-fz120 x-p"><span class="x-blue-dark">#UI</span><br>User Interface is the heart of every software</p>
-        </div>
-  
-        <div class="x-mt36 x-fz135" style="margin-left: 15%">ทุกอย่างที่ผู้ใช้งานต้องอยู่กับมันตลอดเวลาก็คือ หน้าจอ (หรือภาษาอังกฤษว่า User Interface) นี่แหละ ในเรื่องของการออกแบบและพัฒนาซอฟท์แวร์นั้น มีหลายอย่างที่ต้องคำนึงถึง แสดงคร่าวๆดังนี้<br>
-          <ul>
-            <li>หน้าจอ หรือ UI (User Interface)</li>
-            <li>การจัดการข้อมูล หรือ Data Modeling</li>
-            <li>ขั้นตอนการทำงาน (Process)</li>
-            <li>การจัดการ user</li>
-            <li>ฯลฯ</li>
-          </ul>
-        </div>
-      </div-->
-      
-
-      <!-- easy to use -- >
-      <div id="easy_sect" class="x-mt60" hidden>
-        <div style="display: grid; grid-template-columns: 40% 60%; place-items: center;">
-          <p class="x-roboto-thin x-right x-fz120 x-p"><span class="x-blue-dark">#Easy</span><br>Easy-to-use is key success factor</p>
-          <img src="pic/x-editor3.jpg" width="100%" class="x-round w3-card-4">
-        </div>
-  
-        <div class="x-mt36 x-fz135" style="margin-left: 15%">
-          <p>ซอฟท์แวร์ที่ดีต้องใช้งานง่าย คือใช้ได้ทันที ไม่จำเป็นต้องมาฝึกอบรมอะไรให้วุ่นวาย เหมือนเราเข้าไปในร้านอาหาร แล้วเปิดเมนู แล้วก็สั่งได้เลย ความง่ายของซอฟท์แวร์ก็ต้องประมาณนั้น</p>
-        </div>
-      </div-->
-      
-
-      <!-- sketch board -- >
-      <div id="sketch_sec" class="x-mt60" hidden>
-        <img src="pic/design.jpg" width="100%">
-        <p class="x-roboto-thin x-fz135">ภาพนี้เป็นตัวอย่าง sketch board เพื่อร่างหน้าตาของซอฟท์แวร์ที่เราต้องการ อาจจะเรียกว่าเป็นขั้น idea ก็ได้</p>
-      </div-->
-      
-
-
-      <!-- gallery -- >
-      <div id="gallery_sect" class="x-mt60" hidden>
-        <div class="x-fz120 x-roboto-thin x-mb8"><span class="x-blue-dark">#Screen</span><br>
-        ภาพประกอบ</div>
-
-        <div id="gallery" style="display: flex; flex-wrap: wrap; flex-direction: row; place-items: center;" class="x-border w3-card-4">
-          <div><img src="pic/red-shirt.jpeg" onclick="show_pic.hidden=false; show_pic_img.src=this.src" class="x-pointer"></div>
-          <div style="width: calc(100%/3*2)"><img src="pic/line-chart.png" onclick="show_pic.hidden=false; show_pic_img.src=this.src" class="x-pointer"></div>
-          <div><img src="pic/cap-999.jpeg" onclick="show_pic.hidden=false; show_pic_img.src=this.src" class="x-pointer"></div>
-          <div><img src="pic/coffee.jpeg" onclick="show_pic.hidden=false; show_pic_img.src=this.src" class="x-pointer"></div>
-          <div><img src="pic/bag.png" onclick="show_pic.hidden=false; show_pic_img.src=this.src" class="x-pointer"></div>
-          <div><img src="pic/hamburger.jpeg" onclick="show_pic.hidden=false; show_pic_img.src=this.src" class="x-pointer"></div>
-        </div>
-      </div-->
-      
-
-      <!--img src="art/line4.png" class="x-fullw" style="width: 70%; margin-top: 60px; margin-bottom: 16px; opacity: 1;"-->
-
-
-      <!-- data -- >
-      <div id="data_sect" class="x-mt20" hidden>
-        <div class="x-blue-dark x-roboto-thin x-fz120">#Data</div>
-        <img src="pic/data-model.png" width="100%">
-        <div class="x-fz135">การออกแบบโครงสร้างข้อมูล (Data Model) และการจัดการ database เพื่อให้เราได้ข้อมูลที่ครอบคลุม เรื่องนี้เป็นเรื่องที่ละเอียดอีกเรื่องหนึ่ง เวลาเราจะออกแบบหรือพัฒนาซอฟท์แวร์</div>
-      </div-->
-
-
-
-      <!-- process -- >
-      <div id="process_sect" class="x-mt60" hidden>
-        <div style="display: grid; grid-template-columns: 60% 40%; place-items: center;">
-          <img src="pic/process2.png" width="100%">
-          <p class="x-roboto-thin x-fz120 x-p"><span class="x-blue-dark">#Process</span><br>Process is like backbone</p>
-        </div>
-  
-        <p class="x-fz135" style="margin-left: 15%">ขั้นตอนการใช้งานก็ดี การทำงานก็ดี จะต้องศึกษาอย่างละเอียด แล้วออกแบบให้เหมาะสม พยายามหลีกเลี่ยงอย่าให้คน คิด คำนวน หรือกด อะไรมากเกินไป เอาเฉพาะที่จำเป็น ทำโปรแกรมให้อำนวยความสะดวกให้มากที่สุด เพื่อลดความผิดพลาด และเพื่อความปลอดภัยของข้อมูลไปในตัว</p>
-      </div-->
-      
-
-
-
-      <!-- user -- >
-       <div id="user_sect" class="x-mt60" hidden>
-        <div style="display: grid; grid-template-columns: 40% 60%; place-items: center;">
-          <p class="x-roboto-thin x-right x-fz120 x-p"><span class="x-blue-dark">#User</span><br>User handling is very detail task</p>
-          <img src="pic/user.png" width="100%">
-        </div>
-  
-        <p class="x-fz135" style="margin-left: 15%;">ความสัมพันธ์ของ user ไม่ว่าจะใช้งานคนเดียว เป็นทีม หรือเป็นองค์กรใหญ่ๆ ยิ่งคนใช้เยอะ ก็ยิ่งต้องละเอียดมากเท่านั้น ใครมีบทบาทอะไร ทำอะไรได้แค่ไหน เป็นต้น</p>
-       </div-->
-      
-
-
-
-      <!-- source code -- >
-      <div id="source_code_sect" class="x-mt80" hidden>
-        <div style="display: grid; grid-template-columns: 60% auto; place-items: center;">
-          <img src="pic/source-code.png" width="100%">
-          <p class="x-roboto-thin x-fz120 x-p"><span class="x-blue-dark">#Tech</span><br>Dev language, database, cloud, ...</p>
-        </div>
-        <p class="x-fz135">ทางด้านตัวเทคโนโลยี หรือเครื่องมือที่ต้องใช้ ก็มีเรื่องต้องคิดหลายเรื่อง เช่นเราจะใช้แบบ web หรือแบบ mobile app จะใช้ภาษาอะไรมาโปรแกรม ใช้ database อะไร รวมไปถึงเครื่อง hardware อะไรต่างๆ ก็เป็นเรื่องละเอียดอ่อนเช่นกัน ตัวอย่าง technology ที่ทางเราใช้ หรือเป็นที่นิยมกัน เช่น <code>java script, node.js, java, c#, python, mongodb, mysql, postgresql, linux, windows, cloud</code> และอะไรอีกเยอะแยะ</p>
-      </div>
-
-      <p id="summary" class="x-fz135" hidden>หน้านี้ก็ทำเป็นคล้ายๆ หน้าสรุป หรือ highlight ไว้เบื้องต้น ยังไงก็ตามก็ลองเปิดอ่านหน้าต่างๆของเว็บนี้ดู หรือว่าติดต่อมาที่เราได้ตลอดเวลา</p-->
-
+    <!-- Some art, graphic or anything that is not text -->
+    <div style="display: flex; align-items: center; justify-content: center">
+      <img 
+        id="logo" 
+        src="/pic/bird-aug11-aug11-2026.jpg" 
+        style="height: 200px; margin: 46px auto">
     </div>
 
 
-    <!-- art that separates to the more section -- >
-    <img src="art/line-leaf2.png" style="margin-top: 32px;"-->
-
-
-
-    <!------------------------ MORE CONTENT -------------------------->
-
-    <!-- slide / interesting topic-- >
-    <div id="additional_sect" class="w3-light-gray x-pb24 x-mt" style="padding-top: 2px">
-
-      <div style="display: flex; place-items: center; column-gap: 8px;flex-wrap: nowrap; justify-content: center;">
-          <img src="icon/info-o.svg" width="16" height="16">
-          <p class="x-roboto-light x-center x-small">INTERESTING TOPIC</p>
-      </div>
-
-      <div class="x-mt" style="width: 100%; overflow: hidden;">
-
-        <div id="slide_set" 
-        class="x-center x-roboto-thin"
-        style="display: flex; transition: transform 3s ease-in-out; text-align: center; place-items: center">
-
-          <div onclick="location.href='advisory.html';" style="position: relative; background-color: #fff3e0;"><span class="x-center-absolute x-center">Advisory services</span></div>
-
-          <div onclick="location.href='software.html';" style="position: relative; background-color: #efebe9;"><span class="x-center-absolute x-center">Software Design & Dev</span></div>
-          
-          <div onclick="location.href='technology.html';" style="position: relative; background-color: #fce4ec;"><span class="x-center-absolute x-center">Technology Services</span></div>
-        </div>
-
-      </div>
-    </div-->
+    <!-- Inserting Stuff -->
+    <div style="margin-bottom: 40px; display: flex; flex-direction: column; align-items: start; justify-content: center">
+      <span style="color: gray; font-size: 0.9rem">STORY</span>
+      <a 
+        class="w3-btn w3-purple" 
+        href="/story/nene-rockstar-thai-explodes.html">Nene ราชินีร็อค สัญชาติไทย -- 13/8/69</a>
+    </div>
     
-    <!--script>
-    ////////////////////////////////////////////////////////////////
-    function xSlide(  _x={
-      slideEvery    : 4, //sec
-      slidesToShow  : 3, // num of slides to show in the view
-      transformTime : 3, //sec
-      element       : null, 
-      slideTo       : 'left', //has left|right
-      hasControl    : false, //for future
-      queue         : [] 
-    }) {
 
-      /*
-        - slides elements horizontally
-        - designed for mobile, default is 3 slides / view
-        - firstly loops to the left and moving the first element
-        to the end. So it looping these 3 slides along the time.
-        - may put more func such as slide-to-right, controls, ...
-
-        GUIDE
-        - slideEvery = seconds you want them to move
-        - slidesToShow = number of slides you want in the view
-        - transformTime = seconds of the moving; slow or fast
-        - element = the slide container element, usually <div> ; it should be flex
-
-        ! the transformTime must be < slideEvery
-          default: slideEvery=4sec , transformTime=3sec
-
-        - you have to set your element width-equally, eg, if we have 3 slides/view, we set style="width: calc(100%/3)"
-
-        INFO
-        - license = none
-        - dev = @devster, nex-era, Thailand
-        - version = 1.0
-        - lang = js
-        - released date = 2025-01-08T09:03+0700
-      */
-
-      //validate & default setting
-      if (!_x) return false
-      else {
-        if (!_x.element) return false
-        if (!_x.slideEvery) _x.slideEvery = 4
-        if (!_x.slidesToShow) _x.slidesToShow = 3
-        if (!_x.transformTime) _x.transformTime = 3
-        if (!_x.slideTo) _x.slideTo = 'left'
-        if (!_x.hasControl) _x.hasControl = false
-        if (!_x.queue) _x.queue = []
-      }
-
-
-      globalThis._xSlide = _x
-      
-      _xSlide.interval = setInterval(f => {
-        _x.element.style.transition = `transform ${_x.transformTime}s ease-in-out`
-
-        if (_x.slideTo == 'left') {
-          _x.element.style.transform = `translateX(calc(-100%/${_x.slidesToShow}))`
-
-          setTimeout(f => {
-            let copy = _x.element.firstElementChild.cloneNode(true)
-            copy.classList.add('x-fade-in')
-            _x.queue.push(copy)
-            _x.element.removeChild(_x.element.firstElementChild)
-            _x.element.appendChild(_x.queue.shift())
-            _x.element.style.transition = 'none'
-            _x.element.style.transform = 'translateX(0)'
-          }, _x.transformTime * 1000)  
-
-        } else if (_x.slideTo == 'right') {
-          _x.element.style.transform = `translateX(calc(100%/${_x.slidesToShow}))`
-
-          setTimeout(f => {
-            let copy = _x.element.lastElementChild.cloneNode(true)
-            copy.classList.add('x-fade-in')
-            _x.queue.push(copy)
-            _x.element.removeChild(_x.element.lastElementChild)
-            _x.element.prepend(_x.queue.shift())
-            _x.element.style.transition = 'none'
-            _x.element.style.transform = 'translateX(0)'
-          }, _x.transformTime * 1000)
-        }
-        
-        
-
-      }, _x.slideEvery * 1000)
-
-      /*
-        - tested=ok, @devster, 2025-01-08T08:45+0700
-        - now taking {slideTo: 'right'} option, tested=ok
-      */
-    }
-      
-    const qq = []
-    qq[0] = document.createElement('div')
-    qq[0].setAttribute('style','background-color: #e0f2f1; position: relative')
-    qq[0].setAttribute('onclick',`location.href='project.html'`)
-    qq[0].innerHTML = '<span class="x-center-absolute x-center">โครงการที่เรากำลังทำภายใน</span>'
-
-    qq[1] = document.createElement('div')
-    qq[1].setAttribute('style','background-color: #e3f2fd; position: relative')
-    qq[1].setAttribute('onclick',`location.href='update.html'`)
-    qq[1].innerHTML = '<span class="x-center-absolute x-center">Updates from @nex-era</span>'
-
-    qq[2] = document.createElement('div')
-    qq[2].setAttribute('style','background-color: #d7ccc8; position: relative')
-    qq[2].setAttribute('onclick',`location.href='about.html'`)
-    qq[2].innerHTML = '<span class="x-center-absolute x-center">About @nex-era</span>'
-
-    qq[3] = document.createElement('div')
-    qq[3].setAttribute('style','position: relative; padding: 0')
-    qq[3].setAttribute('onclick',`location.href='blog/leadership.html';`)
-    qq[3].innerHTML = `<img src="pic/xian.webp" class="x-cover-pic"><span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background-color: rgb(0,0,0,0.7); color: white">ความเป็นผู้นำคืออะไร</span>`
-
-    qq[4] = document.createElement('div')
-    qq[4].setAttribute('style','position: relative; padding: 0')
-    qq[4].setAttribute('onclick',`location.href='blog/tech-management.html';`)
-    qq[4].innerHTML = `<img src="pic/future-town.jpg" class="x-cover-pic"><span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background-color: rgb(0,0,0,0.7); color: white">การบริหารเทคโนโลยีในองค์กร</span>`
-
-    qq[5] = document.createElement('div')
-    qq[5].setAttribute('style','position: relative; padding: 0')
-    qq[5].setAttribute('onclick',`location.href='blog/real-digital-economy.html';`)
-    qq[5].innerHTML = `<img src="pic/cap-999.jpeg" class="x-cover-pic"><span style="position: absolute; top: 0; left: 0; background-color: rgb(0,0,0,0.7); color: white; text-align: left; padding: 0 4px">Real Digital Economy</span>`
-
-    qq[6] = document.createElement('div')
-    qq[6].setAttribute('style','position: relative; padding: 0')
-    qq[6].setAttribute('onclick',`location.href='blog/next-social-media.html';`)
-    qq[6].innerHTML = `<img src="pic/deer-takes-leaves-w4h3.png" class="x-cover-pic"><span style="position: absolute; bottom: 0; left: 0; background-color: rgb(0,0,0,0.7); color: white; padding: 0 4px; text-align: left">Next Social Media</span>`
-
-    qq[7] = document.createElement('div')
-    qq[7].setAttribute('style','position: relative; padding: 0')
-    qq[7].setAttribute('onclick',`location.href='blog/next-business-app.html';`)
-    qq[7].innerHTML = `<img src="pic/pie-chart2.png" class="x-cover-pic"><span style="position: absolute; top: 0; left: 0; background-color: rgb(0,0,0,0.7); color: white; padding: 0 4px; text-align: left">Next Business App</span>`
-
-    qq[8] = document.createElement('div')
-    qq[8].setAttribute('style','position: relative; padding: 0')
-    qq[8].setAttribute('onclick',`location.href='blog/thai-politic.html';`)
-    qq[8].innerHTML = `<img src="pic/thai-politic.jpeg" class="x-cover-pic"><span style="position: absolute; bottom: 0; left: 0; background-color: rgb(0,0,0,0.7); color: white; padding: 0 4px; text-align: left">การเมืองไทย update</span>`
-
-    qq[9] = document.createElement('div')
-    qq[9].setAttribute('style','position: relative; padding: 0')
-    qq[9].setAttribute('onclick',`location.href='blog/lisa-phenominon.html';`)
-    qq[9].innerHTML = `<img src="pic/lisa-phenominon.jpeg" class="x-cover-pic"><span style="position: absolute; bottom: 0; left: 0; background-color: rgb(0,0,0,0.7); color: white; padding: 0 4px; text-align: left">ปรากฎการณ์ ลิซ่า</span>`
-
-    //first start
-    //xSlide({slideEvery: 4, slidesToShow: 3, transformTime: 3, element: slide_set, slideTo: 'left', queue: [cap,shirt,justTex]})
-    xSlide({element: slide_set, queue: qq })
-    </script-->
+    <!-- Content -->
+    <div>
 
 
 
+      <p>โลกกำลังปั่นป่วน มีปัญหามากมาย ทั้งในประเทศ ต่างประเทศ ความไม่สงบเรียบร้อย ปะทุขึ้นมาหลายจุด บนโลก ดังนั้นจึงอาจเรียกได้ว่า เราอยู่ในสถานการณ์ไม่ค่อยปกติ นัก มหาอำนาจไม่ค่อยลงรอยกัน เศรษฐกิจโลกไม่ค่อยเฟื่องฟูเหมือนแต่ก่อน สงครามการค้าระหว่างมหาอำนาจ ประเทศไทยก็เต็มไปด้วยปัญหาการเมือง ฝ่ายการเมืองเก่าก็ยื้ออำนาจ นักการเมืองรุ่นใหม่ๆ ก็พยายามจะพัฒนาประเทศ ยังคงต้องขับเคี่ยวกันอีกหลายยก</p>
 
-    <!-- footer -- >
-    <div id="footer_sect" class="w3-dark-gray w3-container x-fz120 x-osans-light x-pb" style="position: relative">
+      <p style="margin-bottom: 0">สิ่งที่ nex-era คิดว่าพอจะพอมีส่วนร่วม ในการประคับประคอง สภาพสังคม เศรษฐกิจ ด้วย ต่อไป ไม่มากก็น้อย คือ</p>
+      <ul>
+        <li><a href="#business-advise">Business Advisory</a></li>
+        <li><a href="#tech-advise">Tech Advisory</a></li>
+        <li><a href="#software-dev">Software Design & Dev</a></li>
+      </ul>
 
-      <div class="x-small x-roboto-light x-mt8" style="display: flex; place-items: center; justify-content: center;">
-        <img id="lang_swit" src="icon/off.svg" 
-        class="x-pointer" width="32"
-        onclick="xToggle({
-          check:`lang_swit.src.includes('off')`,
-          signElement: lang_swit, 
-          ifTrue:{show: footer_th, hide: footer_en, sign:'/icon/switch-on.svg'}, 
-          else:{show: footer_en, hide: footer_th, sign:'/icon/off.svg'}
-        })"> 
-        <span class="x-ml8">THAI LANGUAGE</span>
+
+      <h1 id="business-advise" class="dokdo-regular w3-text-purple" style="margin-top: 32px">Business Advisory</h1>
+      <p>ธุรกิจต่างๆ ไม่ว่าน้อย ใหญ่ กำลังเผชิญกับแรงกดดัน และความท้าทาย ครั้งใหญ่ สภาพโลกาภิวัฒน์ ที่ดูจะไม่ภิวัฒน์ อีกต่อไป มหาอำนาจโลก กีดกัน แข่งขันกัน ไม่เหมือนแต่ก่อน สภาพภายในประเทศไทยเอง ความกดดันทางการเมือง ระบอบการปกครองที่ยังไม่เรียบร้อย การขบกันของยุคสมัยที่แตกต่าง ทำให้เกิดความวุ่นวาย คุกรุ่น อยู่พอสมควร เป็นแรงกดดัน เหมือนประทัดที่รอวันระเบิด</p>
+
+      <p>สภาพสังคมที่เปลี่ยนไป ตลาดเปลี่ยนตาม พฤติกรรมผู้บริโภค ลูกค้า การตลาด เริ่มเปลี่ยน ทฤษฎีเก่าๆ เทคนิคเก่าๆ ใช้ไม่ได้ผล ธุรกิจที่เปิดมานาน ยังติดอยู่ในระบอบเก่าๆ ที่สืบทอดกันมา ทฤษฎีเก่าๆ วิธีเก่าๆ ในขณะที่สภาพสังคม ลูกค้า ผู้บริโภค ไม่เหมือนเดิม เรากำลัง "ติดกับดัก" แห่งยุคสมัย โดยที่เราแทบจะไม่รู้ตัว ยกตัวอย่าง สื่อเก่าๆ อย่าง TV แทบจะไม่มีคนดู มีการปิดตัวอย่างต่อเนื่อง ลดต้นทุน ปลดคน ทุกวันนี้ เม็ดเงินโฆษณาการตลาด ไม่ได้ไหลไปที่ทีวี เหมือนแต่ก่อน แต่มันไหลไปที่ social media แทบทั้งหมด และเม็ดเงินเพิ่มมากขึ้นมหาศาล เพราะทุกคน คนธรรมดา ๆ ก็สามารถจ่ายค่าการตลาดได้ บริษัทเจ้าของ social app โกยเงินมหาศาล ขณะที่พวกสื่อทีวีเก่าๆ ทยอยปิดตัว</p>
+
+      <p>เกี่ยวกับธุรกิจ มีเรื่องให้เล่าอีกเยอะ จะเอาไว้แค่นี้ก่อน เดี๋ยวค่อยเขียนต่อในหน้าอื่นๆ เพราะยาว บริบททางธุรกิจ "เปลี่ยน" ไปอย่าง มากมาย ชนิดที่ว่า ยังไม่มีตำราไหน เขียนขึ้นมาเพื่อรับมือกับ สิ่งเหล่านี้ แม้ในระดับ รัฐบาล เองก็ตาม ยังไม่แน่ใจว่า รัฐบาลประเทศไหน ที่จะสามารถรับมือ กับความเปลี่ยนแปลงครั้งยิ่งใหญ่ นี้ได้ เป็นอย่างดี ทุกคนต่าง ตก อยู่ในสภาพ ตั้งรับ แทบทั้งสิ้น</p>
+
+
+      <h1 id="tech-advise" class="dokdo-regular w3-text-purple">Tech Advisory</h1>
+      <p>แน่นอน สภาพต่างๆ เปลี่ยน การบริหารจัดการ ด้าน tech ก็ต้องเปลี่ยนตาม บริษัทใหญ่ๆ ที่ลงทุนด้านเทคโนโลยีเยอะๆ ในสมัยก่อน หากคุณยัง แบก สภาพแบบนั้นต่อไป เละแน่นอน มันต้องปรับเปลี่ยน ต้อง optimize กันขนานใหญ่ พวกหน่วยงานรัฐ บริษัทเอกชนใหญ่ๆ ลงทุนด้าน tech ไปมหาศาล จ้างคน ซื้อ hardware, software อะไรต่างๆ หากคุนยังทำอย่างงั้นต่อไป จะเอาเงินที่ไหนมาจ่าย โมเดลแบบนั้นมัน ตกยุค คุณกำลังแบก cost มหาศาล ในขณะที่คู่แข่ง เขาไม่ต้องทำแบบนั้น</p>
+
+      <p>สรุปว่า การบริหารจัดการด้านเทคโนโลยี ต้อง รื้อ กันใหม่หมด ไม่ต้องจ้างคนเยอะ ไม่ต้องซื้อของเยอะ หันไปใช้พวก cloud services ใช้ทีมข้างนอก (outsourcing team) พยายามลดภาระ fixed cost, tech investment ที่เป็นก้อนๆ ออกไป อย่างพวก hardware เราผลักไปใช้ cloud แทน พวก software อะไรต่างๆ เปลี่ยนจากการซื้อ apps ใหญ่ๆ แพงๆ คิดค่า license ไปใช้พวก open source และจ้าง outsourcing ให้เขียน app ให้ เราต้องการไรก็บอกเขา เดี๋ยวนี้ทำได้ทุกอย่าง ที่เราต้องการ นี่ยังไม่ได้พูดถึง ai นะ เดี๋ยวเอาไว้เขียนเรื่อง ai ต่อในบทอื่นๆ เพราะผลกระทบจาก ai มหาศาล แม้แต่บริษัท tech พวกยักษ์ใหญ่เอง ยังต้อง ลด cost ลง ไล่คนออก มากมาย เพราะว่า ai มันทำแทนคนได้ไม่หมดก็เกือบหมด</p>
+
+
+
+      <h1 id="software-dev" class="dokdo-regular w3-text-purple">Software Design & Dev</h1>
+      <p>นอกจากให้คำปรึกษาตามที่ว่ามาข้างบนแล้ว เรารับ ออกแบบ และ พัฒนา โปรแกรม ซอฟท์แวร์ เพื่อธุรกิจของคุณด้วย ไม่ว่าคุณอยากจะทำโปรแกรมอะไรเพื่อใช้ในธุรกิจของคุณ เช่น ระบบบัญชี การเงิน พนักงาน การขาย การตลาด การจัดส่งสินค้า คลังสินค้า การผลิต เว็บไซท์ อะไรต่างๆ เราก็ยินดีช่วยสนับสนุนคุณเต็มที่</p>
+
+      <p>ส่วนใหญ่เราใช้เครื่องมือเหล่านี้</p>
+
+      <ul>
+        <li>node.js, java script, fastify</li>
+        <li>mongodb</li>
+        <li>react, vite</li>
+        <li>tailwind, bootstrap, w3.css</li>
+      </ul>
+
+
+      <!-- Button -->
+      <div 
+        style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; margin: 60px 0 80px 0">
+
+        <a href="https://x.com/nex__era" class="w3-btn w3-purple" target="_blank" rel="noopener noreferrer">x.com/@nex__era</a>
       </div>
-      
-      <p id="footer_en"><b>@nex-era</b> advises on leadership, governance, management, and more. This Thailand based team also serving Software Design & Dev, and some related services.</p> 
-      
-      <p id="footer_th" hidden><b>@nex-era</b> ให้คำปรึกษาเกี่ยวกับความเป็นผู้นำ การปกครอง บริหาร และอีกหลายอย่าง นอกจากนั้นทีมนี้ยังทำงานด้านการออกแบบ-พัฒนาซอฟท์แวร์ ตลอดจนบริการที่เกี่ยวข้องอื่นๆ ทีมนี้ทำงานในประเทศไทย</p>
-
-      <p class="x-mt24"><a href="http://nex-era.xyz" style="text-decoration: none;">http://nex-era.xyz</a></p> 
-      <p><a href="http://x.com/nex__era" style="text-decoration: none;">http://x.com/nex__era</a></p>
-
-      < !-- footer art -- >
-      <img src="art/starfish.png" style="width: 60px; transform: rotate(30deg); position: absolute; right: 15px; bottom: 25px" class="x-spin-very-slow">
-
-      <img src="art/nex-art3-t.png" style="position: absolute; bottom: 6px; right: 10px; width: 60px">
-
-    </div-->
-    <!--script>
-
-      function xToggle(_x) {
-        /*
-          - toggle sign and show/hide elements
-          - good for an on/off switch that do show/hide something
-          - even write this kind of codes is not long but this func gives something little more easier
-          - good for a simple toggle switch like on/off if more conditions you have to write own codes
-
-          GUIDE
-
-            <img id="xyz" onclick="xToggle({
-              check: 'xyz.src.includes(`off`)',
-              ifTrue: {show: footer_th, hide: footer_en, sign: '/icon/on.svg'},
-              else: {show: footer_en, hide: footer_th, sign: '/icon/off.svg'},
-              signElement: xyz
-            })"
-        */
-
-        let yes = eval(_x.check)
-        if (yes) {
-          _x.ifTrue.show.hidden = false
-          _x.ifTrue.hide.hidden = true
-          _x.signElement.src = _x.ifTrue.sign 
-        } else {
-          _x.else.show.hidden = false
-          _x.else.hide.hidden = true
-          _x.signElement.src = _x.else.sign
-        }
-
-        // tested=ok, @devster, 2025-01-08T18:06+0700
-        // now v0.5 ; need more validation & default settings, ...
-      }
 
 
-    </script-->
-
-
+    </div>
 
   </div>
 
 
 
   <!-- main act / to open menu -->
-  <div id="main_act" 
+  <div 
+    id="main_act" 
     style="position: fixed; left: 0; top: 50%; transform: translateY(-50%);" 
     class="pt-4 pr-2 pb-4 hover:bg-gray-200 cursor-pointer hover:rounded-r-[10px]  text-red-300 hover:text-red-500"
-    onclick="main_menu.hidden=false; main_menu.classList.remove('x-slide-left-to-left-edge')"
-  >
+    onclick="main_menu.hidden=false; main_menu.classList.remove('x-slide-left-to-left-edge')">
 
     <!-- menu act -- >
     <img id="act_open_menu" src="icon/right.svg" 
@@ -587,112 +193,6 @@
   </div>
 
 
-
-  <!-- search box -- >
-  <div hidden id="search_box" 
-  style="position: fixed; bottom: 0; left: 0; width: 100%; padding: 8px 16px 16px 16px; background-color: var(--blue-grey-200); max-height: 90%; z-index: 80; overflow-y: scroll;"
-  class="x-round-12">
-
-    <div>Put your keyword to search this site:</div>
-
-    < !-- control -- >
-    <div style="display: flex; align-items: center; flex-direction: row; flex-wrap: nowrap; justify-content: center; margin-top: 4px; position: sticky; top: 0; padding-right: 16px">
-
-      <img src="icon/search.svg" class="x-mr">
-      <input id="search_word" type="text" class="w3-input" oninput="search_result.hidden=false; searchSite(this.value)">
-    </div>
-
-    < !-- result -- >
-    <div id="search_result" hidden class="x-pt x-mt x-fz135">
-      
-      < !--put each page's link and tags following this list so viewer can find them-- >
-      
-      <a href="advisory.html">Advisory Services / leadership governance management strategy งานให้คำปรึกษา ที่ปรึกษา ความเป็นผู้นำ การปกครอง บริหาร ธุรกิจ ยุทธศาสตร์ ธรรมะ ชีวิตมีสุขได้ด้วยธรรม</a>
-      <a href="software.html">software / design dev งานออกแบบ พัฒนา ซอฟท์แวร์ เขียนโปรแกรม</a>
-      <a href="technology.html">Tech Services / cloud hardware mongodb mysql mssql postgresql nodejs java script python c# งานบริการด้านเทคโนโลยี ai lot machine learning db database ฐานข้อมูล</a>
-      <a href="project.html">internal project / project-x projex nex-biz nex-social nex-money nex-msg nex-gov digital money เงินดิจิตอล โครงการภายใน โปรเจค แผนงาน</a>
-      
-      
-      <a href="update.html">Update / blog post politic การเมือง ไทย โลก ลิซ่า lisa blackpink การบริหาร ปกครอง digital ai machine learning</a>
-      <a href="blog/leadership.html">Leadership ความเป็นผู้นำคืออะไร</a>
-      <a href="blog/tech-management.html">Tech Management for organization / บริหารเทคโนโลยีในองค์กร</a>
-      <a href="blog/real-digital-economy.html">Real Digital Economy / เศรษฐกิจดิจิตอลที่แท้จริง</a>
-      <a href="blog/next-social-media.html">Next Social Media /โซเชียลมีเดียยุคหน้า</a>
-      <a href="blog/next-business-app.html">Next Business App /ระบบบริหารธุรกิจยุคหน้า</a>
-      <a href="about.html">About nex-era / @nex-era</a>
-
-      <a href="/blog/thai-politic.html">การเมืองไทย / Thai Politic</a>
-      <a href="/blog/lisa-phenominon.html">Lisa Phenominon / ลิซ่า ปรากฎการณ์ลิซ่า blackpink kpop rockstar new woman moonlit floor</a>
-      <a href="/blog/trump-threat.html">Trump Threat / อุปสรรคทรัมป์ ทรัมปภัย การเมืองระดับโลก world politics nato un oval office new world order nwo จีน china </a>
-      <a href="/blog/lisa-brings-thailand-to-global.html">Lisa brings Thailand to global / ลิซ่าพาไทยไประดับโลก / alterego oscar futw live and let die james bond 007 the white lotus lloud</a>
-      <a href="/blog/thai-gov-moves-into-danger-zone.html">รัฐบาลไทยก้าวสู่เขตอันตราย / การเมืองไทย thai politic</a>
-      <a href="/blog/usa-has-mandate-to-protect-ukraine.html">สหรัฐมีพันธสัญญาต้องคุ้มครองยูเครน / USA Ukraine Russia war สงคราม</a>
-
-      <a href="/blog/update-apr4-2025.html">อภิปรายไม่ไว้วางใจนายก / แผ่นดินไหว / สหรัฐขึ้นภาษีศุลกากร Trump Tariff / รัฐบาลเร่งยัดกฎหมายคาสิโน / ทรัมป์ขู่บอมบ์อิหร่าน / pm 2.5 ภาคเหนือ / ไทยส่งอุยกูร์กลับจีน / ประท้วงหลายที่ในยุโรป / ทรัมป์เจรจายุติสงครามไม่เป็นผล</a>
-      <a href="/blog/art-of-the-deal-or-not.html">Art of the deal, or not / ศิลปะการต่อรองของทรัมป์</a>
-      <a href="/blog/music-industry-note.html">Lisa Coachella 2025 / Note for Music Industry / อุตสาหกรรมเพลง</a>
-
-    </div-->
-
-    <div style="height: 32px;"></div>
-
-    <!-- act -- >
-    <div style="position: fixed; left: 0; bottom: 0">
-      <button class="w3-btn x-p8 w3-light-gray" onclick="search_box.hidden=true; act_search.hidden=false; search_result.hidden=true; hideAllSearchResult(); search_word.value = '';"><img src="icon/x.svg"></button>
-    </div>
-  </div-->
-
-
-
-
-
-
-
-  <!-- main alert -- >
-  <div id="main_alert" 
-  class="w3-card-4 x-center-screen x-round x-osans" 
-  style="width: 95%; min-height:; padding: 16px; background-color: var(--amber-800); z-index: 100">
-
-    <h3 id="alert_subject">New stories published:</h3>
-    <div id="alert_msg" class="x-fz150 x-serif">
-      <ul>
-        <li style="margin-bottom: 12px"><a href="/blog/thai-politic-sep2025.html" style="all: revert; font-family: 'Times New Roman', Times, serif;">การเมืองไทยอลวน กย2568</a></li>
-
-        <li style="margin-bottom: 12px"><a href="/blog/update-jun30.html" style="all: revert; font-family: 'Times New Roman', Times, serif;">สถานการณ์ไทย 30 มิย 68</a></li>
-
-        <li style="margin-bottom: 12px"><a href="/blog/digital-marketing.html" style="all: revert; font-family: 'Times New Roman', Times, serif;">การตลาดดิจิตอลทำยังไง?</a></li>
-
-        < !--li style="margin-bottom: 12px"><a href="/advisory-sect/world-gdp-2024-note.html" style="all: revert; font-family: 'Times New Roman', Times, serif;">World GDP 2024 Note</a></li-- >
-
-
-        < !--li style="margin-bottom: 12px"><a href="/blog/how-thai-survive.html" style="all: revert; font-family: 'Times New Roman', Times, serif;">ไทยจะอยู่รอดได้อย่างไร ท่ามกลางอภิมหาพายุเศรษฐกิจโลก ที่กำลังโหมกระหน่ำ เปรี้ยงปร้าง อยู่ในขณะนี้</a></li>
-
-        <li style="margin-bottom: 12px"><a href="/blog/perfect-doesnt-have-to-be-perfect.html" style="all: revert; font-family: 'Times New Roman', Times, serif;">ความสมบูรณ์แบบไม่จำเป็นต้องสมบูรณ์แบบเสมอไป</a></li-- >
-        
-        < !--li style="margin-bottom: 12px"><a href="/blog/music-industry-note.html" style="all: revert; font-family: 'Times New Roman', Times, serif;">Lisa Coachella 2025</a></li-- >
-        
-        
-      </ul>
-      
-    </div>
-
-    <div style="height: 24px;"></div>
-
-    <button class="w3-btn x-p8 x-round-4 x-mt" style="position: absolute; left: 0; bottom: 0;" 
-    onclick="main_alert.hidden=true"><img src="icon/x.svg" class="x-wh32"></button>
-  </div-->
-
-
-
-
-  <!-- show pic / fully show pic 100% width with black background -- >
-  <div id="show_pic" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 90" hidden>
-    <div class="x-center-screen x-fullw" style="z-index: 100">
-      <img id="show_pic_img" width="100%">
-      <button class="w3-btn x-p8 w3-gray" style="position: absolute; left: 0; bottom: 0"
-      onclick="show_pic.hidden=true; show_pic_img.removeAttribute('src')"><img src="icon/x.svg"></button>
-    </div>
-  </div-->
   
 
 
@@ -701,10 +201,10 @@
   <script>
     ////////////////////////////////////////////////////////////
 
-    // count page visit
+    /* count page visit
     xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
       { page: location.pathname, lastVisit: Date.now() }
-    ).then(/* msg => console.log( msg) */)
+    ).then(/* msg => console.log( msg) * /)
 
 
 
@@ -712,7 +212,7 @@
       /*
         - move element around randomly & easily
         - this is simple method moving the el linearly and in straight direction
-      */
+      * /
 
       let newX = Math.random() < 0.5 ? _x - _distance : _x + _distance
       let newY = Math.random() < 0.5 ? _y - _distance : _y + _distance
@@ -729,7 +229,7 @@
       // tested=ok, @devster, 2025-01-09T01:46+0700
     }
 
-    xMoveAroundFreely(bug)
+    //xMoveAroundFreely(bug)
 
 
 
@@ -757,7 +257,7 @@
           license = none
           by = @devster
           released = 2025-01-10T17:13+0700
-      */
+      * /
 
       // validate & default
       if (!_x) return
@@ -784,11 +284,11 @@
     
 
 
-
+    /*
     ifScroll({ moreThan: 50, 
       do: {show: act_scroll_top}, 
       else: {hide: act_scroll_top}
-    })
+    })* /
 
 
 
@@ -807,7 +307,7 @@
       for (elem of search_result.children) elem.style.display = 'none'
     }
 
-
+    */
 
 
   </script>
