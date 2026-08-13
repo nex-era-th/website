@@ -5,25 +5,11 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>@nex-era / advisory, software & beyond</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="advisory software tech dev รับออกแบบและพัฒนาซอฟท์แวร์ ที่ปรึกษา ความเป็นผู้นำ บริหาร ธุรกิจ">
-
-  <!--script src="./config.js"></script>
-  <script src="js/xdev-b.js"></script>
-  <script src="js/projex.js"></script>
-  <script src="./page-profile.js"></script-->
-
+  <meta name="description" content="business & tech advisory, software design & dev รับออกแบบและพัฒนาซอฟท์แวร์สำหรับธุรกิจ / ที่ปรึกษา">
   <link href="css/w3.css" rel="stylesheet" type="text/css">
-  <!--link href="css/projex.css" rel="stylesheet" type="text/css"-->
-  <!--link href="css/material-design-var.css" rel="stylesheet" type="text/css"-->
   <link href="css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-
-  <!------------------------------ bug & nature ------------------------------- >
-
-  <img id="bug" src="art/taotong.png" style="position: fixed; left: 0; top: 0; width: 45px; transform: rotate(50deg); z-index: 60" class="x-spin-very-slow">
-
-  <!--img id="nature" src="art/leaf100.png" style="position: fixed; top: 100px; left: 96%; height: 250px; z-index: 50; transform: rotate(-26deg); opacity: 0.8"-->
 
 
   <!-- Content Space -->
@@ -106,211 +92,13 @@
 
 
 
-  <!-- main act / to open menu -->
-  <div 
-    id="main_act" 
-    style="position: fixed; left: 0; top: 50%; transform: translateY(-50%);" 
-    class="pt-4 pr-2 pb-4 hover:bg-gray-200 cursor-pointer hover:rounded-r-[10px]  text-red-300 hover:text-red-500"
-    onclick="main_menu.hidden=false; main_menu.classList.remove('x-slide-left-to-left-edge')">
-
-    <!-- menu act -- >
-    <img id="act_open_menu" src="icon/right.svg" 
-    style="position: fixed; left: 0; top: 50%; transform: translateY(-50%); opacity: 0.5;" 
-    class="w3-btn" 
-    width="48px" height="48px"
-    onclick="main_menu.hidden=false; main_menu.classList.remove('x-slide-left-to-left-edge')" -->
-
-
-    <i class="fa-solid fa-chevron-right text-[24px]"></i>
-
-    <!-- signal / get attention from user -- >
-    <div id="signal" 
-    style="position: fixed; top: 65%; left: 8px; display: grid; grid-template-columns: auto; row-gap: 60px; align-items: start;" class="x-center-left-edge">
-      <span class="w3-badge w3-red x-pointer" onclick="main_alert.hidden=false;">3</span>
-      <span class="w3-badge w3-green x-hide">8</span>
-    </div-->
 
 
 
-
-
-    <!-- search -- >
-    <img id="act_search" src="icon/search.svg"
-    class="x-pointer"
-    style="position: fixed; left: 8px; top: 78%"
-    onclick="this.hidden=true; search_box.hidden=false; search_word.focus()"-->
-
-
-    <!-- scroll top -- >
-    <img id="act_scroll_top" src="icon/top-up.svg" 
-    style="position: fixed; left: 0; top: 92%" 
-    class="w3-btn x-p8 x-blue-dark-bg x-circle x-opa x-hide" 
-    onclick="window.scrollTo({top: 0, behavior: 'smooth'})"-->
-
-
-  </div>
 
 
 
   
-
-  
-
-  <!-- menu menu -->
-  <div id="main_menu" 
-  style="position: fixed; left: 0; bottom: 0; height: 100%; width: 70%"
-  class="x-slide-right-from-left-edge w3-dark-gray x-round-23"
-  hidden>
-
-    <div style="display: grid; grid-template-columns: 100%; place-items: start; align-items: stretch;" class="w3-mobile w3-bar-block roboto-thin">
-      
-      
-      <button class="w3-button w3-xlarge x-osans-light w3-bar-item" style="padding: 20px 16px" onclick="location.href='advisory.html';">Advisory</button>
-
-      <button class="w3-button w3-xlarge x-osans-light w3-bar-item" style="padding: 20px 16px" onclick="location.href='software.html';">Software</button>
-
-      <button class="w3-button w3-xlarge x-osans-light w3-bar-item" style="padding: 20px 16px" onclick="location.href='technology.html';">Technology</button>
-
-
-      <button class="w3-button w3-xlarge x-osans-light w3-bar-item" style="padding: 20px 16px" onclick="location.href='project.html';">Project</button>
-
-
-      <button class="w3-button w3-xlarge x-osans-light w3-bar-item" style="padding: 20px 16px" onclick="location.href='update.html';">Update</button>
-
-      <button class="w3-button w3-xlarge x-osans-light w3-bar-item" style="padding: 20px 16px" onclick="location.href='/post/index.html';">Post</button>
-
-      <button class="w3-button w3-xlarge x-osans-light w3-bar-item" style="padding: 20px 16px" onclick="location.href='about.html';">About</button>
-
-
-      <hr style="background-color: gray; border: none; height: 1px; margin: 0; padding: 0">
-
-
-      <button class="w3-btn w3-xlarge x-osans-light" 
-      style="padding: 20px 16px;"
-      onclick="main_menu.classList.add('x-slide-left-to-left-edge')"><img src="icon/u-turn.svg" width="32" height="32"></button>
-
-    </div>
-  </div>
-
-
-  
-
-
-
-
-  <script>
-    ////////////////////////////////////////////////////////////
-
-    /* count page visit
-    xb.page.visitCount( nexWeb.nodeXurl + '/nex-web-visit-count', 
-      { page: location.pathname, lastVisit: Date.now() }
-    ).then(/* msg => console.log( msg) * /)
-
-
-
-    function xMoveAroundFreely(_elem,_x=0,_y=0,_time=2,_distance=45) {
-      /*
-        - move element around randomly & easily
-        - this is simple method moving the el linearly and in straight direction
-      * /
-
-      let newX = Math.random() < 0.5 ? _x - _distance : _x + _distance
-      let newY = Math.random() < 0.5 ? _y - _distance : _y + _distance
-      if (newX > innerWidth) newX = innerWidth
-      if (newX < -_elem.offsetWidth) newX = -_elem.offsetWidth
-      if (newY > innerHeight) newY = innerHeight
-      if (newY < -_elem.offsetHeight) newY = _elem.offsetHeight
-
-      _elem.style.transition = 'all ' + _time + 's linear'
-      _elem.style.left = newX + 'px'
-      _elem.style.top = newY + 'px'
-      setTimeout(f => xMoveAroundFreely(_elem,newX,newY,_time,_distance), _time * 1000)
-
-      // tested=ok, @devster, 2025-01-09T01:46+0700
-    }
-
-    //xMoveAroundFreely(bug)
-
-
-
-    //-----------------------------------------------------------------
-    
-    
-    function ifScroll(_x) {
-
-      /*
-        - set rule if scroll > the set % of page length, do something
-        - we may have only 1 condition which is 'moreThan' and the input value is the %
-
-        GUIDE
-
-          ifScroll({ moreThan: 50,
-            do: {show: _elem, hide: _elem, run: _func},
-            else: {show: _elem, hide: _elem, run: _func}
-          })
-
-          the show/hide uses x-hide class so have to put this class on the elem you trying to handle
-
-        INFO
-
-          version = 1.0
-          license = none
-          by = @devster
-          released = 2025-01-10T17:13+0700
-      * /
-
-      // validate & default
-      if (!_x) return
-      if (!_x.do) return
-      if (!_x.moreThan) _x.moreThan = 50
-
-      addEventListener('scroll', f => {
-        if (pageYOffset > document.documentElement.scrollHeight * (_x.moreThan/100) ) {
-          if (_x.do.show) _x.do.show.classList.remove('x-hide')
-          if (_x.do.hide) _x.do.hide.classList.add('x-hide')
-          if (_x.do.run) eval(_x.do.run)
-        } else {
-          if (_x.else.show) _x.else.show.classList.remove('x-hide')
-          if (_x.else.hide) _x.else.hide.classList.add('x-hide')
-          if (_x.else.run) eval(_x.else.run)
-        }
-      })
-
-      // first test=ok, @devster
-      // v1.0 test=ok
-      // thinking about how to remove this listener -- idea
-    }
-
-    
-
-
-    /*
-    ifScroll({ moreThan: 50, 
-      do: {show: act_scroll_top}, 
-      else: {hide: act_scroll_top}
-    })* /
-
-
-
-    function searchSite(_keyword) {
-
-      if (_keyword == '') hideAllSearchResult()
-      else {
-        for (elem of search_result.children) {
-          if (elem.textContent.toLowerCase().includes(_keyword.toLowerCase())) elem.style.display = 'block'
-          else elem.style.display = 'none'
-        }
-      }
-    }
-
-    function hideAllSearchResult() {
-      for (elem of search_result.children) elem.style.display = 'none'
-    }
-
-    */
-
-
-  </script>
 
 
 </body>
